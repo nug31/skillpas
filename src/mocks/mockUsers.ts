@@ -19,14 +19,18 @@ export const mockUsers: User[] = [
     { id: 'u-s7', username: 'siswa_akuntansi', password: '123', name: 'Siswa Akuntansi', role: 'student', jurusan_id: 'j7' },
     { id: 'u-s8', username: 'siswa_hotel', password: '123', name: 'Siswa Perhotelan', role: 'student', jurusan_id: 'j8' },
 
-    // Teacher account
-    {
-        id: 'u-guru',
-        username: 'guru',
-        password: '123',
-        name: 'Guru',
-        role: 'teacher',
-    },
+    // Teacher accounts (one per jurusan)
+    { id: 'u-g1', username: 'guru_mesin', password: '123', name: 'Guru Mesin', role: 'teacher', jurusan_id: 'j1' },
+    { id: 'u-g2', username: 'guru_tkr', password: '123', name: 'Guru TKR', role: 'teacher', jurusan_id: 'j2' },
+    { id: 'u-g3', username: 'guru_tsm', password: '123', name: 'Guru TSM', role: 'teacher', jurusan_id: 'j3' },
+    { id: 'u-g4', username: 'guru_elind', password: '123', name: 'Guru Elind', role: 'teacher', jurusan_id: 'j4' },
+    { id: 'u-g5', username: 'guru_listrik', password: '123', name: 'Guru Listrik', role: 'teacher', jurusan_id: 'j5' },
+    { id: 'u-g6', username: 'guru_kimia', password: '123', name: 'Guru Kimia', role: 'teacher', jurusan_id: 'j6' },
+    { id: 'u-g7', username: 'guru_akuntansi', password: '123', name: 'Guru Akuntansi', role: 'teacher', jurusan_id: 'j7' },
+    { id: 'u-g8', username: 'guru_hotel', password: '123', name: 'Guru Perhotelan', role: 'teacher', jurusan_id: 'j8' },
+
+    // Admin teacher (can see all)
+    { id: 'u-guru', username: 'guru', password: '123', name: 'Guru', role: 'teacher' },
 ];
 
 export function authenticateUser(username: string, password: string): User | null {
