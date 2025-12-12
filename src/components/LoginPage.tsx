@@ -44,7 +44,7 @@ export function LoginPage() {
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent mb-2">
                         Skill Passport
                     </h1>
-                    <p className="text-white/60 text-sm">Competency & achievement tracker</p>
+                    <p className="text-white text-sm">Competency & achievement tracker</p>
                 </div>
 
                 {/* Login Card */}
@@ -78,7 +78,7 @@ export function LoginPage() {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         {/* Username Input */}
                         <div>
-                            <label htmlFor="username" className="block text-sm font-medium text-white/80 mb-2">
+                            <label htmlFor="username" className="block text-sm font-medium text-white mb-2">
                                 Username
                             </label>
                             <input
@@ -94,7 +94,7 @@ export function LoginPage() {
 
                         {/* Password Input */}
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-white/80 mb-2">
+                            <label htmlFor="password" className="block text-sm font-medium text-white mb-2">
                                 Password
                             </label>
                             <input
