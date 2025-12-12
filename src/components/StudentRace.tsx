@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Flag, Trophy, BarChart3, Medal } from 'lucide-react';
 import type { StudentListItem, RaceParticipant } from '../types';
-import { RaceTrack } from './RaceTrack';
+import { F1RaceTrack } from './F1RaceTrack';
 import { Podium } from './Podium';
 
 interface StudentRaceProps {
@@ -82,7 +82,7 @@ export function StudentRace({ students, jurusanName }: StudentRaceProps) {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
                     >
-                        <RaceTrack participants={participants} title={`Race Siswa: ${jurusanName}`} subtitle="Speed Competition" />
+                        <F1RaceTrack participants={participants} title={`🏎️ Race: ${jurusanName}`} subtitle="Student Championship" />
                     </motion.div>
                 )}
 

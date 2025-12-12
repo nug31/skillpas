@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Flag, Trophy, BarChart3, Medal, Users, LayoutDashboard, Target } from 'lucide-react';
 import type { Jurusan, RaceParticipant } from '../types';
-import { RaceTrack } from './RaceTrack';
+import { F1RaceTrack } from './F1RaceTrack';
 import { Podium } from './Podium';
 import * as Icons from 'lucide-react';
 
@@ -177,10 +177,10 @@ export function DashboardRace({ jurusanData, trigger = 0 }: DashboardRaceProps) 
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
                     >
-                        <RaceTrack
+                        <F1RaceTrack
                             participants={participants}
-                            title="Jurusan Race Series"
-                            subtitle="Live Average Score Competition"
+                            title="🏎️ Jurusan Grand Prix"
+                            subtitle="Formula 1 Championship"
                             autoStart={false}
                             trigger={trigger > 0}
                         />
