@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { HomePage } from './components/HomePage';
 import { JurusanDetailPage } from './components/JurusanDetailPage';
 import { LoginPage } from './components/LoginPage';
 import { FooterReflexGame } from './components/FooterReflexGame';
+import { PassportStamp } from './components/PassportStamp';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import type { Jurusan } from './types';
 import smkLogo from './assets/smk-logo.png';
@@ -11,6 +12,8 @@ import { LogOut } from 'lucide-react';
 function AppContent() {
   const { user, logout, isAuthenticated } = useAuth();
   const [selectedJurusan, setSelectedJurusan] = useState<Jurusan | null>(null);
+  const [showStampAnimation, setShowStampAnimation] = useState(false);
+  const prevAuthRef = useRef(isAuthenticated);
   const [themeClear, setThemeClear] = useState<boolean>(() => {
     try {
       return localStorage.getItem('theme') === 'clear';
@@ -18,6 +21,15 @@ function AppContent() {
       return false;
     }
   });
+
+  // Detect login event (transition from not authenticated to authenticated)
+  useEffect(() => {
+    if (!prevAuthRef.current && isAuthenticated && user) {
+      // User just logged in - show stamp animation
+      setShowStampAnimation(true);
+    }
+    prevAuthRef.current = isAuthenticated;
+  }, [isAuthenticated, user]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -28,6 +40,16 @@ function AppContent() {
   // Show login page if not authenticated
   if (!isAuthenticated) {
     return <LoginPage />;
+  }
+
+  // Show passport stamp animation after login
+  if (showStampAnimation && user) {
+    return (
+      <PassportStamp
+        userName={user.name}
+        onComplete={() => setShowStampAnimation(false)}
+      />
+    );
   }
 
   return (
