@@ -129,7 +129,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
                     SKILL PASSPORT
                   </span>
                 </h1>
-                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-widest uppercase">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-widest">
                   <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent [.theme-clear_&]:from-indigo-700 [.theme-clear_&]:via-purple-600 [.theme-clear_&]:to-pink-600">
                     SMK Mitra Industri
                   </span>
