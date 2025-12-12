@@ -131,7 +131,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
                 </h1>
                 <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-widest uppercase">
                   <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent [.theme-clear_&]:from-indigo-700 [.theme-clear_&]:via-purple-600 [.theme-clear_&]:to-pink-600">
-                    SMK MITRA INDUSTRI MM2100
+                    SMK Mitra Industri
                   </span>
                 </h2>
                 <div className="w-32 h-1 bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-400 rounded-full mt-4 mb-6 animate-pulse [.theme-clear_&]:from-yellow-500 [.theme-clear_&]:via-orange-500 [.theme-clear_&]:to-pink-500"></div>
