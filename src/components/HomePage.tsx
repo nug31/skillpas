@@ -123,16 +123,22 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
                 <span className="text-white text-xs font-semibold">DASHBOARD</span>
               </div>
 
-              <div className="space-y-2">
-                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-tight text-white drop-shadow-xl tracking-tight">
-                  SKILL PASSPORT
+              <div className="space-y-3">
+                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight tracking-tight">
+                  <span className="bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent drop-shadow-2xl [text-shadow:_0_4px_20px_rgba(139,92,246,0.3)]">
+                    SKILL PASSPORT
+                  </span>
                 </h1>
-                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white/90 tracking-wide uppercase">
-                  SMK MITRA INDUSTRI MM2100
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-widest uppercase">
+                  <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    SMK MITRA INDUSTRI MM2100
+                  </span>
                 </h2>
-                <div className="w-24 h-1.5 bg-yellow-400 rounded-full mt-4 mb-6"></div>
-                <p className="text-lg sm:text-xl text-white/80 font-medium">
-                  Menuju Vokasi Berstandar Industri & Terverifikasi
+                <div className="w-32 h-1 bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-400 rounded-full mt-4 mb-6 animate-pulse"></div>
+                <p className="text-lg sm:text-xl font-medium tracking-wide">
+                  <span className="bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">
+                    Menuju Vokasi Berstandar Industri & Terverifikasi
+                  </span>
                 </p>
               </div>
 
