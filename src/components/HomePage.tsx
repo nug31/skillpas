@@ -36,10 +36,8 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
         data = result.data || [];
       }
 
-      // Filter by jurusan if student
-      if (user?.role === 'student' && user.jurusan_id && data) {
-        data = data.filter(j => j.id === user.jurusan_id);
-      }
+      // Students can now see all jurusan (for race/competition visibility)
+      // But detail access is determined in JurusanDetailPage
 
       setJurusanList(data || []);
 
