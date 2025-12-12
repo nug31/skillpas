@@ -16,12 +16,12 @@ export function LoginPage() {
         setError('');
         setLoading(true);
 
-        const success = await login(username, password);
+        const success = await login(username, password, selectedRole);
 
         if (success) {
             // Login successful - AuthContext will handle state update
         } else {
-            setError('Username atau password salah');
+            setError(`Login gagal. Pastikan username/password benar dan pilih role yang sesuai (${selectedRole === 'student' ? 'Siswa' : 'Guru'}).`);
         }
 
         setLoading(false);

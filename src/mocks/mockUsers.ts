@@ -33,9 +33,15 @@ export const mockUsers: User[] = [
     { id: 'u-guru', username: 'guru', password: '123', name: 'Guru', role: 'teacher' },
 ];
 
-export function authenticateUser(username: string, password: string): User | null {
+export function authenticateUser(username: string, password: string, selectedRole?: 'student' | 'teacher'): User | null {
     const user = mockUsers.find(
         (u) => u.username === username && u.password === password
     );
+
+    // If role is specified, validate it matches the user's actual role
+    if (user && selectedRole && user.role !== selectedRole) {
+        return null; // Role mismatch - login fails
+    }
+
     return user || null;
 }

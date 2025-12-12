@@ -4,7 +4,7 @@ import { authenticateUser } from '../mocks/mockUsers';
 
 interface AuthContextType {
     user: User | null;
-    login: (username: string, password: string) => Promise<boolean>;
+    login: (username: string, password: string, role?: 'student' | 'teacher') => Promise<boolean>;
     logout: () => void;
     isAuthenticated: boolean;
     isTeacher: boolean;
@@ -30,8 +30,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
-    const login = async (username: string, password: string): Promise<boolean> => {
-        const authenticatedUser = authenticateUser(username, password);
+    const login = async (username: string, password: string, role?: 'student' | 'teacher'): Promise<boolean> => {
+        const authenticatedUser = authenticateUser(username, password, role);
 
         if (authenticatedUser) {
             setUser(authenticatedUser);
