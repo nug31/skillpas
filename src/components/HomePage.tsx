@@ -125,18 +125,18 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
 
               <div className="space-y-3">
                 <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight tracking-tight">
-                  <span className="bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent drop-shadow-2xl [text-shadow:_0_4px_20px_rgba(139,92,246,0.3)]">
+                  <span className="bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent drop-shadow-2xl [text-shadow:_0_4px_20px_rgba(139,92,246,0.3)] [.theme-clear_&]:from-indigo-900 [.theme-clear_&]:via-purple-800 [.theme-clear_&]:to-indigo-900 [.theme-clear_&]:[text-shadow:_0_2px_10px_rgba(79,70,229,0.2)]">
                     SKILL PASSPORT
                   </span>
                 </h1>
                 <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-widest uppercase">
-                  <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent [.theme-clear_&]:from-indigo-700 [.theme-clear_&]:via-purple-600 [.theme-clear_&]:to-pink-600">
                     SMK MITRA INDUSTRI MM2100
                   </span>
                 </h2>
-                <div className="w-32 h-1 bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-400 rounded-full mt-4 mb-6 animate-pulse"></div>
+                <div className="w-32 h-1 bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-400 rounded-full mt-4 mb-6 animate-pulse [.theme-clear_&]:from-yellow-500 [.theme-clear_&]:via-orange-500 [.theme-clear_&]:to-pink-500"></div>
                 <p className="text-lg sm:text-xl font-medium tracking-wide">
-                  <span className="bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent [.theme-clear_&]:from-cyan-600 [.theme-clear_&]:to-blue-600">
                     Menuju Vokasi Berstandar Industri & Terverifikasi
                   </span>
                 </p>
