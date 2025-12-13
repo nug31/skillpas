@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Trash2, Download } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
@@ -302,7 +302,55 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
                 <div />
                 {isTeacher && (
                   <div className="flex items-center gap-2">
-                    <button onClick={() => setShowImport(true)} className="px-3 py-1 bg-indigo-600 text-white rounded text-sm inline-flex items-center gap-2">
+                    <button
+                      onClick={async () => {
+                        if (window.confirm(`PERINGATAN: Anda yakin ingin MENGHAPUS SEMUA data siswa di jurusan ${jurusan.nama_jurusan}?\n\nData yang dihapus tidak dapat dikembalikan!`)) {
+                          if (!window.confirm("Apakah anda benar-benar yakin?")) return;
+
+                          try {
+                            setLoading(true);
+                            if (isMockMode) {
+                              // Find all student IDs in this jurusan
+                              const studentsToDelete = mockData.mockSiswa.filter(s => s.jurusan_id === jurusan.id).map(s => s.id);
+
+                              // Delete in reverse loop to avoid index shifting issues
+                              for (let i = mockData.mockSiswa.length - 1; i >= 0; i--) {
+                                if (mockData.mockSiswa[i].jurusan_id === jurusan.id) {
+                                  mockData.mockSiswa.splice(i, 1);
+                                }
+                              }
+                              for (let i = mockData.mockSiswa.length - 1; i >= 0; i--) {
+                                if (mockData.mockSiswa[i].jurusan_id === jurusan.id) {
+                                  mockData.mockSiswa.splice(i, 1);
+                                }
+                              }
+                              // Delete skills
+                              for (let i = mockData.mockSkillSiswa.length - 1; i >= 0; i--) {
+                                if (studentsToDelete.includes(mockData.mockSkillSiswa[i].siswa_id)) {
+                                  mockData.mockSkillSiswa.splice(i, 1);
+                                }
+                              }
+                            } else {
+                              const { error } = await supabase.from('siswa').delete().eq('jurusan_id', jurusan.id);
+                              if (error) throw error;
+                            }
+                            await loadData();
+                            alert('Semua data siswa berhasil dihapus.');
+                          } catch (err) {
+                            console.error('Failed to delete all', err);
+                            alert('Gagal menghapus data.');
+                          } finally {
+                            setLoading(false);
+                          }
+                        }
+                      }}
+                      className="px-3 py-1 bg-red-600 text-white rounded text-sm inline-flex items-center gap-2 hover:bg-red-700 transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Hapus Semua</span>
+                    </button>
+                    <button onClick={() => setShowImport(true)} className="px-3 py-1 bg-indigo-600 text-white rounded text-sm inline-flex items-center gap-2 hover:bg-indigo-700 transition-colors">
+                      <Download className="w-4 h-4" />
                       <span>Import Siswa</span>
                     </button>
                   </div>
