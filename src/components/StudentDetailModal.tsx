@@ -43,7 +43,7 @@ export function StudentDetailModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-10">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
 
-      <div className="relative z-10 w-full max-w-xl sm:max-w-2xl md:max-w-3xl bg-slate-900 border border-white/20 rounded-2xl shadow-2xl overflow-hidden max-h-[88vh] overflow-y-auto">
+      <div className="relative z-10 w-full max-w-xl sm:max-w-2xl md:max-w-3xl bg-slate-900 [.theme-clear_&]:bg-white border border-white/20 [.theme-clear_&]:border-slate-200 rounded-2xl shadow-2xl overflow-hidden max-h-[88vh] overflow-y-auto">
         <div className="flex items-start justify-between px-6 py-4 border-b">
           <div className="flex-1 mr-4">
             {isEditing ? (
