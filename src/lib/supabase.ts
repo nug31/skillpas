@@ -3,12 +3,12 @@ import type { Database } from '../types/database';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const useMock = import.meta.env.VITE_USE_MOCK === 'true';
+let useMock = import.meta.env.VITE_USE_MOCK === 'true';
 
-if (!useMock) {
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Missing Supabase environment variables');
-  }
+if (!useMock && (!supabaseUrl || !supabaseAnonKey)) {
+  console.warn('Missing Supabase environment variables. Falling back to mock mode.');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  useMock = true;
 }
 
 // Export a single `supabase` binding — either a thin stub in mock mode or the real client.

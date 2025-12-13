@@ -138,7 +138,7 @@ export function F1RaceTrack({
     );
 
     return (
-        <div className="relative min-h-[700px] card-glass backdrop-blur-xl rounded-2xl border border-slate-300 dark:border-white/10 p-6 sm:p-8 overflow-hidden shadow-2xl">
+        <div className="relative min-h-[500px] sm:min-h-[700px] card-glass backdrop-blur-xl rounded-2xl border border-slate-300 dark:border-white/10 p-4 sm:p-8 overflow-hidden shadow-2xl">
             {/* Track Background */}
             <div className="absolute inset-0 bg-gradient-to-b from-slate-800 via-slate-700 to-slate-900 [.theme-clear_&]:from-slate-200 [.theme-clear_&]:via-slate-100 [.theme-clear_&]:to-slate-200 opacity-50 pointer-events-none" />
 
@@ -159,11 +159,11 @@ export function F1RaceTrack({
                         <Flag className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-800 dark:text-white tracking-tight uppercase">
+                        <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white tracking-tight uppercase">
                             {title}
                         </h2>
-                        <div className="text-sm text-red-600 dark:text-red-400 font-medium flex items-center gap-2 mt-1">
-                            <Timer className="w-4 h-4" />
+                        <div className="text-xs sm:text-sm text-red-600 dark:text-red-400 font-medium flex items-center gap-2 mt-1">
+                            <Timer className="w-3 h-3 sm:w-4 sm:h-4" />
                             <span>{subtitle}</span>
                         </div>
                     </div>
@@ -199,11 +199,11 @@ export function F1RaceTrack({
                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
                             className="flex flex-col items-center"
                         >
-                            <div className="text-8xl sm:text-9xl font-black italic text-transparent bg-clip-text bg-gradient-to-tr from-red-500 via-orange-500 to-yellow-500 drop-shadow-[0_0_50px_rgba(239,68,68,0.5)] text-center tracking-tighter">
+                            <div className="text-5xl sm:text-9xl font-black italic text-transparent bg-clip-text bg-gradient-to-tr from-red-500 via-orange-500 to-yellow-500 drop-shadow-[0_0_50px_rgba(239,68,68,0.5)] text-center tracking-tighter">
                                 {countdown === 0 ? "LIGHTS OUT!" : countdown}
                             </div>
                             {countdown > 0 && (
-                                <div className="text-2xl text-white/60 mt-4 font-bold tracking-widest uppercase">
+                                <div className="text-xl sm:text-2xl text-white/60 mt-4 font-bold tracking-widest uppercase">
                                     {countdown === 1 ? "Get Set..." : "Ready..."}
                                 </div>
                             )}
@@ -212,16 +212,7 @@ export function F1RaceTrack({
                 )}
             </AnimatePresence>
 
-            {/* Checkered Finish Line */}
-            <div className="absolute right-6 top-28 bottom-28 z-20 w-4 overflow-hidden rounded">
-                <div
-                    className="w-full h-full"
-                    style={{
-                        backgroundImage: `repeating-conic-gradient(#000 0deg 90deg, #fff 90deg 180deg)`,
-                        backgroundSize: '8px 8px',
-                    }}
-                />
-            </div>
+
 
             {/* Race Tracks */}
             <div className="relative z-10 space-y-3 mt-8">
@@ -231,9 +222,9 @@ export function F1RaceTrack({
                     const progress = (p.score / maxScore) * 100;
 
                     return (
-                        <div key={p.id} className="flex items-center gap-4">
+                        <div key={p.id} className="flex items-center gap-2 sm:gap-4">
                             {/* Position Number */}
-                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-black border-2 ${isLeader
+                            <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-xs sm:text-sm font-black border-2 flex-shrink-0 ${isLeader
                                 ? 'bg-yellow-400 text-yellow-900 border-yellow-500 shadow-[0_0_15px_rgba(250,204,21,0.5)]'
                                 : index === 1
                                     ? 'bg-slate-300 text-slate-700 border-slate-400'
@@ -245,24 +236,32 @@ export function F1RaceTrack({
                             </div>
 
                             {/* Track Lane */}
-                            <div className="flex-1 relative h-14 bg-slate-700/30 [.theme-clear_&]:bg-slate-200 rounded-lg overflow-hidden border border-white/10 [.theme-clear_&]:border-slate-300">
+                            <div className="flex-1 relative h-10 sm:h-14 bg-slate-700/30 [.theme-clear_&]:bg-slate-200 rounded-lg overflow-hidden border border-white/10 [.theme-clear_&]:border-slate-300">
                                 {/* Track Markings */}
                                 <div className="absolute inset-y-0 left-0 right-0 flex items-center">
                                     {[...Array(15)].map((_, i) => (
-                                        <div key={i} className="h-0.5 w-6 bg-white/20 [.theme-clear_&]:bg-slate-400/30 ml-8" />
+                                        <div key={i} className="h-0.5 w-4 sm:w-6 bg-white/20 [.theme-clear_&]:bg-slate-400/30 ml-4 sm:ml-8" />
                                     ))}
                                 </div>
 
                                 {/* Track edge */}
-                                <div className="absolute top-0 left-0 right-0 h-1 bg-red-500/50" />
-                                <div className="absolute bottom-0 left-0 right-0 h-1 bg-red-500/50" />
+                                <div className="absolute top-0 left-0 right-0 h-0.5 sm:h-1 bg-red-500/50" />
+                                <div className="absolute bottom-0 left-0 right-0 h-0.5 sm:h-1 bg-red-500/50" />
+
+                                {/* Finish Line */}
+                                <div className="absolute right-0 top-0 bottom-0 w-3 z-10 opacity-80"
+                                    style={{
+                                        backgroundImage: `repeating-conic-gradient(#000 0deg 90deg, #fff 90deg 180deg)`,
+                                        backgroundSize: '4px 4px',
+                                    }}
+                                />
 
                                 {/* F1 Car */}
                                 <motion.div
                                     initial={{ left: '2%' }}
-                                    animate={startRace ? { left: `${Math.min(progress - 8, 88)}%` } : { left: '2%' }}
+                                    animate={startRace ? { left: `${Math.min(progress - 12, 85)}%` } : { left: '2%' }}
                                     transition={{ duration: 2.5, ease: "easeOut", delay: index * 0.1 }}
-                                    className="absolute top-1/2 -translate-y-1/2"
+                                    className="absolute top-1/2 -translate-y-1/2 scale-75 sm:scale-100 origin-left"
                                 >
                                     <motion.div
                                         animate={startRace ? {
@@ -293,12 +292,12 @@ export function F1RaceTrack({
                             </div>
 
                             {/* Score & Name */}
-                            <div className="w-28 text-right">
-                                <div className="text-sm font-bold text-slate-800 dark:text-white truncate">
+                            <div className="w-20 sm:w-28 text-right flex-shrink-0">
+                                <div className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white truncate">
                                     {p.name}
                                 </div>
-                                <div className="text-lg font-bold font-mono" style={{ color: color.primary }}>
-                                    {p.score.toFixed(1)} <span className="text-xs opacity-70">XP</span>
+                                <div className="text-sm sm:text-lg font-bold font-mono" style={{ color: color.primary }}>
+                                    {p.score.toFixed(1)} <span className="text-[10px] sm:text-xs opacity-70">XP</span>
                                 </div>
                             </div>
                         </div>
@@ -322,10 +321,10 @@ export function F1RaceTrack({
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: startRace ? 2.5 + index * 0.1 : 0 }}
-                                className="flex items-center gap-3 p-3 rounded-xl bg-white/50 dark:bg-white/5 border"
+                                className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl bg-white/50 dark:bg-white/5 border"
                                 style={{ borderColor: color.primary + '40' }}
                             >
-                                <div className="text-xl">{positions[index]}</div>
+                                <div className="text-lg sm:text-xl">{positions[index]}</div>
                                 <div className="flex-1 min-w-0">
                                     <div className="text-sm font-bold truncate text-slate-800 dark:text-white">{p.name}</div>
                                     <div className="text-xs font-mono" style={{ color: color.primary }}>{p.score.toFixed(1)} XP</div>
