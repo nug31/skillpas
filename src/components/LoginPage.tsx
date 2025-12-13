@@ -192,8 +192,8 @@ export function LoginPage() {
                             type="submit"
                             disabled={loading}
                             className={`w-full py-4 text-white font-bold tracking-widest uppercase rounded-xl transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${themeClear
-                                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg'
-                                    : 'bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 shadow-[0_0_20px_rgba(8,145,178,0.4)] hover:shadow-[0_0_30px_rgba(147,51,234,0.6)] border border-white/10'
+                                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg'
+                                : 'bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 shadow-[0_0_20px_rgba(8,145,178,0.4)] hover:shadow-[0_0_30px_rgba(147,51,234,0.6)] border border-white/10'
                                 }`}
                         >
                             {loading ? (
@@ -212,8 +212,15 @@ export function LoginPage() {
                 </div>
 
                 {/* Footer decorations */}
-                <div className={`mt-8 text-center text-xs ${themeClear ? 'text-slate-400' : 'text-white/20'}`}>
-                    <p>© 2024 Skill Passport. All systems operational.</p>
+                <div className={`mt-8 text-center text-xs ${themeClear ? 'text-slate-400' : 'text-white/40'}`}>
+                    <div className="flex flex-col items-center gap-1">
+                        <p className="font-semibold tracking-wide">DEVELOPED BY JSNUGROHO</p>
+                        <div className="flex gap-3 opacity-80">
+                            <span>IG: @j.s_nugroho</span>
+                            <span>•</span>
+                            <span>WA: 081316052316</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
