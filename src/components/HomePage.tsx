@@ -112,6 +112,20 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
     }
   }
 
+  const overallStats = raceData.reduce((acc, curr) => {
+    acc.totalStudents += curr.studentCount;
+    acc.totalScoreSum += (curr.averageSkor * curr.studentCount);
+    if (curr.averageSkor > acc.maxScore) {
+      acc.maxScore = curr.averageSkor;
+      acc.topJurusan = curr.jurusan.nama_jurusan;
+    }
+    return acc;
+  }, { totalStudents: 0, totalScoreSum: 0, maxScore: 0, topJurusan: '-' });
+
+  const globalAvg = overallStats.totalStudents > 0
+    ? (overallStats.totalScoreSum / overallStats.totalStudents).toFixed(1)
+    : '0';
+
   return (
     <div className="min-h-screen bg-transparent">
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
@@ -161,7 +175,9 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <div className="text-sm text-white/70">Overview</div>
-                  <div className="text-2xl font-bold">8 Jurusan • 32 Siswa aktif</div>
+                  <div className="text-2xl font-bold">
+                    {jurusanList.length} Jurusan • {overallStats.totalStudents} Siswa aktif
+                  </div>
                 </div>
                 <div className="text-sm text-white/60">Terakhir diperbarui: Hari ini</div>
               </div>
@@ -169,11 +185,11 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-3 bg-gradient-to-r from-white/5 to-transparent rounded-lg border border-white/6">
                   <div className="text-xs text-white/70">Top Jurusan</div>
-                  <div className="text-sm font-semibold mt-2">Teknik Mesin</div>
+                  <div className="text-sm font-semibold mt-2">{overallStats.topJurusan}</div>
                 </div>
                 <div className="p-3 bg-gradient-to-r from-white/5 to-transparent rounded-lg border border-white/6">
                   <div className="text-xs text-white/70">Average Skor</div>
-                  <div className="text-sm font-semibold mt-2">84.6</div>
+                  <div className="text-sm font-semibold mt-2">{globalAvg}</div>
                 </div>
               </div>
             </div>
