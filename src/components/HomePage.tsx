@@ -52,7 +52,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
           await Promise.all((data || []).map(async (j) => {
             const { data: topData, error } = await supabase
               .from('skill_siswa')
-              .select('skor, siswa(id, nama, kelas)')
+              .select('skor, siswa!inner(id, nama, kelas)')
               .eq('siswa.jurusan_id', j.id)
               .order('skor', { ascending: false })
               .limit(3);
