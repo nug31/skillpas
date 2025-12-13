@@ -101,7 +101,7 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
           <div key={student.id} className="card-glass rounded-xl p-4 flex items-center justify-between">
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
-                <div className="font-semibold text-sm text-[color:var(--text-primary)] truncate">{student.nama}</div>
+                <button onClick={() => onSelectStudent?.(student)} className="font-semibold text-sm text-[color:var(--text-primary)] truncate hover:underline text-left">{student.nama}</button>
                 {topRanks?.[student.id] && (
                   <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${topRanks[student.id] === 1 ? 'bg-yellow-400 text-black' :
                     topRanks[student.id] === 2 ? 'bg-gray-300 text-black' :
@@ -120,7 +120,17 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
             </div>
 
             <div className="ml-3">
-              {onEditScore ? <button onClick={() => { setEditingId(student.id); setEditValue(student.skor); }} className="px-3 py-1 border rounded text-sm text-[color:var(--text-muted)]">Edit</button> : <div className="w-8 h-8" />}
+              {onEditScore ? (editingId === student.id ? (
+                <div className="flex flex-col gap-2 items-end">
+                  <input type="number" min={0} max={100} value={editValue === '' ? '' : String(editValue)} onClick={(e) => e.stopPropagation()} onChange={(e) => setEditValue(Number(e.target.value))} className="w-16 px-2 py-1 border rounded text-xs text-[color:var(--text-primary)] bg-transparent" />
+                  <div className="flex gap-1">
+                    <button onClick={async (e) => { e.stopPropagation(); if (!editValue && editValue !== 0) return; try { await onEditScore(student.id, Number(editValue)); cancelEdit(); } catch (err) { console.error('Failed to save score', err); } }} className="px-2 py-1 bg-[color:var(--accent-1)] text-white rounded text-xs">OK</button>
+                    <button onClick={(e) => { e.stopPropagation(); cancelEdit(); }} className="px-2 py-1 border rounded text-xs text-[color:var(--text-muted)]">Batal</button>
+                  </div>
+                </div>
+              ) : (
+                <button onClick={(e) => { e.stopPropagation(); startEdit(student.id, student.skor); }} className="px-3 py-1 border rounded text-sm text-[color:var(--text-muted)] hover:bg-white/5">Edit</button>
+              )) : null}
             </div>
           </div>
         ))}
