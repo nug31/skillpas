@@ -137,9 +137,7 @@ export function StudentDetailModal({
           </div>
         </div>
 
-        <div className="flex-shrink-0 px-6 py-4 border-t border-white/10 [.theme-clear_&]:border-slate-200 text-right bg-slate-900 [.theme-clear_&]:bg-white">
-          <button onClick={onClose} className="px-6 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium shadow-lg hover:shadow-indigo-500/30 transition-all">Tutup</button>
-        </div>
+
       </div>
     </div>
   );
