@@ -112,49 +112,81 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
-      <div className="card-glass w-full max-w-2xl rounded-lg shadow-lg p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-[color:var(--text-primary)]">Import Siswa — CSV (nama,kelas,skor)</h3>
-          <button onClick={onClose} className="p-2 text-[color:var(--text-muted)] hover:text-[color:var(--text-primary)]"><X /></button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="card-glass w-full max-w-2xl rounded-xl shadow-2xl flex flex-col max-h-[90vh]">
+        <div className="p-6 flex-shrink-0 flex items-center justify-between border-b border-white/10">
+          <h3 className="text-lg font-bold text-[color:var(--text-primary)]">Import Siswa — CSV</h3>
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/5 text-[color:var(--text-muted)] transition-colors"><X className="w-5 h-5" /></button>
         </div>
 
-        <div className="space-y-3">
-          <div>
-            <label className="inline-flex items-center px-3 py-2 border rounded-lg bg-transparent cursor-pointer">
-              <UploadCloud className="w-4 h-4 mr-2" />
-              <span className="text-sm">Pilih file CSV</span>
-              <input type="file" accept=".csv,text/csv" onChange={handleFile} className="hidden" />
-            </label>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-[color:var(--text-muted)]">Atau tempel CSV di sini (baris: nama,kelas,skor)</label>
-            <textarea rows={4} onChange={(e) => handlePaste(e.target.value)} className="w-full mt-1 p-2 border rounded text-[color:var(--text-primary)] bg-transparent" placeholder={`Contoh:\nNama Siswa,Kelas,Skor\nBudi, X TKR 1, 78`} />
-          </div>
-
-          {preview.length > 0 && (
-            <div className="border rounded p-3 bg-transparent">
-              <div className="text-sm text-[color:var(--text-muted)] font-medium mb-2">Preview ({preview.length})</div>
-              <div className="overflow-x-auto max-h-56">
-                <table className="w-full text-sm">
-                  <thead><tr className="text-left text-xs text-[color:var(--text-muted)]"><th>Nama</th><th>Kelas</th><th>Skor</th></tr></thead>
-                  <tbody>
-                    {preview.map((r, i) => (
-                      <tr key={i} className="border-t"><td className="py-1 text-[color:var(--text-primary)]">{r.nama}</td><td className="text-[color:var(--text-muted)]">{r.kelas ?? '-'}</td><td className="text-[color:var(--text-muted)]">{r.skor ?? '-'}</td></tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+        <div className="p-6 overflow-y-auto">
+          <div className="space-y-4">
+            <div>
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/20 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <UploadCloud className="w-8 h-8 mb-3 text-[color:var(--text-muted)] group-hover:text-[color:var(--accent-1)] transition-colors" />
+                  <p className="mb-2 text-sm text-[color:var(--text-muted)]"><span className="font-semibold">Klik untuk upload</span> atau drag and drop</p>
+                  <p className="text-xs text-[color:var(--text-muted)]">File CSV (nama,kelas,skor)</p>
+                </div>
+                <input type="file" accept=".csv,text/csv" onChange={handleFile} className="hidden" />
+              </label>
             </div>
-          )}
 
-          {error && <div className="text-sm text-red-600">{error}</div>}
+            <div>
+              <label className="block text-sm font-medium text-[color:var(--text-muted)] mb-2">Atau tempel CSV di sini</label>
+              <textarea
+                rows={4}
+                onChange={(e) => handlePaste(e.target.value)}
+                className="w-full p-3 rounded-xl bg-black/20 border border-white/10 text-[color:var(--text-primary)] placeholder-white/20 focus:ring-2 focus:ring-[color:var(--accent-1)] focus:border-transparent transition-all"
+                placeholder={`Contoh format:\nNama Siswa, Kelas, Skor\nBudi Santoso, X TKR 1, 78`}
+              />
+            </div>
 
-          <div className="flex items-center justify-end gap-2">
-            <button onClick={onClose} className="px-4 py-2 border rounded text-[color:var(--text-muted)]">Batal</button>
-            <button disabled={loading || preview.length === 0} onClick={doImport} className="px-4 py-2 bg-[color:var(--accent-1)] text-white rounded disabled:opacity-60">{loading ? 'Memproses...' : 'Import'}</button>
+            {preview.length > 0 && (
+              <div className="border border-white/10 rounded-xl overflow-hidden bg-black/10">
+                <div className="px-4 py-2 bg-white/5 border-b border-white/10 text-xs font-bold text-[color:var(--text-muted)] uppercase tracking-wider">
+                  Preview ({preview.length} data)
+                </div>
+                <div className="overflow-x-auto max-h-48">
+                  <table className="w-full text-sm">
+                    <thead className="bg-white/5">
+                      <tr>
+                        <th className="px-4 py-2 text-left font-medium text-[color:var(--text-muted)]">Nama</th>
+                        <th className="px-4 py-2 text-left font-medium text-[color:var(--text-muted)]">Kelas</th>
+                        <th className="px-4 py-2 text-left font-medium text-[color:var(--text-muted)]">Skor</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/10">
+                      {preview.map((r, i) => (
+                        <tr key={i} className="hover:bg-white/5 transition-colors">
+                          <td className="px-4 py-2 text-[color:var(--text-primary)]">{r.nama}</td>
+                          <td className="px-4 py-2 text-[color:var(--text-muted)]">{r.kelas ?? '-'}</td>
+                          <td className="px-4 py-2 text-[color:var(--text-muted)]">{r.skor ?? '-'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {error && (
+              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-sm text-red-500">
+                {error}
+              </div>
+            )}
           </div>
+        </div>
+
+        <div className="p-6 pt-4 flex-shrink-0 flex items-center justify-end gap-3 border-t border-white/10 bg-white/5 backdrop-blur-sm">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg hover:bg-white/10 text-[color:var(--text-muted)] transition-colors font-medium">Batal</button>
+          <button
+            disabled={loading || preview.length === 0}
+            onClick={doImport}
+            className="px-6 py-2 bg-[color:var(--accent-1)] hover:bg-[color:var(--accent-1)]/90 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-bold shadow-lg shadow-[color:var(--accent-1)]/20 transition-all"
+          >
+            {loading ? 'Memproses...' : 'Lakukan Import'}
+          </button>
         </div>
       </div>
     </div>
