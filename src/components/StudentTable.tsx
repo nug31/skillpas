@@ -1,5 +1,5 @@
 ﻿import { useMemo, useState } from 'react';
-import { Search, ArrowUpDown, ArrowUp, ArrowDown, Download } from 'lucide-react';
+import { Search, ArrowUpDown, ArrowUp, ArrowDown, Download, Trash2 } from 'lucide-react';
 import type { StudentListItem } from '../types';
 import formatClassLabel from '../lib/formatJurusan';
 import { Badge } from './Badge';
@@ -11,13 +11,14 @@ interface StudentTableProps {
   onEditScore?: (siswaId: string, newSkor: number) => Promise<void> | void;
   topRanks?: Record<string, number>;
   onSelectStudent?: (student: StudentListItem) => void;
+  onDelete?: (student: StudentListItem) => void;
   jurusanName?: string;
 }
 
 type SortField = 'nama' | 'kelas' | 'skor';
 type SortOrder = 'asc' | 'desc';
 
-export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore, topRanks, onSelectStudent, jurusanName }: StudentTableProps) {
+export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore, topRanks, onSelectStudent, jurusanName, onDelete }: StudentTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<SortField>('skor');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
@@ -103,9 +104,9 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
                 <div className="font-semibold text-sm text-[color:var(--text-primary)] truncate">{student.nama}</div>
                 {topRanks?.[student.id] && (
                   <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${topRanks[student.id] === 1 ? 'bg-yellow-400 text-black' :
-                      topRanks[student.id] === 2 ? 'bg-gray-300 text-black' :
-                        topRanks[student.id] === 3 ? 'bg-orange-300 text-black' :
-                          'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                    topRanks[student.id] === 2 ? 'bg-gray-300 text-black' :
+                      topRanks[student.id] === 3 ? 'bg-orange-300 text-black' :
+                        'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                     }`}>
                     #{topRanks[student.id]}
                   </div>
@@ -146,9 +147,9 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
                     {topRanks?.[student.id] && (
                       <div className="ml-3 flex-shrink-0">
                         <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${topRanks[student.id] === 1 ? 'bg-yellow-400 text-black' :
-                            topRanks[student.id] === 2 ? 'bg-gray-300 text-black' :
-                              topRanks[student.id] === 3 ? 'bg-orange-300 text-black' :
-                                'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                          topRanks[student.id] === 2 ? 'bg-gray-300 text-black' :
+                            topRanks[student.id] === 3 ? 'bg-orange-300 text-black' :
+                              'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                           }`}>
                           #{topRanks[student.id]}
                         </div>
@@ -173,7 +174,22 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
                       <button onClick={cancelEdit} className="px-3 py-1 border rounded text-sm text-[color:var(--text-muted)]">Batal</button>
                     </div>
                   ) : (
-                    <button onClick={() => startEdit(student.id, student.skor)} className="px-3 py-1 border rounded text-sm hover:bg-white/5 text-[color:var(--text-muted)]">Edit</button>
+                    <div className="flex items-center gap-2 justify-end">
+                      <button onClick={() => startEdit(student.id, student.skor)} className="px-3 py-1 border rounded text-sm hover:bg-white/5 text-[color:var(--text-muted)]">Edit Skor</button>
+                      {onDelete && (
+                        <button
+                          onClick={() => {
+                            if (window.confirm(`Yakin ingin menghapus data siswa "${student.nama}"? Data yang dihapus tidak bisa dikembalikan.`)) {
+                              onDelete(student);
+                            }
+                          }}
+                          className="p-1.5 border rounded hover:bg-red-500/10 text-red-500 border-red-500/30 transition-colors"
+                          title="Hapus Siswa"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
                   )) : null}
                 </td>
               </tr>

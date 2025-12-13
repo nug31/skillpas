@@ -314,13 +314,56 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
                 onExportExcel={handleExportExcel}
                 onExportPDF={handleExportPDF}
                 onEditScore={isTeacher ? handleEditScore : undefined}
+                onDelete={isTeacher ? async (s) => {
+                  try {
+                    setLoading(true);
+                    // Delete logic
+                    if (isMockMode) {
+                      const idx = mockData.mockStudents.findIndex(ms => ms.id === s.id);
+                      if (idx >= 0) mockData.mockStudents.splice(idx, 1);
+                    } else {
+                      const { error } = await supabase.from('siswa').delete().eq('id', s.id);
+                      if (error) throw error;
+                    }
+                    await loadData();
+                  } catch (err) {
+                    console.error('Delete failed', err);
+                    alert('Gagal menghapus siswa');
+                    setLoading(false);
+                  }
+                } : undefined}
                 topRanks={topRanks}
                 onSelectStudent={(s) => setSelectedStudent(s)}
                 jurusanName={jurusan.nama_jurusan}
               />
 
               {selectedStudent && (
-                <StudentDetailModal student={selectedStudent} levels={levels} onClose={() => setSelectedStudent(null)} jurusanName={jurusan.nama_jurusan} />
+                <StudentDetailModal
+                  student={selectedStudent}
+                  levels={levels}
+                  onClose={() => setSelectedStudent(null)}
+                  jurusanName={jurusan.nama_jurusan}
+                  onUpdate={isTeacher ? async (id, nama, kelas) => {
+                    try {
+                      setLoading(true);
+                      if (isMockMode) {
+                        const s = mockData.mockStudents.find(ms => ms.id === id);
+                        if (s) { s.nama = nama; s.kelas = kelas; }
+                      } else {
+                        const { error } = await supabase.from('siswa').update({ nama, kelas }).eq('id', id);
+                        if (error) throw error;
+                      }
+                      await loadData();
+                      // Update selected student in local state to reflect changes immediately in modal
+                      setSelectedStudent(prev => prev ? ({ ...prev, nama, kelas }) : null);
+                    } catch (err) {
+                      console.error('Update failed', err);
+                      throw err;
+                    } finally {
+                      setLoading(false);
+                    }
+                  } : undefined}
+                />
               )}
 
               {showImport && (
