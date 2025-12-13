@@ -112,7 +112,7 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 pb-32">
       <div className="card-glass w-full max-w-2xl rounded-xl shadow-2xl flex flex-col max-h-[85vh] border border-white/20">
         <div className="p-6 flex-shrink-0 flex items-center justify-between border-b border-white/10">
           <h3 className="text-lg font-bold text-[color:var(--text-primary)]">Import Siswa — CSV</h3>
