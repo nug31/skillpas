@@ -153,6 +153,10 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
       const level = levels.find((l) => newSkor >= l.min_skor && newSkor <= l.max_skor);
       const levelId = level ? level.id : levels[0]?.id;
 
+      // Delete existing score first to ensure only one active score per student
+      const { error: delError } = await supabase.from('skill_siswa').delete().eq('siswa_id', siswaId);
+      if (delError) throw delError;
+
       const { error } = await supabase.from('skill_siswa').insert({ siswa_id: siswaId, level_id: levelId, skor: newSkor });
       if (error) throw error;
 
