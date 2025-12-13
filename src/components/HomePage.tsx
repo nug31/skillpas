@@ -84,8 +84,15 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
           }).filter(Boolean) as Array<{ jurusan: Jurusan; averageSkor: number; studentCount: number }>;
           setRaceData(raceList);
         } else {
-          // For real database, calculate average scores
+          // For real database, calculate average scores and student counts
           const raceList = await Promise.all((data || []).map(async (j) => {
+            // Count total enrolled students
+            const { count: enrolledCount } = await supabase
+              .from('siswa')
+              .select('*', { count: 'exact', head: true })
+              .eq('jurusan_id', j.id);
+
+            // Get scores for average calculation
             const { data: skillData } = await supabase
               .from('skill_siswa')
               .select('skor, siswa(jurusan_id)')
@@ -97,7 +104,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
             return {
               jurusan: j,
               averageSkor,
-              studentCount: scores.length,
+              studentCount: enrolledCount || 0,
             };
           }));
           setRaceData(raceList);
