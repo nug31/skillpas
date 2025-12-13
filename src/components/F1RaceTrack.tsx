@@ -296,6 +296,9 @@ export function F1RaceTrack({
                                 <div className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white truncate">
                                     {p.name}
                                 </div>
+                                <div className="text-[10px] sm:text-xs text-slate-500 dark:text-white/60 truncate font-medium">
+                                    {p.label}
+                                </div>
                                 <div className="text-sm sm:text-lg font-bold font-mono" style={{ color: color.primary }}>
                                     {p.score.toFixed(1)} <span className="text-[10px] sm:text-xs opacity-70">XP</span>
                                 </div>
