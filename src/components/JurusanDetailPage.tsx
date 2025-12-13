@@ -319,8 +319,11 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
                     setLoading(true);
                     // Delete logic
                     if (isMockMode) {
-                      const idx = mockData.mockStudents.findIndex(ms => ms.id === s.id);
-                      if (idx >= 0) mockData.mockStudents.splice(idx, 1);
+                      const idx = mockData.mockSiswa.findIndex(ms => ms.id === s.id);
+                      if (idx >= 0) mockData.mockSiswa.splice(idx, 1);
+                      // Also delete related skill records
+                      const sIdx = mockData.mockSkillSiswa.findIndex(ss => ss.siswa_id === s.id);
+                      if (sIdx >= 0) mockData.mockSkillSiswa.splice(sIdx, 1);
                     } else {
                       const { error } = await supabase.from('siswa').delete().eq('id', s.id);
                       if (error) throw error;
@@ -347,7 +350,7 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
                     try {
                       setLoading(true);
                       if (isMockMode) {
-                        const s = mockData.mockStudents.find(ms => ms.id === id);
+                        const s = mockData.mockSiswa.find(ms => ms.id === id);
                         if (s) { s.nama = nama; s.kelas = kelas; }
                       } else {
                         const { error } = await supabase.from('siswa').update({ nama, kelas }).eq('id', id);
