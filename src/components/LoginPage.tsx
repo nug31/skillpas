@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { LogIn, User, GraduationCap, Sun, Moon } from 'lucide-react';
+import { LogIn, User, GraduationCap, Sun, Moon, Instagram, Phone } from 'lucide-react';
 import smkLogo from '../assets/smk-logo.png';
 
 export function LoginPage() {
@@ -215,10 +215,26 @@ export function LoginPage() {
                 <div className={`mt-8 text-center text-xs ${themeClear ? 'text-slate-400' : 'text-white/40'}`}>
                     <div className="flex flex-col items-center gap-1">
                         <p className="font-semibold tracking-wide">DEVELOPED BY JSNUGROHO</p>
-                        <div className="flex gap-3 opacity-80">
-                            <span>IG: @j.s_nugroho</span>
-                            <span>•</span>
-                            <span>WA: 081316052316</span>
+                        <div className="flex gap-4 opacity-80 mt-1">
+                            <a
+                                href="https://instagram.com/j.s_nugroho"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="flex items-center gap-1.5 hover:text-pink-400 transition-colors group"
+                            >
+                                <Instagram className="w-4 h-4" />
+                                <span className="text-[10px] group-hover:underline">@j.s_nugroho</span>
+                            </a>
+                            <span className="opacity-50">•</span>
+                            <a
+                                href="https://wa.me/6281316052316"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="flex items-center gap-1.5 hover:text-green-400 transition-colors group"
+                            >
+                                <Phone className="w-4 h-4" />
+                                <span className="text-[10px] group-hover:underline">0813-1605-2316</span>
+                            </a>
                         </div>
                     </div>
                 </div>
