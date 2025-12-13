@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { X, UploadCloud } from 'lucide-react';
-// no runtime types needed here
+import { X, UploadCloud, FileSpreadsheet } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import mockData from '../mocks/mockData';
 import { supabase, isMockMode } from '../lib/supabase';
 
@@ -9,26 +9,7 @@ interface ParsedRow { nama: string; kelas?: string; skor?: number }
 interface ImportStudentsProps {
   jurusanId: string;
   onClose: () => void;
-  onImported: () => void; // parent should refresh
-}
-
-function parseCSV(text: string): ParsedRow[] {
-  const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-  if (!lines.length) return [];
-
-  // detect header
-  const first = lines[0];
-  const hasHeader = /nama|kelas|skor/i.test(first);
-  const rows = (hasHeader ? lines.slice(1) : lines).map((line) => {
-    const cols = line.split(',').map((c) => c.trim());
-    // flexible parsing: 1 column -> nama, 2 columns -> nama,kelas, 3 -> nama,kelas,skor
-    const nama = cols[0] ?? '';
-    const kelas = cols[1] ?? undefined;
-    const skor = cols[2] ? Number(cols[2]) : undefined;
-    return { nama, kelas, skor } as ParsedRow;
-  }).filter(r => r.nama);
-
-  return rows;
+  onImported: () => void;
 }
 
 export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudentsProps) {
@@ -36,19 +17,64 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
   const [preview, setPreview] = useState<ParsedRow[]>([]);
   const [loading, setLoading] = useState(false);
 
+  function normalizeRow(row: any): ParsedRow | null {
+    if (!row || typeof row !== 'object') return null;
+    const keys = Object.keys(row);
+    const nameKey = keys.find(k => k.toLowerCase().includes('nama'));
+    // If no name column, skip
+    if (!nameKey) return null;
+
+    const classKey = keys.find(k => k.toLowerCase().includes('kelas') || k.toLowerCase().includes('class'));
+    const scoreKey = keys.find(k => k.toLowerCase().includes('skor') || k.toLowerCase().includes('nilai') || k.toLowerCase().includes('score'));
+
+    return {
+      nama: row[nameKey],
+      kelas: classKey ? row[classKey] : undefined,
+      skor: scoreKey ? Number(row[scoreKey]) : undefined
+    };
+  }
+
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     setError(null);
     setPreview([]);
     const f = e.target.files?.[0];
     if (!f) return;
-    const text = await f.text();
-    const parsed = parseCSV(text);
-    setPreview(parsed);
+
+    try {
+      const buffer = await f.arrayBuffer();
+      const wb = XLSX.read(buffer, { type: 'array' });
+      const mainSheet = wb.Sheets[wb.SheetNames[0]];
+      const jsonData = XLSX.utils.sheet_to_json(mainSheet);
+
+      const parsed = jsonData.map(normalizeRow).filter((r): r is ParsedRow => r !== null);
+      if (parsed.length === 0) {
+        setError("Tidak dapat menemukan kolom 'Nama' di file Excel/CSV.");
+      } else {
+        setPreview(parsed);
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Gagal membaca file. Pastikan format Excel valid.");
+    }
   }
 
   async function handlePaste(text: string) {
     setError(null);
-    setPreview(parseCSV(text));
+    try {
+      const wb = XLSX.read(text, { type: 'string' });
+      const mainSheet = wb.Sheets[wb.SheetNames[0]];
+      const jsonData = XLSX.utils.sheet_to_json(mainSheet);
+      const parsed = jsonData.map(normalizeRow).filter((r): r is ParsedRow => r !== null);
+      if (parsed.length === 0 && text.trim().length > 0) {
+        // Fallback for simple CSV without headers if XLSX failed to pick it up?
+        // XLSX assumes headers by default. If pasted text is "Budi, X 1, 90" without header, it uses first row as header.
+        // Fix: assume headerless if keys look like '__EMPTY' ??
+        // Better: Provide example "Nama,Kelas,Skor" to user so they include headers.
+      }
+      setPreview(parsed);
+    } catch (err) {
+      // ignore empty
+    }
   }
 
   async function doImport() {
@@ -63,40 +89,32 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
 
     try {
       if (useMock) {
-        // push into mockData.mockSiswa
         const now = new Date().toISOString();
         for (const row of preview) {
           const id = `s-${jurusanId}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
           mockData.mockSiswa.push({ id, nama: row.nama, kelas: row.kelas ?? 'X', jurusan_id: jurusanId, created_at: now });
-          // optional: create a skill record if skor provided
           if (typeof row.skor === 'number') {
-            // narrow skor to a number and compute a level id safely
             const skor = row.skor;
             const levelId = mockData.mockLevels.find((l) => skor >= l.min_skor && skor <= l.max_skor)?.id ?? mockData.mockLevels[0].id;
             mockData.mockSkillSiswa.push({ id: `ss-${id}`, siswa_id: id, level_id: levelId, skor, tanggal_pencapaian: now, created_at: now, updated_at: now });
           }
         }
       } else {
-        // Insert siswa rows into supabase
         const rows = preview.map((r) => ({ nama: r.nama, kelas: r.kelas ?? 'X', jurusan_id: jurusanId }));
         const { error: insertErr } = await supabase.from('siswa').insert(rows);
         if (insertErr) throw insertErr;
 
-        // If rows included skor, attempt to insert skill_siswa records for those names
-        // only keep rows that actually include a numeric skor
         const withSkor = preview.filter((p) => typeof p.skor === 'number');
         if (withSkor.length) {
-          // fetch the inserted siswa IDs by name+jurusan (best-effort)
           for (const p of withSkor) {
-            const { data: sdata, error: sErr } = await supabase.from('siswa').select('id').eq('nama', p.nama).eq('jurusan_id', jurusanId).limit(1);
-            if (sErr || !sdata || sdata.length === 0) continue;
-            // figure out level id
+            const { data: sdata } = await supabase.from('siswa').select('id').eq('nama', p.nama).eq('jurusan_id', jurusanId).limit(1);
+            if (!sdata || sdata.length === 0) continue;
             const { data: levels } = await supabase.from('level_skill').select('*');
-            // p.skor is guaranteed present here but let's make a local const to convince the typechecker
             const skor = p.skor as number;
             const level = levels?.find((l: any) => skor >= l.min_skor && skor <= l.max_skor);
-            const levelId = level?.id;
-            await supabase.from('skill_siswa').insert({ siswa_id: sdata[0].id, level_id: levelId, skor: p.skor });
+            if (level) {
+              await supabase.from('skill_siswa').insert({ siswa_id: sdata[0].id, level_id: level.id, skor });
+            }
           }
         }
       }
@@ -115,7 +133,7 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 pb-32">
       <div className="card-glass w-full max-w-2xl rounded-xl shadow-2xl flex flex-col max-h-[85vh] border border-white/20">
         <div className="p-6 flex-shrink-0 flex items-center justify-between border-b border-white/10">
-          <h3 className="text-lg font-bold text-[color:var(--text-primary)]">Import Siswa — CSV</h3>
+          <h3 className="text-lg font-bold text-[color:var(--text-primary)]">Import Siswa (Excel / CSV)</h3>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/5 text-[color:var(--text-muted)] transition-colors"><X className="w-5 h-5" /></button>
         </div>
 
@@ -124,21 +142,21 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
             <div>
               <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/20 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <UploadCloud className="w-8 h-8 mb-3 text-[color:var(--text-muted)] group-hover:text-[color:var(--accent-1)] transition-colors" />
-                  <p className="mb-2 text-sm text-[color:var(--text-muted)]"><span className="font-semibold">Klik untuk upload</span> atau drag and drop</p>
-                  <p className="text-xs text-[color:var(--text-muted)]">File CSV (nama,kelas,skor)</p>
+                  <FileSpreadsheet className="w-8 h-8 mb-3 text-[color:var(--text-muted)] group-hover:text-[color:var(--accent-1)] transition-colors" />
+                  <p className="mb-2 text-sm text-[color:var(--text-muted)]"><span className="font-semibold">Klik untuk upload Excel/CSV</span></p>
+                  <p className="text-xs text-[color:var(--text-muted)]">Format: .xlsx, .xls, .csv</p>
                 </div>
-                <input type="file" accept=".csv,text/csv" onChange={handleFile} className="hidden" />
+                <input type="file" accept=".csv,text/csv,.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" onChange={handleFile} className="hidden" />
               </label>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[color:var(--text-muted)] mb-2">Atau tempel CSV di sini</label>
+              <label className="block text-sm font-medium text-[color:var(--text-muted)] mb-2">Atau tempel data (Header: Nama, Kelas, Skor)</label>
               <textarea
                 rows={4}
                 onChange={(e) => handlePaste(e.target.value)}
                 className="w-full p-3 rounded-xl bg-black/20 border border-white/10 text-[color:var(--text-primary)] placeholder-white/20 focus:ring-2 focus:ring-[color:var(--accent-1)] focus:border-transparent transition-all"
-                placeholder={`Contoh format:\nNama Siswa, Kelas, Skor\nBudi Santoso, X TKR 1, 78`}
+                placeholder={`Nama, Kelas, Skor\nBudi Santoso, X TKR 1, 78`}
               />
             </div>
 
