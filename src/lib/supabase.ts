@@ -13,6 +13,9 @@ if (!useMock && (!supabaseUrl || !supabaseAnonKey)) {
 
 // Export a single `supabase` binding — either a thin stub in mock mode or the real client.
 // This keeps the module shape consistent and avoids invalid `export` usage inside blocks.
-export const supabase = useMock
+// Export the final mode so components know if we are using mock data
+export const isMockMode = useMock;
+
+export const supabase = isMockMode
   ? ({} as any)
   : createClient<Database>(supabaseUrl!, supabaseAnonKey!);

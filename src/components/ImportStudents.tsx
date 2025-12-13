@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { X, UploadCloud } from 'lucide-react';
 // no runtime types needed here
 import mockData from '../mocks/mockData';
-import { supabase } from '../lib/supabase';
+import { supabase, isMockMode } from '../lib/supabase';
 
 interface ParsedRow { nama: string; kelas?: string; skor?: number }
 
@@ -59,14 +59,14 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
 
     setError(null);
     setLoading(true);
-    const useMock = import.meta.env.VITE_USE_MOCK === 'true';
+    const useMock = isMockMode;
 
     try {
       if (useMock) {
         // push into mockData.mockSiswa
         const now = new Date().toISOString();
         for (const row of preview) {
-          const id = `s-${jurusanId}-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
+          const id = `s-${jurusanId}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
           mockData.mockSiswa.push({ id, nama: row.nama, kelas: row.kelas ?? 'X', jurusan_id: jurusanId, created_at: now });
           // optional: create a skill record if skor provided
           if (typeof row.skor === 'number') {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { GraduationCap } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
 import type { Jurusan } from '../types';
 import { JurusanCard } from './JurusanCard';
@@ -19,7 +19,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
   const [loading, setLoading] = useState(true);
   const [triggerRace, setTriggerRace] = useState(0);
 
-  const useMock = import.meta.env.VITE_USE_MOCK === 'true';
+  const useMock = isMockMode;
 
   useEffect(() => {
     loadJurusan();

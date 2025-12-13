@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
 import type { Jurusan, LevelSkill, StudentListItem } from '../types';
 import { LevelTable } from './LevelTable';
@@ -37,7 +37,7 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
     try {
       setLoading(true);
 
-      const useMock = import.meta.env.VITE_USE_MOCK === 'true';
+      const useMock = isMockMode;
 
       if (useMock) {
         // Read from mockData (merged per-jurusan overrides)
@@ -118,7 +118,7 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
   }
 
   async function handleEditScore(siswaId: string, newSkor: number) {
-    const useMock = import.meta.env.VITE_USE_MOCK === 'true';
+    const useMock = isMockMode;
     try {
       setLoading(true);
 
@@ -167,7 +167,7 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
   }
 
   async function handleUpdateHasil(levelId: string, newHasil: string) {
-    const useMock = import.meta.env.VITE_USE_MOCK === 'true';
+    const useMock = isMockMode;
     try {
       setLoading(true);
 
