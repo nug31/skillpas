@@ -49,7 +49,7 @@ export function PassportStamp({ userName, onComplete }: PassportStampProps) {
 
             <div className="relative flex flex-col items-center z-10 scale-110">
                 {/* Passport Card Background - Holographic Glass Style */}
-                <div className="relative w-80 h-96 rounded-3xl border border-white/10 [.theme-clear_&]:border-white/40 shadow-[0_0_40px_rgba(0,0,0,0.5)] [.theme-clear_&]:shadow-xl backdrop-blur-2xl overflow-hidden bg-white/5 [.theme-clear_&]:bg-white/60">
+                <div className="relative w-80 min-h-[480px] rounded-3xl border border-white/10 [.theme-clear_&]:border-white/40 shadow-[0_0_40px_rgba(0,0,0,0.5)] [.theme-clear_&]:shadow-xl backdrop-blur-2xl overflow-hidden bg-white/5 [.theme-clear_&]:bg-white/60 pb-8">
 
                     {/* Inner sheen/gradient */}
                     <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 [.theme-clear_&]:opacity-50 pointer-events-none" />
@@ -80,7 +80,7 @@ export function PassportStamp({ userName, onComplete }: PassportStampProps) {
                         </p>
 
                         {/* Stamp Area */}
-                        <div className="absolute bottom-6 w-full flex justify-center">
+                        <div className="mt-8 w-full flex justify-center relative z-20">
                             {/* Stamp Animation */}
                             <div
                                 className={`relative flex items-center justify-center transition-all duration-500 ${showStamp
