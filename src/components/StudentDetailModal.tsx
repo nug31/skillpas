@@ -40,11 +40,11 @@ export function StudentDetailModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-10">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-4 sm:py-6">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
 
-      <div className="relative z-10 w-full max-w-xl sm:max-w-2xl md:max-w-3xl bg-slate-900 [.theme-clear_&]:bg-white border border-white/20 [.theme-clear_&]:border-slate-200 rounded-2xl shadow-2xl overflow-hidden max-h-[88vh] overflow-y-auto">
-        <div className="flex items-start justify-between px-6 py-4 border-b">
+      <div className="relative z-10 w-full max-w-xl sm:max-w-2xl md:max-w-3xl bg-slate-900 [.theme-clear_&]:bg-white border border-white/20 [.theme-clear_&]:border-slate-200 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="flex-shrink-0 flex items-start justify-between px-6 py-4 border-b border-white/10 [.theme-clear_&]:border-slate-200">
           <div className="flex-1 mr-4">
             {isEditing ? (
               <div className="space-y-2">
@@ -95,7 +95,7 @@ export function StudentDetailModal({
           </div>
         </div>
 
-        <div className="px-4 sm:px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* ... keeping existing content ... */}
 
           <div>
@@ -137,7 +137,7 @@ export function StudentDetailModal({
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t text-right">
+        <div className="flex-shrink-0 px-6 py-4 border-t border-white/10 [.theme-clear_&]:border-slate-200 text-right bg-slate-900 [.theme-clear_&]:bg-white">
           <button onClick={onClose} className="px-6 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium shadow-lg hover:shadow-indigo-500/30 transition-all">Tutup</button>
         </div>
       </div>
