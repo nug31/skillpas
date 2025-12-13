@@ -82,7 +82,10 @@ export function StudentRace({ students, jurusanName }: StudentRaceProps) {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
                     >
-                        <F1RaceTrack participants={participants} title={`🏎️ Race: ${jurusanName}`} subtitle="Student Championship" />
+                        <F1RaceTrack participants={participants.slice(0, 10)} title={`🏎️ Race: ${jurusanName}`} subtitle="Student Championship (Top 10)" />
+                        <div className="text-center mt-4 text-sm text-slate-500 dark:text-white/60">
+                            Showing Top 10 racers. Switch to <b>Leaderboard</b> to see all {participants.length} students.
+                        </div>
                     </motion.div>
                 )}
 
