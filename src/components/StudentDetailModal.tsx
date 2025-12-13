@@ -90,7 +90,7 @@ export function StudentDetailModal({
                 </button>
               </>
             ) : (
-              <button onClick={onClose} className="p-2 rounded hover:bg-white/5 text-[color:var(--text-muted)]"><X className="w-4 h-4" /></button>
+              <button onClick={onClose} className="p-2 rounded hover:bg-white/10 text-white/70 hover:text-red-400 transition-colors [.theme-clear_&]:text-slate-500 [.theme-clear_&]:hover:text-red-500"><X className="w-5 h-5" /></button>
             )}
           </div>
         </div>
@@ -138,7 +138,7 @@ export function StudentDetailModal({
         </div>
 
         <div className="px-6 py-4 border-t text-right">
-          <button onClick={onClose} className="px-4 py-2 rounded bg-white/5 hover:bg-white/10 text-sm text-[color:var(--text-primary)]">Tutup</button>
+          <button onClick={onClose} className="px-6 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium shadow-lg hover:shadow-indigo-500/30 transition-all">Tutup</button>
         </div>
       </div>
     </div>
