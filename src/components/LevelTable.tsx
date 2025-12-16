@@ -1,63 +1,148 @@
 import { useState } from 'react';
+import { Plus, Trash2 } from 'lucide-react';
 import type { LevelSkill } from '../types';
 import { Badge } from './Badge';
 
-function LevelHasilCell({
+function LevelCriteriaCell({
   level,
   allowEdit,
   onUpdate,
 }: {
   level: LevelSkill;
   allowEdit: boolean;
-  onUpdate?: (levelId: string, newHasil: string) => Promise<void> | void;
+  onUpdate?: (levelId: string, newCriteria: string[]) => Promise<void> | void;
 }) {
   const [editing, setEditing] = useState(false);
-  const [value, setValue] = useState(level.hasil_belajar || '');
+  // Ensure criteria is always an array
+  const [items, setItems] = useState<string[]>(
+    Array.isArray(level.criteria) && level.criteria.length > 0
+      ? level.criteria
+      : (level.hasil_belajar ? [level.hasil_belajar] : [])
+  );
   const [loading, setLoading] = useState(false);
 
   async function save() {
     if (!onUpdate) return;
     try {
       setLoading(true);
-      await onUpdate(level.id, value);
+      await onUpdate(level.id, items.filter((i: string) => i.trim() !== '')); // Filter empty strings
       setEditing(false);
     } catch (err) {
-      console.error('Failed to update hasil_belajar', err);
+      console.error('Failed to update criteria', err);
     } finally {
       setLoading(false);
     }
   }
 
-  return allowEdit ? (
-    <div className="max-w-md">
-      {editing ? (
-        <div className="flex flex-col gap-2">
-          <textarea value={value} onChange={(e) => setValue(e.target.value)} rows={3} className="w-full p-2 border rounded text-gray-900" />
-          <div className="flex justify-end gap-2">
-            <button className="px-3 py-1 border border-white/30 rounded text-white" onClick={() => { setEditing(false); setValue(level.hasil_belajar || ''); }} disabled={loading}>Batal</button>
-            <button className="px-3 py-1 bg-blue-600 text-white rounded" onClick={save} disabled={loading}>{loading ? 'Menyimpan...' : 'Simpan'}</button>
-          </div>
+  function handleAddItem() {
+    setItems([...items, '']);
+  }
+
+  function handleItemChange(index: number, val: string) {
+    const newItems = [...items];
+    newItems[index] = val;
+    setItems(newItems);
+  }
+
+  function handleDeleteItem(index: number) {
+    const newItems = [...items];
+    newItems.splice(index, 1);
+    setItems(newItems);
+  }
+
+  // Display mode: render list
+  const displayItems = Array.isArray(level.criteria) && level.criteria.length > 0
+    ? level.criteria
+    : (level.hasil_belajar ? [level.hasil_belajar] : []);
+
+  if (allowEdit && editing) {
+    return (
+      <div className="max-w-md w-full">
+        <div className="flex flex-col gap-2 mb-3">
+          {items.map((item: string, idx: number) => (
+            <div key={idx} className="flex items-start gap-2">
+              <textarea
+                value={item}
+                onChange={(e) => handleItemChange(idx, e.target.value)}
+                rows={2}
+                className="flex-1 p-2 bg-black/20 border border-white/10 rounded text-sm text-[color:var(--text-primary)] focus:ring-1 focus:ring-[color:var(--accent-1)]"
+                placeholder="Kriteria..."
+              />
+              <button
+                onClick={() => handleDeleteItem(idx)}
+                className="p-1.5 text-red-400 hover:bg-red-400/10 rounded"
+                title="Hapus kriteria"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+          <button
+            onClick={handleAddItem}
+            className="self-start flex items-center gap-1 px-2 py-1 text-xs text-[color:var(--accent-1)] hover:underline"
+          >
+            <Plus className="w-3 h-3" /> Tambah Kriteria
+          </button>
         </div>
-      ) : (
-        <div className="flex items-start justify-between gap-3">
-          <div className="text-sm text-white max-w-md whitespace-pre-wrap">{level.hasil_belajar}</div>
-          <button className="px-2 py-1 text-sm text-white border border-white/30 rounded hover:bg-white/10" onClick={() => setEditing(true)}>Edit</button>
+        <div className="flex justify-end gap-2">
+          <button
+            className="px-3 py-1 border border-white/20 rounded text-xs text-[color:var(--text-muted)] hover:bg-white/5"
+            onClick={() => {
+              setEditing(false);
+              setItems(displayItems);
+            }}
+            disabled={loading}
+          >
+            Batal
+          </button>
+          <button
+            className="px-3 py-1 bg-[color:var(--accent-1)] text-white rounded text-xs hover:bg-[color:var(--accent-1)]/80"
+            onClick={save}
+            disabled={loading}
+          >
+            {loading ? 'Menyimpan...' : 'Simpan'}
+          </button>
         </div>
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-md group">
+      <div className="flex items-start justify-between gap-3">
+        <ul className="list-disc list-outside ml-4 space-y-1 text-sm text-[color:var(--text-primary)]">
+          {displayItems.length === 0 ? (
+            <li className="text-[color:var(--text-muted)] italic">Belum ada kriteria</li>
+          ) : (
+            displayItems.map((c, i) => (
+              <li key={i}>{c}</li>
+            ))
+          )}
+        </ul>
+        {allowEdit && (
+          <button
+            className="opacity-0 group-hover:opacity-100 transition-opacity px-2 py-1 text-xs text-[color:var(--accent-1)] border border-[color:var(--accent-1)]/30 rounded hover:bg-[color:var(--accent-1)]/10"
+            onClick={() => {
+              setItems(displayItems);
+              setEditing(true);
+            }}
+          >
+            Edit
+          </button>
+        )}
+      </div>
     </div>
-  ) : (
-    <div className="text-sm text-white max-w-md whitespace-pre-wrap">{level.hasil_belajar}</div>
   );
 }
 
 interface LevelTableProps {
   levels: LevelSkill[];
   jurusanId?: string; // optional - used when editing per-jurusan descriptions
-  onUpdateHasil?: (levelId: string, newHasil: string) => Promise<void> | void;
+  onUpdateCriteria?: (levelId: string, criteria: string[]) => Promise<void> | void; // Changed from onUpdateHasil to onUpdateCriteria
   isTeacher?: boolean; // role-based access control
 }
 
-export function LevelTable({ levels, jurusanId, onUpdateHasil, isTeacher = false }: LevelTableProps) {
+export function LevelTable({ levels, jurusanId, onUpdateCriteria, isTeacher = false }: LevelTableProps) {
   return (
     <div className="card-glass rounded-xl shadow-sm overflow-hidden">
       <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700">
@@ -75,9 +160,20 @@ export function LevelTable({ levels, jurusanId, onUpdateHasil, isTeacher = false
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
                   <div className="font-semibold text-sm text-[color:var(--text-primary)] truncate">{level.nama_level}</div>
-                  <div className="text-xs text-[color:var(--text-muted)]">{level.min_skor} - {level.max_skor}</div>
+                  {isTeacher && (
+                    <div className="text-xs text-[color:var(--text-muted)]">{level.min_skor} - {level.max_skor}</div>
+                  )}
                 </div>
-                <div className="text-sm text-[color:var(--text-muted)] mt-2 whitespace-pre-wrap">{level.hasil_belajar}</div>
+
+                <div className="mt-3">
+                  <div className="text-xs font-semibold text-[color:var(--text-muted)] mb-1">Kriteria:</div>
+                  <LevelCriteriaCell
+                    level={level}
+                    allowEdit={isTeacher && !!jurusanId && !!onUpdateCriteria}
+                    onUpdate={onUpdateCriteria}
+                  />
+                </div>
+
                 <div className="text-xs text-[color:var(--text-muted)] mt-2">Soft skills: {level.soft_skill}</div>
               </div>
             </div>
@@ -95,11 +191,13 @@ export function LevelTable({ levels, jurusanId, onUpdateHasil, isTeacher = false
               <th className="px-6 py-3 text-left text-xs font-semibold text-[color:var(--text-primary)] uppercase tracking-wider">
                 Badge
               </th>
+              {isTeacher && (
+                <th className="px-6 py-3 text-left text-xs font-semibold text-[color:var(--text-primary)] uppercase tracking-wider">
+                  Skor Range
+                </th>
+              )}
               <th className="px-6 py-3 text-left text-xs font-semibold text-[color:var(--text-primary)] uppercase tracking-wider">
-                Skor Range
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[color:var(--text-primary)] uppercase tracking-wider">
-                Hasil Belajar
+                Kriteria Kompetensi
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-[color:var(--text-primary)] uppercase tracking-wider">
                 Soft Skills
@@ -115,16 +213,18 @@ export function LevelTable({ levels, jurusanId, onUpdateHasil, isTeacher = false
                 <td className="px-6 py-4 whitespace-nowrap">
                   <Badge name={level.badge_name} color={level.badge_color} size="sm" />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-[color:var(--text-primary)] font-medium">
-                    {level.min_skor} - {level.max_skor}
-                  </div>
-                </td>
+                {isTeacher && (
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-[color:var(--text-primary)] font-medium">
+                      {level.min_skor} - {level.max_skor}
+                    </div>
+                  </td>
+                )}
                 <td className="px-6 py-4">
-                  <LevelHasilCell
+                  <LevelCriteriaCell
                     level={level}
-                    allowEdit={isTeacher && !!jurusanId && !!onUpdateHasil}
-                    onUpdate={onUpdateHasil}
+                    allowEdit={isTeacher && !!jurusanId && !!onUpdateCriteria}
+                    onUpdate={onUpdateCriteria}
                   />
                 </td>
                 <td className="px-6 py-4">

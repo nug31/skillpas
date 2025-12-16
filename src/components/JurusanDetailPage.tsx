@@ -15,9 +15,10 @@ import { useAuth } from '../contexts/AuthContext';
 interface JurusanDetailPageProps {
   jurusan: Jurusan;
   onBack: () => void;
+  classFilter?: string;
 }
 
-export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
+export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetailPageProps) {
   const { isTeacher } = useAuth();
   const [levels, setLevels] = useState<LevelSkill[]>([]);
   const [students, setStudents] = useState<StudentListItem[]>([]);
@@ -61,10 +62,26 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
 
       // ensure the Supabase result is treated as LevelSkill[] so the typechecker is happy
       const levelsData = (levelsResult.data || []) as LevelSkill[];
-      setLevels(levelsData);
+
+      // Parse criteria from hasil_belajar if it looks like JSON
+      const parsedLevels = levelsData.map(l => {
+        let criteria: string[] = [];
+        try {
+          if (l.hasil_belajar && l.hasil_belajar.trim().startsWith('[')) {
+            criteria = JSON.parse(l.hasil_belajar);
+          } else if (l.hasil_belajar) {
+            criteria = [l.hasil_belajar];
+          }
+        } catch (e) {
+          criteria = [l.hasil_belajar];
+        }
+        return { ...l, criteria };
+      });
+
+      setLevels(parsedLevels);
 
       const levelsMap = new Map(
-        levelsData.map((level: LevelSkill) => [level.id, level])
+        parsedLevels.map((level: LevelSkill) => [level.id, level])
       );
 
       const studentList: StudentListItem[] = (studentsResult.data || [])
@@ -170,7 +187,7 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
     }
   }
 
-  async function handleUpdateHasil(levelId: string, newHasil: string) {
+  async function handleUpdateCriteria(levelId: string, criteria: string[]) {
     const useMock = isMockMode;
     try {
       setLoading(true);
@@ -179,9 +196,15 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
         // find existing override
         const idx = mockData.mockLevelOverrides.findIndex((o) => o.jurusan_id === jurusan.id && o.level_id === levelId);
         if (idx >= 0) {
-          mockData.mockLevelOverrides[idx].hasil_belajar = newHasil;
+          mockData.mockLevelOverrides[idx].criteria = criteria;
+          mockData.mockLevelOverrides[idx].hasil_belajar = criteria[0] || ''; // Fallback for legacy
         } else {
-          mockData.mockLevelOverrides.push({ jurusan_id: jurusan.id, level_id: levelId, hasil_belajar: newHasil });
+          mockData.mockLevelOverrides.push({
+            jurusan_id: jurusan.id,
+            level_id: levelId,
+            criteria: criteria,
+            hasil_belajar: criteria[0] || ''
+          });
         }
 
         setLevels(mockData.getLevelsForJurusan(jurusan.id));
@@ -189,32 +212,55 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
       }
 
       // upsert into new table level_skill_jurusan
+      // We store the array as a JSON string in 'hasil_belajar' column
+      const hasilBelajarJson = JSON.stringify(criteria);
+
       const { error } = await supabase
         .from('level_skill_jurusan')
-        .upsert({ jurusan_id: jurusan.id, level_id: levelId, hasil_belajar: newHasil }, { onConflict: 'jurusan_id,level_id' });
+        .upsert({
+          jurusan_id: jurusan.id,
+          level_id: levelId,
+          hasil_belajar: hasilBelajarJson
+        }, { onConflict: 'jurusan_id,level_id' });
+
       if (error) throw error;
 
       // refresh
       await loadData();
     } catch (err) {
-      console.error('Error updating hasil_belajar:', err);
+      console.error('Error updating criteria:', err);
       throw err;
     } finally {
       setLoading(false);
     }
   }
 
-  const filteredStudents = selectedLevel === 'all'
-    ? students
-    : students.filter((s) => {
-      const level = levels.find((l) => l.id === selectedLevel);
-      return level && s.skor >= level.min_skor && s.skor <= level.max_skor;
-    });
+  const [activeTab, setActiveTab] = useState<string>('all');
 
-  // compute ranks (1-based) for ALL students, sorted by score
+  // 1. Filter by class first (Base dataset for this page view)
+  const classFilteredStudents = students.filter((s) => {
+    // If we have a forced prop filter (Student View), use it.
+    if (classFilter) {
+      return s.kelas.startsWith(classFilter + ' ');
+    }
+    // Otherwise check activeTab (Teacher View)
+    if (activeTab !== 'all') {
+      return s.kelas.startsWith(activeTab + ' ');
+    }
+    return true;
+  });
+
+  // 2. Filter by level (For the table display)
+  const filteredStudents = classFilteredStudents.filter((s) => {
+    if (selectedLevel === 'all') return true;
+    const level = levels.find((l) => l.id === selectedLevel);
+    return !!(level && s.skor >= level.min_skor && s.skor <= level.max_skor);
+  });
+
+  // compute ranks (1-based) for ALL students in this class context, sorted by score
   const topRanks: Record<string, number> = {};
   (() => {
-    const sorted = [...students].sort((a, b) => b.skor - a.skor);
+    const sorted = [...classFilteredStudents].sort((a, b) => b.skor - a.skor);
     sorted.forEach((s, idx) => { topRanks[s.id] = idx + 1; });
   })();
 
@@ -229,7 +275,7 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `${jurusan.nama_jurusan}_students.csv`;
+    link.download = `${jurusan.nama_jurusan} _students.csv`;
     link.click();
   };
 
@@ -255,7 +301,7 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-[color:var(--text-primary)] mb-2">
-                {jurusan.nama_jurusan}
+                {jurusan.nama_jurusan} {classFilter ? `- Kelas ${classFilter} ` : ''}
               </h1>
               <p className="text-[color:var(--text-muted)]">{jurusan.deskripsi}</p>
             </div>
@@ -268,10 +314,30 @@ export function JurusanDetailPage({ jurusan, onBack }: JurusanDetailPageProps) {
           </div>
         ) : (
           <div className="space-y-8">
-            {/* Student Race */}
-            <StudentRace students={students} jurusanName={jurusan.nama_jurusan} />
+            {/* Tabs for Teachers */}
+            {!classFilter && isTeacher && (
+              <div className="flex justify-center mb-6">
+                <div className="bg-[color:var(--card-bg)] p-1 rounded-lg inline-flex shadow-sm border border-[color:var(--card-border)]">
+                  {['all', 'X', 'XI', 'XII'].map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === tab
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : 'text-[color:var(--text-muted)] hover:text-[color:var(--text-primary)] hover:bg-[color:var(--bg-secondary)]'
+                        }`}
+                    >
+                      {tab === 'all' ? 'Semua Kelas' : `Kelas ${tab}`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
-            <LevelTable levels={levels} jurusanId={jurusan.id} onUpdateHasil={handleUpdateHasil} isTeacher={isTeacher} />
+            {/* Student Race uses the class-filtered list, ignoring the table level filter */}
+            <StudentRace students={classFilteredStudents} jurusanName={jurusan.nama_jurusan} />
+
+            <LevelTable levels={levels} jurusanId={jurusan.id} onUpdateCriteria={handleUpdateCriteria} isTeacher={isTeacher} />
 
             <div className="card-glass rounded-xl shadow-sm p-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">

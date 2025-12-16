@@ -109,7 +109,17 @@ export function StudentDetailModal({
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold" style={{ background: lvl.badge_color }}>{lvl.badge_name.charAt(0)}</div>
                   <div>
                     <div className="text-sm font-semibold text-[color:var(--text-primary)]">{lvl.nama_level} <span className="text-xs text-[color:var(--text-muted)]">({lvl.badge_name})</span></div>
-                    <div className="text-sm text-[color:var(--text-muted)] mt-1">{lvl.hasil_belajar}</div>
+                    <div className="text-sm text-[color:var(--text-muted)] mt-1">
+                      {lvl.criteria && lvl.criteria.length > 0 ? (
+                        <ul className="list-disc list-outside ml-4 space-y-0.5">
+                          {lvl.criteria.map((c, i) => (
+                            <li key={i}>{c}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div>{lvl.hasil_belajar}</div>
+                      )}
+                    </div>
                     <div className="text-xs text-[color:var(--text-muted)] mt-1">Soft skill: {lvl.soft_skill}</div>
                   </div>
                 </div>
@@ -128,7 +138,17 @@ export function StudentDetailModal({
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold text-[color:var(--text-primary)]" style={{ background: '#efefef' }}>{lvl.badge_name.charAt(0)}</div>
                   <div>
                     <div className="text-sm font-semibold text-[color:var(--text-primary)]">{lvl.nama_level} <span className="text-xs text-[color:var(--text-muted)]">({lvl.badge_name})</span></div>
-                    <div className="text-sm text-[color:var(--text-muted)] mt-1">{lvl.hasil_belajar}</div>
+                    <div className="text-sm text-[color:var(--text-muted)] mt-1">
+                      {lvl.criteria && lvl.criteria.length > 0 ? (
+                        <ul className="list-disc list-outside ml-4 space-y-0.5">
+                          {lvl.criteria.map((c, i) => (
+                            <li key={i}>{c}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div>{lvl.hasil_belajar}</div>
+                      )}
+                    </div>
                     <div className="text-xs text-[color:var(--text-muted)] mt-1">Soft skill: {lvl.soft_skill}</div>
                   </div>
                 </div>

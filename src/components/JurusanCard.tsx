@@ -5,6 +5,7 @@ interface JurusanCardProps {
   jurusan: Jurusan;
   onClick: () => void;
   topStudents?: { id: string; nama: string; skor: number; kelas?: string }[];
+  titleOverride?: string;
 }
 
 function formatJurusanName(nama?: string): string {
@@ -41,7 +42,7 @@ function getJurusanGradient(nama?: string): string {
   return 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500';
 }
 
-export function JurusanCard({ jurusan, onClick, topStudents }: JurusanCardProps) {
+export function JurusanCard({ jurusan, onClick, topStudents, titleOverride }: JurusanCardProps) {
   const IconComponent = (LucideIcons as any)[jurusan.icon] || LucideIcons.GraduationCap;
   const gradientClass = getJurusanGradient(jurusan.nama_jurusan);
 
@@ -56,7 +57,7 @@ export function JurusanCard({ jurusan, onClick, topStudents }: JurusanCardProps)
         </div>
         <div>
           <h3 className="font-semibold text-lg text-white mb-2 truncate">
-            {formatJurusanName(jurusan.nama_jurusan)}
+            {titleOverride || formatJurusanName(jurusan.nama_jurusan)}
           </h3>
           <p className="text-sm text-white/80 line-clamp-2">{jurusan.deskripsi}</p>
 

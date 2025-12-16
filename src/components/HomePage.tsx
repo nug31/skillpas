@@ -8,7 +8,7 @@ import { DashboardRace } from './DashboardRace';
 import { useAuth } from '../contexts/AuthContext';
 
 interface HomePageProps {
-  onSelectJurusan: (jurusan: Jurusan) => void;
+  onSelectJurusan: (jurusan: Jurusan, classFilter?: string) => void;
 }
 
 export function HomePage({ onSelectJurusan }: HomePageProps) {
@@ -36,39 +36,93 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
         data = result.data || [];
       }
 
-      // Students can now see all jurusan (for race/competition visibility)
-      // But detail access is determined in JurusanDetailPage
+      // Filter jurusans based on role
+      let filteredData = data || [];
+      if (user?.role === 'student' && user.jurusan_id) {
+        filteredData = filteredData.filter(j => j.id === user.jurusan_id);
+      }
 
-      setJurusanList(data || []);
+      setJurusanList(filteredData);
+
+      setJurusanList(filteredData);
 
       // fetch top student for each jurusan (best skor)
       try {
         const map: Record<string, { id: string; nama: string; skor: number; kelas?: string }[]> = {};
-        if (useMock) {
-          (data || []).forEach((j) => {
-            map[j.id] = mockData.getTopStudentsForJurusan(j.id, 3);
-          });
-        } else {
-          await Promise.all((data || []).map(async (j) => {
-            const { data: topData, error } = await supabase
-              .from('skill_siswa')
-              .select('skor, siswa!inner(id, nama, kelas)')
-              .eq('siswa.jurusan_id', j.id)
-              .order('skor', { ascending: false })
-              .limit(3);
 
-            if (!error && topData && topData.length > 0) {
-              map[j.id] = (topData as any[]).map((t) => ({ id: t.siswa?.id ?? '', nama: t.siswa?.nama ?? 'N/A', skor: t.skor ?? 0, kelas: t.siswa?.kelas }));
-            } else {
-              map[j.id] = [];
-            }
-          }));
+        // If student, we want top students per class level (X, XI, XII)
+        // We will store them with keys like "jurusanId-X", "jurusanId-XI", "jurusanId-XII"
+        // Teacher sees overall top 3, stored with key "jurusanId"
+
+        if (useMock) {
+          if (user?.role === 'student' && user.jurusan_id) {
+            // For student: fetch top students for X, XI, XII specific to their jurusan
+            const jId = user.jurusan_id;
+            const allStudents = mockData.getStudentListForJurusan(jId); // Get all to filter
+
+            ['X', 'XI', 'XII'].forEach(level => {
+              const classStudents = allStudents
+                .filter(s => s.kelas.startsWith(`${level} `)) // simple check for "X TKR" etc
+                .sort((a, b) => b.skor - a.skor)
+                .slice(0, 3);
+
+              map[`${jId}-${level}`] = classStudents.map(s => ({
+                id: s.id,
+                nama: s.nama,
+                skor: s.skor,
+                kelas: s.kelas
+              }));
+            });
+          } else {
+            // Teacher/Default: fetch top 3 overall per jurusan
+            (filteredData || []).forEach((j) => {
+              map[j.id] = mockData.getTopStudentsForJurusan(j.id, 3);
+            });
+          }
+        } else {
+          // Supabase implementation
+          if (user?.role === 'student' && user.jurusan_id) {
+            const jId = user.jurusan_id;
+            await Promise.all(['X', 'XI', 'XII'].map(async (level) => {
+              const { data: topData, error } = await supabase
+                .from('skill_siswa')
+                .select('skor, siswa!inner(id, nama, kelas)')
+                .eq('siswa.jurusan_id', jId)
+                .ilike('siswa.kelas', `${level} %`) // Case insensitive match for class prefix
+                .order('skor', { ascending: false })
+                .limit(3);
+
+              if (!error && topData) {
+                map[`${jId}-${level}`] = (topData as any[]).map((t) => ({
+                  id: t.siswa?.id ?? '',
+                  nama: t.siswa?.nama ?? 'N/A',
+                  skor: t.skor ?? 0,
+                  kelas: t.siswa?.kelas
+                }));
+              }
+            }));
+          } else {
+            await Promise.all((filteredData || []).map(async (j) => {
+              const { data: topData, error } = await supabase
+                .from('skill_siswa')
+                .select('skor, siswa!inner(id, nama, kelas)')
+                .eq('siswa.jurusan_id', j.id)
+                .order('skor', { ascending: false })
+                .limit(3);
+
+              if (!error && topData && topData.length > 0) {
+                map[j.id] = (topData as any[]).map((t) => ({ id: t.siswa?.id ?? '', nama: t.siswa?.nama ?? 'N/A', skor: t.skor ?? 0, kelas: t.siswa?.kelas }));
+              }
+            }));
+          }
         }
 
         setTopStudentsMap(map);
       } catch (e) {
         console.error('Error loading top students:', e);
       }
+
+      // ... race data loading logic remains same for now (averages are per jurusan)
 
       // Load race data (average scores per jurusan)
       try {
@@ -112,6 +166,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
       } catch (e) {
         console.error('Error loading race data:', e);
       }
+
     } catch (error) {
       console.error('Error loading jurusan:', error);
     } finally {
@@ -137,6 +192,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
     <div className="min-h-screen bg-transparent">
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-12">
+          {/* Header section remains same */}
           <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 items-center">
             <div className="space-y-6 animate-fadeInUp">
               <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-gradient-to-r from-indigo-500 to-blue-400 shadow-md-2">
@@ -183,7 +239,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
                 <div>
                   <div className="text-sm text-white/70">Overview</div>
                   <div className="text-2xl font-bold">
-                    {jurusanList.length} Jurusan • {overallStats.totalStudents} Siswa aktif
+                    {useMock ? mockData.mockJurusan.length : jurusanList.length} Jurusan • {overallStats.totalStudents} Siswa aktif
                   </div>
                 </div>
                 <div className="text-sm text-white/60">Terakhir diperbarui: Hari ini</div>
@@ -215,17 +271,31 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {jurusanList.map((jurusan, index) => (
-              <div className="pulse-on-hover animate-fadeInUp" style={{ animationDelay: `${index * 100 + 400}ms` }}>
-                <JurusanCard
-                  key={jurusan.id}
-                  jurusan={jurusan}
-                  onClick={() => onSelectJurusan(jurusan)}
-                  topStudents={topStudentsMap[jurusan.id] ?? []}
-                />
-              </div>
-            ))}
+          <div className={user?.role === 'student' ? "flex flex-wrap justify-center gap-6" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"}>
+            {user?.role === 'student' && jurusanList.length > 0 ? (
+              // If student, render 3 cards for X, XI, XII
+              ['X', 'XI', 'XII'].map((classLevel, idx) => (
+                <div key={`${jurusanList[0].id}-${classLevel}`} className="pulse-on-hover animate-fadeInUp w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]" style={{ animationDelay: `${idx * 100 + 400}ms` }}>
+                  <JurusanCard
+                    jurusan={jurusanList[0]}
+                    onClick={() => onSelectJurusan(jurusanList[0], classLevel)}
+                    topStudents={topStudentsMap[`${jurusanList[0].id}-${classLevel}`] ?? []}
+                    titleOverride={`${jurusanList[0].nama_jurusan} ${classLevel}`}
+                  />
+                </div>
+              ))
+            ) : (
+              // Teacher logic (existing)
+              jurusanList.map((jurusan, index) => (
+                <div key={jurusan.id} className="pulse-on-hover animate-fadeInUp" style={{ animationDelay: `${index * 100 + 400}ms` }}>
+                  <JurusanCard
+                    jurusan={jurusan}
+                    onClick={() => onSelectJurusan(jurusan)}
+                    topStudents={topStudentsMap[jurusan.id] ?? []}
+                  />
+                </div>
+              ))
+            )}
           </div>
         )}
 

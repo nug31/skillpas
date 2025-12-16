@@ -92,7 +92,7 @@ export function LoginPage() {
                     <h1 className="text-4xl font-black tracking-tight bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]">
                         SKILL PASSPORT
                     </h1>
-                    <p className={`text-sm font-medium tracking-wide uppercase ${themeClear ? 'text-slate-600' : 'text-cyan-200/70'}`}>Competency & Achievement Tracker</p>
+                    <p className={`text-sm font-medium tracking-wide uppercase ${themeClear ? 'text-slate-600' : 'text-cyan-200/70'}`}>Menuju Vokasi Berstandar Industri & Terverifikasi</p>
                 </div>
 
                 {/* Login Card */}

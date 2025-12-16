@@ -12,6 +12,7 @@ export const mockLevels: LevelSkill[] = [
     badge_color: '#94a3b8',
     badge_name: 'Basic',
     hasil_belajar: 'Memahami konsep dasar',
+    criteria: ['Memahami konsep dasar', 'Mengenal alat kerja dasar'],
     soft_skill: 'Komunikasi dasar',
     created_at: new Date().toISOString(),
   },
@@ -24,6 +25,7 @@ export const mockLevels: LevelSkill[] = [
     badge_color: '#3b82f6',
     badge_name: 'Applied',
     hasil_belajar: 'Mampu menerapkan pengetahuan',
+    criteria: ['Mampu menerapkan pengetahuan dasar', 'Bisa menggunakan alat dengan benar', 'Memahami prosedur K3'],
     soft_skill: 'Problem solving',
     created_at: new Date().toISOString(),
   },
@@ -36,6 +38,7 @@ export const mockLevels: LevelSkill[] = [
     badge_color: '#f59e0b',
     badge_name: 'Advance',
     hasil_belajar: 'Menguasai keterampilan kompleks',
+    criteria: ['Menguasai keterampilan kompleks', 'Mampu menganalisis masalah', 'Bekerja mandiri tanpa pengawasan'],
     soft_skill: 'Kepemimpinan',
     created_at: new Date().toISOString(),
   },
@@ -48,6 +51,7 @@ export const mockLevels: LevelSkill[] = [
     badge_color: '#10b981',
     badge_name: 'Master',
     hasil_belajar: 'Ahli dalam bidangnya',
+    criteria: ['Ahli dalam bidangnya', 'Mampu mengajar/mentoring junior', 'Inovasi dalam penyelesaian masalah', 'Manajemen proyek skala kecil'],
     soft_skill: 'Mentoring',
     created_at: new Date().toISOString(),
   },
@@ -66,14 +70,14 @@ export const mockJurusan: Jurusan[] = [
 
 // Class pools (by jurusan id) — used for generating random 'kelas' values for mock students
 const classPools: Record<string, string[]> = {
-  j1: Array.from({ length: 6 }, (_, i) => `X MESIN ${i + 1}`), // Teknik Mesin -> X MESIN 1-6
-  j2: Array.from({ length: 6 }, (_, i) => `X TKR ${i + 1}`), // Teknik Kendaraan Ringan -> X TKR 1-6
-  j3: Array.from({ length: 6 }, (_, i) => `X TSM ${i + 1}`), // Teknik Sepeda Motor -> X TSM 1-6
-  j4: Array.from({ length: 12 }, (_, i) => `ELIND ${i + 1}`), // Elektronika Industri -> ELIND 1-12
-  j5: Array.from({ length: 4 }, (_, i) => `X LISTRIK ${i + 1}`), // Teknik Instalasi Tenaga Listrik -> X LISTRIK 1-4
-  j6: Array.from({ length: 6 }, (_, i) => `X TKI ${i + 1}`), // Teknik Kimia Industri -> X TKI 1-6
-  j7: Array.from({ length: 4 }, (_, i) => `X AK ${i + 1}`), // Akuntansi -> X AK 1-4
-  j8: Array.from({ length: 4 }, (_, i) => `X HOTEL ${i + 1}`), // Perhotelan -> X HOTEL 1-4
+  j1: [...Array.from({ length: 2 }, (_, i) => `X MESIN ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI MESIN ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII MESIN ${i + 1}`)],
+  j2: [...Array.from({ length: 2 }, (_, i) => `X TKR ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI TKR ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII TKR ${i + 1}`)],
+  j3: [...Array.from({ length: 2 }, (_, i) => `X TSM ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI TSM ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII TSM ${i + 1}`)],
+  j4: [...Array.from({ length: 4 }, (_, i) => `X ELIND ${i + 1}`), ...Array.from({ length: 4 }, (_, i) => `XI ELIND ${i + 1}`), ...Array.from({ length: 4 }, (_, i) => `XII ELIND ${i + 1}`)],
+  j5: [...Array.from({ length: 2 }, (_, i) => `X LISTRIK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI LISTRIK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII LISTRIK ${i + 1}`)],
+  j6: [...Array.from({ length: 2 }, (_, i) => `X TKI ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI TKI ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII TKI ${i + 1}`)],
+  j7: [...Array.from({ length: 2 }, (_, i) => `X AK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI AK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII AK ${i + 1}`)],
+  j8: [...Array.from({ length: 2 }, (_, i) => `X HOTEL ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI HOTEL ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII HOTEL ${i + 1}`)],
 };
 
 function pickRandom<T>(arr: T[]) {
@@ -171,9 +175,9 @@ export const mockSkillSiswa: SkillSiswa[] = [
 ];
 
 // per-jurusan overrides for level descriptions
-export const mockLevelOverrides: Array<{ jurusan_id: string; level_id: string; hasil_belajar?: string; soft_skill?: string }> = [
-  { jurusan_id: 'j1', level_id: 'lvl-master', hasil_belajar: 'Mahir merancang dan merawat sistem mekanik tingkat lanjut', soft_skill: 'Kepemimpinan teknis' },
-  { jurusan_id: 'j4', level_id: 'lvl-adv', hasil_belajar: 'Mampu merancang sirkuit kontrol dan mengoperasikan PLC', soft_skill: 'Analisis sistem' },
+export const mockLevelOverrides: Array<{ jurusan_id: string; level_id: string; hasil_belajar?: string; criteria?: string[]; soft_skill?: string }> = [
+  { jurusan_id: 'j1', level_id: 'lvl-master', hasil_belajar: 'Mahir merancang dan merawat sistem mekanik tingkat lanjut', criteria: ['Mahir merancang sistem mekanik', 'Perawatan mesin tingkat lanjut', 'Analisis getaran mesin'], soft_skill: 'Kepemimpinan teknis' },
+  { jurusan_id: 'j4', level_id: 'lvl-adv', hasil_belajar: 'Mampu merancang sirkuit kontrol dan mengoperasikan PLC', criteria: ['Merancang sirkuit kontrol', 'Pemrograman PLC dasar', 'Troubleshooting sistem kontrol'], soft_skill: 'Analisis sistem' },
 ];
 
 export function getTopStudentForJurusan(jurusanId: string): { nama: string; skor: number; kelas?: string } | null {
@@ -227,6 +231,7 @@ export function getLevelsForJurusan(jurusanId: string) {
     return {
       ...lvl,
       hasil_belajar: ov?.hasil_belajar ?? lvl.hasil_belajar,
+      criteria: ov?.criteria ?? lvl.criteria,
       soft_skill: ov?.soft_skill ?? lvl.soft_skill,
     };
   });

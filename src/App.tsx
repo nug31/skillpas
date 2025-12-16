@@ -12,6 +12,7 @@ import { LogOut } from 'lucide-react';
 function AppContent() {
   const { user, logout, isAuthenticated } = useAuth();
   const [selectedJurusan, setSelectedJurusan] = useState<Jurusan | null>(null);
+  const [selectedClassFilter, setSelectedClassFilter] = useState<string | undefined>(undefined);
   const [showStampAnimation, setShowStampAnimation] = useState(false);
   const prevAuthRef = useRef(isAuthenticated);
   const [themeClear, setThemeClear] = useState<boolean>(() => {
@@ -117,9 +118,13 @@ function AppContent() {
           <JurusanDetailPage
             jurusan={selectedJurusan}
             onBack={() => setSelectedJurusan(null)}
+            classFilter={selectedClassFilter}
           />
         ) : (
-          <HomePage onSelectJurusan={setSelectedJurusan} />
+          <HomePage onSelectJurusan={(jurusan, classFilter) => {
+            setSelectedJurusan(jurusan);
+            setSelectedClassFilter(classFilter);
+          }} />
         )}
       </main>
       <FooterReflexGame />

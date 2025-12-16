@@ -1,7 +1,7 @@
 import type { Database } from './database';
 
 export type Jurusan = Database['public']['Tables']['jurusan']['Row'];
-export type LevelSkill = Database['public']['Tables']['level_skill']['Row'];
+// export type LevelSkill = Database['public']['Tables']['level_skill']['Row']; // Replaced by interface below
 export type Siswa = Database['public']['Tables']['siswa']['Row'];
 export type SkillSiswa = Database['public']['Tables']['skill_siswa']['Row'];
 
@@ -16,6 +16,12 @@ export interface JurusanWithStats extends Jurusan {
 }
 
 export type BadgeLevel = 'Basic' | 'Applied' | 'Advance' | 'Master';
+
+// Extend the DB type to include our runtime 'criteria' field logic
+export interface LevelSkill extends Omit<Database['public']['Tables']['level_skill']['Row'], 'hasil_belajar'> {
+  hasil_belajar: string; // Maintain compatibility but we will parse this or use a new field
+  criteria?: string[]; // New field for multiple criteria
+}
 
 export interface StudentListItem {
   id: string;
