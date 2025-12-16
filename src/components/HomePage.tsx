@@ -6,6 +6,7 @@ import type { Jurusan } from '../types';
 import { JurusanCard } from './JurusanCard';
 import { DashboardRace } from './DashboardRace';
 import { useAuth } from '../contexts/AuthContext';
+import { MissionModal } from './MissionModal';
 
 interface HomePageProps {
   onSelectJurusan: (jurusan: Jurusan, classFilter?: string) => void;
@@ -18,6 +19,16 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
   const [raceData, setRaceData] = useState<Array<{ jurusan: Jurusan; averageSkor: number; studentCount: number }>>([]);
   const [loading, setLoading] = useState(true);
   const [triggerRace, setTriggerRace] = useState(0);
+  const [myStats, setMyStats] = useState<{
+    rank: number;
+    totalStudents: number;
+    score: number;
+    level: string;
+    levelColor: string;
+    className: string;
+  } | null>(null);
+
+  const [showMissionModal, setShowMissionModal] = useState(false);
 
   const useMock = isMockMode;
 
@@ -44,7 +55,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
 
       setJurusanList(filteredData);
 
-      setJurusanList(filteredData);
+
 
       // fetch top student for each jurusan (best skor)
       try {
@@ -124,53 +135,144 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
 
       // ... race data loading logic remains same for now (averages are per jurusan)
 
-      // Load race data (average scores per jurusan)
-      try {
-        if (useMock) {
-          const avgData = mockData.getAllJurusanWithAverageSkors();
-          const raceList = avgData.map((avg) => {
-            const jurusan = (data || []).find((j) => j.id === avg.jurusanId);
-            return jurusan ? {
-              jurusan,
-              averageSkor: avg.averageSkor,
-              studentCount: avg.studentCount,
-            } : null;
-          }).filter(Boolean) as Array<{ jurusan: Jurusan; averageSkor: number; studentCount: number }>;
-          setRaceData(raceList);
-        } else {
-          // For real database, calculate average scores and student counts
-          const raceList = await Promise.all((data || []).map(async (j) => {
-            // Count total enrolled students
-            const { count: enrolledCount } = await supabase
-              .from('siswa')
-              .select('*', { count: 'exact', head: true })
-              .eq('jurusan_id', j.id);
 
-            // Get scores for average calculation
-            const { data: skillData } = await supabase
-              .from('skill_siswa')
-              .select('skor, siswa(jurusan_id)')
-              .eq('siswa.jurusan_id', j.id);
-
-            const scores = (skillData || []).map((s: any) => s.skor).filter(Boolean);
-            const averageSkor = scores.length > 0 ? scores.reduce((a: number, b: number) => a + b, 0) / scores.length : 0;
-
-            return {
-              jurusan: j,
-              averageSkor,
-              studentCount: enrolledCount || 0,
-            };
-          }));
-          setRaceData(raceList);
-        }
-      } catch (e) {
-        console.error('Error loading race data:', e);
-      }
 
     } catch (error) {
       console.error('Error loading jurusan:', error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (user?.role === 'student') {
+      loadMyStats();
+    }
+  }, [user]);
+
+  async function loadMyStats() {
+    if (!user) return;
+    try {
+      if (useMock) {
+        // Mock implementation
+        const student = mockData.mockSiswa.find(s => s.nama === user.name);
+        if (student) {
+          const allStudents = mockData.getStudentListForJurusan(student.jurusan_id);
+          const classStudents = allStudents.filter(s => s.kelas === student.kelas);
+          classStudents.sort((a, b) => b.skor - a.skor);
+          const rank = classStudents.findIndex(s => s.id === student.id) + 1;
+
+          const skill = mockData.mockSkillSiswa.find(ss => ss.siswa_id === student.id);
+          const score = skill?.skor || 0;
+
+          const levelObj = mockData.mockLevels.find(l => score >= l.min_skor && score <= l.max_skor);
+
+          setMyStats({
+            rank: rank > 0 ? rank : 0,
+            totalStudents: classStudents.length,
+            score: score,
+            level: levelObj?.badge_name || 'Basic',
+            levelColor: levelObj?.badge_color || '#94a3b8',
+            className: student.kelas
+          });
+        }
+      } else {
+        // Supabase implementation
+        let { data: student, error } = await supabase
+          .from('siswa')
+          .select('*, skill_siswa(skor)')
+          .eq('id', user.id)
+          .single();
+
+        if (error || !student) {
+          const { data: studentByName } = await supabase
+            .from('siswa')
+            .select('*, skill_siswa(skor)')
+            .eq('nama', user.name)
+            .single();
+          student = studentByName;
+        }
+
+        if (student) {
+          const score = student.skill_siswa?.[0]?.skor || 0;
+
+          const { count } = await supabase
+            .from('siswa')
+            .select('id, skill_siswa!inner(skor)', { count: 'exact', head: true })
+            .eq('kelas', student.kelas)
+            .gt('skill_siswa.skor', score);
+
+          const rank = (count || 0) + 1;
+
+          const { count: totalClass } = await supabase
+            .from('siswa')
+            .select('id', { count: 'exact', head: true })
+            .eq('kelas', student.kelas);
+
+          let badge = 'Basic';
+          let color = '#94a3b8';
+          if (score >= 76) { badge = 'Master'; color = '#10b981'; }
+          else if (score >= 51) { badge = 'Advance'; color = '#f59e0b'; }
+          else if (score >= 26) { badge = 'Applied'; color = '#3b82f6'; }
+
+          setMyStats({
+            rank,
+            totalStudents: totalClass || 0,
+            score,
+            level: badge,
+            levelColor: color,
+            className: student.kelas
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load my stats", e);
+    }
+  }
+
+  // Load race data (average scores per jurusan)
+  useEffect(() => {
+    loadRaceData();
+  }, [jurusanList]);
+
+  async function loadRaceData() {
+    try {
+      if (useMock) {
+        const avgData = mockData.getAllJurusanWithAverageSkors();
+        const raceList = avgData.map((avg) => {
+          const jurusan = (jurusanList || []).find((j) => j.id === avg.jurusanId);
+          return jurusan ? {
+            jurusan,
+            averageSkor: avg.averageSkor,
+            studentCount: avg.studentCount,
+          } : null;
+        }).filter(Boolean) as Array<{ jurusan: Jurusan; averageSkor: number; studentCount: number }>;
+        setRaceData(raceList);
+      } else {
+        const raceList = await Promise.all((jurusanList || []).map(async (j) => {
+          const { count: enrolledCount } = await supabase
+            .from('siswa')
+            .select('*', { count: 'exact', head: true })
+            .eq('jurusan_id', j.id);
+
+          const { data: skillData } = await supabase
+            .from('skill_siswa')
+            .select('skor, siswa!inner(jurusan_id)')
+            .eq('siswa.jurusan_id', j.id);
+
+          const scores = (skillData || []).map((s: any) => s.skor).filter(Boolean);
+          const averageSkor = scores.length > 0 ? scores.reduce((a: number, b: number) => a + b, 0) / scores.length : 0;
+
+          return {
+            jurusan: j,
+            averageSkor,
+            studentCount: enrolledCount || 0,
+          };
+        }));
+        setRaceData(raceList);
+      }
+    } catch (e) {
+      console.error('Error loading race data:', e);
     }
   }
 
@@ -220,41 +322,79 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
               </div>
 
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mt-8">
-                <button
-                  onClick={() => {
-                    setTriggerRace(Date.now());
-                    const raceSection = document.getElementById('dashboard-race');
-                    raceSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }}
-                  className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-500 text-white rounded-lg font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all w-full sm:w-auto text-sm sm:text-base"
-                >
-                  Mulai
-                </button>
-
+                {user?.role !== 'student' && (
+                  <button
+                    onClick={() => {
+                      setTriggerRace(Date.now());
+                      const raceSection = document.getElementById('dashboard-race');
+                      raceSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                    className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-500 text-white rounded-lg font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all w-full sm:w-auto text-sm sm:text-base"
+                  >
+                    Mulai
+                  </button>
+                )}
               </div>
             </div>
 
-            <div className="card-glass rounded-xl-2 p-6 shadow-inner border border-white/6 animate-slideInRight stagger-delay-2">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <div className="text-sm text-white/70">Overview</div>
-                  <div className="text-2xl font-bold">
-                    {useMock ? mockData.mockJurusan.length : jurusanList.length} Jurusan • {overallStats.totalStudents} Siswa aktif
+            <div className="card-glass rounded-xl-2 p-6 shadow-inner border border-white/6 animate-slideInRight stagger-delay-2 h-full flex flex-col justify-center">
+              {user?.role === 'student' ? (
+                <div className="flex items-center gap-6">
+                  <div className="relative">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 p-1 shadow-lg shadow-indigo-500/20">
+                      <div className="w-full h-full rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center text-2xl font-bold text-white border border-white/10">
+                        {user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                      </div>
+                    </div>
+                    {myStats && (
+                      <div className="absolute -bottom-2 -right-2 bg-yellow-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg border-2 border-[#0f172a]">
+                        #{myStats.rank}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="text-sm text-white/60 font-medium tracking-wide">STUDENT PROFILE</div>
+                    <div className="text-2xl font-bold text-white truncate max-w-[200px]">{user.name}</div>
+
+                    {myStats ? (
+                      <div className="flex items-center gap-2 mt-2">
+                        <div className="px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm border border-white/10" style={{ backgroundColor: myStats.levelColor }}>
+                          {myStats.level} Badge
+                        </div>
+                        <div className="text-sm text-white/50 px-2 border-l border-white/10">
+                          {myStats.className}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-sm text-white/40 animate-pulse">Loading stats...</div>
+                    )}
                   </div>
                 </div>
-                <div className="text-sm text-white/60">Terakhir diperbarui: Hari ini</div>
-              </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <div className="text-sm text-white/70">Overview</div>
+                      <div className="text-2xl font-bold">
+                        {useMock ? mockData.mockJurusan.length : jurusanList.length} Jurusan • {overallStats.totalStudents} Siswa aktif
+                      </div>
+                    </div>
+                    <div className="text-sm text-white/60">Terakhir diperbarui: Hari ini</div>
+                  </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-gradient-to-r from-white/5 to-transparent rounded-lg border border-white/6">
-                  <div className="text-xs text-white/70">Top Jurusan</div>
-                  <div className="text-sm font-semibold mt-2">{overallStats.topJurusan}</div>
-                </div>
-                <div className="p-3 bg-gradient-to-r from-white/5 to-transparent rounded-lg border border-white/6">
-                  <div className="text-xs text-white/70">Average Skor</div>
-                  <div className="text-sm font-semibold mt-2">{globalAvg}</div>
-                </div>
-              </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 bg-gradient-to-r from-white/5 to-transparent rounded-lg border border-white/6">
+                      <div className="text-xs text-white/70">Top Jurusan</div>
+                      <div className="text-sm font-semibold mt-2">{overallStats.topJurusan}</div>
+                    </div>
+                    <div className="p-3 bg-gradient-to-r from-white/5 to-transparent rounded-lg border border-white/6">
+                      <div className="text-xs text-white/70">Average Skor</div>
+                      <div className="text-sm font-semibold mt-2">{globalAvg}</div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -262,8 +402,28 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
         {/* Race Recap */}
         {!loading && raceData.length > 0 && (
           <div id="dashboard-race" className="animate-fadeIn stagger-delay-3 pb-12">
-            <DashboardRace jurusanData={raceData} trigger={triggerRace} />
+            <DashboardRace
+              jurusanData={raceData}
+              trigger={triggerRace}
+              myStats={myStats}
+              showCompetition={user?.role !== 'student'}
+              onContinue={() => {
+                if (user?.role === 'student' && jurusanList.length > 0) {
+                  setShowMissionModal(true);
+                }
+              }}
+            />
           </div>
+        )}
+
+        {/* Mission Modal */}
+        {user?.role === 'student' && jurusanList.length > 0 && myStats && (
+          <MissionModal
+            isOpen={showMissionModal}
+            onClose={() => setShowMissionModal(false)}
+            jurusan={jurusanList[0]}
+            currentScore={myStats.score}
+          />
         )}
 
         {loading ? (

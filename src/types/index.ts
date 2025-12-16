@@ -45,3 +45,13 @@ export interface RaceParticipant {
   badge_name?: string;
   alias?: string;
 }
+export interface StudentStats {
+  rank: number;
+  totalStudents: number;
+  score: number;
+  level: string;
+  levelColor: string;
+  className: string;
+}
+
+export type ViewMode = 'list' | 'race' | 'podium';

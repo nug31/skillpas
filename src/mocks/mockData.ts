@@ -130,6 +130,8 @@ export const mockSiswa: Siswa[] = [
   { id: 's-j8-b', nama: 'Mita Sari', kelas: klassFor('j8'), jurusan_id: 'j8', created_at: new Date().toISOString() },
   { id: 's-j8-c', nama: 'Fajar Prakoso', kelas: klassFor('j8'), jurusan_id: 'j8', created_at: new Date().toISOString() },
   { id: 's-j8-d', nama: 'Rani Melinda', kelas: klassFor('j8'), jurusan_id: 'j8', created_at: new Date().toISOString() },
+  // --- This matches the username 'siswa_mesin' with name 'Siswa Mesin' in mockUsers.ts ---
+  { id: 's-j1-user', nama: 'Siswa Mesin', kelas: 'XII MESIN 1', jurusan_id: 'j1', created_at: new Date().toISOString() },
 ];
 
 export const mockSkillSiswa: SkillSiswa[] = [
@@ -172,6 +174,9 @@ export const mockSkillSiswa: SkillSiswa[] = [
   { id: 'ss-mita', siswa_id: 's-j8-b', level_id: 'lvl-master', skor: 76, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
   { id: 'ss-fajar', siswa_id: 's-j8-c', level_id: 'lvl-adv', skor: 59, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
   { id: 'ss-rani', siswa_id: 's-j8-d', level_id: 'lvl-inter', skor: 42, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+
+  // --- Matching logged-in test user ---
+  { id: 'ss-siswa-mesin', siswa_id: 's-j1-user', level_id: 'lvl-adv', skor: 78, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
 ];
 
 // per-jurusan overrides for level descriptions
