@@ -132,6 +132,14 @@ export const mockSiswa: Siswa[] = [
   { id: 's-j8-d', nama: 'Rani Melinda', kelas: klassFor('j8'), jurusan_id: 'j8', created_at: new Date().toISOString() },
   // --- This matches the username 'siswa_mesin' with name 'Siswa Mesin' in mockUsers.ts ---
   { id: 's-j1-user', nama: 'Siswa Mesin', kelas: 'XII MESIN 1', jurusan_id: 'j1', created_at: new Date().toISOString() },
+  // --- Hero students for other majors ---
+  { id: 's-j2-user', nama: 'Siswa TKR', kelas: 'XII TKR 1', jurusan_id: 'j2', created_at: new Date().toISOString() },
+  { id: 's-j3-user', nama: 'Siswa TSM', kelas: 'XII TSM 1', jurusan_id: 'j3', created_at: new Date().toISOString() },
+  { id: 's-j4-user', nama: 'Siswa Elind', kelas: 'XII ELIND 1', jurusan_id: 'j4', created_at: new Date().toISOString() },
+  { id: 's-j5-user', nama: 'Siswa Listrik', kelas: 'XII LISTRIK 1', jurusan_id: 'j5', created_at: new Date().toISOString() },
+  { id: 's-j6-user', nama: 'Siswa Kimia', kelas: 'XII TKI 1', jurusan_id: 'j6', created_at: new Date().toISOString() },
+  { id: 's-j7-user', nama: 'Siswa Akuntansi', kelas: 'XII AK 1', jurusan_id: 'j7', created_at: new Date().toISOString() },
+  { id: 's-j8-user', nama: 'Siswa Perhotelan', kelas: 'XII HOTEL 1', jurusan_id: 'j8', created_at: new Date().toISOString() },
 ];
 
 export const mockSkillSiswa: SkillSiswa[] = [
@@ -177,6 +185,14 @@ export const mockSkillSiswa: SkillSiswa[] = [
 
   // --- Matching logged-in test user ---
   { id: 'ss-siswa-mesin', siswa_id: 's-j1-user', level_id: 'lvl-adv', skor: 78, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  // --- Skills for other hero students ---
+  { id: 'ss-siswa-tkr', siswa_id: 's-j2-user', level_id: 'lvl-adv', skor: 82, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siswa-tsm', siswa_id: 's-j3-user', level_id: 'lvl-adv', skor: 75, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siswa-elind', siswa_id: 's-j4-user', level_id: 'lvl-master', skor: 88, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siswa-listrik', siswa_id: 's-j5-user', level_id: 'lvl-inter', skor: 65, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siswa-kimia', siswa_id: 's-j6-user', level_id: 'lvl-adv', skor: 70, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siswa-akuntansi', siswa_id: 's-j7-user', level_id: 'lvl-master', skor: 91, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siswa-hotel', siswa_id: 's-j8-user', level_id: 'lvl-inter', skor: 60, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
 ];
 
 // per-jurusan overrides for level descriptions
