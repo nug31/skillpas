@@ -1,9 +1,48 @@
 import { useEffect, useState } from 'react';
-import { X, Target, CheckCircle2 } from 'lucide-react';
+import { X, Target, CheckCircle2, Trophy, Users, Award } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Jurusan, LevelSkill } from '../types';
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
+
+// Special Missions / Challenges data
+interface SpecialMission {
+    id: string;
+    title: string;
+    description: string;
+    xpReward: number;
+    icon: React.ReactNode;
+    difficulty: 'easy' | 'medium' | 'hard';
+    deadline?: string;
+}
+
+const specialMissions: SpecialMission[] = [
+    {
+        id: 'project-mini',
+        title: 'Selesaikan Proyek Mini',
+        description: 'Buat dan selesaikan proyek mini dalam 1 minggu',
+        xpReward: 20,
+        icon: <Trophy className="w-5 h-5" />,
+        difficulty: 'medium',
+        deadline: '7 hari'
+    },
+    {
+        id: 'peer-mentoring',
+        title: 'Bantu Teman Belajar',
+        description: 'Lakukan peer mentoring dengan minimal 1 teman',
+        xpReward: 10,
+        icon: <Users className="w-5 h-5" />,
+        difficulty: 'easy'
+    },
+    {
+        id: 'competition',
+        title: 'Ikut Lomba Jurusan',
+        description: 'Berpartisipasi dalam lomba atau kompetisi jurusan',
+        xpReward: 30,
+        icon: <Award className="w-5 h-5" />,
+        difficulty: 'hard'
+    }
+];
 
 interface MissionModalProps {
     isOpen: boolean;
@@ -142,6 +181,64 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore }: Mission
                                             Belum ada misi khusus untuk level ini.
                                         </div>
                                     )}
+                                </div>
+
+                                {/* Special Missions / Challenge Section */}
+                                <div className="mt-8 pt-6 border-t border-white/10">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="p-2 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg shadow-lg">
+                                            <Trophy className="w-5 h-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-white">🎯 Misi Spesial</h3>
+                                            <p className="text-xs text-white/50">Tantangan opsional dengan hadiah XP besar!</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        {specialMissions.map((mission) => (
+                                            <div
+                                                key={mission.id}
+                                                className="relative p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 hover:border-purple-500/40 hover:from-purple-500/20 hover:to-pink-500/20 transition-all group cursor-pointer"
+                                            >
+                                                <div className="flex items-start gap-4">
+                                                    <div className={`p-2.5 rounded-xl shadow-lg ${mission.difficulty === 'hard'
+                                                        ? 'bg-gradient-to-br from-red-500 to-orange-500'
+                                                        : mission.difficulty === 'medium'
+                                                            ? 'bg-gradient-to-br from-yellow-400 to-orange-500'
+                                                            : 'bg-gradient-to-br from-green-400 to-emerald-500'
+                                                        } text-white`}>
+                                                        {mission.icon}
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <h4 className="font-bold text-white group-hover:text-purple-200 transition-colors">
+                                                                {mission.title}
+                                                            </h4>
+                                                            <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded-full ${mission.difficulty === 'hard'
+                                                                ? 'bg-red-500/20 text-red-400'
+                                                                : mission.difficulty === 'medium'
+                                                                    ? 'bg-yellow-500/20 text-yellow-400'
+                                                                    : 'bg-green-500/20 text-green-400'
+                                                                }`}>
+                                                                {mission.difficulty === 'hard' ? 'Sulit' : mission.difficulty === 'medium' ? 'Sedang' : 'Mudah'}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-sm text-white/60 mb-2">{mission.description}</p>
+                                                        {mission.deadline && (
+                                                            <span className="text-xs text-white/40">⏱️ Batas waktu: {mission.deadline}</span>
+                                                        )}
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <div className="inline-flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full shadow-lg shadow-yellow-500/25">
+                                                            <span className="text-sm font-black text-black">+{mission.xpReward}</span>
+                                                            <span className="text-xs font-bold text-black/70">XP</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </>
                         )}
