@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Confetti from 'react-confetti';
 import { Flag, Trophy, Zap, Timer } from 'lucide-react';
 import type { RaceParticipant } from '../types';
+import { useRaceSound } from '../hooks/useRaceSound';
 
 interface F1RaceTrackProps {
     participants: RaceParticipant[];
@@ -31,9 +32,11 @@ export function F1RaceTrack({
     autoStart = true,
     trigger = false
 }: F1RaceTrackProps) {
+    const { playBeep, playStart, playVictory } = useRaceSound();
     const [startRace, setStartRace] = useState(false);
     const [countdown, setCountdown] = useState<number | null>(null);
     const [showConfetti, setShowConfetti] = useState(false);
+    const [shouldShake, setShouldShake] = useState(false);
     const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
 
     const sortedParticipants = [...participants].sort((a, b) => b.score - a.score);
@@ -42,13 +45,13 @@ export function F1RaceTrack({
 
     useEffect(() => {
         if (autoStart) {
-            setCountdown(3);
+            setCountdown(5);
         }
     }, [autoStart]);
 
     useEffect(() => {
         if (!autoStart && trigger && countdown === null && !startRace) {
-            setCountdown(3);
+            setCountdown(5);
         }
     }, [trigger, autoStart, countdown, startRace]);
 
@@ -60,23 +63,42 @@ export function F1RaceTrack({
 
     useEffect(() => {
         if (countdown !== null && countdown > 0) {
+            playBeep(440, 0.1);
             const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
             return () => clearTimeout(timer);
         } else if (countdown === 0) {
+            playStart();
+            setShouldShake(true);
             const timer = setTimeout(() => {
                 setCountdown(null);
                 setStartRace(true);
+                setShouldShake(false);
             }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [countdown]);
+    }, [countdown, playBeep, playStart]);
 
     useEffect(() => {
         if (startRace && winner) {
-            const timer = setTimeout(() => setShowConfetti(true), 2500);
+            const timer = setTimeout(() => {
+                setShowConfetti(true);
+                playVictory();
+            }, 2500);
             return () => clearTimeout(timer);
         }
-    }, [startRace, winner]);
+    }, [startRace, winner, playVictory]);
+
+    // F1 Start Lights Component
+    const F1Lights = ({ count }: { count: number }) => (
+        <div className="flex gap-4 p-6 bg-zinc-900 rounded-xl border-4 border-zinc-800 shadow-2xl">
+            {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="flex flex-col gap-2">
+                    <div className={`w-8 h-8 rounded-full border-2 border-zinc-700 ${5 - count >= i ? 'bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.8)]' : 'bg-zinc-800'}`} />
+                    <div className={`w-8 h-8 rounded-full border-2 border-zinc-700 ${5 - count >= i ? 'bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.8)]' : 'bg-zinc-800'}`} />
+                </div>
+            ))}
+        </div>
+    );
 
     // F1 Car Component
     const F1Car = ({ color, isLeader, label }: { color: typeof f1Colors[0], isLeader: boolean, label: string }) => (
@@ -138,7 +160,25 @@ export function F1RaceTrack({
     );
 
     return (
-        <div className="relative min-h-[500px] sm:min-h-[700px] card-glass backdrop-blur-xl rounded-2xl border border-slate-300 dark:border-white/10 p-4 sm:p-8 overflow-hidden shadow-2xl">
+        <div className={`relative min-h-[500px] sm:min-h-[700px] card-glass backdrop-blur-xl rounded-2xl border border-slate-300 dark:border-white/10 p-4 sm:p-8 overflow-hidden shadow-2xl transition-all ${shouldShake ? 'animate-[shake_0.2s_infinite]' : ''}`}>
+            <style>
+                {`
+                    @keyframes shake {
+                        0% { transform: translate(1px, 1px) rotate(0deg); }
+                        10% { transform: translate(-1px, -2px) rotate(-1deg); }
+                        20% { transform: translate(-3px, 0px) rotate(1deg); }
+                        30% { transform: translate(3px, 2px) rotate(0deg); }
+                        40% { transform: translate(1px, -1px) rotate(1deg); }
+                        50% { transform: translate(-1px, 2px) rotate(-1deg); }
+                        60% { transform: translate(-3px, 1px) rotate(0deg); }
+                        70% { transform: translate(3px, 1px) rotate(-1deg); }
+                        80% { transform: translate(-1px, -1px) rotate(1deg); }
+                        90% { transform: translate(1px, 2px) rotate(0deg); }
+                        100% { transform: translate(1px, -2px) rotate(-1deg); }
+                    }
+                `}
+            </style>
+
             {/* Track Background */}
             <div className="absolute inset-0 bg-gradient-to-b from-slate-800 via-slate-700 to-slate-900 [.theme-clear_&]:from-slate-200 [.theme-clear_&]:via-slate-100 [.theme-clear_&]:to-slate-200 opacity-50 pointer-events-none" />
 
@@ -183,7 +223,7 @@ export function F1RaceTrack({
             </div>
 
             {/* Countdown Overlay */}
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
                 {countdown !== null && (
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -193,20 +233,16 @@ export function F1RaceTrack({
                     >
                         <motion.div
                             key={countdown}
-                            initial={{ scale: 0.5, opacity: 0 }}
+                            initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 1.5, opacity: 0 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                            className="flex flex-col items-center"
+                            exit={{ scale: 1.2, opacity: 0 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                            className="flex flex-col items-center gap-8"
                         >
-                            <div className="text-5xl sm:text-9xl font-black italic text-transparent bg-clip-text bg-gradient-to-tr from-red-500 via-orange-500 to-yellow-500 drop-shadow-[0_0_50px_rgba(239,68,68,0.5)] text-center tracking-tighter">
-                                {countdown === 0 ? "LIGHTS OUT!" : countdown}
+                            <F1Lights count={countdown} />
+                            <div className="text-5xl sm:text-7xl font-black italic text-transparent bg-clip-text bg-gradient-to-tr from-red-500 via-orange-500 to-yellow-500 drop-shadow-[0_0_30px_rgba(239,68,68,0.5)] text-center tracking-tighter">
+                                {countdown === 0 ? "LIGHTS OUT!" : "COCKPIT READY..."}
                             </div>
-                            {countdown > 0 && (
-                                <div className="text-xl sm:text-2xl text-white/60 mt-4 font-bold tracking-widest uppercase">
-                                    {countdown === 1 ? "Get Set..." : "Ready..."}
-                                </div>
-                            )}
                         </motion.div>
                     </motion.div>
                 )}

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Confetti from 'react-confetti';
 import { Flag, Trophy, Zap, Timer } from 'lucide-react';
 import type { RaceParticipant } from '../types';
+import { useRaceSound } from '../hooks/useRaceSound';
 
 interface HorseRaceTrackProps {
     participants: RaceParticipant[];
@@ -31,6 +32,7 @@ export function HorseRaceTrack({
     autoStart = true,
     trigger = false
 }: HorseRaceTrackProps) {
+    const { playBeep, playStart, playVictory } = useRaceSound();
     const [startRace, setStartRace] = useState(false);
     const [countdown, setCountdown] = useState<number | null>(null);
     const [showConfetti, setShowConfetti] = useState(false);
@@ -60,23 +62,28 @@ export function HorseRaceTrack({
 
     useEffect(() => {
         if (countdown !== null && countdown > 0) {
+            playBeep(523, 0.1);
             const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
             return () => clearTimeout(timer);
         } else if (countdown === 0) {
+            playStart();
             const timer = setTimeout(() => {
                 setCountdown(null);
                 setStartRace(true);
             }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [countdown]);
+    }, [countdown, playBeep, playStart]);
 
     useEffect(() => {
         if (startRace && winner) {
-            const timer = setTimeout(() => setShowConfetti(true), 2500);
+            const timer = setTimeout(() => {
+                setShowConfetti(true);
+                playVictory();
+            }, 2500);
             return () => clearTimeout(timer);
         }
-    }, [startRace, winner]);
+    }, [startRace, winner, playVictory]);
 
     return (
         <div className="relative min-h-[700px] card-glass backdrop-blur-xl rounded-2xl border border-slate-300 dark:border-white/10 p-6 sm:p-8 overflow-hidden shadow-2xl">
@@ -272,7 +279,6 @@ export function HorseRaceTrack({
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     {sortedParticipants.slice(0, 4).map((p, index) => {
-                        const color = horseColors[index % horseColors.length];
                         const medals = ['🥇', '🥈', '🥉', '4th'];
                         return (
                             <motion.div

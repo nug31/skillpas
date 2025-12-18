@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { X, Target, CheckCircle2, Trophy, Users, Award } from 'lucide-react';
+import { X, Target, CheckCircle2, Trophy, Users, Award, Plus, Check, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Jurusan, LevelSkill } from '../types';
 import { supabase, isMockMode } from '../lib/supabase';
@@ -49,19 +49,29 @@ interface MissionModalProps {
     onClose: () => void;
     jurusan: Jurusan;
     currentScore: number;
-    // currentLevelId is not strictly needed if we infer from score
+    siswaId?: string;
 }
 
-export function MissionModal({ isOpen, onClose, jurusan, currentScore }: MissionModalProps) {
+export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId = 'guest' }: MissionModalProps) {
     const [loading, setLoading] = useState(true);
     const [nextLevel, setNextLevel] = useState<LevelSkill | null>(null);
     const [missions, setMissions] = useState<string[]>([]);
+    const [selectedKRS, setSelectedKRS] = useState<string[]>([]);
+    const storageKey = `skillpas_krs_${siswaId}`;
 
     useEffect(() => {
         if (isOpen) {
             loadNextMission();
+            const saved = localStorage.getItem(storageKey);
+            if (saved) {
+                try {
+                    setSelectedKRS(JSON.parse(saved));
+                } catch (e) {
+                    console.error("Failed to parse KRS", e);
+                }
+            }
         }
-    }, [isOpen, jurusan.id, currentScore]);
+    }, [isOpen, jurusan.id, currentScore, storageKey]);
 
     async function loadNextMission() {
         try {
@@ -77,9 +87,6 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore }: Mission
                     .order('min_skor', { ascending: true });
 
                 if (error) throw error;
-                // Basic mapping if needed, assuming same structure for now or relying on JurusanDetailPage logic
-                // For simplicity, we just take the global levels or specific logic if adapted
-                // To be robust, let's assume we might need to parse hasil_belajar as well
                 levels = (data || []).map((l: any) => {
                     let criteria: string[] = [];
                     try {
@@ -95,21 +102,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore }: Mission
                 }) as LevelSkill[];
             }
 
-            // Find the next level
-            // A simple logic: Find the first level where min_skor > currentScore
-            // OR if the user is in a level, they might imply they want to see criteria TO COMPLETE existing level or reach NEXT.
-            // Usually "missions" are criteria to achieve the CURRENT level's max score or Next Level?
-            // Let's assume: Show criteria for the level *immediately above* the user's current score bracket.
-            // If user has 78 (Master), next is... nothing? Or show Master criteria if not fully maxed?
-            // Let's stick to: criteria of the level the user is CURRENTLY IN or AIMING FOR.
-
-            // Logic: Find the level corresponding to the score.
             let target = levels.find(l => currentScore >= l.min_skor && currentScore <= l.max_skor);
-
-            // If we want "Next Mission", if user is 0, they are in Novice. They need to do Novice tasks.
-            // So we show the CURRENT level's criteria.
-
-            // If no level found (e.g. score 101?), fallback
             if (!target && levels.length > 0) target = levels[levels.length - 1];
 
             setNextLevel(target || null);
@@ -121,6 +114,24 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore }: Mission
             setLoading(false);
         }
     }
+
+    const toggleKRS = (mission: string) => {
+        let newKRS = [...selectedKRS];
+        if (newKRS.includes(mission)) {
+            newKRS = newKRS.filter(m => m !== mission);
+        } else {
+            if (newKRS.length >= 5) {
+                alert("Maksimal 5 target kompetensi dalam sekali ambil.");
+                return;
+            }
+            newKRS.push(mission);
+        }
+        setSelectedKRS(newKRS);
+        localStorage.setItem(storageKey, JSON.stringify(newKRS));
+
+        // Dispatch custom event to notify dashboard
+        window.dispatchEvent(new CustomEvent('krs-updated'));
+    };
 
     if (!isOpen) return null;
 
@@ -148,7 +159,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore }: Mission
                                 <Target className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <div className="text-blue-100 text-sm font-bold tracking-wider uppercase">Misi Saat Ini</div>
+                                <div className="text-blue-100 text-sm font-bold tracking-wider uppercase">KRS Skill: Rencana Capaian</div>
                                 <h2 className="text-2xl font-black text-white">{nextLevel?.nama_level || 'Loading...'}</h2>
                             </div>
                         </div>
@@ -162,20 +173,45 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore }: Mission
                             </div>
                         ) : (
                             <>
-                                <div className="text-white/80 leading-relaxed">
-                                    Untuk menguasai level ini dan melangkah ke tingkat berikutnya, kamu harus membuktikan kompetensi berikut:
+                                <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 flex gap-3">
+                                    <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
+                                    <p className="text-sm text-blue-200 leading-relaxed">
+                                        Pilih kriteria yang ingin kamu targetkan untuk dikuasai. Target yang dipilih akan muncul di dashboardmu. ({selectedKRS.length}/5)
+                                    </p>
                                 </div>
 
                                 <div className="space-y-3">
                                     {missions.length > 0 ? (
-                                        missions.map((mission, idx) => (
-                                            <div key={idx} className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group">
-                                                <div className="mt-0.5 p-1 rounded-full border border-indigo-500/50 text-indigo-400 group-hover:text-indigo-300 group-hover:bg-indigo-500/20 transition-all">
-                                                    <CheckCircle2 className="w-4 h-4" />
+                                        missions.map((mission, idx) => {
+                                            const isSelected = selectedKRS.includes(mission);
+                                            return (
+                                                <div
+                                                    key={idx}
+                                                    onClick={() => toggleKRS(mission)}
+                                                    className={`flex items-start justify-between gap-4 p-4 rounded-xl border transition-all cursor-pointer group ${isSelected
+                                                            ? 'bg-indigo-500/20 border-indigo-500 shadow-[inset_0_0_10px_rgba(99,102,241,0.2)]'
+                                                            : 'bg-white/5 border-white/5 hover:bg-white/10'
+                                                        }`}
+                                                >
+                                                    <div className="flex gap-4">
+                                                        <div className={`mt-0.5 p-1 rounded-full border transition-all ${isSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-indigo-500/50 text-indigo-400 group-hover:bg-indigo-500/20'
+                                                            }`}>
+                                                            {isSelected ? <Check className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
+                                                        </div>
+                                                        <span className={`text-sm transition-colors ${isSelected ? 'text-white font-medium' : 'text-gray-300 group-hover:text-white'}`}>
+                                                            {mission}
+                                                        </span>
+                                                    </div>
+
+                                                    {!isSelected && (
+                                                        <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <Plus className="w-3.5 h-3.5" />
+                                                            Ambil
+                                                        </button>
+                                                    )}
                                                 </div>
-                                                <span className="text-gray-300 text-sm group-hover:text-white transition-colors">{mission}</span>
-                                            </div>
-                                        ))
+                                            );
+                                        })
                                     ) : (
                                         <div className="text-center py-8 text-white/40 italic">
                                             Belum ada misi khusus untuk level ini.
@@ -190,8 +226,8 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore }: Mission
                                             <Trophy className="w-5 h-5 text-white" />
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-bold text-white">🎯 Misi Spesial</h3>
-                                            <p className="text-xs text-white/50">Tantangan opsional dengan hadiah XP besar!</p>
+                                            <h3 className="text-lg font-bold text-white">🎯 Tantangan Tambahan</h3>
+                                            <p className="text-xs text-white/50">Bonus XP untuk pencapaian ekstra!</p>
                                         </div>
                                     </div>
 
@@ -250,7 +286,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore }: Mission
                             onClick={onClose}
                             className="w-full py-3 bg-white text-indigo-900 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-100 active:scale-95 transition-all"
                         >
-                            <span>Siap, Laksanakan!</span>
+                            <span>Simpan Rencana</span>
                         </button>
                     </div>
                 </motion.div>

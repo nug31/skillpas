@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Confetti from 'react-confetti';
 import { Rocket, Star, Trophy, Zap, Sparkles } from 'lucide-react';
 import type { RaceParticipant } from '../types';
+import { useRaceSound } from '../hooks/useRaceSound';
 
 interface SpaceRocketRaceProps {
     participants: RaceParticipant[];
@@ -31,6 +32,7 @@ export function SpaceRocketRace({
     autoStart = true,
     trigger = false
 }: SpaceRocketRaceProps) {
+    const { playBeep, playStart, playVictory } = useRaceSound();
     const [startRace, setStartRace] = useState(false);
     const [countdown, setCountdown] = useState<number | null>(null);
     const [showConfetti, setShowConfetti] = useState(false);
@@ -60,23 +62,28 @@ export function SpaceRocketRace({
 
     useEffect(() => {
         if (countdown !== null && countdown > 0) {
+            playBeep(660, 0.1);
             const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
             return () => clearTimeout(timer);
         } else if (countdown === 0) {
+            playStart();
             const timer = setTimeout(() => {
                 setCountdown(null);
                 setStartRace(true);
             }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [countdown]);
+    }, [countdown, playBeep, playStart]);
 
     useEffect(() => {
         if (startRace && winner) {
-            const timer = setTimeout(() => setShowConfetti(true), 2500);
+            const timer = setTimeout(() => {
+                setShowConfetti(true);
+                playVictory();
+            }, 2500);
             return () => clearTimeout(timer);
         }
-    }, [startRace, winner]);
+    }, [startRace, winner, playVictory]);
 
     return (
         <div className="relative min-h-[700px] card-glass backdrop-blur-xl rounded-2xl border border-slate-300 dark:border-white/10 p-6 sm:p-8 overflow-hidden shadow-2xl">
@@ -189,8 +196,8 @@ export function SpaceRocketRace({
                             {/* Rank & Name */}
                             <div className="w-32 flex items-center gap-3">
                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${isLeader
-                                        ? 'bg-yellow-400 text-yellow-900 shadow-[0_0_15px_rgba(250,204,21,0.5)]'
-                                        : 'bg-white/10 text-white/70 [.theme-clear_&]:bg-slate-200 [.theme-clear_&]:text-slate-600'
+                                    ? 'bg-yellow-400 text-yellow-900 shadow-[0_0_15px_rgba(250,204,21,0.5)]'
+                                    : 'bg-white/10 text-white/70 [.theme-clear_&]:bg-slate-200 [.theme-clear_&]:text-slate-600'
                                     }`}>
                                     {index + 1}
                                 </div>

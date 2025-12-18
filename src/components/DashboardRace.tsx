@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Flag, Trophy, BarChart3, Medal, Users, LayoutDashboard, Target } from 'lucide-react';
 import type { Jurusan, RaceParticipant, StudentStats } from '../types';
@@ -7,6 +7,7 @@ import { Podium } from './Podium';
 import { StudentXPBar } from './StudentXPBar';
 import { CompetencyRadar } from './CompetencyRadar';
 import { FocusJourney } from './FocusJourney';
+import { useAuth } from '../contexts/AuthContext';
 import * as Icons from 'lucide-react';
 
 
@@ -38,7 +39,31 @@ const colorPalette = [
 ];
 
 export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetition = true, onContinue }: DashboardRaceProps) {
+    const { user } = useAuth();
     const [viewMode, setViewMode] = useState<ViewMode>('race');
+    const [selectedKRS, setSelectedKRS] = useState<string[]>([]);
+
+    // Load KRS
+    useEffect(() => {
+        const loadKRS = () => {
+            if (myStats && user) {
+                const storageKey = `skillpas_krs_${user.name === 'Siswa Mesin' ? 'siswa_mesin' : user.id}`;
+                const saved = localStorage.getItem(storageKey);
+                if (saved) {
+                    try {
+                        setSelectedKRS(JSON.parse(saved));
+                    } catch (e) {
+                        setSelectedKRS([]);
+                    }
+                } else {
+                    setSelectedKRS([]);
+                }
+            }
+        };
+        loadKRS();
+        window.addEventListener('krs-updated', loadKRS);
+        return () => window.removeEventListener('krs-updated', loadKRS);
+    }, [myStats, user]);
 
     // Stats Calculation
     const totalJurusan = jurusanData.length;
@@ -158,18 +183,63 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                                 />
                             </div>
 
+                            {/* KRS / Learning Plan Widget */}
+                            <div className="card-glass p-6 rounded-2xl relative overflow-hidden bg-gradient-to-br from-slate-900/50 to-slate-800/50 border-white/5">
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-indigo-500/20 rounded-lg text-indigo-400">
+                                            <Icons.BookOpen className="w-5 h-5" />
+                                        </div>
+                                        <h3 className="text-lg font-bold text-white">Rencana Belajar Saya</h3>
+                                    </div>
+                                    <button
+                                        onClick={onContinue}
+                                        className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1"
+                                    >
+                                        Ubah Rencana <Icons.ChevronRight className="w-3 h-3" />
+                                    </button>
+                                </div>
 
+                                <div className="space-y-3">
+                                    {selectedKRS.length > 0 ? (
+                                        selectedKRS.map((skill, idx) => (
+                                            <div
+                                                key={idx}
+                                                className="flex items-center gap-4 p-3.5 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all group"
+                                            >
+                                                <div className="w-6 h-6 rounded-full border-2 border-indigo-500/30 flex items-center justify-center group-hover:border-indigo-500/60 transition-colors">
+                                                    <div className="w-2 h-2 rounded-full bg-indigo-500/40 group-hover:bg-indigo-500 group-hover:scale-125 transition-all"></div>
+                                                </div>
+                                                <span className="text-sm text-gray-300 group-hover:text-white transition-colors flex-1">{skill}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="text-center py-8 px-4 rounded-xl border border-dashed border-white/10 bg-white/5">
+                                            <Icons.PlusCircle className="w-10 h-10 text-white/20 mx-auto mb-3" />
+                                            <p className="text-sm text-white/40 mb-4 italic">Belum ada kompetensi yang ditargetkan.</p>
+                                            <button
+                                                onClick={onContinue}
+                                                className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-bold transition-all shadow-lg"
+                                            >
+                                                Susun KRS Sekarang
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
 
                         {/* Right: Competency Radar */}
-                        <div className="card-glass p-1 rounded-2xl flex flex-col justify-center items-center relative min-h-[300px]">
-                            <div className="absolute top-4 left-4 flex items-center gap-2">
-                                <div className="p-1.5 bg-indigo-500/10 rounded-lg text-indigo-400">
-                                    <Icons.BarChart3 className="w-4 h-4" />
+                        <div className="card-glass p-0 rounded-2xl flex flex-col justify-center items-center relative min-h-[400px]">
+                            <div className="absolute top-6 left-6 flex items-center gap-2">
+                                <div className="p-1.5 bg-emerald-500/10 rounded-lg text-emerald-400">
+                                    <Icons.Target className="w-4 h-4" />
                                 </div>
-                                <span className="text-xs font-bold uppercase tracking-widest text-[color:var(--text-muted)]">Skill Matrix</span>
+                                <span className="text-xs font-bold uppercase tracking-widest text-[color:var(--text-muted)]">Matrix Radar</span>
                             </div>
-                            <CompetencyRadar score={myStats.score} />
+                            <div className="w-full h-full flex items-center justify-center p-4">
+                                <CompetencyRadar score={myStats.score} />
+                            </div>
                         </div>
                     </div>
                 </div>

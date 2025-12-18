@@ -423,6 +423,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
             onClose={() => setShowMissionModal(false)}
             jurusan={jurusanList[0]}
             currentScore={myStats.score}
+            siswaId={user.name === 'Siswa Mesin' ? 'siswa_mesin' : user.id}
           />
         )}
 

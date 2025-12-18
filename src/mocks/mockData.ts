@@ -196,10 +196,253 @@ export const mockSkillSiswa: SkillSiswa[] = [
 ];
 
 // per-jurusan overrides for level descriptions
-export const mockLevelOverrides: Array<{ jurusan_id: string; level_id: string; hasil_belajar?: string; criteria?: string[]; soft_skill?: string }> = [
-  { jurusan_id: 'j1', level_id: 'lvl-master', hasil_belajar: 'Mahir merancang dan merawat sistem mekanik tingkat lanjut', criteria: ['Mahir merancang sistem mekanik', 'Perawatan mesin tingkat lanjut', 'Analisis getaran mesin'], soft_skill: 'Kepemimpinan teknis' },
-  { jurusan_id: 'j4', level_id: 'lvl-adv', hasil_belajar: 'Mampu merancang sirkuit kontrol dan mengoperasikan PLC', criteria: ['Merancang sirkuit kontrol', 'Pemrograman PLC dasar', 'Troubleshooting sistem kontrol'], soft_skill: 'Analisis sistem' },
-];
+export const mockLevelOverrides: Array<{
+  jurusan_id: string;
+  level_id: string;
+  hasil_belajar?: string;
+  criteria?: string[];
+  soft_skill?: string;
+}> = [
+    // j1: Teknik Mesin
+    {
+      jurusan_id: 'j1',
+      level_id: 'lvl-basic',
+      hasil_belajar: 'Memahami dasar mekanika & alat ukur',
+      criteria: ['Memahami dasar mekanika', 'Mengenal alat ukur presisi (jangka sorong, mikrometer)'],
+      soft_skill: 'Kedisiplinan bengkel'
+    },
+    {
+      jurusan_id: 'j1',
+      level_id: 'lvl-inter',
+      hasil_belajar: 'Mampu pengoperasian mesin dasar',
+      criteria: ['Mampu melakukan pengefraisan dasar', 'Menggunakan mesin bubut dengan benar', 'Memahami K3 di bengkel mesin'],
+      soft_skill: 'Ketelitian kerja'
+    },
+    {
+      jurusan_id: 'j1',
+      level_id: 'lvl-adv',
+      hasil_belajar: 'Mengoperasikan mesin CNC & Analisis',
+      criteria: ['Mengoperasikan mesin CNC', 'Menganalisis kerusakan komponen mesin', 'Bekerja mandiri pada proyek perakitan'],
+      soft_skill: 'Penyelesaian masalah teknis'
+    },
+    {
+      jurusan_id: 'j1',
+      level_id: 'lvl-master',
+      hasil_belajar: 'Mahir merancang dan merawat sistem mekanik tingkat lanjut',
+      criteria: ['Mahir merancang sistem mekanik', 'Perawatan mesin tingkat lanjut', 'Inovasi perancangan alat bantu mesin', 'Manajemen workshop skala kecil'],
+      soft_skill: 'Kepemimpinan teknis'
+    },
+
+    // j2: Teknik Kendaraan Ringan (TKR)
+    {
+      jurusan_id: 'j2',
+      level_id: 'lvl-basic',
+      hasil_belajar: 'Memahami prinsip mesin & alat bengkel',
+      criteria: ['Memahami prinsip mesin 4 tak', 'Mengenal kunci-kunci bengkel otomotif'],
+      soft_skill: 'Kebersihan area kerja'
+    },
+    {
+      jurusan_id: 'j2',
+      level_id: 'lvl-inter',
+      hasil_belajar: 'Melakukan service berkala dasar',
+      criteria: ['Melakukan tune-up mesin bensin', 'Menggunakan scanner diagnostik dasar', 'Memahami K3 otomotif'],
+      soft_skill: 'Kerjasama tim'
+    },
+    {
+      jurusan_id: 'j2',
+      level_id: 'lvl-adv',
+      hasil_belajar: 'Overhaul & Diagnosis Sistem EFI',
+      criteria: ['Overhaul mesin kendaraan', 'Menganalisis gangguan sistem EFI/Common Rail', 'Bekerja mandiri pada servis berkala'],
+      soft_skill: 'Analisis kerusakan'
+    },
+    {
+      jurusan_id: 'j2',
+      level_id: 'lvl-master',
+      hasil_belajar: 'Ahli diagnosis & Manajemen Bengkel',
+      criteria: ['Ahli diagnosis sistem hybrid/listrik', 'Mentoring mekanik junior', 'Inovasi efisiensi bahan bakar', 'Manajemen bengkel servis'],
+      soft_skill: 'Mentoring teknis'
+    },
+
+    // j3: Teknik Sepeda Motor (TSM)
+    {
+      jurusan_id: 'j3',
+      level_id: 'lvl-basic',
+      hasil_belajar: 'Komponen motor & alat servis dasar',
+      criteria: ['Memahami komponen dasar motor', 'Mengenal alat servis motor'],
+      soft_skill: 'Etika kerja'
+    },
+    {
+      jurusan_id: 'j3',
+      level_id: 'lvl-inter',
+      hasil_belajar: 'Servis transmisi & Kelistrikan motor',
+      criteria: ['Melakukan servis CVT/Rantai', 'Menggunakan multimeter pada kelistrikan motor', 'Memahami K3 perbengkelan'],
+      soft_skill: 'Komunikasi pelanggan'
+    },
+    {
+      jurusan_id: 'j3',
+      level_id: 'lvl-adv',
+      hasil_belajar: 'Diagnosis Injeksi & Transmisi otomatis',
+      criteria: ['Diagnosis sistem PGM-FI', 'Menganalisis kerusakan transmisi otomatis', 'Bekerja mandiri pada restorasi mesin'],
+      soft_skill: 'Ketekunan mendalam'
+    },
+    {
+      jurusan_id: 'j3',
+      level_id: 'lvl-master',
+      hasil_belajar: 'Ahli modifikasi Aman & Manajemen Gerai',
+      criteria: ['Ahli modifikasi performa aman', 'Mentoring teknisi AHASS junior', 'Inovasi sistem pengereman', 'Manajemen gerai suku cadang'],
+      soft_skill: 'Kreativitas teknis'
+    },
+
+    // j4: Teknik Elektronika Industri (Elind)
+    {
+      jurusan_id: 'j4',
+      level_id: 'lvl-basic',
+      hasil_belajar: 'Komponen elektronika & alat ukur',
+      criteria: ['Memahami komponen elektronika pasif', 'Mengenal alat ukur multimeter/osiloskop'],
+      soft_skill: 'Fokus detail'
+    },
+    {
+      jurusan_id: 'j4',
+      level_id: 'lvl-inter',
+      hasil_belajar: 'Reading Schematics & Soldering',
+      criteria: ['Membaca skema PCB', 'Menyolder komponen SMD dengan benar', 'Memahami K3 kelistrikan'],
+      soft_skill: 'Kesabaran tinggi'
+    },
+    {
+      jurusan_id: 'j4',
+      level_id: 'lvl-adv',
+      hasil_belajar: 'Mampu merancang sirkuit kontrol dan mengoperasikan PLC',
+      criteria: ['Merancang sirkuit kontrol', 'Pemrograman PLC dasar', 'Troubleshooting sistem kontrol'],
+      soft_skill: 'Analisis sistem'
+    },
+    {
+      jurusan_id: 'j4',
+      level_id: 'lvl-master',
+      hasil_belajar: 'Desain Robotika & Manajemen IoT',
+      criteria: ['Desain sistem robotika industri', 'Mentoring teknisi otomasi', 'Inovasi Internet of Things (IoT)', 'Manajemen proyek instalasi sensor'],
+      soft_skill: 'Visi teknologi'
+    },
+
+    // j5: Teknik Instalasi Tenaga Listrik
+    {
+      jurusan_id: 'j5',
+      level_id: 'lvl-basic',
+      hasil_belajar: 'Hukum dasar listrik & Material',
+      criteria: ['Memahami hukum Ohm & Kirchhoff', 'Mengenal material instalasi listrik'],
+      soft_skill: 'Kesadaran bahaya'
+    },
+    {
+      jurusan_id: 'j5',
+      level_id: 'lvl-inter',
+      hasil_belajar: 'Instalasi Penerangan & Alat ukur daya',
+      criteria: ['Memasang instalasi penerangan', 'Menggunakan tang ampere dan megger', 'Memahami K3 ketenagalistrikan'],
+      soft_skill: 'Prosedur keselamatan'
+    },
+    {
+      jurusan_id: 'j5',
+      level_id: 'lvl-adv',
+      hasil_belajar: 'Instalasi Motor 3 FASA & Panel',
+      criteria: ['Instalasi motor listrik 3 fasa', 'Menganalisis gangguan panel distribusi', 'Bekerja mandiri pada instalasi gedung'],
+      soft_skill: 'Tanggung jawab'
+    },
+    {
+      jurusan_id: 'j5',
+      level_id: 'lvl-master',
+      hasil_belajar: 'Desain PLTS & Manajemen Energi',
+      criteria: ['Desain sistem PLTS mandiri', 'Mentoring instalatur junior', 'Inovasi efisiensi energi', 'Manajemen proyek instalasi industri'],
+      soft_skill: 'Pengambilan keputusan'
+    },
+
+    // j6: Teknik Kimia Industri
+    {
+      jurusan_id: 'j6',
+      level_id: 'lvl-basic',
+      hasil_belajar: 'Stoikiometri & Alat gelas lab',
+      criteria: ['Memahami konsep stoikiometri', 'Mengenal alat gelas laboratorium'],
+      soft_skill: 'Kerapihan lab'
+    },
+    {
+      jurusan_id: 'j6',
+      level_id: 'lvl-inter',
+      hasil_belajar: 'Titrasi & Akurasi pengukuran',
+      criteria: ['Melakukan titrasi dengan akurat', 'Menggunakan neraca analitik dengan benar', 'Memahami K3 laboratorium kimia'],
+      soft_skill: 'Akurasi'
+    },
+    {
+      jurusan_id: 'j6',
+      level_id: 'lvl-adv',
+      hasil_belajar: 'Instrumen AAS/GC & Analisis bahan',
+      criteria: ['Pengoperasian instrumen AAS/GC', 'Menganalisis kualitas bahan baku', 'Bekerja mandiri pada proses distilasi'],
+      soft_skill: 'Berpikir kritis'
+    },
+    {
+      jurusan_id: 'j6',
+      level_id: 'lvl-master',
+      hasil_belajar: 'Optimasi Proses & Manajemen Limbah',
+      criteria: ['Ahli optimasi proses produksi', 'Mentoring analis laboratorium', 'Inovasi pengolahan limbah', 'Manajemen unit produksi kimia'],
+      soft_skill: 'Keberlanjutan/Sustainability'
+    },
+
+    // j7: Akuntansi
+    {
+      jurusan_id: 'j7',
+      level_id: 'lvl-basic',
+      hasil_belajar: 'Persamaan Dasar & Dokumen Transaksi',
+      criteria: ['Memahami persamaan dasar akuntansi', 'Mengenal dokumen transaksi keuangan'],
+      soft_skill: 'Kejujuran/Integritas'
+    },
+    {
+      jurusan_id: 'j7',
+      level_id: 'lvl-inter',
+      hasil_belajar: 'Jurnal, Buku Besar & Spreadsheet',
+      criteria: ['Menyusun jurnal umum & buku besar', 'Menggunakan aplikasi spreadsheet akuntansi', 'Memahami etika profesi akuntansi'],
+      soft_skill: 'Ketelitian angka'
+    },
+    {
+      jurusan_id: 'j7',
+      level_id: 'lvl-adv',
+      hasil_belajar: 'Laporan Keuangan & Rekonsiliasi',
+      criteria: ['Menyusun laporan keuangan lengkap', 'Menganalisis rasio keuangan', 'Bekerja mandiri pada rekonsiliasi bank'],
+      soft_skill: 'Analisis data'
+    },
+    {
+      jurusan_id: 'j7',
+      level_id: 'lvl-master',
+      hasil_belajar: 'Audit Internal & Sistem Digital',
+      criteria: ['Ahli audit internal dasar', 'Mentoring staf administrasi', 'Inovasi sistem akuntansi digital', 'Manajemen perpajakan skala kecil'],
+      soft_skill: 'Kepemimpinan strategis'
+    },
+
+    // j8: Perhotelan
+    {
+      jurusan_id: 'j8',
+      level_id: 'lvl-basic',
+      hasil_belajar: 'Personal Grooming & Housekeeping',
+      criteria: ['Memahami standar personal grooming', 'Mengenal peralatan housekeeping'],
+      soft_skill: 'Ramah tamah'
+    },
+    {
+      jurusan_id: 'j8',
+      level_id: 'lvl-inter',
+      hasil_belajar: 'Make up Room & Reservasi',
+      criteria: ['Melakukan make up room sesuai SOP', 'Menggunakan sistem reservasi hotel', 'Memahami K3 keramahtamahan'],
+      soft_skill: 'Layanan prima'
+    },
+    {
+      jurusan_id: 'j8',
+      level_id: 'lvl-adv',
+      hasil_belajar: 'Guest Handling & Analisis Hunian',
+      criteria: ['Menangani keluhan tamu (Guest Handling)', 'Menganalisis tingkat hunian kamar', 'Bekerja mandiri pada shift operasional'],
+      soft_skill: 'Empati'
+    },
+    {
+      jurusan_id: 'j8',
+      level_id: 'lvl-master',
+      hasil_belajar: 'Banquet & Manajemen Front Office',
+      criteria: ['Ahli manajemen banquet', 'Mentoring staf operasional baru', 'Inovasi layanan customer experience', 'Manajemen operasional front office'],
+      soft_skill: 'Negosiasi'
+    },
+  ];
 
 export function getTopStudentForJurusan(jurusanId: string): { nama: string; skor: number; kelas?: string } | null {
   const students = mockSiswa.filter((s) => s.jurusan_id === jurusanId);

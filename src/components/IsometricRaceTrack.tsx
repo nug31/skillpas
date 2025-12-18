@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Confetti from 'react-confetti';
 import { Flag, Gauge, Trophy, Zap } from 'lucide-react';
 import type { RaceParticipant } from '../types';
+import { useRaceSound } from '../hooks/useRaceSound';
 
 interface IsometricRaceTrackProps {
     participants: RaceParticipant[];
@@ -31,6 +32,7 @@ export function IsometricRaceTrack({
     autoStart = true,
     trigger = false
 }: IsometricRaceTrackProps) {
+    const { playBeep, playStart, playVictory } = useRaceSound();
     const [startRace, setStartRace] = useState(false);
     const [countdown, setCountdown] = useState<number | null>(null);
     const [showConfetti, setShowConfetti] = useState(false);
@@ -60,23 +62,28 @@ export function IsometricRaceTrack({
 
     useEffect(() => {
         if (countdown !== null && countdown > 0) {
+            playBeep(440, 0.1);
             const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
             return () => clearTimeout(timer);
         } else if (countdown === 0) {
+            playStart();
             const timer = setTimeout(() => {
                 setCountdown(null);
                 setStartRace(true);
             }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [countdown]);
+    }, [countdown, playBeep, playStart]);
 
     useEffect(() => {
         if (startRace && winner) {
-            const timer = setTimeout(() => setShowConfetti(true), 2500);
+            const timer = setTimeout(() => {
+                setShowConfetti(true);
+                playVictory();
+            }, 2500);
             return () => clearTimeout(timer);
         }
-    }, [startRace, winner]);
+    }, [startRace, winner, playVictory]);
 
     return (
         <div className="relative min-h-[700px] card-glass backdrop-blur-xl rounded-2xl border border-slate-300 dark:border-white/10 p-6 sm:p-8 overflow-hidden shadow-2xl">
@@ -259,8 +266,8 @@ export function IsometricRaceTrack({
                                         {/* Rank Number */}
                                         <div
                                             className={`absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isLeader
-                                                    ? 'bg-yellow-400 text-yellow-900'
-                                                    : 'bg-slate-500/50 text-white/70 [.theme-clear_&]:bg-slate-400 [.theme-clear_&]:text-white'
+                                                ? 'bg-yellow-400 text-yellow-900'
+                                                : 'bg-slate-500/50 text-white/70 [.theme-clear_&]:bg-slate-400 [.theme-clear_&]:text-white'
                                                 }`}
                                             style={{ transform: 'translateZ(2px)' }}
                                         >
