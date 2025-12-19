@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { X, Target, CheckCircle2, Trophy, Users, Award, Plus, Check, Info } from 'lucide-react';
+import { X, Target, Trophy, Users, Award, Plus, Check, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Jurusan, LevelSkill } from '../types';
 import { supabase, isMockMode } from '../lib/supabase';
@@ -54,14 +54,14 @@ interface MissionModalProps {
 
 export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId = 'guest' }: MissionModalProps) {
     const [loading, setLoading] = useState(true);
+    const [allLevels, setAllLevels] = useState<LevelSkill[]>([]);
     const [nextLevel, setNextLevel] = useState<LevelSkill | null>(null);
-    const [missions, setMissions] = useState<string[]>([]);
     const [selectedKRS, setSelectedKRS] = useState<string[]>([]);
     const storageKey = `skillpas_krs_${siswaId}`;
 
     useEffect(() => {
         if (isOpen) {
-            loadNextMission();
+            loadAllLevels();
             const saved = localStorage.getItem(storageKey);
             if (saved) {
                 try {
@@ -73,7 +73,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId =
         }
     }, [isOpen, jurusan.id, currentScore, storageKey]);
 
-    async function loadNextMission() {
+    async function loadAllLevels() {
         try {
             setLoading(true);
             let levels: LevelSkill[] = [];
@@ -84,7 +84,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId =
                 const { data, error } = await supabase
                     .from('level_skill')
                     .select('*')
-                    .order('min_skor', { ascending: true });
+                    .order('urutan', { ascending: true });
 
                 if (error) throw error;
                 levels = (data || []).map((l: any) => {
@@ -101,15 +101,14 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId =
                     return { ...l, criteria };
                 }) as LevelSkill[];
             }
+            setAllLevels(levels);
 
-            let target = levels.find(l => currentScore >= l.min_skor && currentScore <= l.max_skor);
-            if (!target && levels.length > 0) target = levels[levels.length - 1];
-
-            setNextLevel(target || null);
-            setMissions(target?.criteria || []);
+            let currentLevel = levels.find(l => currentScore >= l.min_skor && currentScore <= l.max_skor);
+            if (!currentLevel && levels.length > 0) currentLevel = levels[levels.length - 1];
+            setNextLevel(currentLevel || null);
 
         } catch (error) {
-            console.error("Failed to load missions", error);
+            console.error("Failed to load levels", error);
         } finally {
             setLoading(false);
         }
@@ -120,8 +119,8 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId =
         if (newKRS.includes(mission)) {
             newKRS = newKRS.filter(m => m !== mission);
         } else {
-            if (newKRS.length >= 5) {
-                alert("Maksimal 5 target kompetensi dalam sekali ambil.");
+            if (newKRS.length >= 10) { // Increased to 10 for cross-level
+                alert("Maksimal 10 target kompetensi dalam sekali ambil.");
                 return;
             }
             newKRS.push(mission);
@@ -142,7 +141,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId =
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.9, opacity: 0 }}
-                    className="w-full max-w-lg bg-[#0f172a] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+                    className="w-full max-w-xl bg-[#0f172a] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
                 >
                     {/* Header */}
                     <div className="p-6 bg-gradient-to-r from-indigo-600 to-blue-600 relative overflow-hidden shrink-0">
@@ -159,14 +158,14 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId =
                                 <Target className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <div className="text-blue-100 text-sm font-bold tracking-wider uppercase">KRS Skill: Rencana Capaian</div>
-                                <h2 className="text-2xl font-black text-white">{nextLevel?.nama_level || 'Loading...'}</h2>
+                                <div className="text-blue-100 text-sm font-bold tracking-wider uppercase">KRS Skill: Bebas Pilih Target</div>
+                                <h2 className="text-2xl font-black text-white">Susun Rencana Belajarmu</h2>
                             </div>
                         </div>
                     </div>
 
                     {/* Body */}
-                    <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+                    <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
                         {loading ? (
                             <div className="flex justify-center py-10">
                                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
@@ -176,101 +175,85 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId =
                                 <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 flex gap-3">
                                     <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
                                     <p className="text-sm text-blue-200 leading-relaxed">
-                                        Pilih kriteria yang ingin kamu targetkan untuk dikuasai. Target yang dipilih akan muncul di dashboardmu. ({selectedKRS.length}/5)
+                                        Sekarang kamu bebas memilih kriteria dari level manapun! Klik kriteria untuk masuk ke rencana belajarmu. ({selectedKRS.length}/10)
                                     </p>
                                 </div>
 
-                                <div className="space-y-3">
-                                    {missions.length > 0 ? (
-                                        missions.map((mission, idx) => {
-                                            const isSelected = selectedKRS.includes(mission);
-                                            return (
+                                {allLevels.map((level) => {
+                                    const isCurrentLevel = nextLevel?.id === level.id;
+                                    return (
+                                        <div key={level.id} className="space-y-4">
+                                            <div className="flex items-center gap-3">
                                                 <div
-                                                    key={idx}
-                                                    onClick={() => toggleKRS(mission)}
-                                                    className={`flex items-start justify-between gap-4 p-4 rounded-xl border transition-all cursor-pointer group ${isSelected
-                                                            ? 'bg-indigo-500/20 border-indigo-500 shadow-[inset_0_0_10px_rgba(99,102,241,0.2)]'
-                                                            : 'bg-white/5 border-white/5 hover:bg-white/10'
-                                                        }`}
+                                                    className="px-3 py-1 rounded-lg text-xs font-black text-white shadow-lg shrink-0"
+                                                    style={{ backgroundColor: level.badge_color }}
                                                 >
-                                                    <div className="flex gap-4">
-                                                        <div className={`mt-0.5 p-1 rounded-full border transition-all ${isSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-indigo-500/50 text-indigo-400 group-hover:bg-indigo-500/20'
-                                                            }`}>
-                                                            {isSelected ? <Check className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
-                                                        </div>
-                                                        <span className={`text-sm transition-colors ${isSelected ? 'text-white font-medium' : 'text-gray-300 group-hover:text-white'}`}>
-                                                            {mission}
-                                                        </span>
-                                                    </div>
-
-                                                    {!isSelected && (
-                                                        <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                                                            <Plus className="w-3.5 h-3.5" />
-                                                            Ambil
-                                                        </button>
-                                                    )}
+                                                    {level.badge_name.toUpperCase()}
                                                 </div>
-                                            );
-                                        })
-                                    ) : (
-                                        <div className="text-center py-8 text-white/40 italic">
-                                            Belum ada misi khusus untuk level ini.
-                                        </div>
-                                    )}
-                                </div>
+                                                <h3 className="text-white font-bold text-lg truncate">{level.nama_level}</h3>
+                                                {isCurrentLevel && (
+                                                    <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded border border-emerald-500/30 whitespace-nowrap">
+                                                        LEVEL KAMU 📍
+                                                    </span>
+                                                )}
+                                                <div className="flex-1 h-px bg-white/10"></div>
+                                            </div>
 
-                                {/* Special Missions / Challenge Section */}
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                {level.criteria && level.criteria.map((mission, idx) => {
+                                                    const isSelected = selectedKRS.includes(mission);
+                                                    return (
+                                                        <div
+                                                            key={`${level.id}-${idx}`}
+                                                            onClick={() => toggleKRS(mission)}
+                                                            className={`flex items-start justify-between gap-3 p-3.5 rounded-xl border transition-all cursor-pointer group ${isSelected
+                                                                ? 'bg-indigo-500/20 border-indigo-500 shadow-[inset_0_0_10px_rgba(99,102,241,0.2)]'
+                                                                : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20'
+                                                                }`}
+                                                        >
+                                                            <div className="flex gap-3">
+                                                                <div className={`mt-0.5 p-1 rounded-full border transition-all shrink-0 ${isSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-indigo-500/20 text-indigo-400/50 group-hover:border-indigo-500/50 group-hover:text-indigo-400'
+                                                                    }`}>
+                                                                    {isSelected ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                                                                </div>
+                                                                <span className={`text-xs sm:text-sm transition-colors ${isSelected ? 'text-white font-medium' : 'text-gray-400 group-hover:text-gray-200'}`}>
+                                                                    {mission}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+
+                                {/* Extra Missions */}
                                 <div className="mt-8 pt-6 border-t border-white/10">
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="p-2 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg shadow-lg">
                                             <Trophy className="w-5 h-5 text-white" />
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-bold text-white">🎯 Tantangan Tambahan</h3>
-                                            <p className="text-xs text-white/50">Bonus XP untuk pencapaian ekstra!</p>
+                                            <h3 className="text-lg font-bold text-white">🎯 Tantangan Global</h3>
                                         </div>
                                     </div>
 
-                                    <div className="space-y-3">
+                                    <div className="grid grid-cols-1 gap-3">
                                         {specialMissions.map((mission) => (
                                             <div
                                                 key={mission.id}
-                                                className="relative p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 hover:border-purple-500/40 hover:from-purple-500/20 hover:to-pink-500/20 transition-all group cursor-pointer"
+                                                className="relative p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 hover:border-purple-500/40 transition-all group cursor-pointer"
                                             >
                                                 <div className="flex items-start gap-4">
-                                                    <div className={`p-2.5 rounded-xl shadow-lg ${mission.difficulty === 'hard'
-                                                        ? 'bg-gradient-to-br from-red-500 to-orange-500'
-                                                        : mission.difficulty === 'medium'
-                                                            ? 'bg-gradient-to-br from-yellow-400 to-orange-500'
-                                                            : 'bg-gradient-to-br from-green-400 to-emerald-500'
-                                                        } text-white`}>
+                                                    <div className={`p-2 rounded-xl shadow-lg ${mission.difficulty === 'hard' ? 'bg-red-500' : mission.difficulty === 'medium' ? 'bg-amber-500' : 'bg-emerald-500'} text-white`}>
                                                         {mission.icon}
                                                     </div>
                                                     <div className="flex-1">
-                                                        <div className="flex items-center gap-2 mb-1">
-                                                            <h4 className="font-bold text-white group-hover:text-purple-200 transition-colors">
-                                                                {mission.title}
-                                                            </h4>
-                                                            <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded-full ${mission.difficulty === 'hard'
-                                                                ? 'bg-red-500/20 text-red-400'
-                                                                : mission.difficulty === 'medium'
-                                                                    ? 'bg-yellow-500/20 text-yellow-400'
-                                                                    : 'bg-green-500/20 text-green-400'
-                                                                }`}>
-                                                                {mission.difficulty === 'hard' ? 'Sulit' : mission.difficulty === 'medium' ? 'Sedang' : 'Mudah'}
-                                                            </span>
-                                                        </div>
-                                                        <p className="text-sm text-white/60 mb-2">{mission.description}</p>
-                                                        {mission.deadline && (
-                                                            <span className="text-xs text-white/40">⏱️ Batas waktu: {mission.deadline}</span>
-                                                        )}
+                                                        <h4 className="font-bold text-white text-sm">{mission.title}</h4>
+                                                        <p className="text-xs text-white/50">{mission.description}</p>
                                                     </div>
-                                                    <div className="text-right">
-                                                        <div className="inline-flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full shadow-lg shadow-yellow-500/25">
-                                                            <span className="text-sm font-black text-black">+{mission.xpReward}</span>
-                                                            <span className="text-xs font-bold text-black/70">XP</span>
-                                                        </div>
-                                                    </div>
+                                                    <div className="bg-yellow-400/10 text-yellow-400 px-2 py-1 rounded text-[10px] font-black">+{mission.xpReward} XP</div>
                                                 </div>
                                             </div>
                                         ))}
