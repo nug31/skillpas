@@ -5,12 +5,14 @@ export interface User {
     name: string;
     role: 'student' | 'teacher';
     jurusan_id?: string;
+    avatar_url?: string;
+    photo_url?: string;
 }
 
 // Mock users for authentication
 export const mockUsers: User[] = [
     // Student accounts (one per jurusan)
-    { id: 'u-s1', username: 'siswa_mesin', password: '123', name: 'Siswa Mesin', role: 'student', jurusan_id: 'j1' },
+    { id: 'u-s1', username: 'siswa_mesin', password: '123', name: 'Siswa Mesin', role: 'student', jurusan_id: 'j1', avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix', photo_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop' },
     { id: 'u-s2', username: 'siswa_tkr', password: '123', name: 'Siswa TKR', role: 'student', jurusan_id: 'j2' },
     { id: 'u-s3', username: 'siswa_tsm', password: '123', name: 'Siswa TSM', role: 'student', jurusan_id: 'j3' },
     { id: 'u-s4', username: 'siswa_elind', password: '123', name: 'Siswa Elind', role: 'student', jurusan_id: 'j4' },
@@ -30,7 +32,7 @@ export const mockUsers: User[] = [
     { id: 'u-g8', username: 'guru_hotel', password: '123', name: 'Guru Perhotelan', role: 'teacher', jurusan_id: 'j8' },
 
     // Admin teacher (can see all)
-    { id: 'u-guru', username: 'guru', password: '123', name: 'Guru', role: 'teacher' },
+    { id: 'u-guru', username: 'guru', password: '123', name: 'Guru', role: 'teacher', photo_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop' },
 ];
 
 export function authenticateUser(username: string, password: string, selectedRole?: 'student' | 'teacher'): User | null {

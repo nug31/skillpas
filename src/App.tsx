@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import type { Jurusan } from './types';
 import smkLogo from './assets/smk-logo.png';
 import { LogOut } from 'lucide-react';
+import { ProfileAvatar } from './components/ProfileAvatar';
 
 function AppContent() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -102,12 +103,14 @@ function AppContent() {
               >
                 <LogOut className="w-4 h-4" />
               </button>
-              <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br ${user?.role === 'teacher'
-                ? 'from-indigo-400 to-blue-400'
-                : 'from-purple-400 to-pink-400'
-                } border border-white/6 flex items-center justify-center text-xs font-semibold`}>
-                {user?.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
-              </div>
+              <ProfileAvatar
+                name={user?.name || ''}
+                avatarUrl={(user as any)?.avatar_url}
+                photoUrl={(user as any)?.photo_url}
+                size="sm"
+                variant={user?.role === 'teacher' ? 'professional' : 'gamified'}
+                className="border border-white/6"
+              />
             </div>
           </div>
         </div>

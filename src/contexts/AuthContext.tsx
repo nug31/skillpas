@@ -6,6 +6,7 @@ interface AuthContextType {
     user: User | null;
     login: (username: string, password: string, role?: 'student' | 'teacher') => Promise<boolean>;
     logout: () => void;
+    updateUser: (updates: Partial<User>) => void;
     isAuthenticated: boolean;
     isTeacher: boolean;
     isStudent: boolean;
@@ -55,10 +56,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    const updateUser = (updates: Partial<User>) => {
+        if (!user) return;
+        const updatedUser = { ...user, ...updates };
+        setUser(updatedUser);
+        try {
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(updatedUser));
+            // Trigger storage event for other components if needed
+            window.dispatchEvent(new Event('storage'));
+        } catch (error) {
+            console.error('Failed to update user in storage:', error);
+        }
+    };
+
     const value: AuthContextType = {
         user,
         login,
         logout,
+        updateUser,
         isAuthenticated: user !== null,
         isTeacher: user?.role === 'teacher',
         isStudent: user?.role === 'student',

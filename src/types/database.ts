@@ -77,6 +77,8 @@ export interface Database {
           kelas: string
           jurusan_id: string
           created_at: string
+          avatar_url?: string
+          photo_url?: string
         }
         Insert: {
           id?: string
@@ -84,6 +86,8 @@ export interface Database {
           kelas: string
           jurusan_id: string
           created_at?: string
+          avatar_url?: string
+          photo_url?: string
         }
         Update: {
           id?: string
@@ -91,6 +95,8 @@ export interface Database {
           kelas?: string
           jurusan_id?: string
           created_at?: string
+          avatar_url?: string
+          photo_url?: string
         }
       }
       skill_siswa: {

@@ -7,6 +7,9 @@ import { JurusanCard } from './JurusanCard';
 import { DashboardRace } from './DashboardRace';
 import { useAuth } from '../contexts/AuthContext';
 import { MissionModal } from './MissionModal';
+import { ProfileAvatar } from './ProfileAvatar';
+import { AvatarSelectionModal } from './AvatarSelectionModal';
+import { Edit3 } from 'lucide-react';
 
 interface HomePageProps {
   onSelectJurusan: (jurusan: Jurusan, classFilter?: string) => void;
@@ -29,6 +32,8 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
   } | null>(null);
 
   const [showMissionModal, setShowMissionModal] = useState(false);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const { updateUser } = useAuth();
 
   const useMock = isMockMode;
 
@@ -340,18 +345,29 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
             <div className="card-glass rounded-xl-2 p-6 shadow-inner border border-white/6 animate-slideInRight stagger-delay-2 h-full flex flex-col justify-center">
               {user?.role === 'student' ? (
                 <div className="flex items-center gap-6">
-                  <div className="relative">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 p-1 shadow-lg shadow-indigo-500/20">
-                      <div className="w-full h-full rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center text-2xl font-bold text-white border border-white/10">
-                        {user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
-                      </div>
+                  <button
+                    onClick={() => setIsAvatarModalOpen(true)}
+                    className="relative group transition-transform hover:scale-105 active:scale-95"
+                    title="Ubah Avatar"
+                  >
+                    <ProfileAvatar
+                      name={user.name}
+                      avatarUrl={(user as any)?.avatar_url}
+                      photoUrl={(user as any)?.photo_url}
+                      level={myStats?.level}
+                      size="md"
+                      jurusanColor="#6366f1"
+                      className="shadow-xl"
+                    />
+                    <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                      <Edit3 className="w-5 h-5 text-white" />
                     </div>
                     {myStats && (
-                      <div className="absolute -bottom-2 -right-2 bg-yellow-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg border-2 border-[#0f172a]">
+                      <div className="absolute -bottom-1 -right-1 bg-yellow-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg border-2 border-[#0f172a] z-20">
                         #{myStats.rank}
                       </div>
                     )}
-                  </div>
+                  </button>
 
                   <div className="space-y-1">
                     <div className="text-sm text-white/60 font-medium tracking-wide">STUDENT PROFILE</div>
@@ -465,6 +481,16 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
             <p className="text-gray-500 text-lg">Tidak ada data jurusan</p>
           </div>
         )}
+        {/* Avatar Selection Modal */}
+        <AvatarSelectionModal
+          isOpen={isAvatarModalOpen}
+          onClose={() => setIsAvatarModalOpen(false)}
+          currentAvatar={(user as any)?.avatar_url}
+          onSelect={(url) => {
+            updateUser({ avatar_url: url } as any);
+            setIsAvatarModalOpen(false);
+          }}
+        />
       </div>
     </div>
   );

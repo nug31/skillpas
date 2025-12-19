@@ -131,7 +131,7 @@ export const mockSiswa: Siswa[] = [
   { id: 's-j8-c', nama: 'Fajar Prakoso', kelas: klassFor('j8'), jurusan_id: 'j8', created_at: new Date().toISOString() },
   { id: 's-j8-d', nama: 'Rani Melinda', kelas: klassFor('j8'), jurusan_id: 'j8', created_at: new Date().toISOString() },
   // --- This matches the username 'siswa_mesin' with name 'Siswa Mesin' in mockUsers.ts ---
-  { id: 's-j1-user', nama: 'Siswa Mesin', kelas: 'XII MESIN 1', jurusan_id: 'j1', created_at: new Date().toISOString() },
+  { id: 's-j1-user', nama: 'Siswa Mesin', kelas: 'XII MESIN 1', jurusan_id: 'j1', created_at: new Date().toISOString(), avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix', photo_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop' },
   // --- Hero students for other majors ---
   { id: 's-j2-user', nama: 'Siswa TKR', kelas: 'XII TKR 1', jurusan_id: 'j2', created_at: new Date().toISOString() },
   { id: 's-j3-user', nama: 'Siswa TSM', kelas: 'XII TSM 1', jurusan_id: 'j3', created_at: new Date().toISOString() },
@@ -483,6 +483,8 @@ export function getStudentListForJurusan(jurusanId: string): StudentListItem[] {
         badge_name,
         badge_color,
         level_name,
+        avatar_url: s.avatar_url,
+        photo_url: s.photo_url,
       } as StudentListItem;
     })
     .filter(Boolean) as StudentListItem[];

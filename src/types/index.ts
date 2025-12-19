@@ -9,6 +9,8 @@ export interface SiswaWithSkill extends Siswa {
   skill_siswa: SkillSiswa[];
   current_level?: LevelSkill;
   current_skor?: number;
+  avatar_url?: string;
+  photo_url?: string;
 }
 
 export interface JurusanWithStats extends Jurusan {
@@ -43,6 +45,8 @@ export interface RaceParticipant {
   color?: string;
   rank?: number;
   badge_name?: string;
+  avatar_url?: string;
+  photo_url?: string;
   alias?: string;
 }
 export interface StudentStats {

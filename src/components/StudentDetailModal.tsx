@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { X, Check, Clock, Pencil, Save } from 'lucide-react';
 import type { StudentListItem, LevelSkill } from '../types';
 import formatClassLabel from '../lib/formatJurusan';
+import { ProfileAvatar } from './ProfileAvatar';
 
 export function StudentDetailModal({
   student,
@@ -45,39 +46,50 @@ export function StudentDetailModal({
 
       <div className="relative z-10 w-full max-w-xl sm:max-w-2xl md:max-w-3xl bg-slate-900 [.theme-clear_&]:bg-white border border-white/20 [.theme-clear_&]:border-slate-200 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         <div className="flex-shrink-0 flex items-start justify-between px-6 py-4 border-b border-white/10 [.theme-clear_&]:border-slate-200">
-          <div className="flex-1 mr-4">
-            {isEditing ? (
-              <div className="space-y-2">
-                <div>
-                  <label className="text-xs text-[color:var(--text-muted)] block mb-1">Nama Siswa</label>
-                  <input
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    className="w-full px-3 py-2 bg-black/20 border border-white/10 rounded-lg text-[color:var(--text-primary)] font-semibold"
-                  />
+          <div className="flex flex-1 items-center gap-4 mr-4">
+            <ProfileAvatar
+              name={student.nama}
+              avatarUrl={(student as any).avatar_url}
+              photoUrl={(student as any).photo_url}
+              level={student.level_name}
+              variant="professional"
+              size="md"
+              jurusanColor={student.badge_color}
+            />
+            <div className="flex-1">
+              {isEditing ? (
+                <div className="space-y-2">
+                  <div>
+                    <label className="text-xs text-[color:var(--text-muted)] block mb-1">Nama Siswa</label>
+                    <input
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      className="w-full px-3 py-2 bg-black/20 border border-white/10 rounded-lg text-[color:var(--text-primary)] font-semibold"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-[color:var(--text-muted)] block mb-1">Kelas (ex: XII TKR 1)</label>
+                    <input
+                      value={editKelas}
+                      onChange={(e) => setEditKelas(e.target.value)}
+                      className="w-full px-3 py-2 bg-black/20 border border-white/10 rounded-lg text-[color:var(--text-primary)]"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="text-xs text-[color:var(--text-muted)] block mb-1">Kelas (ex: XII TKR 1)</label>
-                  <input
-                    value={editKelas}
-                    onChange={(e) => setEditKelas(e.target.value)}
-                    className="w-full px-3 py-2 bg-black/20 border border-white/10 rounded-lg text-[color:var(--text-primary)]"
-                  />
-                </div>
-              </div>
-            ) : (
-              <>
-                <div className="text-lg font-semibold text-[color:var(--text-primary)] flex items-center gap-2">
-                  {student.nama}
-                  {onUpdate && !isEditing && (
-                    <button onClick={() => setIsEditing(true)} className="p-1 text-[color:var(--text-muted)] hover:text-[color:var(--accent-1)] transition-colors" title="Edit Data">
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-                <div className="text-sm text-[color:var(--text-muted)]">{formatClassLabel(jurusanName, student.kelas)} • Skor: <span className="font-semibold text-[color:var(--text-primary)]">{student.skor}</span> • Level: <span className="font-semibold text-[color:var(--text-primary)]">{student.level_name}</span></div>
-              </>
-            )}
+              ) : (
+                <>
+                  <div className="text-lg font-semibold text-[color:var(--text-primary)] flex items-center gap-2">
+                    {student.nama}
+                    {onUpdate && !isEditing && (
+                      <button onClick={() => setIsEditing(true)} className="p-1 text-[color:var(--text-muted)] hover:text-[color:var(--accent-1)] transition-colors" title="Edit Data">
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                  <div className="text-sm text-[color:var(--text-muted)]">{formatClassLabel(jurusanName, student.kelas)} • Skor: <span className="font-semibold text-[color:var(--text-primary)]">{student.skor}</span> • Level: <span className="font-semibold text-[color:var(--text-primary)]">{student.level_name}</span></div>
+                </>
+              )}
+            </div>
           </div>
           <div className="flex items-center gap-2">
             {isEditing ? (

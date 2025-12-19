@@ -7,6 +7,8 @@ import { Podium } from './Podium';
 import { StudentXPBar } from './StudentXPBar';
 import { CompetencyRadar } from './CompetencyRadar';
 import { FocusJourney } from './FocusJourney';
+import { ProfileAvatar } from './ProfileAvatar';
+import { AvatarSelectionModal } from './AvatarSelectionModal';
 import { useAuth } from '../contexts/AuthContext';
 import * as Icons from 'lucide-react';
 
@@ -39,9 +41,10 @@ const colorPalette = [
 ];
 
 export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetition = true, onContinue }: DashboardRaceProps) {
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
     const [viewMode, setViewMode] = useState<ViewMode>('race');
     const [selectedKRS, setSelectedKRS] = useState<string[]>([]);
+    const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
     // Load KRS
     useEffect(() => {
@@ -110,13 +113,35 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                             <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/20 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
 
                             <div className="relative z-10">
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold mb-4 backdrop-blur-sm border border-white/20">
-                                    <Icons.Flame className="w-3 h-3 fill-orange-400 text-orange-400" />
-                                    <span>STREAK: 5 DAYS</span>
+                                <div className="flex items-center gap-5 mb-6">
+                                    <button
+                                        onClick={() => setIsAvatarModalOpen(true)}
+                                        className="relative group transition-transform hover:scale-105 active:scale-95"
+                                        title="Ubah Avatar"
+                                    >
+                                        <ProfileAvatar
+                                            name={user?.name || 'Siswa'}
+                                            avatarUrl={(user as any)?.avatar_url}
+                                            photoUrl={(user as any)?.photo_url}
+                                            level={myStats.level}
+                                            size="lg"
+                                            jurusanColor="#6366f1"
+                                            className="shadow-2xl border-white/40"
+                                        />
+                                        <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                            <Icons.Edit3 className="w-6 h-6 text-white" />
+                                        </div>
+                                    </button>
+                                    <div>
+                                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold mb-2 backdrop-blur-sm border border-white/20">
+                                            <Icons.Flame className="w-3 h-3 fill-orange-400 text-orange-400" />
+                                            <span>STREAK: 5 HARI</span>
+                                        </div>
+                                        <h2 className="text-3xl sm:text-4xl font-black text-white mb-2 tracking-tight">
+                                            Siap Naik Level, {user?.name.split(' ')[0]}?
+                                        </h2>
+                                    </div>
                                 </div>
-                                <h2 className="text-3xl sm:text-4xl font-black text-white mb-2 tracking-tight">
-                                    Siap Naik Level?
-                                </h2>
                                 <p className="text-white/90 mb-8 max-w-md text-lg leading-relaxed">
                                     Kamu sudah mencapai <span className="font-bold text-white">78%</span> menuju <span className="font-bold text-white">Expert</span>. Ikuti kompetensi berikutnya untuk menaikkan peringkatmu!
                                 </p>
@@ -432,6 +457,16 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                     </AnimatePresence>
                 </>
             )}
+
+            <AvatarSelectionModal
+                isOpen={isAvatarModalOpen}
+                onClose={() => setIsAvatarModalOpen(false)}
+                currentAvatar={(user as any)?.avatar_url}
+                onSelect={(url) => {
+                    updateUser({ avatar_url: url } as any);
+                    setIsAvatarModalOpen(false);
+                }}
+            />
         </div >
     );
 }
