@@ -401,37 +401,47 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                                         Jurusan Leaderboard
                                     </h3>
                                     <div className="space-y-4">
-                                        {participants.map((p, idx) => {
-                                            const originalIndex = idx; // Since sorted
-                                            const IconComponent = (Icons as any)[sortedData[originalIndex].jurusan.icon] || Icons.GraduationCap;
-                                            const colorClass = colorPalette[originalIndex % colorPalette.length];
+                                        {participants.length > 0 ? (
+                                            participants.map((p, idx) => {
+                                                const originalIndex = idx; // Since sorted
+                                                const IconComponent = (Icons as any)[sortedData[originalIndex].jurusan.icon] || Icons.GraduationCap;
+                                                const colorClass = colorPalette[originalIndex % colorPalette.length];
 
-                                            return (
-                                                <div key={p.id} className="flex items-center justify-between p-4 bg-white dark:bg-white/5 rounded-xl border border-slate-300 dark:border-white/5 shadow-sm hover:shadow-md hover:border-blue-500/30 dark:hover:bg-white/10 transition-all group">
-                                                    <div className="flex items-center gap-6">
-                                                        <div className={`w-10 h-10 flex items-center justify-center rounded-full font-black text-lg ${idx === 0 ? 'bg-yellow-400 text-black shadow-[0_0_15px_rgba(250,204,21,0.5)]' :
-                                                            idx === 1 ? 'bg-gray-300 text-black' :
-                                                                idx === 2 ? 'bg-orange-400 text-black' : 'bg-black/10 dark:bg-white/10 text-gray-500 dark:text-white/50'
-                                                            }`}>
-                                                            {idx + 1}
+                                                return (
+                                                    <div key={p.id} className="flex items-center justify-between p-4 bg-white dark:bg-white/5 rounded-xl border border-slate-300 dark:border-white/5 shadow-sm hover:shadow-md hover:border-blue-500/30 dark:hover:bg-white/10 transition-all group">
+                                                        <div className="flex items-center gap-6">
+                                                            <div className={`w-10 h-10 flex items-center justify-center rounded-full font-black text-lg ${idx === 0 ? 'bg-yellow-400 text-black shadow-[0_0_15px_rgba(250,204,21,0.5)]' :
+                                                                idx === 1 ? 'bg-gray-300 text-black' :
+                                                                    idx === 2 ? 'bg-orange-400 text-black' : 'bg-black/10 dark:bg-white/10 text-gray-500 dark:text-white/50'
+                                                                }`}>
+                                                                {idx + 1}
+                                                            </div>
+                                                            <div className="flex items-center gap-4">
+                                                                <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${colorClass} flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform`}>
+                                                                    <IconComponent className="w-5 h-5 text-white" />
+                                                                </div>
+                                                                <div>
+                                                                    <div className="font-bold text-lg">{p.name}</div>
+                                                                    <div className="text-sm subtle">{p.label}</div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div className="flex items-center gap-4">
-                                                            <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${colorClass} flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform`}>
-                                                                <IconComponent className="w-5 h-5 text-white" />
-                                                            </div>
-                                                            <div>
-                                                                <div className="font-bold text-lg">{p.name}</div>
-                                                                <div className="text-sm subtle">{p.label}</div>
-                                                            </div>
+                                                        <div className="text-right">
+                                                            <div className="text-2xl font-black">{p.score.toFixed(1)}</div>
+                                                            <div className="text-xs subtle font-mono">AVG SKOR</div>
                                                         </div>
                                                     </div>
-                                                    <div className="text-right">
-                                                        <div className="text-2xl font-black">{p.score.toFixed(1)}</div>
-                                                        <div className="text-xs subtle font-mono">AVG SKOR</div>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
+                                                );
+                                            })
+                                        ) : (
+                                            <div className="text-center py-12 px-4 rounded-xl border border-dashed border-white/10 bg-white/5">
+                                                <Icons.Users className="w-12 h-12 text-white/10 mx-auto mb-4" />
+                                                <h4 className="text-lg font-bold text-white/60 mb-2">Belum ada data kompetensi</h4>
+                                                <p className="text-sm text-white/40 max-w-sm mx-auto leading-relaxed">
+                                                    Peringkat jurusan akan muncul secara otomatis setelah ada data siswa yang di-import melalui menu <span className="text-indigo-400 font-bold">Jurusan</span>.
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
                                 </motion.div>
                             )}

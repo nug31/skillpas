@@ -236,10 +236,32 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             levelColor: color,
             className: student.kelas
           });
+        } else {
+          // No student record found in Supabase (unimported student)
+          // Set default empty stats so UI doesn't hang in loading
+          setMyStats({
+            rank: 0,
+            totalStudents: 0,
+            score: 0,
+            poin: 0,
+            level: 'Basic',
+            levelColor: '#94a3b8',
+            className: user.role === 'student' ? '...' : ''
+          });
         }
       }
     } catch (e) {
       console.error("Failed to load my stats", e);
+      // Fallback on error
+      setMyStats({
+        rank: 0,
+        totalStudents: 0,
+        score: 0,
+        poin: 0,
+        level: 'Basic',
+        levelColor: '#94a3b8',
+        className: ''
+      });
     }
   }
   async function loadPendingKRS() {
