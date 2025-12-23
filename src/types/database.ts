@@ -77,6 +77,7 @@ export interface Database {
           kelas: string
           jurusan_id: string
           created_at: string
+          nisn?: string
           avatar_url?: string
           photo_url?: string
         }
@@ -86,6 +87,7 @@ export interface Database {
           kelas: string
           jurusan_id: string
           created_at?: string
+          nisn?: string
           avatar_url?: string
           photo_url?: string
         }
@@ -95,6 +97,7 @@ export interface Database {
           kelas?: string
           jurusan_id?: string
           created_at?: string
+          nisn?: string
           avatar_url?: string
           photo_url?: string
         }
@@ -105,6 +108,7 @@ export interface Database {
           siswa_id: string
           level_id: string
           skor: number
+          poin: number
           tanggal_pencapaian: string
           created_at: string
           updated_at: string
@@ -114,6 +118,7 @@ export interface Database {
           siswa_id: string
           level_id: string
           skor: number
+          poin?: number
           tanggal_pencapaian?: string
           created_at?: string
           updated_at?: string
@@ -123,6 +128,7 @@ export interface Database {
           siswa_id?: string
           level_id?: string
           skor?: number
+          poin?: number
           tanggal_pencapaian?: string
           created_at?: string
           updated_at?: string

@@ -1,48 +1,70 @@
+export type UserRole = 'student' | 'teacher_produktif' | 'wali_kelas' | 'hod' | 'admin' | 'teacher';
+
 export interface User {
     id: string;
     username: string;
     password: string;
     name: string;
-    role: 'student' | 'teacher';
+    role: UserRole;
     jurusan_id?: string;
+    kelas?: string;
+    nisn?: string;
     avatar_url?: string;
     photo_url?: string;
 }
 
+import { JURUSAN_IDS } from './mockData';
+
 // Mock users for authentication
 export const mockUsers: User[] = [
     // Student accounts (one per jurusan)
-    { id: 'u-s1', username: 'siswa_mesin', password: '123', name: 'Siswa Mesin', role: 'student', jurusan_id: 'j1', avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix', photo_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop' },
-    { id: 'u-s2', username: 'siswa_tkr', password: '123', name: 'Siswa TKR', role: 'student', jurusan_id: 'j2' },
-    { id: 'u-s3', username: 'siswa_tsm', password: '123', name: 'Siswa TSM', role: 'student', jurusan_id: 'j3' },
-    { id: 'u-s4', username: 'siswa_elind', password: '123', name: 'Siswa Elind', role: 'student', jurusan_id: 'j4' },
-    { id: 'u-s5', username: 'siswa_listrik', password: '123', name: 'Siswa Listrik', role: 'student', jurusan_id: 'j5' },
-    { id: 'u-s6', username: 'siswa_kimia', password: '123', name: 'Siswa Kimia', role: 'student', jurusan_id: 'j6' },
-    { id: 'u-s7', username: 'siswa_akuntansi', password: '123', name: 'Siswa Akuntansi', role: 'student', jurusan_id: 'j7' },
-    { id: 'u-s8', username: 'siswa_hotel', password: '123', name: 'Siswa Perhotelan', role: 'student', jurusan_id: 'j8' },
+    { id: 'u-s1', username: 'siswa_mesin', password: '123', name: 'Siswa Mesin', role: 'student', jurusan_id: JURUSAN_IDS.MESIN, avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix', photo_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop' },
+    { id: 'u-s2', username: 'siswa_tkr', password: '123', name: 'Siswa TKR', role: 'student', jurusan_id: JURUSAN_IDS.TKR },
+    { id: 'u-s3', username: 'siswa_tsm', password: '123', name: 'Siswa TSM', role: 'student', jurusan_id: JURUSAN_IDS.TSM },
+    { id: 'u-s4', username: 'siswa_elind', password: '123', name: 'Siswa Elind', role: 'student', jurusan_id: JURUSAN_IDS.ELIND },
+    { id: 'u-s5', username: 'siswa_listrik', password: '123', name: 'Siswa Listrik', role: 'student', jurusan_id: JURUSAN_IDS.LISTRIK },
+    { id: 'u-s6', username: 'siswa_kimia', password: '123', name: 'Siswa Kimia', role: 'student', jurusan_id: JURUSAN_IDS.KIMIA },
+    { id: 'u-s7', username: 'siswa_akuntansi', password: '123', name: 'Siswa Akuntansi', role: 'student', jurusan_id: JURUSAN_IDS.AKUNTANSI },
+    { id: 'u-s8', username: 'siswa_hotel', password: '123', name: 'Siswa Perhotelan', role: 'student', jurusan_id: JURUSAN_IDS.HOTEL },
 
     // Teacher accounts (one per jurusan)
-    { id: 'u-g1', username: 'guru_mesin', password: '123', name: 'Guru Mesin', role: 'teacher', jurusan_id: 'j1' },
-    { id: 'u-g2', username: 'guru_tkr', password: '123', name: 'Guru TKR', role: 'teacher', jurusan_id: 'j2' },
-    { id: 'u-g3', username: 'guru_tsm', password: '123', name: 'Guru TSM', role: 'teacher', jurusan_id: 'j3' },
-    { id: 'u-g4', username: 'guru_elind', password: '123', name: 'Guru Elind', role: 'teacher', jurusan_id: 'j4' },
-    { id: 'u-g5', username: 'guru_listrik', password: '123', name: 'Guru Listrik', role: 'teacher', jurusan_id: 'j5' },
-    { id: 'u-g6', username: 'guru_kimia', password: '123', name: 'Guru Kimia', role: 'teacher', jurusan_id: 'j6' },
-    { id: 'u-g7', username: 'guru_akuntansi', password: '123', name: 'Guru Akuntansi', role: 'teacher', jurusan_id: 'j7' },
-    { id: 'u-g8', username: 'guru_hotel', password: '123', name: 'Guru Perhotelan', role: 'teacher', jurusan_id: 'j8' },
+    { id: 'u-g1', username: 'guru_mesin', password: '123', name: 'Guru Mesin', role: 'teacher', jurusan_id: JURUSAN_IDS.MESIN },
+    { id: 'u-g2', username: 'guru_tkr', password: '123', name: 'Guru TKR', role: 'teacher', jurusan_id: JURUSAN_IDS.TKR },
+    { id: 'u-g3', username: 'guru_tsm', password: '123', name: 'Guru TSM', role: 'teacher', jurusan_id: JURUSAN_IDS.TSM },
+    // New roles for approval workflow testing
+    { id: 't1', username: 'guru1', password: '123', name: 'Budi Santoso, S.T.', role: 'teacher_produktif', jurusan_id: JURUSAN_IDS.MESIN },
+    { id: 't2', username: 'guru2', password: '123', name: 'Siti Aminah, M.Pd.', role: 'wali_kelas', kelas: 'XII TKR 1', jurusan_id: JURUSAN_IDS.MESIN },
+    { id: 't3', username: 'hod1', password: '123', name: 'Dr. Ir. Heru Prasetyo', role: 'hod', jurusan_id: JURUSAN_IDS.MESIN },
+    { id: 't4', username: 'admin', password: '123', name: 'Super Admin', role: 'admin' },
+    // Student user for specific testing
+    { id: 's-j1-user', username: 'siswa', password: '123', name: 'Raka Aditya', role: 'student', nisn: '0012345678', kelas: 'XII TKR 1', jurusan_id: JURUSAN_IDS.MESIN },
+    { id: 'u-g4', username: 'guru_elind', password: '123', name: 'Guru Elind', role: 'teacher', jurusan_id: JURUSAN_IDS.ELIND },
+    { id: 'u-g5', username: 'guru_listrik', password: '123', name: 'Guru Listrik', role: 'teacher', jurusan_id: JURUSAN_IDS.LISTRIK },
+    { id: 'u-g6', username: 'guru_kimia', password: '123', name: 'Guru Kimia', role: 'teacher', jurusan_id: JURUSAN_IDS.KIMIA },
+    { id: 'u-g7', username: 'guru_akuntansi', password: '123', name: 'Guru Akuntansi', role: 'teacher', jurusan_id: JURUSAN_IDS.AKUNTANSI },
+    { id: 'u-g8', username: 'guru_hotel', password: '123', name: 'Guru Perhotelan', role: 'teacher', jurusan_id: JURUSAN_IDS.HOTEL },
 
     // Admin teacher (can see all)
     { id: 'u-guru', username: 'guru', password: '123', name: 'Guru', role: 'teacher', photo_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop' },
 ];
 
 export function authenticateUser(username: string, password: string, selectedRole?: 'student' | 'teacher'): User | null {
-    const user = mockUsers.find(
-        (u) => u.username === username && u.password === password
-    );
+    const user = mockUsers.find((u) => {
+        const isUsernameMatch = u.username === username || u.name === username || (u.nisn && u.nisn === username);
 
-    // If role is specified, validate it matches the user's actual role
-    if (user && selectedRole && user.role !== selectedRole) {
-        return null; // Role mismatch - login fails
+        if (u.role === 'student') {
+            // For students, NISN is the password
+            const isPasswordMatch = u.password === password || (u.nisn && u.nisn === password);
+            return isUsernameMatch && isPasswordMatch;
+        } else {
+            // For teachers/others, use their defined password
+            return isUsernameMatch && u.password === password;
+        }
+    });
+
+    if (user && selectedRole) {
+        if (selectedRole === 'student' && user.role !== 'student') return null;
+        if (selectedRole === 'teacher' && user.role === 'student') return null;
     }
 
     return user || null;

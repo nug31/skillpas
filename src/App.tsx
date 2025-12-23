@@ -9,11 +9,13 @@ import type { Jurusan } from './types';
 import smkLogo from './assets/smk-logo.png';
 import { LogOut } from 'lucide-react';
 import { ProfileAvatar } from './components/ProfileAvatar';
+import { TeacherKRSApproval } from './components/TeacherKRSApproval';
 
 function AppContent() {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, isTeacher, isStudent } = useAuth();
   const [selectedJurusan, setSelectedJurusan] = useState<Jurusan | null>(null);
   const [selectedClassFilter, setSelectedClassFilter] = useState<string | undefined>(undefined);
+  const [showKRSApproval, setShowKRSApproval] = useState(false);
   const [showStampAnimation, setShowStampAnimation] = useState(false);
   const prevAuthRef = useRef(isAuthenticated);
   const [themeClear, setThemeClear] = useState<boolean>(() => {
@@ -74,11 +76,11 @@ function AppContent() {
               <div className="hidden sm:block text-sm text-white/70">
                 Welcome, <span className="font-medium text-white">{user?.name}</span>
               </div>
-              <div className={`hidden sm:flex px-2 py-1 rounded-md text-xs font-medium ${user?.role === 'teacher'
+              <div className={`hidden sm:flex px-2 py-1 rounded-md text-xs font-medium ${isTeacher
                 ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
                 : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
                 }`}>
-                {user?.role === 'teacher' ? 'Guru' : 'Siswa'}
+                {isTeacher ? 'Guru' : 'Siswa'}
               </div>
             </div>
             {/* theme toggle (only one rendered below next to avatar) */}
@@ -117,17 +119,25 @@ function AppContent() {
       </header>
 
       <main className="flex-1">
-        {selectedJurusan ? (
+        {showKRSApproval ? (
+          <TeacherKRSApproval
+            onBack={() => setShowKRSApproval(false)}
+            userRole={user?.role as any}
+          />
+        ) : selectedJurusan ? (
           <JurusanDetailPage
             jurusan={selectedJurusan}
             onBack={() => setSelectedJurusan(null)}
             classFilter={selectedClassFilter}
           />
         ) : (
-          <HomePage onSelectJurusan={(jurusan, classFilter) => {
-            setSelectedJurusan(jurusan);
-            setSelectedClassFilter(classFilter);
-          }} />
+          <HomePage
+            onSelectJurusan={(jurusan, classFilter) => {
+              setSelectedJurusan(jurusan);
+              setSelectedClassFilter(classFilter);
+            }}
+            onOpenKRSApproval={() => setShowKRSApproval(true)}
+          />
         )}
       </main>
       <FooterReflexGame />

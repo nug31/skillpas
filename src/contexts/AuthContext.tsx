@@ -14,6 +14,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+import { supabase, isMockMode } from '../lib/supabase';
+
 const AUTH_STORAGE_KEY = 'skill_passport_auth';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -32,6 +34,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const login = async (username: string, password: string, role?: 'student' | 'teacher'): Promise<boolean> => {
+        if (!isMockMode) {
+            if (role === 'student' || !role) {
+                // Try production student login
+                const { data: student, error } = await supabase
+                    .from('siswa')
+                    .select('*')
+                    .or(`nama.eq."${username}",nisn.eq."${username}"`)
+                    .eq('nisn', password)
+                    .maybeSingle();
+
+                if (student && !error) {
+                    const authenticatedUser: User = {
+                        id: student.id,
+                        username: student.nisn || student.nama,
+                        password: student.nisn || '',
+                        name: student.nama,
+                        role: 'student',
+                        jurusan_id: student.jurusan_id,
+                        kelas: student.kelas,
+                        nisn: student.nisn,
+                        avatar_url: student.avatar_url,
+                        photo_url: student.photo_url
+                    };
+                    setUser(authenticatedUser);
+                    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authenticatedUser));
+                    return true;
+                }
+            }
+
+            // For teachers in production, we might need a separate table or Auth,
+            // but for now, if it's not a student, we might still fall back to mock or fail.
+            // Let's assume teachers are also in a table or wait for instructions.
+        }
+
         const authenticatedUser = authenticateUser(username, password, role);
 
         if (authenticatedUser) {
@@ -75,8 +111,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         updateUser,
         isAuthenticated: user !== null,
-        isTeacher: user?.role === 'teacher',
-        isStudent: user?.role === 'student',
+        isTeacher: user ? user.role !== 'student' : false,
+        isStudent: user?.role === 'student' || false,
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

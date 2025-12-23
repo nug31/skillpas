@@ -112,7 +112,9 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
                   </div>
                 )}
               </div>
-              <div className="text-xs text-[color:var(--text-muted)] mt-1 truncate">{formatClassLabel(jurusanName, student.kelas)} • Level {student.level_name}</div>
+              <div className="text-xs text-[color:var(--text-muted)] mt-1 truncate">
+                {formatClassLabel(jurusanName, student.kelas)} • Level {student.level_name} • <span className="text-[color:var(--accent-1)] font-semibold">{student.poin} Poin</span>
+              </div>
               <div className="mt-2 flex items-center gap-2">
                 <div className="text-sm font-semibold text-[color:var(--text-primary)] w-8">{student.skor}</div>
                 <div className="flex-1 bg-white/5 rounded-full h-2"><div className="bg-[color:var(--accent-1)] h-2 rounded-full" style={{ width: `${student.skor}%` }} /></div>
@@ -144,6 +146,7 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
               <th className="px-6 py-3 text-left"><button onClick={() => handleSort('nama')} className="flex items-center gap-2 text-xs font-semibold text-[color:var(--text-muted)] uppercase tracking-wider hover:text-[color:var(--text-primary)]">Nama Siswa <SortIcon field="nama" /></button></th>
               <th className="px-6 py-3 text-left"><button onClick={() => handleSort('kelas')} className="flex items-center gap-2 text-xs font-semibold text-[color:var(--text-muted)] uppercase tracking-wider hover:text-[color:var(--text-primary)]">Kelas <SortIcon field="kelas" /></button></th>
               <th className="px-6 py-3 text-left"><button onClick={() => handleSort('skor')} className="flex items-center gap-2 text-xs font-semibold text-[color:var(--text-muted)] uppercase tracking-wider hover:text-[color:var(--text-primary)]">Skor <SortIcon field="skor" /></button></th>
+              <th className="px-6 py-3 text-center text-xs font-semibold text-[color:var(--text-muted)] uppercase tracking-wider">Poin</th>
               <th className="px-6 py-3 text-center text-xs font-semibold text-[color:var(--text-muted)] uppercase tracking-wider">Badge</th>
               <th className="px-6 py-3 text-right text-xs font-semibold text-[color:var(--text-muted)] uppercase tracking-wider">Aksi</th>
             </tr>
@@ -172,6 +175,12 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
 
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-2"><div className="text-sm font-semibold text-[color:var(--text-primary)]">{student.skor}</div><div className="w-24 bg-white/5 rounded-full h-2"><div className="bg-[color:var(--accent-1)] h-2 rounded-full transition-all" style={{ width: `${student.skor}%` }} /></div></div>
+                </td>
+
+                <td className="px-6 py-4 whitespace-nowrap text-center">
+                  <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                    {student.poin} Poin
+                  </div>
                 </td>
 
                 <td className="px-6 py-4 whitespace-nowrap text-center"><Badge name={student.badge_name} color={student.badge_color} size="sm" /></td>

@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { Jurusan, LevelSkill } from '../types';
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
+import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
+import { KRSSubmission } from '../types';
 
 // Special Missions / Challenges data
 interface SpecialMission {
@@ -49,29 +51,44 @@ interface MissionModalProps {
     onClose: () => void;
     jurusan: Jurusan;
     currentScore: number;
+    currentPoin: number;
     siswaId?: string;
 }
 
-export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId = 'guest' }: MissionModalProps) {
+export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPoin, siswaId = 'guest' }: MissionModalProps) {
     const [loading, setLoading] = useState(true);
     const [allLevels, setAllLevels] = useState<LevelSkill[]>([]);
     const [nextLevel, setNextLevel] = useState<LevelSkill | null>(null);
     const [selectedKRS, setSelectedKRS] = useState<string[]>([]);
+    const [submission, setSubmission] = useState<KRSSubmission | null>(null);
     const storageKey = `skillpas_krs_${siswaId}`;
 
     useEffect(() => {
-        if (isOpen) {
-            loadAllLevels();
-            const saved = localStorage.getItem(storageKey);
-            if (saved) {
-                try {
-                    setSelectedKRS(JSON.parse(saved));
-                } catch (e) {
-                    console.error("Failed to parse KRS", e);
+        const loadKRS = () => {
+            const sub = krsStore.getStudentSubmission(siswaId);
+            setSubmission(sub || null);
+            if (sub) {
+                setSelectedKRS(sub.items);
+            } else {
+                const saved = localStorage.getItem(storageKey);
+                if (saved) {
+                    try {
+                        setSelectedKRS(JSON.parse(saved));
+                    } catch (e) {
+                        console.error("Failed to parse KRS", e);
+                    }
                 }
             }
+        };
+
+        if (isOpen) {
+            loadAllLevels();
+            loadKRS();
         }
-    }, [isOpen, jurusan.id, currentScore, storageKey]);
+
+        window.addEventListener(KRS_UPDATED_EVENT, loadKRS);
+        return () => window.removeEventListener(KRS_UPDATED_EVENT, loadKRS);
+    }, [isOpen, jurusan.id, currentScore, storageKey, siswaId]);
 
     async function loadAllLevels() {
         try {
@@ -114,12 +131,17 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId =
         }
     }
 
-    const toggleKRS = (mission: string) => {
+    const toggleKRS = (mission: string, levelId: string) => {
+        // Prevent selection if not current level
+        if (!nextLevel || nextLevel.id !== levelId) {
+            return;
+        }
+
         let newKRS = [...selectedKRS];
         if (newKRS.includes(mission)) {
             newKRS = newKRS.filter(m => m !== mission);
         } else {
-            if (newKRS.length >= 10) { // Increased to 10 for cross-level
+            if (newKRS.length >= 10) {
                 alert("Maksimal 10 target kompetensi dalam sekali ambil.");
                 return;
             }
@@ -127,9 +149,37 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId =
         }
         setSelectedKRS(newKRS);
         localStorage.setItem(storageKey, JSON.stringify(newKRS));
+    };
 
-        // Dispatch custom event to notify dashboard
-        window.dispatchEvent(new CustomEvent('krs-updated'));
+    const handleSubmit = () => {
+        if (selectedKRS.length === 0) {
+            alert("Pilih minimal satu kriteria kompetensi.");
+            return;
+        }
+
+        krsStore.submitKRS({
+            id: submission?.id || Math.random().toString(36).substr(2, 9),
+            siswa_id: siswaId,
+            siswa_nama: 'Raka Aditya', // In real app, get from Context
+            kelas: 'XII TKR 1', // In real app, get from Context
+            jurusan_id: jurusan.id,
+            items: selectedKRS
+        });
+
+        alert("KRS berhasil diajukan! Tunggu persetujuan guru.");
+        onClose();
+    };
+
+    const getStatusLabel = (status: string) => {
+        switch (status) {
+            case 'pending_produktif': return 'Menunggu Guru Produktif';
+            case 'pending_wali': return 'Menunggu Wali Kelas';
+            case 'pending_hod': return 'Menunggu Kaprodi (HOD)';
+            case 'approved': return 'Disetujui';
+            case 'scheduled': return 'Ujian Terjadwal';
+            case 'rejected': return 'Ditolak';
+            default: return status;
+        }
     };
 
     if (!isOpen) return null;
@@ -158,7 +208,9 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId =
                                 <Target className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <div className="text-blue-100 text-sm font-bold tracking-wider uppercase">KRS Skill: Bebas Pilih Target</div>
+                                <div className="text-blue-100 text-sm font-bold tracking-wider uppercase flex items-center gap-2">
+                                    KRS Skill • <span className="text-yellow-300 font-bold">{currentScore} XP</span> • <span className="text-emerald-300 font-bold">{currentPoin} Poin</span>
+                                </div>
                                 <h2 className="text-2xl font-black text-white">Susun Rencana Belajarmu</h2>
                             </div>
                         </div>
@@ -172,17 +224,49 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId =
                             </div>
                         ) : (
                             <>
+                                {submission && (
+                                    <div className={`p-4 rounded-xl border flex flex-col gap-2 ${submission.status === 'rejected' ? 'bg-red-500/10 border-red-500/20' :
+                                        submission.status === 'scheduled' ? 'bg-emerald-500/10 border-emerald-500/20' :
+                                            'bg-blue-500/10 border-blue-500/20'
+                                        }`}>
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-2 h-2 rounded-full animate-pulse ${submission.status === 'rejected' ? 'bg-red-500' :
+                                                    submission.status === 'scheduled' ? 'bg-emerald-500' :
+                                                        'bg-blue-500'
+                                                    }`} />
+                                                <span className="text-xs font-bold uppercase tracking-wider text-white/70">Status KRS</span>
+                                            </div>
+                                            <span className="text-xs font-black text-white px-2 py-0.5 bg-white/10 rounded">
+                                                {getStatusLabel(submission.status)}
+                                            </span>
+                                        </div>
+                                        {submission.exam_date && (
+                                            <div className="text-sm font-bold text-emerald-400">
+                                                📅 Jadwal Ujian: {new Date(submission.exam_date).toLocaleDateString('id-ID', { dateStyle: 'long' })}
+                                            </div>
+                                        )}
+                                        {submission.notes && (
+                                            <div className="text-xs text-white/50 italic">
+                                                Catatan: {submission.notes}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
                                 <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 flex gap-3">
                                     <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
                                     <p className="text-sm text-blue-200 leading-relaxed">
-                                        Sekarang kamu bebas memilih kriteria dari level manapun! Klik kriteria untuk masuk ke rencana belajarmu. ({selectedKRS.length}/10)
+                                        Pilih kriteria kompetensi di <strong>Level Kamu</strong> untuk melanjutkan rencana belajar. ({selectedKRS.length}/10)
                                     </p>
                                 </div>
 
                                 {allLevels.map((level) => {
                                     const isCurrentLevel = nextLevel?.id === level.id;
+                                    const isLocked = !isCurrentLevel;
+
                                     return (
-                                        <div key={level.id} className="space-y-4">
+                                        <div key={level.id} className={`space-y-4 ${isLocked ? 'opacity-50 grayscale' : ''}`}>
                                             <div className="flex items-center gap-3">
                                                 <div
                                                     className="px-3 py-1 rounded-lg text-xs font-black text-white shadow-lg shrink-0"
@@ -205,10 +289,11 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId =
                                                     return (
                                                         <div
                                                             key={`${level.id}-${idx}`}
-                                                            onClick={() => toggleKRS(mission)}
-                                                            className={`flex items-start justify-between gap-3 p-3.5 rounded-xl border transition-all cursor-pointer group ${isSelected
-                                                                ? 'bg-indigo-500/20 border-indigo-500 shadow-[inset_0_0_10px_rgba(99,102,241,0.2)]'
-                                                                : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20'
+                                                            onClick={() => toggleKRS(mission, level.id)}
+                                                            className={`flex items-start justify-between gap-3 p-3.5 rounded-xl border transition-all ${isLocked ? 'cursor-not-allowed bg-white/5 border-white/5' : 'cursor-pointer group'
+                                                                } ${isSelected
+                                                                    ? 'bg-indigo-500/20 border-indigo-500 shadow-[inset_0_0_10px_rgba(99,102,241,0.2)]'
+                                                                    : !isLocked ? 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20' : ''
                                                                 }`}
                                                         >
                                                             <div className="flex gap-3">
@@ -264,12 +349,22 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, siswaId =
                     </div>
 
                     {/* Footer */}
-                    <div className="p-6 border-t border-white/5 bg-black/20 shrink-0">
+                    <div className="p-6 border-t border-white/5 bg-black/20 shrink-0 flex gap-3">
                         <button
                             onClick={onClose}
-                            className="w-full py-3 bg-white text-indigo-900 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-100 active:scale-95 transition-all"
+                            className="flex-1 py-3 bg-white/5 text-white rounded-xl font-bold hover:bg-white/10 transition-all"
                         >
-                            <span>Simpan Rencana</span>
+                            Tutup
+                        </button>
+                        <button
+                            onClick={handleSubmit}
+                            disabled={!!(submission && !['rejected', 'scheduled'].includes(submission.status))}
+                            className={`flex-[2] py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${submission && !['rejected', 'scheduled'].includes(submission.status)
+                                ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
+                                : 'bg-white text-indigo-900 hover:bg-gray-100 active:scale-95'
+                                }`}
+                        >
+                            <span>{submission ? 'Update Rencana' : 'Ajukan KRS'}</span>
                         </button>
                     </div>
                 </motion.div>

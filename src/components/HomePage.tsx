@@ -9,13 +9,15 @@ import { useAuth } from '../contexts/AuthContext';
 import { MissionModal } from './MissionModal';
 import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
-import { Edit3 } from 'lucide-react';
+import { Edit3, CheckCircle } from 'lucide-react';
+import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 
 interface HomePageProps {
   onSelectJurusan: (jurusan: Jurusan, classFilter?: string) => void;
+  onOpenKRSApproval?: () => void;
 }
 
-export function HomePage({ onSelectJurusan }: HomePageProps) {
+export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) {
   const { user } = useAuth();
   const [jurusanList, setJurusanList] = useState<Jurusan[]>([]);
   const [topStudentsMap, setTopStudentsMap] = useState<Record<string, { id: string; nama: string; skor: number; kelas?: string }[]>>({});
@@ -26,6 +28,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
     rank: number;
     totalStudents: number;
     score: number;
+    poin: number;
     level: string;
     levelColor: string;
     className: string;
@@ -33,6 +36,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
 
   const [showMissionModal, setShowMissionModal] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const [pendingKRSCount, setPendingKRSCount] = useState(0);
   const { updateUser } = useAuth();
 
   const useMock = isMockMode;
@@ -59,7 +63,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
       }
 
       setJurusanList(filteredData);
-
+      loadPendingKRS();
 
 
       // fetch top student for each jurusan (best skor)
@@ -169,6 +173,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
 
           const skill = mockData.mockSkillSiswa.find(ss => ss.siswa_id === student.id);
           const score = skill?.skor || 0;
+          const poin = skill?.poin || 0;
 
           const levelObj = mockData.mockLevels.find(l => score >= l.min_skor && score <= l.max_skor);
 
@@ -176,6 +181,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
             rank: rank > 0 ? rank : 0,
             totalStudents: classStudents.length,
             score: score,
+            poin: poin,
             level: levelObj?.badge_name || 'Basic',
             levelColor: levelObj?.badge_color || '#94a3b8',
             className: student.kelas
@@ -185,21 +191,22 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
         // Supabase implementation
         let { data: student, error } = await supabase
           .from('siswa')
-          .select('*, skill_siswa(skor)')
+          .select('*, skill_siswa(skor, poin)')
           .eq('id', user.id)
           .single();
 
         if (error || !student) {
           const { data: studentByName } = await supabase
             .from('siswa')
-            .select('*, skill_siswa(skor)')
+            .select('*, skill_siswa(skor, poin)')
             .eq('nama', user.name)
             .single();
           student = studentByName;
         }
 
         if (student) {
-          const score = student.skill_siswa?.[0]?.skor || 0;
+          const score = (student as any).skill_siswa?.[0]?.skor || 0;
+          const poin = (student as any).skill_siswa?.[0]?.poin || 0;
 
           const { count } = await supabase
             .from('siswa')
@@ -224,6 +231,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
             rank,
             totalStudents: totalClass || 0,
             score,
+            poin,
             level: badge,
             levelColor: color,
             className: student.kelas
@@ -234,6 +242,45 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
       console.error("Failed to load my stats", e);
     }
   }
+  async function loadPendingKRS() {
+    if (!user || user.role === 'student') return;
+    const all = krsStore.getSubmissions();
+    const pending = all.filter(s => {
+      if (user.role === 'teacher_produktif') return s.status === 'pending_produktif';
+      if (user.role === 'wali_kelas') return s.status === 'pending_wali';
+      if (user.role === 'hod') return s.status === 'pending_hod';
+      return false;
+    });
+    setPendingKRSCount(pending.length);
+  }
+
+  const [scheduledExam, setScheduledExam] = useState<{ date: string, notes?: string } | null>(null);
+
+  useEffect(() => {
+    if (user?.role === 'student') {
+      const checkExamSchedule = () => {
+        const userId = user.name === 'Siswa Mesin' ? 'siswa_mesin' : user.id; // handle specific mock mapping
+        const sub = krsStore.getStudentSubmission(userId);
+        if (sub && sub.status === 'scheduled' && sub.exam_date) {
+          setScheduledExam({
+            date: sub.exam_date,
+            notes: sub.notes
+          });
+        } else {
+          setScheduledExam(null);
+        }
+      };
+      checkExamSchedule();
+      window.addEventListener(KRS_UPDATED_EVENT, checkExamSchedule);
+      return () => window.removeEventListener(KRS_UPDATED_EVENT, checkExamSchedule);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    loadPendingKRS();
+    window.addEventListener(KRS_UPDATED_EVENT, loadPendingKRS);
+    return () => window.removeEventListener(KRS_UPDATED_EVENT, loadPendingKRS);
+  }, [user]);
 
   // Load race data (average scores per jurusan)
   useEffect(() => {
@@ -328,16 +375,57 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
 
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mt-8">
                 {user?.role !== 'student' && (
-                  <button
-                    onClick={() => {
-                      setTriggerRace(Date.now());
-                      const raceSection = document.getElementById('dashboard-race');
-                      raceSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }}
-                    className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-500 text-white rounded-lg font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all w-full sm:w-auto text-sm sm:text-base"
-                  >
-                    Mulai
-                  </button>
+                  <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                    <button
+                      onClick={() => {
+                        setTriggerRace(Date.now());
+                        const raceSection = document.getElementById('dashboard-race');
+                        raceSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }}
+                      className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-500 text-white rounded-lg font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all w-full sm:w-auto text-sm sm:text-base flex items-center justify-center gap-2"
+                    >
+                      Mulai
+                    </button>
+
+                    {onOpenKRSApproval && (
+                      <button
+                        onClick={onOpenKRSApproval}
+                        className="px-6 py-3 bg-white/5 border border-white/10 text-white rounded-lg font-semibold shadow-lg hover:-translate-y-1 hover:bg-white/10 transition-all w-full sm:w-auto text-sm sm:text-base flex items-center justify-center gap-2 relative group"
+                      >
+                        <CheckCircle className="w-5 h-5 text-indigo-400" />
+                        Persetujuan KRS
+                        {pendingKRSCount > 0 && (
+                          <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-[#0f172a] animate-bounce">
+                            {pendingKRSCount}
+                          </div>
+                        )}
+                        <div className="absolute inset-0 rounded-lg bg-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {/* Student Exam Notification */}
+                {user?.role === 'student' && scheduledExam && (
+                  <div className="w-full sm:max-w-md animate-bounce-subtle">
+                    <div className="bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 rounded-xl p-4 flex items-start gap-4 shadow-xl backdrop-blur-md">
+                      <div className="p-3 bg-emerald-500 rounded-lg shadow-lg shrink-0">
+                        <CheckCircle className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-emerald-300 font-bold text-lg mb-1">Ujian KRS Terjadwal!</h3>
+                        <p className="text-white text-sm">
+                          Selamat, KRS kamu telah disetujui penuh oleh HOD.
+                        </p>
+                        <div className="mt-3 inline-block px-3 py-1 bg-emerald-500/20 rounded border border-emerald-500/30 text-emerald-300 font-mono font-bold text-sm">
+                          📅 {new Date(scheduledExam.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                        </div>
+                        {scheduledExam.notes && (
+                          <p className="text-xs text-white/50 mt-2 italic">"{scheduledExam.notes}"</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
@@ -439,6 +527,7 @@ export function HomePage({ onSelectJurusan }: HomePageProps) {
             onClose={() => setShowMissionModal(false)}
             jurusan={jurusanList[0]}
             currentScore={myStats.score}
+            currentPoin={myStats.poin}
             siswaId={user.name === 'Siswa Mesin' ? 'siswa_mesin' : user.id}
           />
         )}

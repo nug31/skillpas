@@ -1,83 +1,53 @@
-import type { Jurusan, LevelSkill, Siswa, SkillSiswa, StudentListItem } from '../types';
+import type { Jurusan, LevelSkill, Siswa, SkillSiswa, StudentListItem, CompetencyHistory } from '../types';
 
 // Minimal mock data to use while developing locally (VITE_USE_MOCK=true)
 
+export const LEVEL_IDS = {
+  BASIC: 'b0000000-0000-0000-0000-000000000001',
+  INTER: 'b0000000-0000-0000-0000-000000000002',
+  ADV: 'b0000000-0000-0000-0000-000000000003',
+  MASTER: 'b0000000-0000-0000-0000-000000000004',
+};
+
 export const mockLevels: LevelSkill[] = [
-  {
-    id: 'lvl-basic',
-    nama_level: 'Pemula / Beginner',
-    urutan: 1,
-    min_skor: 0,
-    max_skor: 25,
-    badge_color: '#94a3b8',
-    badge_name: 'Basic',
-    hasil_belajar: 'Memahami konsep dasar',
-    criteria: ['Memahami konsep dasar', 'Mengenal alat kerja dasar'],
-    soft_skill: 'Komunikasi dasar',
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: 'lvl-inter',
-    nama_level: 'Intermediate',
-    urutan: 2,
-    min_skor: 26,
-    max_skor: 50,
-    badge_color: '#3b82f6',
-    badge_name: 'Applied',
-    hasil_belajar: 'Mampu menerapkan pengetahuan',
-    criteria: ['Mampu menerapkan pengetahuan dasar', 'Bisa menggunakan alat dengan benar', 'Memahami prosedur K3'],
-    soft_skill: 'Problem solving',
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: 'lvl-adv',
-    nama_level: 'Advanced',
-    urutan: 3,
-    min_skor: 51,
-    max_skor: 75,
-    badge_color: '#f59e0b',
-    badge_name: 'Advance',
-    hasil_belajar: 'Menguasai keterampilan kompleks',
-    criteria: ['Menguasai keterampilan kompleks', 'Mampu menganalisis masalah', 'Bekerja mandiri tanpa pengawasan'],
-    soft_skill: 'Kepemimpinan',
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: 'lvl-master',
-    nama_level: 'Mastery',
-    urutan: 4,
-    min_skor: 76,
-    max_skor: 100,
-    badge_color: '#10b981',
-    badge_name: 'Master',
-    hasil_belajar: 'Ahli dalam bidangnya',
-    criteria: ['Ahli dalam bidangnya', 'Mampu mengajar/mentoring junior', 'Inovasi dalam penyelesaian masalah', 'Manajemen proyek skala kecil'],
-    soft_skill: 'Mentoring',
-    created_at: new Date().toISOString(),
-  },
+  { id: LEVEL_IDS.BASIC, nama_level: 'Pemula / Beginner', urutan: 1, min_skor: 0, max_skor: 25, badge_name: 'Basic', badge_color: '#94a3b8', criteria: ['Mengenal konsep dasar', 'Mampu menggunakan tools dasar', 'Memahami alur kerja sederhana'], hasil_belajar: 'Memahami dasar-dasar bidang', soft_skill: 'Komunikasi dasar', created_at: new Date().toISOString() },
+  { id: LEVEL_IDS.INTER, nama_level: 'Intermediate', urutan: 2, min_skor: 26, max_skor: 50, badge_name: 'Applied', badge_color: '#3b82f6', criteria: ['Menguasai teknik menengah', 'Mampu menyelesaikan masalah kompleks', 'Menerapkan standar industri'], hasil_belajar: 'Menerapkan pengetahuan di lapangan', soft_skill: 'Problem solving', created_at: new Date().toISOString() },
+  { id: LEVEL_IDS.ADV, nama_level: 'Advanced', urutan: 3, min_skor: 51, max_skor: 75, badge_name: 'Advance', badge_color: '#f59e0b', criteria: ['Analisis sistem mendalam', 'Optimasi performa', 'Memimpin proyek skala kecil'], hasil_belajar: 'Menganalisis dan mengoptimasi sistem', soft_skill: 'Kepemimpinan', created_at: new Date().toISOString() },
+  { id: LEVEL_IDS.MASTER, nama_level: 'Mastery', urutan: 4, min_skor: 76, max_skor: 100, badge_name: 'Master', badge_color: '#10b981', criteria: ['Expert di bidangnya', 'Inovasi solusi baru', 'Mentoring Advanced member'], hasil_belajar: 'Ahli dan inovator di bidangnya', soft_skill: 'Mentoring', created_at: new Date().toISOString() },
 ];
 
+export const JURUSAN_IDS = {
+  MESIN: '550e8400-e29b-41d4-a716-446655440001',
+  TKR: '550e8400-e29b-41d4-a716-446655440002',
+  TSM: '550e8400-e29b-41d4-a716-446655440003',
+  ELIND: '550e8400-e29b-41d4-a716-446655440004',
+  LISTRIK: '550e8400-e29b-41d4-a716-446655440005',
+  KIMIA: '550e8400-e29b-41d4-a716-446655440006',
+  AKUNTANSI: '550e8400-e29b-41d4-a716-446655440007',
+  HOTEL: '550e8400-e29b-41d4-a716-446655440008',
+};
+
 export const mockJurusan: Jurusan[] = [
-  { id: 'j1', nama_jurusan: 'Teknik Mesin', icon: 'Settings', deskripsi: 'Perancangan dan perawatan mesin', created_at: new Date().toISOString() },
-  { id: 'j2', nama_jurusan: 'Teknik Kendaraan Ringan', icon: 'Car', deskripsi: 'Perawatan kendaraan ringan', created_at: new Date().toISOString() },
-  { id: 'j3', nama_jurusan: 'Teknik Sepeda Motor', icon: 'Bike', deskripsi: 'Perbaikan sepeda motor', created_at: new Date().toISOString() },
-  { id: 'j4', nama_jurusan: 'Teknik Elektronika Industri', icon: 'Cpu', deskripsi: 'Elektronika & otomasi', created_at: new Date().toISOString() },
-  { id: 'j5', nama_jurusan: 'Teknik Instalasi Tenaga Listrik', icon: 'Zap', deskripsi: 'Instalasi kelistrikan', created_at: new Date().toISOString() },
-  { id: 'j6', nama_jurusan: 'Teknik Kimia Industri', icon: 'FlaskConical', deskripsi: 'Proses produksi kimia', created_at: new Date().toISOString() },
-  { id: 'j7', nama_jurusan: 'Akuntansi', icon: 'Calculator', deskripsi: 'Pencatatan keuangan', created_at: new Date().toISOString() },
-  { id: 'j8', nama_jurusan: 'Perhotelan', icon: 'Hotel', deskripsi: 'Layanan & manajemen hotel', created_at: new Date().toISOString() },
+  { id: JURUSAN_IDS.MESIN, nama_jurusan: 'Teknik Mesin', icon: 'Settings', deskripsi: 'Perancangan dan perawatan mesin', created_at: new Date().toISOString() },
+  { id: JURUSAN_IDS.TKR, nama_jurusan: 'Teknik Kendaraan Ringan', icon: 'Car', deskripsi: 'Perawatan kendaraan ringan', created_at: new Date().toISOString() },
+  { id: JURUSAN_IDS.TSM, nama_jurusan: 'Teknik Sepeda Motor', icon: 'Bike', deskripsi: 'Perbaikan sepeda motor', created_at: new Date().toISOString() },
+  { id: JURUSAN_IDS.ELIND, nama_jurusan: 'Teknik Elektronika Industri', icon: 'Cpu', deskripsi: 'Elektronika & otomasi', created_at: new Date().toISOString() },
+  { id: JURUSAN_IDS.LISTRIK, nama_jurusan: 'Teknik Instalasi Tenaga Listrik', icon: 'Zap', deskripsi: 'Instalasi kelistrikan', created_at: new Date().toISOString() },
+  { id: JURUSAN_IDS.KIMIA, nama_jurusan: 'Teknik Kimia Industri', icon: 'FlaskConical', deskripsi: 'Proses produksi kimia', created_at: new Date().toISOString() },
+  { id: JURUSAN_IDS.AKUNTANSI, nama_jurusan: 'Akuntansi', icon: 'Calculator', deskripsi: 'Pencatatan keuangan', created_at: new Date().toISOString() },
+  { id: JURUSAN_IDS.HOTEL, nama_jurusan: 'Perhotelan', icon: 'Hotel', deskripsi: 'Layanan & manajemen hotel', created_at: new Date().toISOString() },
 ];
 
 // Class pools (by jurusan id) — used for generating random 'kelas' values for mock students
 const classPools: Record<string, string[]> = {
-  j1: [...Array.from({ length: 2 }, (_, i) => `X MESIN ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI MESIN ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII MESIN ${i + 1}`)],
-  j2: [...Array.from({ length: 2 }, (_, i) => `X TKR ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI TKR ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII TKR ${i + 1}`)],
-  j3: [...Array.from({ length: 2 }, (_, i) => `X TSM ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI TSM ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII TSM ${i + 1}`)],
-  j4: [...Array.from({ length: 4 }, (_, i) => `X ELIND ${i + 1}`), ...Array.from({ length: 4 }, (_, i) => `XI ELIND ${i + 1}`), ...Array.from({ length: 4 }, (_, i) => `XII ELIND ${i + 1}`)],
-  j5: [...Array.from({ length: 2 }, (_, i) => `X LISTRIK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI LISTRIK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII LISTRIK ${i + 1}`)],
-  j6: [...Array.from({ length: 2 }, (_, i) => `X TKI ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI TKI ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII TKI ${i + 1}`)],
-  j7: [...Array.from({ length: 2 }, (_, i) => `X AK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI AK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII AK ${i + 1}`)],
-  j8: [...Array.from({ length: 2 }, (_, i) => `X HOTEL ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI HOTEL ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII HOTEL ${i + 1}`)],
+  [JURUSAN_IDS.MESIN]: [...Array.from({ length: 2 }, (_, i) => `X MESIN ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI MESIN ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII MESIN ${i + 1}`)],
+  [JURUSAN_IDS.TKR]: [...Array.from({ length: 2 }, (_, i) => `X TKR ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI TKR ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII TKR ${i + 1}`)],
+  [JURUSAN_IDS.TSM]: [...Array.from({ length: 2 }, (_, i) => `X TSM ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI TSM ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII TSM ${i + 1}`)],
+  [JURUSAN_IDS.ELIND]: [...Array.from({ length: 4 }, (_, i) => `X ELIND ${i + 1}`), ...Array.from({ length: 4 }, (_, i) => `XI ELIND ${i + 1}`), ...Array.from({ length: 4 }, (_, i) => `XII ELIND ${i + 1}`)],
+  [JURUSAN_IDS.LISTRIK]: [...Array.from({ length: 2 }, (_, i) => `X LISTRIK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI LISTRIK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII LISTRIK ${i + 1}`)],
+  [JURUSAN_IDS.KIMIA]: [...Array.from({ length: 2 }, (_, i) => `X TKI ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI TKI ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII TKI ${i + 1}`)],
+  [JURUSAN_IDS.AKUNTANSI]: [...Array.from({ length: 2 }, (_, i) => `X AK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI AK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII AK ${i + 1}`)],
+  [JURUSAN_IDS.HOTEL]: [...Array.from({ length: 2 }, (_, i) => `X HOTEL ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI HOTEL ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII HOTEL ${i + 1}`)],
 };
 
 function pickRandom<T>(arr: T[]) {
@@ -91,108 +61,165 @@ function klassFor(jurusanId: string) {
 
 // Example students and scores (one score each so UI has a "latest skill" record)
 export const mockSiswa: Siswa[] = [
-  { id: 's-j1-a', nama: 'Raka Aji', kelas: klassFor('j1'), jurusan_id: 'j1', created_at: new Date().toISOString() },
-  { id: 's-j1-b', nama: 'Dewi Susanti', kelas: klassFor('j1'), jurusan_id: 'j1', created_at: new Date().toISOString() },
-  { id: 's-j1-c', nama: 'Budi Santoso', kelas: klassFor('j1'), jurusan_id: 'j1', created_at: new Date().toISOString() },
-  { id: 's-j1-d', nama: 'Siti Nurhayati', kelas: klassFor('j1'), jurusan_id: 'j1', created_at: new Date().toISOString() },
+  { id: 's-j1-a', nama: 'Raka Aji', kelas: klassFor(JURUSAN_IDS.MESIN), jurusan_id: JURUSAN_IDS.MESIN, created_at: new Date().toISOString() },
+  { id: 's-j1-b', nama: 'Dewi Susanti', kelas: klassFor(JURUSAN_IDS.MESIN), jurusan_id: JURUSAN_IDS.MESIN, created_at: new Date().toISOString() },
+  { id: 's-j1-c', nama: 'Budi Santoso', kelas: klassFor(JURUSAN_IDS.MESIN), jurusan_id: JURUSAN_IDS.MESIN, created_at: new Date().toISOString() },
+  { id: 's-j1-d', nama: 'Siti Nurhayati', kelas: klassFor(JURUSAN_IDS.MESIN), jurusan_id: JURUSAN_IDS.MESIN, created_at: new Date().toISOString() },
 
-  { id: 's-j2-a', nama: 'Agus Rahman', kelas: klassFor('j2'), jurusan_id: 'j2', created_at: new Date().toISOString() },
-  { id: 's-j2-b', nama: 'Intan Maharani', kelas: klassFor('j2'), jurusan_id: 'j2', created_at: new Date().toISOString() },
-  { id: 's-j2-c', nama: 'Fikri Hidayat', kelas: klassFor('j2'), jurusan_id: 'j2', created_at: new Date().toISOString() },
-  { id: 's-j2-d', nama: 'Maya Putri', kelas: klassFor('j2'), jurusan_id: 'j2', created_at: new Date().toISOString() },
+  { id: 's-j2-a', nama: 'Agus Rahman', kelas: klassFor(JURUSAN_IDS.TKR), jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
+  { id: 's-j2-b', nama: 'Intan Maharani', kelas: klassFor(JURUSAN_IDS.TKR), jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
+  { id: 's-j2-c', nama: 'Fikri Hidayat', kelas: klassFor(JURUSAN_IDS.TKR), jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
+  { id: 's-j2-d', nama: 'Maya Putri', kelas: klassFor(JURUSAN_IDS.TKR), jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
 
-  { id: 's-j3-a', nama: 'Rizky Pratama', kelas: klassFor('j3'), jurusan_id: 'j3', created_at: new Date().toISOString() },
-  { id: 's-j3-b', nama: 'Yulia Sari', kelas: klassFor('j3'), jurusan_id: 'j3', created_at: new Date().toISOString() },
-  { id: 's-j3-c', nama: 'Deni Prasetyo', kelas: klassFor('j3'), jurusan_id: 'j3', created_at: new Date().toISOString() },
-  { id: 's-j3-d', nama: 'Rina Kurnia', kelas: klassFor('j3'), jurusan_id: 'j3', created_at: new Date().toISOString() },
+  { id: 's-j3-a', nama: 'Rizky Pratama', kelas: klassFor(JURUSAN_IDS.TSM), jurusan_id: JURUSAN_IDS.TSM, created_at: new Date().toISOString() },
+  { id: 's-j3-b', nama: 'Yulia Sari', kelas: klassFor(JURUSAN_IDS.TSM), jurusan_id: JURUSAN_IDS.TSM, created_at: new Date().toISOString() },
+  { id: 's-j3-c', nama: 'Deni Prasetyo', kelas: klassFor(JURUSAN_IDS.TSM), jurusan_id: JURUSAN_IDS.TSM, created_at: new Date().toISOString() },
+  { id: 's-j3-d', nama: 'Rina Kurnia', kelas: klassFor(JURUSAN_IDS.TSM), jurusan_id: JURUSAN_IDS.TSM, created_at: new Date().toISOString() },
 
-  { id: 's-j4-a', nama: 'Hendra Wijaya', kelas: klassFor('j4'), jurusan_id: 'j4', created_at: new Date().toISOString() },
-  { id: 's-j4-b', nama: 'Siska Lestari', kelas: klassFor('j4'), jurusan_id: 'j4', created_at: new Date().toISOString() },
-  { id: 's-j4-c', nama: 'Gilang Pradipta', kelas: klassFor('j4'), jurusan_id: 'j4', created_at: new Date().toISOString() },
-  { id: 's-j4-d', nama: 'Nadia Amelia', kelas: klassFor('j4'), jurusan_id: 'j4', created_at: new Date().toISOString() },
+  { id: 's-j4-a', nama: 'Hendra Wijaya', kelas: klassFor(JURUSAN_IDS.ELIND), jurusan_id: JURUSAN_IDS.ELIND, created_at: new Date().toISOString() },
+  { id: 's-j4-b', nama: 'Siska Lestari', kelas: klassFor(JURUSAN_IDS.ELIND), jurusan_id: JURUSAN_IDS.ELIND, created_at: new Date().toISOString() },
+  { id: 's-j4-c', nama: 'Gilang Pradipta', kelas: klassFor(JURUSAN_IDS.ELIND), jurusan_id: JURUSAN_IDS.ELIND, created_at: new Date().toISOString() },
+  { id: 's-j4-d', nama: 'Nadia Amelia', kelas: klassFor(JURUSAN_IDS.ELIND), jurusan_id: JURUSAN_IDS.ELIND, created_at: new Date().toISOString() },
 
-  { id: 's-j5-a', nama: 'Taufik Hidayat', kelas: klassFor('j5'), jurusan_id: 'j5', created_at: new Date().toISOString() },
-  { id: 's-j5-b', nama: 'Lia Ramadhani', kelas: klassFor('j5'), jurusan_id: 'j5', created_at: new Date().toISOString() },
-  { id: 's-j5-c', nama: 'Wahyu Kurnia', kelas: klassFor('j5'), jurusan_id: 'j5', created_at: new Date().toISOString() },
-  { id: 's-j5-d', nama: 'Rahayu Indah', kelas: klassFor('j5'), jurusan_id: 'j5', created_at: new Date().toISOString() },
+  { id: 's-j5-a', nama: 'Taufik Hidayat', kelas: klassFor(JURUSAN_IDS.LISTRIK), jurusan_id: JURUSAN_IDS.LISTRIK, created_at: new Date().toISOString() },
+  { id: 's-j5-b', nama: 'Lia Ramadhani', kelas: klassFor(JURUSAN_IDS.LISTRIK), jurusan_id: JURUSAN_IDS.LISTRIK, created_at: new Date().toISOString() },
+  { id: 's-j5-c', nama: 'Wahyu Kurnia', kelas: klassFor(JURUSAN_IDS.LISTRIK), jurusan_id: JURUSAN_IDS.LISTRIK, created_at: new Date().toISOString() },
+  { id: 's-j5-d', nama: 'Rahayu Indah', kelas: klassFor(JURUSAN_IDS.LISTRIK), jurusan_id: JURUSAN_IDS.LISTRIK, created_at: new Date().toISOString() },
 
-  { id: 's-j6-a', nama: 'Arif Maulana', kelas: klassFor('j6'), jurusan_id: 'j6', created_at: new Date().toISOString() },
-  { id: 's-j6-b', nama: 'Putri Ananda', kelas: klassFor('j6'), jurusan_id: 'j6', created_at: new Date().toISOString() },
-  { id: 's-j6-c', nama: 'Hendra Saputra', kelas: klassFor('j6'), jurusan_id: 'j6', created_at: new Date().toISOString() },
-  { id: 's-j6-d', nama: 'Megawati', kelas: klassFor('j6'), jurusan_id: 'j6', created_at: new Date().toISOString() },
+  { id: 's-j6-a', nama: 'Arif Maulana', kelas: klassFor(JURUSAN_IDS.KIMIA), jurusan_id: JURUSAN_IDS.KIMIA, created_at: new Date().toISOString() },
+  { id: 's-j6-b', nama: 'Putri Ananda', kelas: klassFor(JURUSAN_IDS.KIMIA), jurusan_id: JURUSAN_IDS.KIMIA, created_at: new Date().toISOString() },
+  { id: 's-j6-c', nama: 'Hendra Saputra', kelas: klassFor(JURUSAN_IDS.KIMIA), jurusan_id: JURUSAN_IDS.KIMIA, created_at: new Date().toISOString() },
+  { id: 's-j6-d', nama: 'Megawati', kelas: klassFor(JURUSAN_IDS.KIMIA), jurusan_id: JURUSAN_IDS.KIMIA, created_at: new Date().toISOString() },
 
-  { id: 's-j7-a', nama: 'Daniel Pratama', kelas: klassFor('j7'), jurusan_id: 'j7', created_at: new Date().toISOString() },
-  { id: 's-j7-b', nama: 'Nur Fadilah', kelas: klassFor('j7'), jurusan_id: 'j7', created_at: new Date().toISOString() },
-  { id: 's-j7-c', nama: 'Rian Setiawan', kelas: klassFor('j7'), jurusan_id: 'j7', created_at: new Date().toISOString() },
-  { id: 's-j7-d', nama: 'Sari Melati', kelas: klassFor('j7'), jurusan_id: 'j7', created_at: new Date().toISOString() },
+  { id: 's-j7-a', nama: 'Daniel Pratama', kelas: klassFor(JURUSAN_IDS.AKUNTANSI), jurusan_id: JURUSAN_IDS.AKUNTANSI, created_at: new Date().toISOString() },
+  { id: 's-j7-b', nama: 'Nur Fadilah', kelas: klassFor(JURUSAN_IDS.AKUNTANSI), jurusan_id: JURUSAN_IDS.AKUNTANSI, created_at: new Date().toISOString() },
+  { id: 's-j7-c', nama: 'Rian Setiawan', kelas: klassFor(JURUSAN_IDS.AKUNTANSI), jurusan_id: JURUSAN_IDS.AKUNTANSI, created_at: new Date().toISOString() },
+  { id: 's-j7-d', nama: 'Sari Melati', kelas: klassFor(JURUSAN_IDS.AKUNTANSI), jurusan_id: JURUSAN_IDS.AKUNTANSI, created_at: new Date().toISOString() },
 
-  { id: 's-j8-a', nama: 'Kevin Alexander', kelas: klassFor('j8'), jurusan_id: 'j8', created_at: new Date().toISOString() },
-  { id: 's-j8-b', nama: 'Mita Sari', kelas: klassFor('j8'), jurusan_id: 'j8', created_at: new Date().toISOString() },
-  { id: 's-j8-c', nama: 'Fajar Prakoso', kelas: klassFor('j8'), jurusan_id: 'j8', created_at: new Date().toISOString() },
-  { id: 's-j8-d', nama: 'Rani Melinda', kelas: klassFor('j8'), jurusan_id: 'j8', created_at: new Date().toISOString() },
+  { id: 's-j8-a', nama: 'Kevin Alexander', kelas: klassFor(JURUSAN_IDS.HOTEL), jurusan_id: JURUSAN_IDS.HOTEL, created_at: new Date().toISOString() },
+  { id: 's-j8-b', nama: 'Mita Sari', kelas: klassFor(JURUSAN_IDS.HOTEL), jurusan_id: JURUSAN_IDS.HOTEL, created_at: new Date().toISOString() },
+  { id: 's-j8-c', nama: 'Fajar Prakoso', kelas: klassFor(JURUSAN_IDS.HOTEL), jurusan_id: JURUSAN_IDS.HOTEL, created_at: new Date().toISOString() },
+  { id: 's-j8-d', nama: 'Rani Melinda', kelas: klassFor(JURUSAN_IDS.HOTEL), jurusan_id: JURUSAN_IDS.HOTEL, created_at: new Date().toISOString() },
   // --- This matches the username 'siswa_mesin' with name 'Siswa Mesin' in mockUsers.ts ---
-  { id: 's-j1-user', nama: 'Siswa Mesin', kelas: 'XII MESIN 1', jurusan_id: 'j1', created_at: new Date().toISOString(), avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix', photo_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop' },
+  { id: 's-j1-user', nama: 'Siswa Mesin', kelas: 'XII MESIN 1', jurusan_id: JURUSAN_IDS.MESIN, created_at: new Date().toISOString(), avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix', photo_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop' },
   // --- Hero students for other majors ---
-  { id: 's-j2-user', nama: 'Siswa TKR', kelas: 'XII TKR 1', jurusan_id: 'j2', created_at: new Date().toISOString() },
-  { id: 's-j3-user', nama: 'Siswa TSM', kelas: 'XII TSM 1', jurusan_id: 'j3', created_at: new Date().toISOString() },
-  { id: 's-j4-user', nama: 'Siswa Elind', kelas: 'XII ELIND 1', jurusan_id: 'j4', created_at: new Date().toISOString() },
-  { id: 's-j5-user', nama: 'Siswa Listrik', kelas: 'XII LISTRIK 1', jurusan_id: 'j5', created_at: new Date().toISOString() },
-  { id: 's-j6-user', nama: 'Siswa Kimia', kelas: 'XII TKI 1', jurusan_id: 'j6', created_at: new Date().toISOString() },
-  { id: 's-j7-user', nama: 'Siswa Akuntansi', kelas: 'XII AK 1', jurusan_id: 'j7', created_at: new Date().toISOString() },
-  { id: 's-j8-user', nama: 'Siswa Perhotelan', kelas: 'XII HOTEL 1', jurusan_id: 'j8', created_at: new Date().toISOString() },
+  { id: 's-j2-user', nama: 'Siswa TKR', kelas: 'XII TKR 1', jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
+  { id: 's-j3-user', nama: 'Siswa TSM', kelas: 'XII TSM 1', jurusan_id: JURUSAN_IDS.TSM, created_at: new Date().toISOString() },
+  { id: 's-j4-user', nama: 'Siswa Elind', kelas: 'XII ELIND 1', jurusan_id: JURUSAN_IDS.ELIND, created_at: new Date().toISOString() },
+  { id: 's-j5-user', nama: 'Siswa Listrik', kelas: 'XII LISTRIK 1', jurusan_id: JURUSAN_IDS.LISTRIK, created_at: new Date().toISOString() },
+  { id: 's-j6-user', nama: 'Siswa Kimia', kelas: 'XII TKI 1', jurusan_id: JURUSAN_IDS.KIMIA, created_at: new Date().toISOString() },
+  { id: 's-j7-user', nama: 'Siswa Akuntansi', kelas: 'XII AK 1', jurusan_id: JURUSAN_IDS.AKUNTANSI, created_at: new Date().toISOString() },
+  { id: 's-j8-user', nama: 'Siswa Perhotelan', kelas: 'XII HOTEL 1', jurusan_id: JURUSAN_IDS.HOTEL, created_at: new Date().toISOString() },
+  // --- New Student for 'siswa' login ---
+  { id: 's-raka-new', nama: 'Raka Aditya', kelas: 'XII TKR 1', jurusan_id: JURUSAN_IDS.MESIN, created_at: new Date().toISOString(), avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Raka', photo_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop' },
 ];
 
 export const mockSkillSiswa: SkillSiswa[] = [
-  { id: 'ss-raka', siswa_id: 's-j1-a', level_id: 'lvl-master', skor: 98, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-dewi', siswa_id: 's-j1-b', level_id: 'lvl-adv', skor: 84, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-budi', siswa_id: 's-j1-c', level_id: 'lvl-adv', skor: 71, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-siti', siswa_id: 's-j1-d', level_id: 'lvl-adv', skor: 60, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-deni', siswa_id: 's-j3-c', level_id: 'lvl-adv', skor: 58, poin: 200, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-rina', siswa_id: 's-j3-d', level_id: 'lvl-inter', skor: 33, poin: 150, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
 
-  { id: 'ss-agus', siswa_id: 's-j2-a', level_id: 'lvl-master', skor: 95, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-intan', siswa_id: 's-j2-b', level_id: 'lvl-adv', skor: 82, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-fikri', siswa_id: 's-j2-c', level_id: 'lvl-adv', skor: 64, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-maya', siswa_id: 's-j2-d', level_id: 'lvl-inter', skor: 45, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-hendra', siswa_id: 's-j4-a', level_id: 'lvl-master', skor: 93, poin: 250, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siska', siswa_id: 's-j4-b', level_id: 'lvl-master', skor: 77, poin: 250, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-gilang', siswa_id: 's-j4-c', level_id: 'lvl-adv', skor: 54, poin: 200, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-nadia', siswa_id: 's-j4-d', level_id: 'lvl-inter', skor: 29, poin: 150, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
 
-  { id: 'ss-rizky', siswa_id: 's-j3-a', level_id: 'lvl-master', skor: 96, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-yulia', siswa_id: 's-j3-b', level_id: 'lvl-master', skor: 79, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-deni', siswa_id: 's-j3-c', level_id: 'lvl-adv', skor: 58, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-rina', siswa_id: 's-j3-d', level_id: 'lvl-inter', skor: 33, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-taufik', siswa_id: 's-j5-a', level_id: 'lvl-master', skor: 97, poin: 250, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-lia', siswa_id: 's-j5-b', level_id: 'lvl-master', skor: 86, poin: 250, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-wahyu', siswa_id: 's-j5-c', level_id: 'lvl-adv', skor: 69, poin: 200, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-rahayu', siswa_id: 's-j5-d', level_id: 'lvl-adv', skor: 52, poin: 200, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
 
-  { id: 'ss-hendra', siswa_id: 's-j4-a', level_id: 'lvl-master', skor: 93, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-siska', siswa_id: 's-j4-b', level_id: 'lvl-master', skor: 77, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-gilang', siswa_id: 's-j4-c', level_id: 'lvl-adv', skor: 54, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-nadia', siswa_id: 's-j4-d', level_id: 'lvl-inter', skor: 29, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-arif', siswa_id: 's-j6-a', level_id: 'lvl-master', skor: 94, poin: 250, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-putri', siswa_id: 's-j6-b', level_id: 'lvl-master', skor: 81, poin: 250, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-hendra2', siswa_id: 's-j6-c', level_id: 'lvl-adv', skor: 65, poin: 200, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-megawati', siswa_id: 's-j6-d', level_id: 'lvl-inter', skor: 38, poin: 150, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
 
-  { id: 'ss-taufik', siswa_id: 's-j5-a', level_id: 'lvl-master', skor: 97, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-lia', siswa_id: 's-j5-b', level_id: 'lvl-master', skor: 86, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-wahyu', siswa_id: 's-j5-c', level_id: 'lvl-adv', skor: 69, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-rahayu', siswa_id: 's-j5-d', level_id: 'lvl-adv', skor: 52, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-daniel', siswa_id: 's-j7-a', level_id: 'lvl-master', skor: 92, poin: 250, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-nur', siswa_id: 's-j7-b', level_id: 'lvl-master', skor: 80, poin: 250, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-rian', siswa_id: 's-j7-c', level_id: 'lvl-adv', skor: 63, poin: 200, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-sari', siswa_id: 's-j7-d', level_id: 'lvl-inter', skor: 49, poin: 150, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
 
-  { id: 'ss-arif', siswa_id: 's-j6-a', level_id: 'lvl-master', skor: 94, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-putri', siswa_id: 's-j6-b', level_id: 'lvl-master', skor: 81, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-hendra2', siswa_id: 's-j6-c', level_id: 'lvl-adv', skor: 65, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-megawati', siswa_id: 's-j6-d', level_id: 'lvl-inter', skor: 38, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-
-  { id: 'ss-daniel', siswa_id: 's-j7-a', level_id: 'lvl-master', skor: 92, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-nur', siswa_id: 's-j7-b', level_id: 'lvl-master', skor: 80, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-rian', siswa_id: 's-j7-c', level_id: 'lvl-adv', skor: 63, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-sari', siswa_id: 's-j7-d', level_id: 'lvl-inter', skor: 49, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-
-  { id: 'ss-kevin', siswa_id: 's-j8-a', level_id: 'lvl-master', skor: 90, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-mita', siswa_id: 's-j8-b', level_id: 'lvl-master', skor: 76, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-fajar', siswa_id: 's-j8-c', level_id: 'lvl-adv', skor: 59, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-rani', siswa_id: 's-j8-d', level_id: 'lvl-inter', skor: 42, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-kevin', siswa_id: 's-j8-a', level_id: 'lvl-master', skor: 90, poin: 250, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-mita', siswa_id: 's-j8-b', level_id: 'lvl-master', skor: 76, poin: 250, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-fajar', siswa_id: 's-j8-c', level_id: 'lvl-adv', skor: 59, poin: 200, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-rani', siswa_id: 's-j8-d', level_id: 'lvl-inter', skor: 42, poin: 150, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
 
   // --- Matching logged-in test user ---
-  { id: 'ss-siswa-mesin', siswa_id: 's-j1-user', level_id: 'lvl-adv', skor: 78, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siswa-mesin', siswa_id: 's-j1-user', level_id: 'lvl-adv', skor: 78, poin: 200, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
   // --- Skills for other hero students ---
-  { id: 'ss-siswa-tkr', siswa_id: 's-j2-user', level_id: 'lvl-adv', skor: 82, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-siswa-tsm', siswa_id: 's-j3-user', level_id: 'lvl-adv', skor: 75, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-siswa-elind', siswa_id: 's-j4-user', level_id: 'lvl-master', skor: 88, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-siswa-listrik', siswa_id: 's-j5-user', level_id: 'lvl-inter', skor: 65, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-siswa-kimia', siswa_id: 's-j6-user', level_id: 'lvl-adv', skor: 70, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-siswa-akuntansi', siswa_id: 's-j7-user', level_id: 'lvl-master', skor: 91, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-  { id: 'ss-siswa-hotel', siswa_id: 's-j8-user', level_id: 'lvl-inter', skor: 60, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siswa-tkr', siswa_id: 's-j2-user', level_id: 'lvl-adv', skor: 82, poin: 200, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siswa-tsm', siswa_id: 's-j3-user', level_id: 'lvl-adv', skor: 75, poin: 200, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siswa-elind', siswa_id: 's-j4-user', level_id: 'lvl-master', skor: 88, poin: 250, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siswa-listrik', siswa_id: 's-j5-user', level_id: 'lvl-inter', skor: 65, poin: 150, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siswa-kimia', siswa_id: 's-j6-user', level_id: 'lvl-adv', skor: 70, poin: 200, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siswa-akuntansi', siswa_id: 's-j7-user', level_id: 'lvl-master', skor: 91, poin: 250, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'ss-siswa-hotel', siswa_id: 's-j8-user', level_id: 'lvl-inter', skor: 60, poin: 150, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  // skill for Raka Aditya
+  { id: 'ss-raka-new', siswa_id: 's-raka-new', level_id: 'lvl-adv', skor: 85, poin: 200, tanggal_pencapaian: new Date().toISOString(), created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+];
+
+export const mockCompetencyHistory: CompetencyHistory[] = [
+  {
+    id: 'h1',
+    siswa_id: 's-j1-user',
+    level_id: 'lvl-basic',
+    unit_kompetensi: 'K3 Dasar',
+    aktivitas_pembuktian: 'Praktik bengkel',
+    penilai: 'Guru Produktif',
+    hasil: 'Lulus',
+    tanggal: '2024-08-12',
+    catatan: 'Disiplin baik'
+  },
+  {
+    id: 'h2',
+    siswa_id: 's-j1-user',
+    level_id: 'lvl-inter',
+    unit_kompetensi: 'Operasi Mesin Bubut',
+    aktivitas_pembuktian: 'Job Sheet',
+    penilai: 'Guru + Instruktur',
+    hasil: 'Lulus',
+    tanggal: '2025-01-15',
+    catatan: 'Perlu kecepatan'
+  },
+  {
+    id: 'h3',
+    siswa_id: 's-j1-user',
+    level_id: 'lvl-adv',
+    unit_kompetensi: 'Produksi Komponen',
+    aktivitas_pembuktian: 'Teaching Factory',
+    penilai: 'Industri',
+    hasil: 'Lulus',
+    tanggal: '2025-09-10',
+    catatan: 'Siap PKL'
+  }
+];
+
+export const mockDiscipline: import('../types').StudentDiscipline[] = [
+  {
+    id: 'disc-s-j1-user',
+    siswa_id: 's-j1-user',
+    attendance_pcent: 95,
+    attitude_scores: [
+      { aspect: 'Disiplin', score: 85 },
+      { aspect: 'Tanggung Jawab', score: 92 },
+      { aspect: 'Jujur', score: 87 },
+      { aspect: 'Kerjasama', score: 88 },
+      { aspect: 'Peduli', score: 90 }
+    ],
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: 'disc-raka-new',
+    siswa_id: 's-raka-new',
+    attendance_pcent: 88,
+    attitude_scores: [
+      { aspect: 'Disiplin', score: 80 },
+      { aspect: 'Tanggung Jawab', score: 82 },
+      { aspect: 'Jujur', score: 75 },
+      { aspect: 'Kerjasama', score: 85 },
+      { aspect: 'Peduli', score: 80 }
+    ],
+    updated_at: new Date().toISOString()
+  }
 ];
 
 // per-jurusan overrides for level descriptions
@@ -474,17 +501,20 @@ export function getStudentListForJurusan(jurusanId: string): StudentListItem[] {
       const badge_name = (level?.badge_name ?? 'Basic') as any;
       const badge_color = level?.badge_color ?? '#94a3b8';
       const level_name = level?.nama_level ?? 'Pemula / Beginner';
+      const poin = (level?.urutan ?? 1) * 50 + 50;
 
       return {
         id: s.id,
         nama: s.nama,
         kelas: s.kelas,
         skor: sk.skor,
+        poin: poin,
         badge_name,
         badge_color,
         level_name,
         avatar_url: s.avatar_url,
         photo_url: s.photo_url,
+        riwayat_kompetensi: mockCompetencyHistory.filter(h => h.siswa_id === s.id)
       } as StudentListItem;
     })
     .filter(Boolean) as StudentListItem[];
@@ -538,6 +568,8 @@ export default {
   mockJurusan,
   mockSiswa,
   mockSkillSiswa,
+  mockCompetencyHistory,
+  mockDiscipline,
   mockLevelOverrides,
   getTopStudentForJurusan,
   getTopStudentsForJurusan,

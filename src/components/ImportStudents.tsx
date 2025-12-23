@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { X, UploadCloud, FileSpreadsheet } from 'lucide-react';
+import { X, FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import mockData from '../mocks/mockData';
 import { supabase, isMockMode } from '../lib/supabase';
 
-interface ParsedRow { nama: string; kelas?: string; skor?: number }
+interface ParsedRow { nama: string; nisn?: string; kelas?: string; skor?: number }
 
 interface ImportStudentsProps {
   jurusanId: string;
@@ -92,15 +92,17 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
         const now = new Date().toISOString();
         for (const row of preview) {
           const id = `s-${jurusanId}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-          mockData.mockSiswa.push({ id, nama: row.nama, kelas: row.kelas ?? 'X', jurusan_id: jurusanId, created_at: now });
+          mockData.mockSiswa.push({ id, nama: row.nama, nisn: row.nisn, kelas: row.kelas ?? 'X', jurusan_id: jurusanId, created_at: now });
           if (typeof row.skor === 'number') {
             const skor = row.skor;
-            const levelId = mockData.mockLevels.find((l) => skor >= l.min_skor && skor <= l.max_skor)?.id ?? mockData.mockLevels[0].id;
-            mockData.mockSkillSiswa.push({ id: `ss-${id}`, siswa_id: id, level_id: levelId, skor, tanggal_pencapaian: now, created_at: now, updated_at: now });
+            const level = mockData.mockLevels.find((l) => skor >= l.min_skor && skor <= l.max_skor) || mockData.mockLevels[0];
+            const levelId = level.id;
+            const poin = level.urutan * 50 + 50;
+            mockData.mockSkillSiswa.push({ id: `ss-${id}`, siswa_id: id, level_id: levelId, skor, poin, tanggal_pencapaian: now, created_at: now, updated_at: now });
           }
         }
       } else {
-        const rows = preview.map((r) => ({ nama: r.nama, kelas: r.kelas ?? 'X', jurusan_id: jurusanId }));
+        const rows = preview.map((r) => ({ nama: r.nama, nisn: r.nisn, kelas: r.kelas ?? 'X', jurusan_id: jurusanId }));
         const { error: insertErr } = await supabase.from('siswa').insert(rows);
         if (insertErr) throw insertErr;
 
@@ -113,7 +115,8 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
             const skor = p.skor as number;
             const level = levels?.find((l: any) => skor >= l.min_skor && skor <= l.max_skor);
             if (level) {
-              await supabase.from('skill_siswa').insert({ siswa_id: sdata[0].id, level_id: level.id, skor });
+              const poin = (level.urutan ?? 1) * 50 + 50;
+              await supabase.from('skill_siswa').insert({ siswa_id: sdata[0].id, level_id: level.id, skor, poin });
             }
           }
         }
@@ -151,12 +154,12 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[color:var(--text-muted)] mb-2">Atau tempel data (Header: Nama, Kelas, Skor)</label>
+              <label className="block text-sm font-medium text-[color:var(--text-muted)] mb-2">Atau tempel data (Header: Nama, NISN, Kelas, Skor)</label>
               <textarea
                 rows={4}
                 onChange={(e) => handlePaste(e.target.value)}
                 className="w-full p-3 rounded-xl bg-black/20 border border-white/10 text-[color:var(--text-primary)] placeholder-white/20 focus:ring-2 focus:ring-[color:var(--accent-1)] focus:border-transparent transition-all"
-                placeholder={`Nama, Kelas, Skor\nBudi Santoso, X TKR 1, 78`}
+                placeholder={`Nama, NISN, Kelas, Skor\nBudi Santoso, 0012345678, X TKR 1, 78`}
               />
             </div>
 
@@ -170,6 +173,7 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
                     <thead className="bg-white/5">
                       <tr>
                         <th className="px-4 py-2 text-left font-medium text-[color:var(--text-muted)]">Nama</th>
+                        <th className="px-4 py-2 text-left font-medium text-[color:var(--text-muted)]">NISN</th>
                         <th className="px-4 py-2 text-left font-medium text-[color:var(--text-muted)]">Kelas</th>
                         <th className="px-4 py-2 text-left font-medium text-[color:var(--text-muted)]">Skor</th>
                       </tr>
@@ -178,6 +182,7 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
                       {preview.map((r, i) => (
                         <tr key={i} className="hover:bg-white/5 transition-colors">
                           <td className="px-4 py-2 text-[color:var(--text-primary)]">{r.nama}</td>
+                          <td className="px-4 py-2 text-[color:var(--text-muted)]">{r.nisn ?? '-'}</td>
                           <td className="px-4 py-2 text-[color:var(--text-muted)]">{r.kelas ?? '-'}</td>
                           <td className="px-4 py-2 text-[color:var(--text-muted)]">{r.skor ?? '-'}</td>
                         </tr>

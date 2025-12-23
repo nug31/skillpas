@@ -19,7 +19,7 @@ interface JurusanDetailPageProps {
 }
 
 export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetailPageProps) {
-  const { isTeacher } = useAuth();
+  const { isTeacher, user } = useAuth();
   const [levels, setLevels] = useState<LevelSkill[]>([]);
   const [students, setStudents] = useState<StudentListItem[]>([]);
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
@@ -53,7 +53,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
         supabase.from('level_skill').select('*').order('urutan'),
         supabase
           .from('siswa')
-          .select('id, nama, kelas, skill_siswa(skor, level_id)')
+          .select('id, nama, kelas, skill_siswa(skor, poin, level_id)')
           .eq('jurusan_id', jurusan.id),
       ]);
 
@@ -120,6 +120,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
             nama: siswa.nama,
             kelas: siswa.kelas,
             skor: latestSkill.skor,
+            poin: latestSkill.poin || 0,
             badge_name: badge_name as any,
             badge_color,
             level_name,
@@ -142,18 +143,21 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
       if (useMock) {
         // mutate mock data in memory and update students state
         const idx = mockData.mockSkillSiswa.findIndex((r) => r.siswa_id === siswaId);
+        const levelObj = mockData.mockLevels.find((l) => newSkor >= l.min_skor && newSkor <= l.max_skor) || mockData.mockLevels[0];
+        const newPoin = levelObj.urutan * 50 + 50;
+
         if (idx >= 0) {
           mockData.mockSkillSiswa[idx].skor = newSkor;
+          mockData.mockSkillSiswa[idx].poin = newPoin;
+          mockData.mockSkillSiswa[idx].level_id = levelObj.id;
           mockData.mockSkillSiswa[idx].updated_at = new Date().toISOString();
         } else {
           mockData.mockSkillSiswa.push({
             id: `ss-${siswaId}-${Date.now()}`,
             siswa_id: siswaId,
-            level_id: (() => {
-              const lev = mockData.mockLevels.find((l) => newSkor >= l.min_skor && newSkor <= l.max_skor);
-              return lev?.id ?? mockData.mockLevels[0].id;
-            })(),
+            level_id: levelObj.id,
             skor: newSkor,
+            poin: newPoin,
             tanggal_pencapaian: new Date().toISOString(),
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
@@ -169,12 +173,18 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
       // determine level id based on current levels
       const level = levels.find((l) => newSkor >= l.min_skor && newSkor <= l.max_skor);
       const levelId = level ? level.id : levels[0]?.id;
+      const newPoin = (level?.urutan ?? 1) * 50 + 50;
 
-      // Delete existing score first to ensure only one active score per student
+      // Delete existing score first (optional but keeps DB clean)
       const { error: delError } = await supabase.from('skill_siswa').delete().eq('siswa_id', siswaId);
       if (delError) throw delError;
 
-      const { error } = await supabase.from('skill_siswa').insert({ siswa_id: siswaId, level_id: levelId, skor: newSkor });
+      const { error } = await supabase.from('skill_siswa').insert({
+        siswa_id: siswaId,
+        level_id: levelId,
+        skor: newSkor,
+        poin: newPoin
+      });
       if (error) throw error;
 
       // refresh
@@ -339,154 +349,156 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
 
             <LevelTable levels={levels} jurusanId={jurusan.id} onUpdateCriteria={handleUpdateCriteria} isTeacher={isTeacher} />
 
-            <div className="card-glass rounded-xl shadow-sm p-6">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                <h2 className="text-xl font-semibold text-[color:var(--text-primary)]">Daftar Siswa per Level</h2>
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium text-[color:var(--text-muted)] whitespace-nowrap">
-                    Filter Level:
-                  </label>
-                  <select
-                    value={selectedLevel}
-                    onChange={(e) => setSelectedLevel(e.target.value)}
-                    className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[color:var(--accent-1)] focus:border-transparent text-sm text-[color:var(--text-primary)] bg-[color:var(--card-bg)] border-[color:var(--card-border)]"
-                    style={{
-                      backgroundColor: 'var(--card-bg)',
-                      color: 'var(--text-primary)'
-                    }}
-                  >
-                    <option value="all" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Semua Level</option>
-                    {levels.map((level) => (
-                      <option key={level.id} value={level.id} style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>
-                        {level.nama_level} ({level.badge_name})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="flex justify-between items-center gap-2 mb-4">
-                <div />
-                {isTeacher && (
+            {user?.role !== 'student' && (
+              <div className="card-glass rounded-xl shadow-sm p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                  <h2 className="text-xl font-semibold text-[color:var(--text-primary)]">Daftar Siswa per Level</h2>
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={async () => {
-                        if (window.confirm(`PERINGATAN: Anda yakin ingin MENGHAPUS SEMUA data siswa di jurusan ${jurusan.nama_jurusan}?\n\nData yang dihapus tidak dapat dikembalikan!`)) {
-                          if (!window.confirm("Apakah anda benar-benar yakin?")) return;
-
-                          try {
-                            setLoading(true);
-                            if (isMockMode) {
-                              // Find all student IDs in this jurusan
-                              const studentsToDelete = mockData.mockSiswa.filter(s => s.jurusan_id === jurusan.id).map(s => s.id);
-
-                              // Delete in reverse loop to avoid index shifting issues
-                              for (let i = mockData.mockSiswa.length - 1; i >= 0; i--) {
-                                if (mockData.mockSiswa[i].jurusan_id === jurusan.id) {
-                                  mockData.mockSiswa.splice(i, 1);
-                                }
-                              }
-                              for (let i = mockData.mockSiswa.length - 1; i >= 0; i--) {
-                                if (mockData.mockSiswa[i].jurusan_id === jurusan.id) {
-                                  mockData.mockSiswa.splice(i, 1);
-                                }
-                              }
-                              // Delete skills
-                              for (let i = mockData.mockSkillSiswa.length - 1; i >= 0; i--) {
-                                if (studentsToDelete.includes(mockData.mockSkillSiswa[i].siswa_id)) {
-                                  mockData.mockSkillSiswa.splice(i, 1);
-                                }
-                              }
-                            } else {
-                              const { error } = await supabase.from('siswa').delete().eq('jurusan_id', jurusan.id);
-                              if (error) throw error;
-                            }
-                            await loadData();
-                            alert('Semua data siswa berhasil dihapus.');
-                          } catch (err) {
-                            console.error('Failed to delete all', err);
-                            alert('Gagal menghapus data.');
-                          } finally {
-                            setLoading(false);
-                          }
-                        }
+                    <label className="text-sm font-medium text-[color:var(--text-muted)] whitespace-nowrap">
+                      Filter Level:
+                    </label>
+                    <select
+                      value={selectedLevel}
+                      onChange={(e) => setSelectedLevel(e.target.value)}
+                      className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[color:var(--accent-1)] focus:border-transparent text-sm text-[color:var(--text-primary)] bg-[color:var(--card-bg)] border-[color:var(--card-border)]"
+                      style={{
+                        backgroundColor: 'var(--card-bg)',
+                        color: 'var(--text-primary)'
                       }}
-                      className="px-3 py-1 bg-red-600 text-white rounded text-sm inline-flex items-center gap-2 hover:bg-red-700 transition-colors"
                     >
-                      <Trash2 className="w-4 h-4" />
-                      <span>Hapus Semua</span>
-                    </button>
-                    <button onClick={() => setShowImport(true)} className="px-3 py-1 bg-indigo-600 text-white rounded text-sm inline-flex items-center gap-2 hover:bg-indigo-700 transition-colors">
-                      <Download className="w-4 h-4" />
-                      <span>Import Siswa</span>
-                    </button>
+                      <option value="all" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Semua Level</option>
+                      {levels.map((level) => (
+                        <option key={level.id} value={level.id} style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>
+                          {level.nama_level} ({level.badge_name})
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                )}
-              </div>
+                </div>
+                <div className="flex justify-between items-center gap-2 mb-4">
+                  <div />
+                  {isTeacher && (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={async () => {
+                          if (window.confirm(`PERINGATAN: Anda yakin ingin MENGHAPUS SEMUA data siswa di jurusan ${jurusan.nama_jurusan}?\n\nData yang dihapus tidak dapat dikembalikan!`)) {
+                            if (!window.confirm("Apakah anda benar-benar yakin?")) return;
 
-              <StudentTable
-                students={filteredStudents}
-                onExportExcel={handleExportExcel}
-                onExportPDF={handleExportPDF}
-                onEditScore={isTeacher ? handleEditScore : undefined}
-                onDelete={isTeacher ? async (s) => {
-                  try {
-                    setLoading(true);
-                    // Delete logic
-                    if (isMockMode) {
-                      const idx = mockData.mockSiswa.findIndex(ms => ms.id === s.id);
-                      if (idx >= 0) mockData.mockSiswa.splice(idx, 1);
-                      // Also delete related skill records
-                      const sIdx = mockData.mockSkillSiswa.findIndex(ss => ss.siswa_id === s.id);
-                      if (sIdx >= 0) mockData.mockSkillSiswa.splice(sIdx, 1);
-                    } else {
-                      const { error } = await supabase.from('siswa').delete().eq('id', s.id);
-                      if (error) throw error;
-                    }
-                    await loadData();
-                  } catch (err) {
-                    console.error('Delete failed', err);
-                    alert('Gagal menghapus siswa');
-                    setLoading(false);
-                  }
-                } : undefined}
-                topRanks={topRanks}
-                onSelectStudent={(s) => setSelectedStudent(s)}
-                jurusanName={jurusan.nama_jurusan}
-              />
+                            try {
+                              setLoading(true);
+                              if (isMockMode) {
+                                // Find all student IDs in this jurusan
+                                const studentsToDelete = mockData.mockSiswa.filter(s => s.jurusan_id === jurusan.id).map(s => s.id);
 
-              {selectedStudent && (
-                <StudentDetailModal
-                  student={selectedStudent}
-                  levels={levels}
-                  onClose={() => setSelectedStudent(null)}
-                  jurusanName={jurusan.nama_jurusan}
-                  onUpdate={isTeacher ? async (id, nama, kelas) => {
+                                // Delete in reverse loop to avoid index shifting issues
+                                for (let i = mockData.mockSiswa.length - 1; i >= 0; i--) {
+                                  if (mockData.mockSiswa[i].jurusan_id === jurusan.id) {
+                                    mockData.mockSiswa.splice(i, 1);
+                                  }
+                                }
+                                for (let i = mockData.mockSiswa.length - 1; i >= 0; i--) {
+                                  if (mockData.mockSiswa[i].jurusan_id === jurusan.id) {
+                                    mockData.mockSiswa.splice(i, 1);
+                                  }
+                                }
+                                // Delete skills
+                                for (let i = mockData.mockSkillSiswa.length - 1; i >= 0; i--) {
+                                  if (studentsToDelete.includes(mockData.mockSkillSiswa[i].siswa_id)) {
+                                    mockData.mockSkillSiswa.splice(i, 1);
+                                  }
+                                }
+                              } else {
+                                const { error } = await supabase.from('siswa').delete().eq('jurusan_id', jurusan.id);
+                                if (error) throw error;
+                              }
+                              await loadData();
+                              alert('Semua data siswa berhasil dihapus.');
+                            } catch (err) {
+                              console.error('Failed to delete all', err);
+                              alert('Gagal menghapus data.');
+                            } finally {
+                              setLoading(false);
+                            }
+                          }
+                        }}
+                        className="px-3 py-1 bg-red-600 text-white rounded text-sm inline-flex items-center gap-2 hover:bg-red-700 transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span>Hapus Semua</span>
+                      </button>
+                      <button onClick={() => setShowImport(true)} className="px-3 py-1 bg-indigo-600 text-white rounded text-sm inline-flex items-center gap-2 hover:bg-indigo-700 transition-colors">
+                        <Download className="w-4 h-4" />
+                        <span>Import Siswa</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <StudentTable
+                  students={filteredStudents}
+                  onExportExcel={handleExportExcel}
+                  onExportPDF={handleExportPDF}
+                  onEditScore={isTeacher ? handleEditScore : undefined}
+                  onDelete={isTeacher ? async (s) => {
                     try {
                       setLoading(true);
+                      // Delete logic
                       if (isMockMode) {
-                        const s = mockData.mockSiswa.find(ms => ms.id === id);
-                        if (s) { s.nama = nama; s.kelas = kelas; }
+                        const idx = mockData.mockSiswa.findIndex(ms => ms.id === s.id);
+                        if (idx >= 0) mockData.mockSiswa.splice(idx, 1);
+                        // Also delete related skill records
+                        const sIdx = mockData.mockSkillSiswa.findIndex(ss => ss.siswa_id === s.id);
+                        if (sIdx >= 0) mockData.mockSkillSiswa.splice(sIdx, 1);
                       } else {
-                        const { error } = await supabase.from('siswa').update({ nama, kelas }).eq('id', id);
+                        const { error } = await supabase.from('siswa').delete().eq('id', s.id);
                         if (error) throw error;
                       }
                       await loadData();
-                      // Update selected student in local state to reflect changes immediately in modal
-                      setSelectedStudent(prev => prev ? ({ ...prev, nama, kelas }) : null);
                     } catch (err) {
-                      console.error('Update failed', err);
-                      throw err;
-                    } finally {
+                      console.error('Delete failed', err);
+                      alert('Gagal menghapus siswa');
                       setLoading(false);
                     }
                   } : undefined}
+                  topRanks={topRanks}
+                  onSelectStudent={(s) => setSelectedStudent(s)}
+                  jurusanName={jurusan.nama_jurusan}
                 />
-              )}
+              </div>
+            )}
 
-              {showImport && (
-                <ImportStudents jurusanId={jurusan.id} onClose={() => setShowImport(false)} onImported={() => loadData()} />
-              )}
-            </div>
+            {selectedStudent && (
+              <StudentDetailModal
+                student={selectedStudent}
+                levels={levels}
+                onClose={() => setSelectedStudent(null)}
+                jurusanName={jurusan.nama_jurusan}
+                onUpdate={isTeacher ? async (id, nama, kelas) => {
+                  try {
+                    setLoading(true);
+                    if (isMockMode) {
+                      const s = mockData.mockSiswa.find(ms => ms.id === id);
+                      if (s) { s.nama = nama; s.kelas = kelas; }
+                    } else {
+                      const { error } = await supabase.from('siswa').update({ nama, kelas }).eq('id', id);
+                      if (error) throw error;
+                    }
+                    await loadData();
+                    // Update selected student in local state to reflect changes immediately in modal
+                    setSelectedStudent(prev => prev ? ({ ...prev, nama, kelas }) : null);
+                  } catch (err) {
+                    console.error('Update failed', err);
+                    throw err;
+                  } finally {
+                    setLoading(false);
+                  }
+                } : undefined}
+              />
+            )}
+
+            {showImport && (
+              <ImportStudents jurusanId={jurusan.id} onClose={() => setShowImport(false)} onImported={() => loadData()} />
+            )}
           </div>
         )}
       </div>
