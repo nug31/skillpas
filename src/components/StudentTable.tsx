@@ -24,6 +24,12 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [minScore, setMinScore] = useState<number>(0);
   const [maxScore, setMaxScore] = useState<number>(100);
+  const [selectedClass, setSelectedClass] = useState<string>('all');
+
+  const uniqueClasses = useMemo(() => {
+    const classes = new Set(students.map(s => s.kelas));
+    return Array.from(classes).sort();
+  }, [students]);
 
   const handleSort = (field: SortField) => {
     if (field === sortField) setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -34,7 +40,8 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
     const filtered = students.filter((s) => {
       const matchesSearch = s.nama.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesScore = s.skor >= minScore && s.skor <= maxScore;
-      return matchesSearch && matchesScore;
+      const matchesClass = selectedClass === 'all' || s.kelas === selectedClass;
+      return matchesSearch && matchesScore && matchesClass;
     });
 
     filtered.sort((a, b) => {
@@ -47,7 +54,7 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
     });
 
     return filtered;
-  }, [students, searchTerm, sortField, sortOrder, minScore, maxScore]);
+  }, [students, searchTerm, sortField, sortOrder, minScore, maxScore, selectedClass]);
 
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return <ArrowUpDown className="w-4 h-4 text-[color:var(--text-muted)]" />;
@@ -79,6 +86,16 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
             </div>
 
             <div className="flex gap-2">
+              <select
+                value={selectedClass}
+                onChange={(e) => setSelectedClass(e.target.value)}
+                className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[color:var(--accent-1)] focus:border-transparent text-sm bg-transparent text-[color:var(--text-primary)] min-w-[120px]"
+              >
+                <option value="all" className="bg-[#1e293b]">Semua Kelas</option>
+                {uniqueClasses.map(c => (
+                  <option key={c} value={c} className="bg-[#1e293b]">{c}</option>
+                ))}
+              </select>
               <button onClick={onExportExcel} className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"><Download className="w-4 h-4" />Excel</button>
               <button onClick={onExportPDF} className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"><Download className="w-4 h-4" />PDF</button>
             </div>
@@ -171,7 +188,7 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
                   </div>
                 </td>
 
-                <td className="px-6 py-4 whitespace-nowrap"><div className="text-sm text-[color:var(--text-muted)]">{formatClassLabel(jurusanName, student.kelas)}</div></td>
+                <td className="px-6 py-4 whitespace-nowrap"><div className="text-sm font-semibold text-[color:var(--text-primary)]">{formatClassLabel(jurusanName, student.kelas)}</div></td>
 
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-2"><div className="text-sm font-semibold text-[color:var(--text-primary)]">{student.skor}</div><div className="w-24 bg-white/5 rounded-full h-2"><div className="bg-[color:var(--accent-1)] h-2 rounded-full transition-all" style={{ width: `${student.skor}%` }} /></div></div>
