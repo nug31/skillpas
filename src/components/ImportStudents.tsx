@@ -26,9 +26,11 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
 
     const classKey = keys.find(k => k.toLowerCase().includes('kelas') || k.toLowerCase().includes('class'));
     const scoreKey = keys.find(k => k.toLowerCase().includes('skor') || k.toLowerCase().includes('nilai') || k.toLowerCase().includes('score'));
+    const nisnKey = keys.find(k => k.toLowerCase().includes('nisn') || k.toLowerCase().includes('induk'));
 
     return {
       nama: row[nameKey],
+      nisn: nisnKey ? String(row[nisnKey]).trim() : undefined,
       kelas: classKey ? row[classKey] : undefined,
       skor: scoreKey ? Number(row[scoreKey]) : undefined
     };
