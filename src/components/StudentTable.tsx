@@ -130,7 +130,7 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
                 )}
               </div>
               <div className="text-xs text-[color:var(--text-muted)] mt-1 truncate">
-                {formatClassLabel(jurusanName, student.kelas)} • Level {student.level_name} • <span className="text-[color:var(--accent-1)] font-semibold">{student.poin} Poin</span>
+                {formatClassLabel(jurusanName, student.kelas)} • {student.nisn ? `NISN: ${student.nisn}` : 'No NISN'} • Level {student.level_name} • <span className="text-[color:var(--accent-1)] font-semibold">{student.poin} Poin</span>
               </div>
               <div className="mt-2 flex items-center gap-2">
                 <div className="text-sm font-semibold text-[color:var(--text-primary)] w-8">{student.skor}</div>
@@ -172,17 +172,24 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
             {filteredAndSortedStudents.map((student) => (
               <tr key={student.id} className="hover:bg-white/5 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center justify-between">
-                    <button onClick={() => onSelectStudent?.(student)} className="text-sm font-medium text-[color:var(--accent-1)] hover:underline text-left">{student.nama}</button>
-                    {topRanks?.[student.id] && (
-                      <div className="ml-3 flex-shrink-0">
-                        <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${topRanks[student.id] === 1 ? 'bg-yellow-400 text-black' :
-                          topRanks[student.id] === 2 ? 'bg-gray-300 text-black' :
-                            topRanks[student.id] === 3 ? 'bg-orange-300 text-black' :
-                              'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                          }`}>
-                          #{topRanks[student.id]}
+                  <div className="flex flex-col">
+                    <div className="flex items-center justify-between">
+                      <button onClick={() => onSelectStudent?.(student)} className="text-sm font-medium text-[color:var(--accent-1)] hover:underline text-left">{student.nama}</button>
+                      {topRanks?.[student.id] && (
+                        <div className="ml-3 flex-shrink-0">
+                          <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${topRanks[student.id] === 1 ? 'bg-yellow-400 text-black' :
+                            topRanks[student.id] === 2 ? 'bg-gray-300 text-black' :
+                              topRanks[student.id] === 3 ? 'bg-orange-300 text-black' :
+                                'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                            }`}>
+                            #{topRanks[student.id]}
+                          </div>
                         </div>
+                      )}
+                    </div>
+                    {student.nisn && (
+                      <div className="text-[10px] text-[color:var(--text-muted)] font-mono mt-0.5">
+                        NISN: {student.nisn}
                       </div>
                     )}
                   </div>

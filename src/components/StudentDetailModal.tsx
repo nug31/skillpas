@@ -156,7 +156,7 @@ export function StudentDetailModal({
                     )}
                   </div>
                   <div className="text-sm text-[color:var(--text-muted)]">
-                    {formatClassLabel(jurusanName, student.kelas)} • Skor: <span className="font-semibold text-[color:var(--text-primary)]">{student.skor}</span> • Poin: <span className="font-semibold text-[color:var(--accent-1)]">{student.poin}</span>
+                    {formatClassLabel(jurusanName, student.kelas)} • {student.nisn ? `NISN: ${student.nisn}` : 'No NISN'} • Skor: <span className="font-semibold text-[color:var(--text-primary)]">{student.skor}</span> • Poin: <span className="font-semibold text-[color:var(--accent-1)]">{student.poin}</span>
                   </div>
                 </>
               )}

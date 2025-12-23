@@ -53,7 +53,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
         supabase.from('level_skill').select('*').order('urutan'),
         supabase
           .from('siswa')
-          .select('id, nama, kelas, skill_siswa(skor, poin, level_id)')
+          .select('id, nama, kelas, nisn, skill_siswa(skor, poin, level_id)')
           .eq('jurusan_id', jurusan.id),
       ]);
 
@@ -119,6 +119,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
             id: siswa.id,
             nama: siswa.nama,
             kelas: siswa.kelas,
+            nisn: siswa.nisn,
             skor: latestSkill.skor,
             poin: latestSkill.poin || 0,
             badge_name: badge_name as any,

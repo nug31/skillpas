@@ -61,6 +61,7 @@ export interface StudentListItem {
   badge_name: BadgeLevel;
   badge_color: string;
   level_name: string;
+  nisn?: string;
   avatar_url?: string;
   photo_url?: string;
   riwayat_kompetensi?: CompetencyHistory[];
