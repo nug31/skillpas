@@ -98,24 +98,33 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
             if (isMockMode) {
                 levels = mockData.getLevelsForJurusan(jurusan.id);
             } else {
-                const { data, error } = await supabase
-                    .from('level_skill')
-                    .select('*')
-                    .order('urutan', { ascending: true });
+                const [levelsResult, overridesResult] = await Promise.all([
+                    supabase.from('level_skill').select('*').order('urutan', { ascending: true }),
+                    supabase.from('level_skill_jurusan').select('*').eq('jurusan_id', jurusan.id)
+                ]);
 
-                if (error) throw error;
-                levels = (data || []).map((l: any) => {
+                if (levelsResult.error) throw levelsResult.error;
+                if (overridesResult.error) throw overridesResult.error;
+
+                const levelsData = levelsResult.data || [];
+                const overrides = overridesResult.data || [];
+
+                levels = levelsData.map((l: any) => {
+                    const ov = overrides.find((o: any) => o.level_id === l.id);
+                    const finalHasilBelajar = ov?.hasil_belajar || l.hasil_belajar;
+                    const finalSoftSkill = ov?.soft_skill || l.soft_skill;
+
                     let criteria: string[] = [];
                     try {
-                        if (l.hasil_belajar && l.hasil_belajar.trim().startsWith('[')) {
-                            criteria = JSON.parse(l.hasil_belajar);
-                        } else if (l.hasil_belajar) {
-                            criteria = [l.hasil_belajar];
+                        if (finalHasilBelajar && finalHasilBelajar.trim().startsWith('[')) {
+                            criteria = JSON.parse(finalHasilBelajar);
+                        } else if (finalHasilBelajar) {
+                            criteria = [finalHasilBelajar];
                         }
                     } catch (e) {
-                        criteria = [l.hasil_belajar];
+                        criteria = [finalHasilBelajar];
                     }
-                    return { ...l, criteria };
+                    return { ...l, hasil_belajar: finalHasilBelajar, soft_skill: finalSoftSkill, criteria };
                 }) as LevelSkill[];
             }
             setAllLevels(levels);

@@ -485,19 +485,26 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                 levels={levels}
                 onClose={() => setSelectedStudent(null)}
                 jurusanName={jurusan.nama_jurusan}
-                onUpdate={isTeacher ? async (id, nama, kelas) => {
+                onUpdate={isTeacher ? async (id, nama, kelas, poin) => {
                   try {
                     setLoading(true);
                     if (isMockMode) {
                       const s = mockData.mockSiswa.find(ms => ms.id === id);
                       if (s) { s.nama = nama; s.kelas = kelas; }
+                      const sk = mockData.mockSkillSiswa.find(ms => ms.siswa_id === id);
+                      if (sk) { sk.poin = poin; }
                     } else {
-                      const { error } = await supabase.from('siswa').update({ nama, kelas }).eq('id', id);
-                      if (error) throw error;
+                      // Update siswa table
+                      const { error: sError } = await supabase.from('siswa').update({ nama, kelas }).eq('id', id);
+                      if (sError) throw sError;
+
+                      // Update skill_siswa table for poin
+                      const { error: skError } = await supabase.from('skill_siswa').update({ poin }).eq('siswa_id', id);
+                      if (skError) throw skError;
                     }
                     await loadData();
                     // Update selected student in local state to reflect changes immediately in modal
-                    setSelectedStudent(prev => prev ? ({ ...prev, nama, kelas }) : null);
+                    setSelectedStudent(prev => prev ? ({ ...prev, nama, kelas, poin }) : null);
                   } catch (err) {
                     console.error('Update failed', err);
                     throw err;

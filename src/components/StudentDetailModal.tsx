@@ -17,11 +17,12 @@ export function StudentDetailModal({
   levels: LevelSkill[];
   onClose: () => void;
   jurusanName?: string;
-  onUpdate?: (id: string, nama: string, kelas: string) => Promise<void>;
+  onUpdate?: (id: string, nama: string, kelas: string, poin: number) => Promise<void>;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(student.nama);
   const [editKelas, setEditKelas] = useState(student.kelas);
+  const [editPoin, setEditPoin] = useState(student.poin);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'history'>('overview');
   const { user } = useAuth();
@@ -99,7 +100,7 @@ export function StudentDetailModal({
     if (!onUpdate) return;
     try {
       setSaving(true);
-      await onUpdate(student.id, editName, editKelas);
+      await onUpdate(student.id, editName, editKelas, editPoin);
       setIsEditing(false);
     } catch (err) {
       console.error(err);
@@ -144,6 +145,17 @@ export function StudentDetailModal({
                       className="w-full px-3 py-2 bg-black/20 border border-white/10 rounded-lg text-[color:var(--text-primary)]"
                     />
                   </div>
+                  {['wali_kelas', 'hod', 'admin'].includes(user?.role || '') && (
+                    <div className="w-24">
+                      <label className="text-xs text-[color:var(--text-muted)] block mb-1">Poin</label>
+                      <input
+                        type="number"
+                        value={editPoin}
+                        onChange={(e) => setEditPoin(Number(e.target.value))}
+                        className="w-full px-3 py-2 bg-black/20 border border-white/10 rounded-lg text-[color:var(--text-primary)] font-bold text-[color:var(--accent-1)]"
+                      />
+                    </div>
+                  )}
                 </div>
               ) : (
                 <>
