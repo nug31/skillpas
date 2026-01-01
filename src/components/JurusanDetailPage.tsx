@@ -53,7 +53,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
         supabase.from('level_skill').select('*').order('urutan'),
         supabase
           .from('siswa')
-          .select('id, nama, kelas, nisn, skill_siswa(skor, poin, level_id)')
+          .select('id, nama, kelas, nisn, skill_siswa(skor, poin, level_id), competency_history(*)')
           .eq('jurusan_id', jurusan.id),
         supabase
           .from('level_skill_jurusan')
@@ -136,6 +136,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
             badge_name: badge_name as any,
             badge_color,
             level_name,
+            riwayat_kompetensi: siswa.competency_history || []
           };
         });
 

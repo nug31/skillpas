@@ -163,6 +163,44 @@ export interface Database {
           updated_at?: string
         }
       }
+      competency_history: {
+        Row: {
+          id: string
+          siswa_id: string
+          level_id: string
+          unit_kompetensi: string
+          aktivitas_pembuktian: string
+          penilai: string
+          hasil: string
+          tanggal: string
+          catatan: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          siswa_id: string
+          level_id: string
+          unit_kompetensi: string
+          aktivitas_pembuktian: string
+          penilai: string
+          hasil: string
+          tanggal: string
+          catatan?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          siswa_id?: string
+          level_id?: string
+          unit_kompetensi?: string
+          aktivitas_pembuktian?: string
+          penilai?: string
+          hasil?: string
+          tanggal?: string
+          catatan?: string | null
+          created_at?: string
+        }
+      }
     }
   }
 }
