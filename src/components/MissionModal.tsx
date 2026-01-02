@@ -6,6 +6,7 @@ import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import { KRSSubmission } from '../types';
+import { useAuth } from '../contexts/AuthContext';
 
 // Special Missions / Challenges data
 interface SpecialMission {
@@ -56,6 +57,7 @@ interface MissionModalProps {
 }
 
 export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPoin, siswaId = 'guest' }: MissionModalProps) {
+    const { user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [allLevels, setAllLevels] = useState<LevelSkill[]>([]);
     const [nextLevel, setNextLevel] = useState<LevelSkill | null>(null);
@@ -169,8 +171,8 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
         krsStore.submitKRS({
             id: submission?.id || Math.random().toString(36).substr(2, 9),
             siswa_id: siswaId,
-            siswa_nama: 'Raka Aditya', // In real app, get from Context
-            kelas: 'XII TKR 1', // In real app, get from Context
+            siswa_nama: user?.name || 'Siswa',
+            kelas: user?.kelas || 'XII TKR 1',
             jurusan_id: jurusan.id,
             items: selectedKRS
         });

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { X, Check, Clock, Pencil, Save, TrendingUp } from 'lucide-react';
-import type { StudentListItem, LevelSkill, StudentDiscipline } from '../types';
+import { X, Check, Clock, Pencil, Save, TrendingUp, Download } from 'lucide-react';
+import type { StudentListItem, LevelSkill, StudentDiscipline, CompetencyHistory } from '../types';
+import { generateCertificate } from '../lib/certificateGenerator';
 import { mockDiscipline } from '../mocks/mockData';
 import { useAuth } from '../contexts/AuthContext';
 import formatClassLabel from '../lib/formatJurusan';
@@ -409,6 +410,7 @@ export function StudentDetailModal({
                 <div className="w-2 h-2 bg-blue-500 rounded-sm" />
                 Tabel 1 — Riwayat Kompetensi Siswa Per Level
               </h4>
+              <p className="text-[10px] text-slate-500 mb-2 font-medium italic">* Klik tombol PDF untuk mengunduh Kartu Verifikasi Kompetensi siswa.</p>
               <div className="overflow-x-auto border border-white/10 [.theme-clear_&]:border-slate-200 rounded-xl">
                 <table className="w-full text-left border-collapse min-w-[1000px]">
                   <thead>
@@ -424,12 +426,13 @@ export function StudentDetailModal({
                       <th className="px-4 py-3 border-b border-white/10 [.theme-clear_&]:border-slate-200 whitespace-nowrap">Hasil</th>
                       <th className="px-4 py-3 border-b border-white/10 [.theme-clear_&]:border-slate-200 whitespace-nowrap">Tanggal</th>
                       <th className="px-4 py-3 border-b border-white/10 [.theme-clear_&]:border-slate-200 whitespace-nowrap">Catatan</th>
+                      <th className="px-4 py-3 border-b border-white/10 [.theme-clear_&]:border-slate-200 whitespace-nowrap text-right">Aksi</th>
                     </tr>
                   </thead>
                   <tbody className="text-xs sm:text-sm text-[color:var(--text-muted)]">
                     {!student.riwayat_kompetensi || student.riwayat_kompetensi.length === 0 ? (
                       <tr>
-                        <td colSpan={11} className="px-4 py-8 text-center text-slate-500 italic">Belum ada riwayat kompetensi terdata.</td>
+                        <td colSpan={12} className="px-4 py-8 text-center text-slate-500 italic">Belum ada riwayat kompetensi terdata.</td>
                       </tr>
                     ) : (
                       student.riwayat_kompetensi.map((entry, idx) => {
@@ -449,6 +452,27 @@ export function StudentDetailModal({
                             </td>
                             <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100">{entry.tanggal}</td>
                             <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100">{entry.catatan || '-'}</td>
+                            <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100 text-right">
+                              {entry.hasil.toLowerCase() === 'lulus' && (
+                                <button
+                                  onClick={() => generateCertificate({
+                                    studentName: student.nama,
+                                    nisn: student.nisn || '-',
+                                    kelas: student.kelas,
+                                    jurusan: jurusanName || 'Teknik',
+                                    unitKompetensi: entry.unit_kompetensi,
+                                    level: lvl?.nama_level || 'Advanced',
+                                    tanggal: entry.tanggal,
+                                    penilai: entry.penilai
+                                  })}
+                                  className="ml-auto inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-indigo-500/10 hover:bg-indigo-600 text-indigo-400 hover:text-white rounded-lg transition-all text-[10px] font-black uppercase ring-1 ring-indigo-500/20 hover:ring-0"
+                                  title="Unduh Sertifikat PDF"
+                                >
+                                  <Download className="w-3.5 h-3.5" />
+                                  PDF
+                                </button>
+                              )}
+                            </td>
                           </tr>
                         );
                       })
