@@ -99,7 +99,11 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
         .filter((siswa: any) => siswa.skill_siswa && siswa.skill_siswa.length > 0)
         .map((siswa: any) => {
           const latestSkill = siswa.skill_siswa[0];
-          const level = levelsMap.get(latestSkill.level_id);
+          const skor = latestSkill.skor;
+
+          // Find the correct level based on score first (robust sync)
+          const level = parsedLevels.find(l => skor >= l.min_skor && skor <= l.max_skor)
+            || levelsMap.get(latestSkill.level_id);
 
           let badge_name = 'Basic';
           let badge_color = '#94a3b8';
@@ -110,19 +114,23 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
             badge_color = level.badge_color;
             level_name = level.nama_level;
           } else {
-            const skor = latestSkill.skor;
-            if (skor >= 76) {
+            // Further fallback if no level found
+            if (skor >= 90) {
               badge_name = 'Master';
               badge_color = '#10b981';
-              level_name = 'Mastery';
-            } else if (skor >= 51) {
+              level_name = 'Mastery (Expert)';
+            } else if (skor >= 76) {
               badge_name = 'Advance';
               badge_color = '#f59e0b';
               level_name = 'Advanced';
-            } else if (skor >= 26) {
-              badge_name = 'Applied';
+            } else if (skor >= 51) {
+              badge_name = 'Specialist';
               badge_color = '#3b82f6';
-              level_name = 'Intermediate';
+              level_name = 'Intermediate (Specialist)';
+            } else if (skor >= 26) {
+              badge_name = 'Basic 2';
+              badge_color = '#64748b';
+              level_name = 'Beginner 2 (Industrial Ready)';
             }
           }
 

@@ -25,7 +25,7 @@ BEGIN
     -- We need to shift others up or insert.
     IF NOT EXISTS (SELECT 1 FROM level_skill WHERE nama_level = 'Beginner 2 (Industrial Ready)') THEN
         INSERT INTO level_skill (nama_level, urutan, min_skor, max_skor, badge_name, badge_color, hasil_belajar, soft_skill)
-        VALUES ('Beginner 2 (Industrial Ready)', 2, 26, 50, '#64748b', 'Basic 2', 'Pasca PKL: Mampu menerapkan budaya industri di lingkungan sekolah', 'Adaptabilitas Industri');
+        VALUES ('Beginner 2 (Industrial Ready)', 2, 26, 50, 'Basic 2', '#64748b', 'Pasca PKL: Mampu menerapkan budaya industri di lingkungan sekolah', 'Adaptabilitas Industri');
     END IF;
 
     -- Shift Intermediate to 3
@@ -58,5 +58,24 @@ BEGIN
         badge_color = '#10b981',
         urutan = 5
     WHERE urutan = 4 AND nama_level = 'Mastery';
+
+    -- 6. Synchronize all students to the new ranges
+    -- Re-assign level_id and update poin based on current scores
+    UPDATE skill_siswa ss
+    SET 
+        level_id = ls.id,
+        poin = ls.urutan * 50 + 50,
+        updated_at = now()
+    FROM level_skill ls
+    WHERE ss.skor BETWEEN ls.min_skor AND ls.max_skor;
+
+    -- Optional: Sync competency history level_ids if they were hardcoded/referencing old logic
+    -- (Only for the latest entry per student to be safe, but simple sync is usually fine for dev)
+    UPDATE competency_history ch
+    SET level_id = ls.id
+    FROM level_skill ls, skill_siswa ss
+    WHERE ch.siswa_id = ss.siswa_id 
+    AND ss.skor BETWEEN ls.min_skor AND ls.max_skor
+    AND ch.level_id != ls.id; -- Sync if different (simplified)
 
 END $$;
