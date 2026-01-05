@@ -3,17 +3,19 @@ import type { Jurusan, LevelSkill, Siswa, SkillSiswa, StudentListItem, Competenc
 // Minimal mock data to use while developing locally (VITE_USE_MOCK=true)
 
 export const LEVEL_IDS = {
-  BASIC: 'b0000000-0000-0000-0000-000000000001',
+  BASIC1: 'b0000000-0000-0000-0000-000000000001',
+  BASIC2: 'b0000000-0000-0000-0000-000000000005', // New level
   INTER: 'b0000000-0000-0000-0000-000000000002',
   ADV: 'b0000000-0000-0000-0000-000000000003',
   MASTER: 'b0000000-0000-0000-0000-000000000004',
 };
 
 export const mockLevels: LevelSkill[] = [
-  { id: LEVEL_IDS.BASIC, nama_level: 'Pemula / Beginner', urutan: 1, min_skor: 0, max_skor: 25, badge_name: 'Basic', badge_color: '#94a3b8', criteria: ['Mengenal konsep dasar', 'Mampu menggunakan tools dasar', 'Memahami alur kerja sederhana'], hasil_belajar: 'Memahami dasar-dasar bidang', soft_skill: 'Komunikasi dasar', created_at: new Date().toISOString() },
-  { id: LEVEL_IDS.INTER, nama_level: 'Intermediate', urutan: 2, min_skor: 26, max_skor: 50, badge_name: 'Applied', badge_color: '#3b82f6', criteria: ['Menguasai teknik menengah', 'Mampu menyelesaikan masalah kompleks', 'Menerapkan standar industri'], hasil_belajar: 'Menerapkan pengetahuan di lapangan', soft_skill: 'Problem solving', created_at: new Date().toISOString() },
-  { id: LEVEL_IDS.ADV, nama_level: 'Advanced', urutan: 3, min_skor: 51, max_skor: 75, badge_name: 'Advance', badge_color: '#f59e0b', criteria: ['Analisis sistem mendalam', 'Optimasi performa', 'Memimpin proyek skala kecil'], hasil_belajar: 'Menganalisis dan mengoptimasi sistem', soft_skill: 'Kepemimpinan', created_at: new Date().toISOString() },
-  { id: LEVEL_IDS.MASTER, nama_level: 'Mastery', urutan: 4, min_skor: 76, max_skor: 100, badge_name: 'Master', badge_color: '#10b981', criteria: ['Expert di bidangnya', 'Inovasi solusi baru', 'Mentoring Advanced member'], hasil_belajar: 'Ahli dan inovator di bidangnya', soft_skill: 'Mentoring', created_at: new Date().toISOString() },
+  { id: LEVEL_IDS.BASIC1, nama_level: 'Beginner 1 (Internal Prep)', urutan: 1, min_skor: 0, max_skor: 25, badge_name: 'Basic 1', badge_color: '#94a3b8', criteria: ['Mengenal konsep dasar', 'Mampu menggunakan tools dasar', 'Memahami alur kerja sederhana'], hasil_belajar: 'Syarat Kelayakan PKL: Memahami dasar industri dan K3', soft_skill: 'Komunikasi dasar', created_at: new Date().toISOString() },
+  { id: LEVEL_IDS.BASIC2, nama_level: 'Beginner 2 (Industrial Ready)', urutan: 2, min_skor: 26, max_skor: 50, badge_name: 'Basic 2', badge_color: '#64748b', criteria: ['Menerapkan budaya industri', 'Mampu bekerja dalam tim', 'Memahami standar kualitas'], hasil_belajar: 'Pasca PKL: Mampu menerapkan budaya industri di lingkungan sekolah', soft_skill: 'Adaptabilitas Industri', created_at: new Date().toISOString() },
+  { id: LEVEL_IDS.INTER, nama_level: 'Intermediate (Specialist)', urutan: 3, min_skor: 51, max_skor: 75, badge_name: 'Specialist', badge_color: '#3b82f6', criteria: ['Menguasai teknik menengah', 'Mampu menyelesaikan masalah kompleks', 'Menerapkan standar industri'], hasil_belajar: 'Fokus Spesialisasi: Menguasai kompetensi utama sesuai jurusan', soft_skill: 'Problem solving', created_at: new Date().toISOString() },
+  { id: LEVEL_IDS.ADV, nama_level: 'Advanced', urutan: 4, min_skor: 76, max_skor: 89, badge_name: 'Advance', badge_color: '#f59e0b', criteria: ['Analisis sistem mendalam', 'Optimasi performa', 'Memimpin proyek skala kecil'], hasil_belajar: 'Menganalisis dan mengoptimasi sistem', soft_skill: 'Kepemimpinan', created_at: new Date().toISOString() },
+  { id: LEVEL_IDS.MASTER, nama_level: 'Mastery (Expert)', urutan: 5, min_skor: 90, max_skor: 100, badge_name: 'Master', badge_color: '#10b981', criteria: ['Expert di bidangnya', 'Inovasi solusi baru', 'Mentoring Advanced member'], hasil_belajar: 'Ahli dan inovator di bidangnya', soft_skill: 'Mentoring', created_at: new Date().toISOString() },
 ];
 
 export const JURUSAN_IDS = {
@@ -233,7 +235,7 @@ export const mockLevelOverrides: Array<{
     // j1: Teknik Mesin
     {
       jurusan_id: JURUSAN_IDS.MESIN,
-      level_id: LEVEL_IDS.BASIC,
+      level_id: LEVEL_IDS.BASIC1,
       hasil_belajar: JSON.stringify(['Memahami dasar mekanika', 'Mengenal alat ukur presisi (jangka sorong, mikrometer)']),
       soft_skill: 'Kedisiplinan bengkel'
     },
@@ -259,7 +261,7 @@ export const mockLevelOverrides: Array<{
     // j2: Teknik Kendaraan Ringan (TKR)
     {
       jurusan_id: JURUSAN_IDS.TKR,
-      level_id: LEVEL_IDS.BASIC,
+      level_id: LEVEL_IDS.BASIC1,
       hasil_belajar: JSON.stringify(['Memahami prinsip mesin 4 tak', 'Mengenal kunci-kunci bengkel otomotif']),
       soft_skill: 'Kebersihan area kerja'
     },
@@ -285,7 +287,7 @@ export const mockLevelOverrides: Array<{
     // j3: Teknik Sepeda Motor (TSM)
     {
       jurusan_id: JURUSAN_IDS.TSM,
-      level_id: LEVEL_IDS.BASIC,
+      level_id: LEVEL_IDS.BASIC1,
       hasil_belajar: JSON.stringify(['Memahami komponen dasar motor', 'Mengenal alat servis motor']),
       soft_skill: 'Etika kerja'
     },
@@ -311,7 +313,7 @@ export const mockLevelOverrides: Array<{
     // j4: Teknik Elektronika Industri (Elind)
     {
       jurusan_id: JURUSAN_IDS.ELIND,
-      level_id: LEVEL_IDS.BASIC,
+      level_id: LEVEL_IDS.BASIC1,
       hasil_belajar: JSON.stringify(['Memahami komponen elektronika pasif', 'Mengenal alat ukur multimeter/osiloskop']),
       soft_skill: 'Fokus detail'
     },
@@ -337,7 +339,7 @@ export const mockLevelOverrides: Array<{
     // j5: Teknik Instalasi Tenaga Listrik
     {
       jurusan_id: JURUSAN_IDS.LISTRIK,
-      level_id: LEVEL_IDS.BASIC,
+      level_id: LEVEL_IDS.BASIC1,
       hasil_belajar: JSON.stringify(['Memahami hukum Ohm & Kirchhoff', 'Mengenal material instalasi listrik']),
       soft_skill: 'Kesadaran bahaya'
     },
@@ -363,7 +365,7 @@ export const mockLevelOverrides: Array<{
     // j6: Teknik Kimia Industri
     {
       jurusan_id: JURUSAN_IDS.KIMIA,
-      level_id: LEVEL_IDS.BASIC,
+      level_id: LEVEL_IDS.BASIC1,
       hasil_belajar: JSON.stringify(['Memahami konsep stoikiometri', 'Mengenal alat gelas laboratorium']),
       soft_skill: 'Kerapihan lab'
     },
@@ -389,7 +391,7 @@ export const mockLevelOverrides: Array<{
     // j7: Akuntansi
     {
       jurusan_id: JURUSAN_IDS.AKUNTANSI,
-      level_id: LEVEL_IDS.BASIC,
+      level_id: LEVEL_IDS.BASIC1,
       hasil_belajar: JSON.stringify(['Memahami persamaan dasar akuntansi', 'Mengenal dokumen transaksi keuangan']),
       soft_skill: 'Kejujuran/Integritas'
     },
@@ -415,7 +417,7 @@ export const mockLevelOverrides: Array<{
     // j8: Perhotelan
     {
       jurusan_id: JURUSAN_IDS.HOTEL,
-      level_id: LEVEL_IDS.BASIC,
+      level_id: LEVEL_IDS.BASIC1,
       hasil_belajar: JSON.stringify(['Memahami standar personal grooming', 'Mengenal peralatan housekeeping']),
       soft_skill: 'Ramah tamah'
     },

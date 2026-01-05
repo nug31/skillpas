@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, Check, Clock, Pencil, Save, TrendingUp, Download } from 'lucide-react';
-import type { StudentListItem, LevelSkill, StudentDiscipline, CompetencyHistory } from '../types';
+import type { StudentListItem, LevelSkill, StudentDiscipline } from '../types';
 import { generateCertificate } from '../lib/certificateGenerator';
 import { mockDiscipline } from '../mocks/mockData';
 import { useAuth } from '../contexts/AuthContext';
@@ -168,8 +168,31 @@ export function StudentDetailModal({
                       </button>
                     )}
                   </div>
-                  <div className="text-sm text-[color:var(--text-muted)]">
-                    {formatClassLabel(jurusanName, student.kelas)} • {student.nisn ? `NISN: ${student.nisn}` : 'No NISN'} • Skor: <span className="font-semibold text-[color:var(--text-primary)]">{student.skor}</span> • Poin: <span className="font-semibold text-[color:var(--accent-1)]">{student.poin}</span>
+                  <div className="text-sm text-[color:var(--text-muted)] flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <span>{formatClassLabel(jurusanName, student.kelas)} • {student.nisn ? `NISN: ${student.nisn}` : 'No NISN'}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="flex items-center gap-1">
+                        Skor: <span className="font-semibold text-[color:var(--text-primary)]">{student.skor}</span>
+                      </span>
+                      <span className="flex items-center gap-1">
+                        Poin: <span className="font-semibold text-[color:var(--accent-1)]">{student.poin}</span>
+                      </span>
+                    </div>
+
+                    {/* PKL Eligibility Badge */}
+                    <div className="flex items-center gap-1 py-0.5 px-2 rounded-full border bg-white/5 [.theme-clear_&]:bg-slate-50 border-white/10 [.theme-clear_&]:border-slate-200">
+                      {student.skor >= 25 ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-500" />
+                          <span className="text-[10px] font-black uppercase text-emerald-500 tracking-tight">PKL Eligible</span>
+                        </>
+                      ) : (
+                        <>
+                          <Clock className="w-3 h-3 text-amber-500" />
+                          <span className="text-[10px] font-black uppercase text-amber-500 tracking-tight">PKL Prep ({25 - student.skor} to go)</span>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </>
               )}
