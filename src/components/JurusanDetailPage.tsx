@@ -221,7 +221,12 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
   async function handleUpdateCriteria(levelId: string, criteria: string[]) {
     const useMock = isMockMode;
     try {
-      setLoading(true);
+      // Optimistic update: Update local state immediately for instant feedback
+      setLevels(prevLevels => prevLevels.map(level =>
+        level.id === levelId
+          ? { ...level, criteria, hasil_belajar: JSON.stringify(criteria) }
+          : level
+      ));
 
       if (useMock) {
         // find existing override
@@ -237,8 +242,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
             hasil_belajar: criteria[0] || ''
           });
         }
-
-        setLevels(mockData.getLevelsForJurusan(jurusan.id));
+        // No need to reload data, optimistic update already applied
         return;
       }
 
@@ -254,15 +258,16 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
           hasil_belajar: hasilBelajarJson
         }, { onConflict: 'jurusan_id,level_id' });
 
-      if (error) throw error;
+      if (error) {
+        // Rollback optimistic update on error
+        await loadData();
+        throw error;
+      }
 
-      // refresh
-      await loadData();
+      // Success! The optimistic update is already applied, no need to refresh
     } catch (err) {
       console.error('Error updating criteria:', err);
       throw err;
-    } finally {
-      setLoading(false);
     }
   }
 

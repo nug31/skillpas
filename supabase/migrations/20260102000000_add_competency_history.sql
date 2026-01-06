@@ -1,4 +1,4 @@
--- 1. Create competency_history table
+-- 1. Create competency_history table.
 CREATE TABLE IF NOT EXISTS competency_history (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   siswa_id uuid NOT NULL REFERENCES siswa(id) ON DELETE CASCADE,

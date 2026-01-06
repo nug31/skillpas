@@ -19,18 +19,15 @@ function LevelCriteriaCell({
       ? level.criteria
       : (level.hasil_belajar ? [level.hasil_belajar] : [])
   );
-  const [loading, setLoading] = useState(false);
 
   async function save() {
     if (!onUpdate) return;
     try {
-      setLoading(true);
       await onUpdate(level.id, items.filter((i: string) => i.trim() !== '')); // Filter empty strings
       setEditing(false);
     } catch (err) {
       console.error('Failed to update criteria', err);
-    } finally {
-      setLoading(false);
+      alert('Gagal menyimpan perubahan. Silakan coba lagi.');
     }
   }
 
@@ -91,16 +88,14 @@ function LevelCriteriaCell({
               setEditing(false);
               setItems(displayItems);
             }}
-            disabled={loading}
           >
             Batal
           </button>
           <button
             className="px-3 py-1 bg-[color:var(--accent-1)] text-white rounded text-xs hover:bg-[color:var(--accent-1)]/80"
             onClick={save}
-            disabled={loading}
           >
-            {loading ? 'Menyimpan...' : 'Simpan'}
+            Simpan
           </button>
         </div>
       </div>
