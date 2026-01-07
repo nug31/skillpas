@@ -103,17 +103,17 @@ export const mockSiswa: Siswa[] = [
   { id: 's-j8-c', nama: 'Fajar Prakoso', kelas: klassFor(JURUSAN_IDS.HOTEL), jurusan_id: JURUSAN_IDS.HOTEL, created_at: new Date().toISOString() },
   { id: 's-j8-d', nama: 'Rani Melinda', kelas: klassFor(JURUSAN_IDS.HOTEL), jurusan_id: JURUSAN_IDS.HOTEL, created_at: new Date().toISOString() },
   // --- This matches the username 'siswa_mesin' with name 'Siswa Mesin' in mockUsers.ts ---
-  { id: 's-j1-user', nama: 'Siswa Mesin', kelas: 'XII MESIN 1', jurusan_id: JURUSAN_IDS.MESIN, created_at: new Date().toISOString(), avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix', photo_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop' },
+  { id: 's-j1-user', nama: 'Siswa Mesin', kelas: 'XII MESIN 1', jurusan_id: JURUSAN_IDS.MESIN, nisn: '12345', created_at: new Date().toISOString(), avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix', photo_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop' },
   // --- Hero students for other majors ---
-  { id: 's-j2-user', nama: 'Siswa TKR', kelas: 'XII TKR 1', jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
-  { id: 's-j3-user', nama: 'Siswa TSM', kelas: 'XII TSM 1', jurusan_id: JURUSAN_IDS.TSM, created_at: new Date().toISOString() },
-  { id: 's-j4-user', nama: 'Siswa Elind', kelas: 'XII ELIND 1', jurusan_id: JURUSAN_IDS.ELIND, created_at: new Date().toISOString() },
-  { id: 's-j5-user', nama: 'Siswa Listrik', kelas: 'XII LISTRIK 1', jurusan_id: JURUSAN_IDS.LISTRIK, created_at: new Date().toISOString() },
-  { id: 's-j6-user', nama: 'Siswa Kimia', kelas: 'XII TKI 1', jurusan_id: JURUSAN_IDS.KIMIA, created_at: new Date().toISOString() },
-  { id: 's-j7-user', nama: 'Siswa Akuntansi', kelas: 'XII AK 1', jurusan_id: JURUSAN_IDS.AKUNTANSI, created_at: new Date().toISOString() },
-  { id: 's-j8-user', nama: 'Siswa Perhotelan', kelas: 'XII HOTEL 1', jurusan_id: JURUSAN_IDS.HOTEL, created_at: new Date().toISOString() },
+  { id: 's-j2-user', nama: 'Siswa TKR', kelas: 'XII TKR 1', jurusan_id: JURUSAN_IDS.TKR, nisn: '22345', created_at: new Date().toISOString() },
+  { id: 's-j3-user', nama: 'Siswa TSM', kelas: 'XII TSM 1', jurusan_id: JURUSAN_IDS.TSM, nisn: '32345', created_at: new Date().toISOString() },
+  { id: 's-j4-user', nama: 'Siswa Elind', kelas: 'XII ELIND 1', jurusan_id: JURUSAN_IDS.ELIND, nisn: '42345', created_at: new Date().toISOString() },
+  { id: 's-j5-user', nama: 'Siswa Listrik', kelas: 'XII LISTRIK 1', jurusan_id: JURUSAN_IDS.LISTRIK, nisn: '52345', created_at: new Date().toISOString() },
+  { id: 's-j6-user', nama: 'Siswa Kimia', kelas: 'XII TKI 1', jurusan_id: JURUSAN_IDS.KIMIA, nisn: '62345', created_at: new Date().toISOString() },
+  { id: 's-j7-user', nama: 'Siswa Akuntansi', kelas: 'XII AK 1', jurusan_id: JURUSAN_IDS.AKUNTANSI, nisn: '72345', created_at: new Date().toISOString() },
+  { id: 's-j8-user', nama: 'Siswa Perhotelan', kelas: 'XII HOTEL 1', jurusan_id: JURUSAN_IDS.HOTEL, nisn: '82345', created_at: new Date().toISOString() },
   // --- New Student for 'siswa' login ---
-  { id: 's-raka-new', nama: 'Raka Aditya', kelas: 'XII TKR 1', jurusan_id: JURUSAN_IDS.MESIN, created_at: new Date().toISOString(), avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Raka', photo_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop' },
+  { id: 's-raka-new', nama: 'Raka Aditya', kelas: 'XII TKR 1', jurusan_id: JURUSAN_IDS.MESIN, nisn: '0012345678', created_at: new Date().toISOString(), avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Raka', photo_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop' },
 ];
 
 export const mockSkillSiswa: SkillSiswa[] = [
