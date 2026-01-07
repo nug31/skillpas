@@ -1,36 +1,53 @@
 import { useState, useEffect } from 'react';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
-import { KRSSubmission, UserRole } from '../types';
+import { KRSSubmission } from '../types';
 import { Check, X, Calendar, MessageSquare, ChevronLeft } from 'lucide-react';
 
 interface TeacherKRSApprovalProps {
     onBack: () => void;
-    userRole: UserRole;
+    user: import('../mocks/mockUsers').User;
 }
 
-export function TeacherKRSApproval({ onBack, userRole }: TeacherKRSApprovalProps) {
+export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
     const [submissions, setSubmissions] = useState<KRSSubmission[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedSub, setSelectedSub] = useState<KRSSubmission | null>(null);
     const [examDate, setExamDate] = useState('');
     const [notes, setNotes] = useState('');
 
+    const userRole = user.role;
+
     useEffect(() => {
         loadSubmissions();
         window.addEventListener(KRS_UPDATED_EVENT, loadSubmissions);
         return () => window.removeEventListener(KRS_UPDATED_EVENT, loadSubmissions);
-    }, [userRole]);
+    }, [user.id, userRole]);
 
     const loadSubmissions = () => {
         setLoading(true);
         const all = krsStore.getSubmissions();
-        // Filter based on role and status
+        // Filter based on role, department, and class
         const filtered = all.filter(s => {
-            if (userRole === 'teacher_produktif') return s.status === 'pending_produktif';
-            if (userRole === 'wali_kelas') return s.status === 'pending_wali';
-            if (userRole === 'hod') return s.status === 'pending_hod';
-            if (userRole === 'admin') return true; // Admin sees everything
-            return false;
+            // 1. Check Status Role Match
+            let roleStatusMatch = false;
+            if (userRole === 'teacher_produktif') roleStatusMatch = s.status === 'pending_produktif';
+            else if (userRole === 'wali_kelas') roleStatusMatch = s.status === 'pending_wali';
+            else if (userRole === 'hod') roleStatusMatch = s.status === 'pending_hod';
+            else if (userRole === 'admin') roleStatusMatch = true;
+
+            if (!roleStatusMatch) return false;
+
+            // 2. Check Department Match (except Admin)
+            if (userRole !== 'admin') {
+                if (user.jurusan_id && s.jurusan_id !== user.jurusan_id) return false;
+            }
+
+            // 3. Check Class Match for Wali Kelas
+            if (userRole === 'wali_kelas') {
+                if (user.kelas && s.kelas !== user.kelas) return false;
+            }
+
+            return true;
         });
         setSubmissions(filtered);
         setLoading(false);

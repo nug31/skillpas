@@ -12,7 +12,7 @@ import { ProfileAvatar } from './components/ProfileAvatar';
 import { TeacherKRSApproval } from './components/TeacherKRSApproval';
 
 function AppContent() {
-  const { user, logout, isAuthenticated, isTeacher, isStudent } = useAuth();
+  const { user, logout, isAuthenticated, isTeacher } = useAuth();
   const [selectedJurusan, setSelectedJurusan] = useState<Jurusan | null>(null);
   const [selectedClassFilter, setSelectedClassFilter] = useState<string | undefined>(undefined);
   const [showKRSApproval, setShowKRSApproval] = useState(false);
@@ -122,7 +122,7 @@ function AppContent() {
         {showKRSApproval ? (
           <TeacherKRSApproval
             onBack={() => setShowKRSApproval(false)}
-            userRole={user?.role as any}
+            user={user!}
           />
         ) : selectedJurusan ? (
           <JurusanDetailPage
