@@ -52,6 +52,21 @@ function LevelCriteriaCell({
     ? level.criteria
     : (level.hasil_belajar ? [level.hasil_belajar] : []);
 
+  // Helper to render formatting
+  const renderText = (text: string) => {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return (
+      <span>
+        {parts.map((part, index) => {
+          if (part.startsWith('**') && part.endsWith('**')) {
+            return <strong key={index} className="font-bold text-[color:var(--text-primary)]">{part.slice(2, -2)}</strong>;
+          }
+          return <span key={index}>{part}</span>;
+        })}
+      </span>
+    );
+  };
+
   if (allowEdit && editing) {
     return (
       <div className="max-w-md w-full">
@@ -63,7 +78,7 @@ function LevelCriteriaCell({
                 onChange={(e) => handleItemChange(idx, e.target.value)}
                 rows={2}
                 className="flex-1 p-2 bg-black/20 border border-white/10 rounded text-sm text-[color:var(--text-primary)] focus:ring-1 focus:ring-[color:var(--accent-1)]"
-                placeholder="Kriteria..."
+                placeholder="Kriteria (gunakan **tebal** untuk bold)..."
               />
               <button
                 onClick={() => handleDeleteItem(idx)}
@@ -110,7 +125,7 @@ function LevelCriteriaCell({
             <li className="text-[color:var(--text-muted)] italic">Belum ada kriteria</li>
           ) : (
             displayItems.map((c, i) => (
-              <li key={i}>{c}</li>
+              <li key={i}>{renderText(c)}</li>
             ))
           )}
         </ul>

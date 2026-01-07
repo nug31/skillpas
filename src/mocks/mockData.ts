@@ -268,7 +268,12 @@ export const mockLevelOverrides: Array<{
     {
       jurusan_id: JURUSAN_IDS.TKR,
       level_id: LEVEL_IDS.INTER,
-      hasil_belajar: JSON.stringify(['Melakukan tune-up mesin bensin', 'Menggunakan scanner diagnostik dasar', 'Memahami K3 otomotif']),
+      hasil_belajar: JSON.stringify([
+        '**Engine**: Perawatan dan perbaikan sistem mesin kendaraan.',
+        '**Electrical**: Perbaikan sistem kelistrikan kendaraan.',
+        '**Chassis**: Perawatan sistem kemudi, suspensi, dan pengereman.',
+        '**Autobody**: Perbaikan bodi dan pengecatan kendaraan.'
+      ]),
       soft_skill: 'Kerjasama tim'
     },
     {
