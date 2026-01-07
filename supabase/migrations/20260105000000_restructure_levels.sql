@@ -23,9 +23,9 @@ BEGIN
 
     -- Level 2: Beginner 2 (Setelah PKL) - This is a NEW level in the middle
     -- We need to shift others up or insert.
-    IF NOT EXISTS (SELECT 1 FROM level_skill WHERE nama_level = 'Beginner 2 (Industrial Ready)') THEN
+    IF NOT EXISTS (SELECT 1 FROM level_skill WHERE nama_level = 'Beginner 2 (Uji Kompetensi)') THEN
         INSERT INTO level_skill (nama_level, urutan, min_skor, max_skor, badge_name, badge_color, hasil_belajar, soft_skill)
-        VALUES ('Beginner 2 (Industrial Ready)', 2, 26, 50, 'Basic 2', '#64748b', 'Pasca PKL: Mampu menerapkan budaya industri di lingkungan sekolah', 'Adaptabilitas Industri');
+        VALUES ('Beginner 2 (Uji Kompetensi)', 2, 26, 50, 'Basic 2', '#64748b', 'Lulus Uji Kompetensi Dasar & Siap Praktik Industri', 'Adaptabilitas Industri');
     END IF;
 
     -- Shift Intermediate to 3
