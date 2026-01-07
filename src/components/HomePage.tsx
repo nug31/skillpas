@@ -221,11 +221,12 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             .select('id', { count: 'exact', head: true })
             .eq('kelas', student.kelas);
 
-          let badge = 'Basic';
+          let badge = 'Basic 1';
           let color = '#94a3b8';
-          if (score >= 76) { badge = 'Master'; color = '#10b981'; }
-          else if (score >= 51) { badge = 'Advance'; color = '#f59e0b'; }
-          else if (score >= 26) { badge = 'Applied'; color = '#3b82f6'; }
+          if (score >= 90) { badge = 'Master'; color = '#10b981'; }
+          else if (score >= 76) { badge = 'Advance'; color = '#f59e0b'; }
+          else if (score >= 51) { badge = 'Specialist'; color = '#3b82f6'; }
+          else if (score >= 26) { badge = 'Basic 2'; color = '#64748b'; }
 
           setMyStats({
             rank,

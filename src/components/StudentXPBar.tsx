@@ -23,9 +23,10 @@ export function StudentXPBar({ score, level, levelColor }: StudentXPBarProps) {
     let nextTarget = 100;
     let nextLabel = "Max Level";
 
-    if (score < 26) { nextTarget = 26; nextLabel = "Applied"; }
-    else if (score < 51) { nextTarget = 51; nextLabel = "Advance"; }
-    else if (score < 76) { nextTarget = 76; nextLabel = "Master"; }
+    if (score < 26) { nextTarget = 26; nextLabel = "Basic 2"; }
+    else if (score < 51) { nextTarget = 51; nextLabel = "Specialist"; }
+    else if (score < 76) { nextTarget = 76; nextLabel = "Advance"; }
+    else if (score < 90) { nextTarget = 90; nextLabel = "Master"; }
 
     const xpToNext = nextTarget - score;
 
