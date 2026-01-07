@@ -46,6 +46,18 @@ export const mockUsers: User[] = [
 
     // Admin teacher (can see all)
     { id: 'u-guru', username: 'guru', password: '123', name: 'Guru', role: 'teacher', photo_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop' },
+
+    // HOD Accounts from user request
+    { id: 'hod-tsm', username: 'hod_tsm', password: '123', name: 'Okxy Ixganda, S.Pd', role: 'hod', jurusan_id: JURUSAN_IDS.TSM },
+    { id: 'hod-tkr', username: 'hod_tkr', password: '123', name: 'Abdillah Putra, A.Md', role: 'hod', jurusan_id: JURUSAN_IDS.TKR },
+    { id: 'hod-mesin', username: 'hod_mesin', password: '123', name: 'Dwi Nugroho, S.T', role: 'hod', jurusan_id: JURUSAN_IDS.MESIN },
+    { id: 'hod-elektro', username: 'hod_elektro', password: '123', name: 'Heru Triatmo,S.Pd. Gr', role: 'hod', jurusan_id: JURUSAN_IDS.ELIND },
+    { id: 'hod-akuntansi', username: 'hod_akuntansi', password: '123', name: 'Kiki Widia Swara,S.Pd. Gr', role: 'hod', jurusan_id: JURUSAN_IDS.AKUNTANSI },
+    { id: 'hod-hotel', username: 'hod_hotel', password: '123', name: 'Refty Royan Juniarti, S.Pd', role: 'hod', jurusan_id: JURUSAN_IDS.HOTEL },
+    { id: 'hod-tki', username: 'hod_tki', password: '123', name: 'Ryo Maytana, S.Pd', role: 'hod', jurusan_id: JURUSAN_IDS.KIMIA },
+    { id: 'hod-elin03', username: 'hod_elin03', password: '123', name: 'Eldha Luvy Zha, A.Md', role: 'hod', jurusan_id: JURUSAN_IDS.ELIND },
+    { id: 'hod-tsm03', username: 'hod_tsm03', password: '123', name: 'Heri Supriyanto,S.Pd', role: 'hod', jurusan_id: JURUSAN_IDS.TSM },
+    { id: 'hod-tkr03', username: 'hod_tkr03', password: '123', name: 'Rahmat Hidayat, S.Pd.Gr', role: 'hod', jurusan_id: JURUSAN_IDS.TKR },
 ];
 
 export function authenticateUser(username: string, password: string, selectedRole?: 'student' | 'teacher'): User | null {
