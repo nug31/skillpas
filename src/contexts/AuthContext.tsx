@@ -63,9 +63,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 }
             }
 
-            // For teachers in production, we might need a separate table or Auth,
-            // but for now, if it's not a student, we might still fall back to mock or fail.
-            // Let's assume teachers are also in a table or wait for instructions.
+            // For teachers/HODs/Admins in production, use the 'users' table
+            const { data: staff, error: staffError } = await supabase
+                .from('users')
+                .select('*')
+                .eq('username', username)
+                .eq('password', password)
+                .maybeSingle();
+
+            if (staff && !staffError) {
+                const authenticatedUser: User = {
+                    id: staff.id,
+                    username: staff.username,
+                    password: staff.password,
+                    name: staff.name,
+                    role: staff.role as any,
+                    jurusan_id: staff.jurusan_id,
+                    avatar_url: staff.avatar_url,
+                    photo_url: staff.photo_url
+                };
+                setUser(authenticatedUser);
+                localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authenticatedUser));
+                return true;
+            }
         }
 
         const authenticatedUser = authenticateUser(username, password, role);
