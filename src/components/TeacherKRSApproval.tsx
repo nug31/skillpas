@@ -17,6 +17,17 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
 
     const userRole = user.role;
 
+    // Helper to normalize class names (e.g., "12 TKR 3" vs "XII TKR 3")
+    const normalizeClass = (name?: string) => {
+        if (!name) return '';
+        return name.toUpperCase()
+            .replace(/\s+/g, ' ')
+            .replace(/^10\s/, 'X ')
+            .replace(/^11\s/, 'XI ')
+            .replace(/^12\s/, 'XII ')
+            .trim();
+    };
+
     useEffect(() => {
         loadSubmissions();
         window.addEventListener(KRS_UPDATED_EVENT, loadSubmissions);
@@ -26,25 +37,35 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
     const loadSubmissions = () => {
         setLoading(true);
         const all = krsStore.getSubmissions();
+        const userDeptId = user.jurusan_id;
+        const userNormClass = normalizeClass(user.kelas);
+
         // Filter based on role, department, and class
         const filtered = all.filter(s => {
             // 1. Check Status Role Match
-            let roleStatusMatch = false;
-            if (userRole === 'teacher_produktif') roleStatusMatch = s.status === 'pending_produktif';
-            else if (userRole === 'wali_kelas') roleStatusMatch = s.status === 'pending_wali';
-            else if (userRole === 'hod') roleStatusMatch = s.status === 'pending_hod';
-            else if (userRole === 'admin') roleStatusMatch = true;
+            let statusMatch = false;
+            if (userRole === 'teacher_produktif') {
+                statusMatch = s.status === 'pending_produktif';
+            } else if (userRole === 'wali_kelas') {
+                // Walas can also act as Productive Teacher if department matches
+                statusMatch = s.status === 'pending_wali' || s.status === 'pending_produktif';
+            } else if (userRole === 'hod') {
+                statusMatch = s.status === 'pending_hod';
+            } else if (userRole === 'admin') {
+                statusMatch = true;
+            }
 
-            if (!roleStatusMatch) return false;
+            if (!statusMatch) return false;
 
             // 2. Check Department Match (except Admin)
             if (userRole !== 'admin') {
-                if (user.jurusan_id && s.jurusan_id !== user.jurusan_id) return false;
+                if (userDeptId && s.jurusan_id !== userDeptId) return false;
             }
 
-            // 3. Check Class Match for Wali Kelas
-            if (userRole === 'wali_kelas') {
-                if (user.kelas && s.kelas !== user.kelas) return false;
+            // 3. Check Class Match for Wali Kelas (specifically for the walas stage)
+            if (userRole === 'wali_kelas' && s.status === 'pending_wali') {
+                const studentNormClass = normalizeClass(s.kelas);
+                if (userNormClass && studentNormClass !== userNormClass) return false;
             }
 
             return true;
@@ -53,12 +74,24 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
         setLoading(false);
     };
 
-    const handleApprove = (id: string) => {
+    const handleApprove = (id: string | KRSSubmission) => {
+        const submissionId = typeof id === 'string' ? id : id.id;
+        const sub = typeof id === 'string' ? submissions.find(s => s.id === id) : id;
+
+        if (!sub) return;
+
         if (userRole === 'hod' && !examDate) {
             alert("HOD wajib menentukan tanggal ujian.");
             return;
         }
-        krsStore.approveKRS(id, userRole, notes, examDate);
+
+        // Determine acting role for krsStore
+        let actingRole = userRole as string;
+        if (userRole === 'wali_kelas' && sub.status === 'pending_produktif') {
+            actingRole = 'teacher_produktif';
+        }
+
+        krsStore.approveKRS(submissionId, actingRole, notes, examDate);
         setSelectedSub(null);
         setExamDate('');
         setNotes('');
