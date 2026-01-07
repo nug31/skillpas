@@ -1,3 +1,7 @@
+-- First, ensure the columns exist (in case the previous script wasn't run)
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS kelas TEXT;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS nisn TEXT;
+
 -- Add Joko Setyo Nugroho as a Wali Kelas for XII TKR 3
 INSERT INTO public.users (username, password, name, role, jurusan_id, kelas) 
 VALUES (
@@ -12,4 +16,5 @@ ON CONFLICT (username) DO UPDATE SET
     name = EXCLUDED.name,
     role = EXCLUDED.role,
     jurusan_id = EXCLUDED.jurusan_id,
-    kelas = EXCLUDED.kelas;
+    kelas = EXCLUDED.kelas,
+    nisn = EXCLUDED.nisn;

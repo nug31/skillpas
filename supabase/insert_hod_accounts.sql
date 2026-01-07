@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS public.users (
     name TEXT NOT NULL,
     role TEXT NOT NULL,
     jurusan_id UUID REFERENCES public.jurusan(id),
+    kelas TEXT, -- Added for Wali Kelas
+    nisn TEXT,  -- Added for potential Student login from this table
     avatar_url TEXT,
     photo_url TEXT,
     created_at TIMESTAMPTZ DEFAULT now()
@@ -39,4 +41,6 @@ VALUES
 ON CONFLICT (username) DO UPDATE SET 
     name = EXCLUDED.name,
     role = EXCLUDED.role,
-    jurusan_id = EXCLUDED.jurusan_id;
+    jurusan_id = EXCLUDED.jurusan_id,
+    kelas = EXCLUDED.kelas,
+    nisn = EXCLUDED.nisn;
