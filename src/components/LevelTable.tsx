@@ -61,7 +61,16 @@ function LevelCriteriaCell({
           if (part.startsWith('**') && part.endsWith('**')) {
             return <strong key={index} className="font-bold text-[color:var(--text-primary)]">{part.slice(2, -2)}</strong>;
           }
-          return <span key={index}>{part}</span>;
+          return (
+            <span key={index}>
+              {part.split('\n').map((line, i) => (
+                <span key={i}>
+                  {i > 0 && <br />}
+                  {line}
+                </span>
+              ))}
+            </span>
+          );
         })}
       </span>
     );
