@@ -264,14 +264,49 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
       });
     }
   }
+
+  // Same logic as TeacherKRSApproval to count pending items
+  const normalizeClass = (name?: string) => {
+    if (!name) return '';
+    return name.toUpperCase()
+      .replace(/\s+/g, ' ')
+      .replace(/^10\s/, 'X ')
+      .replace(/^11\s/, 'XI ')
+      .replace(/^12\s/, 'XII ')
+      .trim();
+  };
+
   async function loadPendingKRS() {
     if (!user || user.role === 'student') return;
     const all = krsStore.getSubmissions();
+    const userRole = user.role;
+    const userDeptId = user.jurusan_id;
+    const userNormClass = normalizeClass(user.kelas);
+
     const pending = all.filter(s => {
-      if (user.role === 'teacher_produktif') return s.status === 'pending_produktif';
-      if (user.role === 'wali_kelas') return s.status === 'pending_wali';
-      if (user.role === 'hod') return s.status === 'pending_hod';
-      return false;
+      // 1. Status Match
+      let statusMatch = false;
+      if (userRole === 'teacher_produktif') {
+        statusMatch = s.status === 'pending_produktif';
+      } else if (userRole === 'wali_kelas') {
+        statusMatch = s.status === 'pending_wali' || s.status === 'pending_produktif';
+      } else if (userRole === 'hod') {
+        statusMatch = s.status === 'pending_hod';
+      } else if (userRole === 'admin') {
+        statusMatch = true;
+      }
+
+      if (!statusMatch) return false;
+
+      // 2. Department Match
+      if (userRole !== 'admin' && userDeptId && s.jurusan_id !== userDeptId) return false;
+
+      // 3. Class Match for Walas
+      if (userRole === 'wali_kelas' && s.status === 'pending_wali') {
+        if (userNormClass && normalizeClass(s.kelas) !== userNormClass) return false;
+      }
+
+      return true;
     });
     setPendingKRSCount(pending.length);
   }
