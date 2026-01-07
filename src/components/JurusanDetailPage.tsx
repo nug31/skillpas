@@ -130,7 +130,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
             } else if (skor >= 26) {
               badge_name = 'Basic 2';
               badge_color = '#64748b';
-              level_name = 'Beginner 2 (Industrial Ready)';
+              level_name = 'Beginner 2 (Uji Kompetensi)';
             }
           }
 
