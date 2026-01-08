@@ -106,8 +106,8 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
             {myStats ? (
                 <div className="space-y-8">
                     {/* SECTION 1: FOCUS HERO (Concept 3) */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div className="lg:col-span-2 card-glass p-8 rounded-3xl flex flex-col justify-center relative overflow-hidden bg-gradient-to-br from-indigo-600 to-blue-700 border-none shadow-2xl group">
+                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                        <div className="lg:col-span-3 card-glass p-8 rounded-3xl flex flex-col justify-center relative overflow-hidden bg-gradient-to-br from-indigo-600 to-blue-700 border-none shadow-2xl group">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
                             <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/20 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
 
@@ -159,6 +159,19 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                                 Lanjut Belajar
                             </button>
                         </div>
+
+                        {/* Relocated Competency Radar */}
+                        <div className="lg:col-span-2 card-glass p-0 rounded-3xl flex flex-col justify-center items-center relative min-h-[300px] bg-slate-900/40 border-white/5 overflow-hidden">
+                            <div className="absolute top-6 left-6 flex items-center gap-2 z-10">
+                                <div className="p-1.5 bg-emerald-500/10 rounded-lg text-emerald-400">
+                                    <Icons.Target className="w-4 h-4" />
+                                </div>
+                                <span className="text-xs font-bold uppercase tracking-widest text-white/40">Matrix Radar</span>
+                            </div>
+                            <div className="w-full h-full flex items-center justify-center p-4 transform scale-110">
+                                <CompetencyRadar score={myStats.score} />
+                            </div>
+                        </div>
                     </div>
 
                     {/* SECTION 2: JOURNEY TIMELINE (Concept 3) */}
@@ -171,8 +184,8 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                     </div>
 
                     {/* SECTION 3: GAMIFICATION & SKILLS (Hybrid) */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Left: XP Bar & Daily Mission */}
+                    <div className="grid grid-cols-1 gap-6">
+                        {/* XP Bar & Daily Mission */}
                         <div className="space-y-6">
                             <div className="card-glass p-6 rounded-2xl relative overflow-hidden">
                                 <div className="mb-4 flex items-center justify-between">
@@ -206,7 +219,7 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                                     </button>
                                 </div>
 
-                                <div className="space-y-3">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     {selectedKRS.length > 0 ? (
                                         selectedKRS.map((skill, idx) => (
                                             <div
@@ -220,7 +233,7 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="text-center py-8 px-4 rounded-xl border border-dashed border-white/10 bg-white/5">
+                                        <div className="col-span-full text-center py-8 px-4 rounded-xl border border-dashed border-white/10 bg-white/5">
                                             <Icons.PlusCircle className="w-10 h-10 text-white/20 mx-auto mb-3" />
                                             <p className="text-sm text-white/40 mb-4 italic">Belum ada kompetensi yang ditargetkan.</p>
                                             <button
@@ -232,19 +245,6 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                                         </div>
                                     )}
                                 </div>
-                            </div>
-                        </div>
-
-                        {/* Right: Competency Radar */}
-                        <div className="card-glass p-0 rounded-2xl flex flex-col justify-center items-center relative min-h-[400px]">
-                            <div className="absolute top-6 left-6 flex items-center gap-2">
-                                <div className="p-1.5 bg-emerald-500/10 rounded-lg text-emerald-400">
-                                    <Icons.Target className="w-4 h-4" />
-                                </div>
-                                <span className="text-xs font-bold uppercase tracking-widest text-[color:var(--text-muted)]">Matrix Radar</span>
-                            </div>
-                            <div className="w-full h-full flex items-center justify-center p-4">
-                                <CompetencyRadar score={myStats.score} />
                             </div>
                         </div>
                     </div>
