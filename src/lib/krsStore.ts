@@ -117,7 +117,8 @@ export const krsStore = {
         if (submission.status !== 'scheduled') return false;
 
         const now = new Date().toISOString();
-        const dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+        const isoDate = now.split('T')[0]; // YYYY-MM-DD for database
+        const displayDate = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
 
         submission.status = 'completed';
         submission.updated_at = now;
@@ -168,7 +169,7 @@ export const krsStore = {
             aktivitas_pembuktian: 'Ujian KRS Terverifikasi',
             penilai: examinerName || 'Guru Produktif',
             hasil: result,
-            tanggal: dateStr,
+            tanggal: isMockMode ? displayDate : isoDate,
             catatan: notes || ''
         };
 
