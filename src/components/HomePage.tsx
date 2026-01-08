@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { GraduationCap } from 'lucide-react';
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
-import type { Jurusan } from '../types';
+import type { Jurusan, KRSSubmission } from '../types';
 import { JurusanCard } from './JurusanCard';
 import { DashboardRace } from './DashboardRace';
 import { useAuth } from '../contexts/AuthContext';
@@ -285,13 +285,38 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
     const userRole = user.role;
     const userDeptId = user.jurusan_id;
     const userNormClass = normalizeClass(user.kelas);
+    const pendingItems = all.filter((s: KRSSubmission) => {
+      // 1. Status Match
+      let statusMatch = false;
+      if (userRole === 'teacher_produktif' || userRole === 'teacher') {
+        statusMatch = s.status === 'pending_produktif' || s.status === 'scheduled';
+      } else if (userRole === 'wali_kelas') {
+        statusMatch = s.status === 'pending_wali' || s.status === 'pending_produktif' || s.status === 'scheduled';
+      } else if (userRole === 'hod') {
+        statusMatch = s.status === 'pending_hod' || s.status === 'scheduled';
+      } else if (userRole === 'admin') {
+        statusMatch = true;
+      }
 
-    const toApprove = pending.filter(s => s.status !== 'scheduled');
-    const toGrade = pending.filter(s => s.status === 'scheduled');
+      if (!statusMatch) return false;
+
+      // 2. Department Match
+      if (userRole !== 'admin' && userDeptId && s.jurusan_id !== userDeptId) return false;
+
+      // 3. Class Match for Walas
+      if (userRole === 'wali_kelas' && s.status === 'pending_wali') {
+        if (userNormClass && normalizeClass(s.kelas) !== userNormClass) return false;
+      }
+
+      return true;
+    });
+
+    const toApprove = pendingItems.filter((s: KRSSubmission) => s.status !== 'scheduled');
+    const toGrade = pendingItems.filter((s: KRSSubmission) => s.status === 'scheduled');
 
     setToApproveCount(toApprove.length);
     setToGradeCount(toGrade.length);
-    setPendingKRSCount(pending.length);
+    setPendingKRSCount(pendingItems.length);
   }
 
   const [scheduledExam, setScheduledExam] = useState<{ date: string, notes?: string } | null>(null);
