@@ -35,7 +35,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
         loadSubmissions();
         window.addEventListener(KRS_UPDATED_EVENT, loadSubmissions);
         return () => window.removeEventListener(KRS_UPDATED_EVENT, loadSubmissions);
-    }, [user.id, userRole]);
+    }, [user.id, userRole, activeTab]);
 
     const loadSubmissions = () => {
         setLoading(true);
@@ -54,7 +54,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
 
             // 1. Check Status Role Match
             let statusMatch = false;
-            if (userRole === 'teacher_produktif') {
+            if (userRole === 'teacher_produktif' || userRole === 'teacher') {
                 statusMatch = s.status === 'pending_produktif' || s.status === 'scheduled';
             } else if (userRole === 'wali_kelas') {
                 statusMatch = s.status === 'pending_wali' || s.status === 'pending_produktif' || s.status === 'scheduled';

@@ -95,7 +95,7 @@ export interface StudentStats {
 
 export type ViewMode = 'list' | 'race' | 'podium';
 
-export type UserRole = 'student' | 'teacher_produktif' | 'wali_kelas' | 'hod' | 'admin';
+export type UserRole = 'student' | 'teacher_produktif' | 'wali_kelas' | 'hod' | 'admin' | 'teacher';
 
 export interface User {
   id: string;
