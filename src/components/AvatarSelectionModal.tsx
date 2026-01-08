@@ -171,19 +171,19 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                                     )}
                                 </div>
                                 <p className="text-xs text-white/40 text-center max-w-xs">
-                                    Masukkan URL foto dari Supabase Gallery atau tempel link foto profil lainnya.
+                                    Masukkan link foto profil Anda untuk ditampilkan di dashboard.
                                 </p>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-white/60 uppercase tracking-widest ml-1">Photo URL</label>
+                                <label className="text-xs font-bold text-white/60 uppercase tracking-widest ml-1">Link Foto</label>
                                 <div className="relative">
                                     <Icons.Link className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
                                     <input
                                         type="text"
                                         value={photoUrl}
                                         onChange={(e) => setPhotoUrl(e.target.value)}
-                                        placeholder="https://supabase.co/storage/v1/object/public/student-photos/..."
+                                        placeholder="Tempel link foto Anda di sini..."
                                         className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-2xl text-white text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
                                     />
                                 </div>
@@ -192,7 +192,7 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                             <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 flex gap-3">
                                 <Icons.AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0" />
                                 <p className="text-[11px] text-amber-200/70 leading-relaxed">
-                                    **Penting:** Selalu kompres foto sebelum diunggah (max 500KB) untuk menghemat kuota penyimpanan gratis Supabase kamu.
+                                    **Penting:** Ukuran file maksimal adalah **500KB**. Foto yang melebihi batas ini tidak akan dapat ditampilkan dengan baik atau gagal diproses.
                                 </p>
                             </div>
                         </div>
