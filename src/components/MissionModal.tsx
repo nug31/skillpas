@@ -252,7 +252,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                                 {getStatusLabel(submission.status)}
                                             </span>
                                         </div>
-                                        {submission.exam_date && (
+                                        {submission.exam_date && submission.status === 'scheduled' && (
                                             <div className="text-sm font-bold text-emerald-400">
                                                 📅 Jadwal Ujian: {new Date(submission.exam_date).toLocaleDateString('id-ID', { dateStyle: 'long' })}
                                             </div>

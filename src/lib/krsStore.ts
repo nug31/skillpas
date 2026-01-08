@@ -122,6 +122,7 @@ export const krsStore = {
         submission.status = 'completed';
         submission.updated_at = now;
         submission.final_score = score;
+        delete submission.exam_date;
         if (notes) submission.notes = notes;
 
         // 1. Update Student Score and Poin
