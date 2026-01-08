@@ -5,7 +5,6 @@ import { F1RaceTrack } from './F1RaceTrack';
 import { Podium } from './Podium';
 import { StudentXPBar } from './StudentXPBar';
 import { CompetencyRadar } from './CompetencyRadar';
-import { FocusJourney } from './FocusJourney';
 import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
 import { useAuth } from '../contexts/AuthContext';

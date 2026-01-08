@@ -74,10 +74,8 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
             // Create a unique filename
             const fileExt = file.name.split('.').pop();
             const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-            const filePath = `student-photos/${fileName}`;
-
             // Upload to Supabase Storage
-            const { error: uploadError, data } = await supabase.storage
+            const { error: uploadError } = await supabase.storage
                 .from('student-photos')
                 .upload(fileName, file, {
                     cacheControl: '3600',
