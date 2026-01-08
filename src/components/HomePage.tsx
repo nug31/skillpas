@@ -37,6 +37,8 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
   const [showMissionModal, setShowMissionModal] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [pendingKRSCount, setPendingKRSCount] = useState(0);
+  const [toApproveCount, setToApproveCount] = useState(0);
+  const [toGradeCount, setToGradeCount] = useState(0);
   const { updateUser } = useAuth();
 
   const useMock = isMockMode;
@@ -284,31 +286,11 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
     const userDeptId = user.jurusan_id;
     const userNormClass = normalizeClass(user.kelas);
 
-    const pending = all.filter(s => {
-      // 1. Status Match
-      let statusMatch = false;
-      if (userRole === 'teacher_produktif') {
-        statusMatch = s.status === 'pending_produktif';
-      } else if (userRole === 'wali_kelas') {
-        statusMatch = s.status === 'pending_wali' || s.status === 'pending_produktif';
-      } else if (userRole === 'hod') {
-        statusMatch = s.status === 'pending_hod';
-      } else if (userRole === 'admin') {
-        statusMatch = true;
-      }
+    const toApprove = pending.filter(s => s.status !== 'scheduled');
+    const toGrade = pending.filter(s => s.status === 'scheduled');
 
-      if (!statusMatch) return false;
-
-      // 2. Department Match
-      if (userRole !== 'admin' && userDeptId && s.jurusan_id !== userDeptId) return false;
-
-      // 3. Class Match for Walas
-      if (userRole === 'wali_kelas' && s.status === 'pending_wali') {
-        if (userNormClass && normalizeClass(s.kelas) !== userNormClass) return false;
-      }
-
-      return true;
-    });
+    setToApproveCount(toApprove.length);
+    setToGradeCount(toGrade.length);
     setPendingKRSCount(pending.length);
   }
 
@@ -453,7 +435,8 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                         <CheckCircle className="w-5 h-5 text-indigo-400" />
                         Persetujuan KRS
                         {pendingKRSCount > 0 && (
-                          <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-[#0f172a] animate-bounce">
+                          <div className={`absolute -top-2 -right-2 w-6 h-6 ${toApproveCount > 0 ? 'bg-red-500' : 'bg-amber-500'
+                            } text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-[#0f172a] animate-bounce shadow-lg shadow-indigo-500/20`}>
                             {pendingKRSCount}
                           </div>
                         )}
