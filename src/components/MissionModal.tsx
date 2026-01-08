@@ -369,8 +369,8 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                         </button>
                         <button
                             onClick={handleSubmit}
-                            disabled={!!(submission && !['rejected', 'scheduled'].includes(submission.status))}
-                            className={`flex-[2] py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${submission && !['rejected', 'scheduled'].includes(submission.status)
+                            disabled={!!(submission && !['rejected', 'scheduled', 'completed'].includes(submission.status))}
+                            className={`flex-[2] py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${submission && !['rejected', 'scheduled', 'completed'].includes(submission.status)
                                 ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
                                 : 'bg-white text-indigo-900 hover:bg-gray-100 active:scale-95'
                                 }`}
