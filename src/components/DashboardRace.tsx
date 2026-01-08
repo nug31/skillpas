@@ -174,15 +174,6 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                         </div>
                     </div>
 
-                    {/* SECTION 2: JOURNEY TIMELINE (Concept 3) */}
-                    <div className="card-glass p-8 rounded-3xl">
-                        <div className="flex items-center gap-2 mb-6">
-                            <Icons.Map className="w-5 h-5 text-[color:var(--text-muted)]" />
-                            <h3 className="text-lg font-bold text-[color:var(--text-primary)]">Your Journey</h3>
-                        </div>
-                        <FocusJourney currentLevel={myStats.level} score={myStats.score} />
-                    </div>
-
                     {/* SECTION 3: GAMIFICATION & SKILLS (Hybrid) */}
                     <div className="grid grid-cols-1 gap-6">
                         {/* XP Bar & Daily Mission */}
