@@ -453,9 +453,14 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
             <AvatarSelectionModal
                 isOpen={isAvatarModalOpen}
                 onClose={() => setIsAvatarModalOpen(false)}
-                currentAvatar={(user as any)?.avatar_url}
+                currentAvatar={(user as any)?.photo_url || (user as any)?.avatar_url}
                 onSelect={(url) => {
-                    updateUser({ avatar_url: url } as any);
+                    // If URL is from dicebear, it's an avatar URL
+                    if (url.includes('dicebear.com')) {
+                        updateUser({ avatar_url: url, photo_url: undefined } as any);
+                    } else {
+                        updateUser({ photo_url: url } as any);
+                    }
                     setIsAvatarModalOpen(false);
                 }}
             />

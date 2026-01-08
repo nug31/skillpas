@@ -18,7 +18,6 @@ export const ProfileAvatar: React.FC<ProfileAvatarProps> = ({
     photoUrl,
     role = 'student',
     level,
-    variant = 'gamified',
     size = 'md',
     jurusanColor = '#3b82f6',
     className = '',
@@ -42,8 +41,8 @@ export const ProfileAvatar: React.FC<ProfileAvatarProps> = ({
             .slice(0, 2);
     };
 
-    // Determine which image to show based on variant and availability
-    const displayImage = variant === 'gamified' ? avatarUrl || photoUrl : photoUrl || avatarUrl;
+    // Prioritize real photo over generated avatar
+    const displayImage = photoUrl || avatarUrl;
 
     const renderContent = () => {
         if (displayImage) {

@@ -3,6 +3,7 @@ import { Search, ArrowUpDown, ArrowUp, ArrowDown, Download, Trash2 } from 'lucid
 import type { StudentListItem } from '../types';
 import formatClassLabel from '../lib/formatJurusan';
 import { Badge } from './Badge';
+import { ProfileAvatar } from './ProfileAvatar';
 
 interface StudentTableProps {
   students: StudentListItem[];
@@ -115,7 +116,15 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
       {/* mobile */}
       <div className="md:hidden px-4 py-4 space-y-3">
         {filteredAndSortedStudents.map((student) => (
-          <div key={student.id} className="card-glass rounded-xl p-4 flex items-center justify-between">
+          <div key={student.id} className="card-glass rounded-xl p-4 flex items-center gap-4">
+            <ProfileAvatar
+              name={student.nama}
+              avatarUrl={student.avatar_url}
+              photoUrl={student.photo_url}
+              size="sm"
+              level={student.level_name}
+              jurusanColor={student.badge_color}
+            />
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
                 <button onClick={() => onSelectStudent?.(student)} className="font-semibold text-sm text-[color:var(--text-primary)] truncate hover:underline text-left">{student.nama}</button>
@@ -172,26 +181,36 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
             {filteredAndSortedStudents.map((student) => (
               <tr key={student.id} className="hover:bg-white/5 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex flex-col">
-                    <div className="flex items-center justify-between">
-                      <button onClick={() => onSelectStudent?.(student)} className="text-sm font-medium text-[color:var(--accent-1)] hover:underline text-left">{student.nama}</button>
-                      {topRanks?.[student.id] && (
-                        <div className="ml-3 flex-shrink-0">
-                          <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${topRanks[student.id] === 1 ? 'bg-yellow-400 text-black' :
-                            topRanks[student.id] === 2 ? 'bg-gray-300 text-black' :
-                              topRanks[student.id] === 3 ? 'bg-orange-300 text-black' :
-                                'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                            }`}>
-                            #{topRanks[student.id]}
+                  <div className="flex items-center gap-3">
+                    <ProfileAvatar
+                      name={student.nama}
+                      avatarUrl={student.avatar_url}
+                      photoUrl={student.photo_url}
+                      size="sm"
+                      level={student.level_name}
+                      jurusanColor={student.badge_color}
+                    />
+                    <div className="flex flex-col">
+                      <div className="flex items-center justify-between">
+                        <button onClick={() => onSelectStudent?.(student)} className="text-sm font-medium text-[color:var(--accent-1)] hover:underline text-left">{student.nama}</button>
+                        {topRanks?.[student.id] && (
+                          <div className="ml-3 flex-shrink-0">
+                            <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${topRanks[student.id] === 1 ? 'bg-yellow-400 text-black' :
+                              topRanks[student.id] === 2 ? 'bg-gray-300 text-black' :
+                                topRanks[student.id] === 3 ? 'bg-orange-300 text-black' :
+                                  'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                              }`}>
+                              #{topRanks[student.id]}
+                            </div>
                           </div>
+                        )}
+                      </div>
+                      {student.nisn && (
+                        <div className="text-[10px] text-[color:var(--text-muted)] font-mono mt-0.5">
+                          NISN: {student.nisn}
                         </div>
                       )}
                     </div>
-                    {student.nisn && (
-                      <div className="text-[10px] text-[color:var(--text-muted)] font-mono mt-0.5">
-                        NISN: {student.nisn}
-                      </div>
-                    )}
                   </div>
                 </td>
 
