@@ -1,5 +1,6 @@
 import { KRSSubmission } from '../types';
 import mockData from '../mocks/mockData';
+import { supabase, isMockMode } from './supabase';
 
 const STORAGE_KEY = 'skillpas_krs_submissions';
 
@@ -14,6 +15,22 @@ export const krsStore = {
         } catch (e) {
             console.error('Failed to parse KRS submissions', e);
             return [];
+        }
+    },
+
+    async getStudentScore(siswaId: string): Promise<number> {
+        if (isMockMode) {
+            const skill = mockData.mockSkillSiswa.find(s => s.siswa_id === siswaId);
+            return skill?.skor || 0;
+        } else {
+            const { data, error } = await supabase
+                .from('skill_siswa')
+                .select('skor')
+                .eq('siswa_id', siswaId)
+                .maybeSingle();
+
+            if (error || !data) return 0;
+            return data.skor;
         }
     },
 
@@ -91,7 +108,7 @@ export const krsStore = {
         return true;
     },
 
-    completeKRS(submissionId: string, score: number, result: string, notes?: string, examinerName?: string): boolean {
+    async completeKRS(submissionId: string, score: number, result: string, notes?: string, examinerName?: string): Promise<boolean> {
         const submissions = this.getSubmissions();
         const idx = submissions.findIndex(s => s.id === submissionId);
         if (idx === -1) return false;
@@ -107,21 +124,43 @@ export const krsStore = {
         submission.final_score = score;
         if (notes) submission.notes = notes;
 
-        // 1. Update Student Score and Poin in Mock Skill Siswa
-        const skillIdx = mockData.mockSkillSiswa.findIndex(s => s.siswa_id === submission.siswa_id);
-        const levelObj = mockData.mockLevels.find(l => score >= l.min_skor && score <= l.max_skor) || mockData.mockLevels[0];
+        // 1. Update Student Score and Poin
+        const levelIdx = mockData.mockLevels.findIndex(l => score >= l.min_skor && score <= l.max_skor);
+        const levelObj = levelIdx >= 0 ? mockData.mockLevels[levelIdx] : mockData.mockLevels[0];
         const pointsAwarded = Math.floor(score / 2); // Award half the score as XP points
 
-        if (skillIdx >= 0) {
-            mockData.mockSkillSiswa[skillIdx].skor = score;
-            mockData.mockSkillSiswa[skillIdx].poin += pointsAwarded;
-            mockData.mockSkillSiswa[skillIdx].level_id = levelObj.id;
-            mockData.mockSkillSiswa[skillIdx].updated_at = now;
+        if (isMockMode) {
+            const skillIdx = mockData.mockSkillSiswa.findIndex(s => s.siswa_id === submission.siswa_id);
+            if (skillIdx >= 0) {
+                mockData.mockSkillSiswa[skillIdx].skor = score;
+                mockData.mockSkillSiswa[skillIdx].poin += pointsAwarded;
+                mockData.mockSkillSiswa[skillIdx].level_id = levelObj.id;
+                mockData.mockSkillSiswa[skillIdx].updated_at = now;
+            }
+        } else {
+            // Supabase Persistence
+            const { error: skillError } = await supabase
+                .from('skill_siswa')
+                .update({
+                    skor: score,
+                    level_id: levelObj.id,
+                    updated_at: now
+                })
+                .eq('siswa_id', submission.siswa_id);
+
+            if (skillError) {
+                console.error('Failed to update skill_siswa in Supabase', skillError);
+                return false;
+            }
+
+            // Increment points separately since it's a relative update
+            const { data: currentSkill } = await supabase.from('skill_siswa').select('poin').eq('siswa_id', submission.siswa_id).maybeSingle();
+            const currentPoin = currentSkill?.poin || 0;
+            await supabase.from('skill_siswa').update({ poin: currentPoin + pointsAwarded }).eq('siswa_id', submission.siswa_id);
         }
 
         // 2. Add to Competency History
-        const newHistory = {
-            id: `hist-${Date.now()}`,
+        const historyEntry = {
             siswa_id: submission.siswa_id,
             level_id: levelObj.id,
             unit_kompetensi: submission.items.join(', '),
@@ -129,19 +168,35 @@ export const krsStore = {
             penilai: examinerName || 'Guru Produktif',
             hasil: result,
             tanggal: dateStr,
-            catatan: notes
+            catatan: notes || ''
         };
 
-        mockData.mockCompetencyHistory.push(newHistory);
+        if (isMockMode) {
+            mockData.mockCompetencyHistory.push({
+                id: `hist-${Date.now()}`,
+                ...historyEntry
+            });
+        } else {
+            const { error: histError } = await supabase
+                .from('competency_history')
+                .insert(historyEntry);
 
-        // 3. Update Discipline (Engagement)
-        const discIdx = mockData.mockDiscipline.findIndex(d => d.siswa_id === submission.siswa_id);
-        if (discIdx >= 0) {
-            mockData.mockDiscipline[discIdx].attitude_scores = mockData.mockDiscipline[discIdx].attitude_scores.map(s => ({
-                ...s,
-                score: Math.min(s.score + 5, 100)
-            }));
-            mockData.mockDiscipline[discIdx].updated_at = now;
+            if (histError) {
+                console.warn('Failed to insert competency history in Supabase', histError);
+                // Continue anyway since skill was updated
+            }
+        }
+
+        // 3. Update Discipline (Engagement) - Mock only for now
+        if (isMockMode) {
+            const discIdx = mockData.mockDiscipline.findIndex(d => d.siswa_id === submission.siswa_id);
+            if (discIdx >= 0) {
+                mockData.mockDiscipline[discIdx].attitude_scores = mockData.mockDiscipline[discIdx].attitude_scores.map(s => ({
+                    ...s,
+                    score: Math.min(s.score + 5, 100)
+                }));
+                mockData.mockDiscipline[discIdx].updated_at = now;
+            }
         }
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));

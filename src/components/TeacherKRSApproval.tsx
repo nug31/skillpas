@@ -17,6 +17,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
     const [notes, setNotes] = useState('');
     const [activeTab, setActiveTab] = useState<'pending' | 'grading'>('pending');
     const [gradingSub, setGradingSub] = useState<KRSSubmission | null>(null);
+    const [currentScore, setCurrentScore] = useState<number>(80);
 
     const userRole = user.role;
 
@@ -116,11 +117,16 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
         setNotes('');
     };
 
-    const handleGrading = (score: number, result: 'Lulus' | 'Tidak Lulus', gradingNotes: string) => {
+    const handleGrading = async (score: number, result: 'Lulus' | 'Tidak Lulus', gradingNotes: string) => {
         if (!gradingSub) return;
-        krsStore.completeKRS(gradingSub.id, score, result, gradingNotes, user.nama);
-        setGradingSub(null);
-        alert("Penilaian berhasil disimpan!");
+        const success = await krsStore.completeKRS(gradingSub.id, score, result, gradingNotes, user.nama);
+        if (success) {
+            setGradingSub(null);
+            alert("Penilaian berhasil disimpan!");
+            loadSubmissions(); // Refresh the list
+        } else {
+            alert("Gagal menyimpan penilaian. Silakan coba lagi.");
+        }
     };
 
     return (
@@ -217,10 +223,12 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                     </div>
 
                                     <button
-                                        onClick={() => {
+                                        onClick={async () => {
                                             if (activeTab === 'pending') {
                                                 setSelectedSub(sub);
                                             } else {
+                                                const score = await krsStore.getStudentScore(sub.siswa_id);
+                                                setCurrentScore(score);
                                                 setGradingSub(sub);
                                             }
                                         }}
@@ -242,6 +250,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
             {gradingSub && (
                 <GradingModal
                     submission={gradingSub}
+                    initialScore={currentScore}
                     onClose={() => setGradingSub(null)}
                     onConfirm={handleGrading}
                 />

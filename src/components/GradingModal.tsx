@@ -6,19 +6,26 @@ interface GradingModalProps {
     submission: KRSSubmission;
     onClose: () => void;
     onConfirm: (score: number, result: 'Lulus' | 'Tidak Lulus', notes: string) => void;
+    initialScore?: number;
 }
 
-export function GradingModal({ submission, onClose, onConfirm }: GradingModalProps) {
-    const [score, setScore] = useState<number>(80);
+export function GradingModal({ submission, onClose, onConfirm, initialScore }: GradingModalProps) {
+    const [score, setScore] = useState<number>(initialScore || 80);
     const [result, setResult] = useState<'Lulus' | 'Tidak Lulus'>('Lulus');
     const [notes, setNotes] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         if (score < 0 || score > 100) {
             alert("Skor harus antara 0 - 100");
             return;
         }
-        onConfirm(score, result, notes);
+        try {
+            setIsSaving(true);
+            await onConfirm(score, result, notes);
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (
@@ -57,8 +64,8 @@ export function GradingModal({ submission, onClose, onConfirm }: GradingModalPro
                             <button
                                 onClick={() => setResult('Lulus')}
                                 className={`py-4 rounded-2xl border-2 font-bold transition-all flex flex-col items-center gap-1 ${result === 'Lulus'
-                                        ? 'bg-emerald-500/10 border-emerald-500 text-emerald-500'
-                                        : 'bg-slate-950 border-slate-800 text-slate-500 grayscale'
+                                    ? 'bg-emerald-500/10 border-emerald-500 text-emerald-500'
+                                    : 'bg-slate-950 border-slate-800 text-slate-500 grayscale'
                                     }`}
                             >
                                 <CheckCircle className="w-6 h-6" />
@@ -67,8 +74,8 @@ export function GradingModal({ submission, onClose, onConfirm }: GradingModalPro
                             <button
                                 onClick={() => setResult('Tidak Lulus')}
                                 className={`py-4 rounded-2xl border-2 font-bold transition-all flex flex-col items-center gap-1 ${result === 'Tidak Lulus'
-                                        ? 'bg-red-500/10 border-red-500 text-red-500'
-                                        : 'bg-slate-950 border-slate-800 text-slate-500 grayscale'
+                                    ? 'bg-red-500/10 border-red-500 text-red-500'
+                                    : 'bg-slate-950 border-slate-800 text-slate-500 grayscale'
                                     }`}
                             >
                                 <AlertTriangle className="w-6 h-6" />
@@ -100,9 +107,19 @@ export function GradingModal({ submission, onClose, onConfirm }: GradingModalPro
                     </button>
                     <button
                         onClick={handleConfirm}
-                        className="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-500 active:scale-95 transition-all shadow-lg shadow-indigo-500/20"
+                        disabled={isSaving}
+                        className="flex-1 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-500 active:scale-95 disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2"
                     >
-                        Simpan Penilaian
+                        {isSaving ? (
+                            <>
+                                <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                                <span>Menyimpan...</span>
+                            </>
+                        ) : (
+                            <>
+                                <span>Simpan Penilaian</span>
+                            </>
+                        )}
                     </button>
                 </div>
             </div>
