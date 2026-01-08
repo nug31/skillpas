@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
-import { KRSSubmission } from '../types';
-import { Check, X, Calendar, MessageSquare, ChevronLeft } from 'lucide-react';
+import { KRSSubmission, User } from '../types';
+import { Check, X, Calendar, MessageSquare, ChevronLeft, Award, Clock } from 'lucide-react';
+import { GradingModal } from './GradingModal';
 
 interface TeacherKRSApprovalProps {
     onBack: () => void;
-    user: import('../mocks/mockUsers').User;
+    user: User;
 }
 
 export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
@@ -14,6 +15,8 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
     const [selectedSub, setSelectedSub] = useState<KRSSubmission | null>(null);
     const [examDate, setExamDate] = useState('');
     const [notes, setNotes] = useState('');
+    const [activeTab, setActiveTab] = useState<'pending' | 'grading'>('pending');
+    const [gradingSub, setGradingSub] = useState<KRSSubmission | null>(null);
 
     const userRole = user.role;
 
@@ -41,16 +44,22 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
         const userNormClass = normalizeClass(user.kelas);
 
         // Filter based on role, department, and class
-        const filtered = all.filter(s => {
+        const filtered = all.filter((s: KRSSubmission) => {
+            // Filter by Tab
+            if (activeTab === 'pending') {
+                if (s.status === 'completed' || s.status === 'rejected' || s.status === 'scheduled') return false;
+            } else {
+                if (s.status !== 'scheduled') return false;
+            }
+
             // 1. Check Status Role Match
             let statusMatch = false;
             if (userRole === 'teacher_produktif') {
-                statusMatch = s.status === 'pending_produktif';
+                statusMatch = s.status === 'pending_produktif' || s.status === 'scheduled';
             } else if (userRole === 'wali_kelas') {
-                // Walas can also act as Productive Teacher if department matches
-                statusMatch = s.status === 'pending_wali' || s.status === 'pending_produktif';
+                statusMatch = s.status === 'pending_wali' || s.status === 'pending_produktif' || s.status === 'scheduled';
             } else if (userRole === 'hod') {
-                statusMatch = s.status === 'pending_hod';
+                statusMatch = s.status === 'pending_hod' || s.status === 'scheduled';
             } else if (userRole === 'admin') {
                 statusMatch = true;
             }
@@ -107,6 +116,13 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
         setNotes('');
     };
 
+    const handleGrading = (score: number, result: 'Lulus' | 'Tidak Lulus', gradingNotes: string) => {
+        if (!gradingSub) return;
+        krsStore.completeKRS(gradingSub.id, score, result, gradingNotes, user.nama);
+        setGradingSub(null);
+        alert("Penilaian berhasil disimpan!");
+    };
+
     return (
         <div className="min-h-screen bg-[#020617] text-slate-200 p-4 sm:p-8">
             <div className="max-w-6xl mx-auto space-y-8">
@@ -130,19 +146,45 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                     </div>
                 </header>
 
+                {/* Tab Navigation */}
+                <div className="flex bg-slate-900 border border-slate-800 p-1.5 rounded-2xl w-fit">
+                    <button
+                        onClick={() => setActiveTab('pending')}
+                        className={`px-8 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeTab === 'pending'
+                            ? 'bg-indigo-600 text-white shadow-lg'
+                            : 'text-slate-400 hover:text-white'
+                            }`}
+                    >
+                        <Clock className="w-4 h-4" />
+                        Pengajuan
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('grading')}
+                        className={`px-8 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeTab === 'grading'
+                            ? 'bg-indigo-600 text-white shadow-lg'
+                            : 'text-slate-400 hover:text-white'
+                            }`}
+                    >
+                        <Award className="w-4 h-4" />
+                        Penilaian Ujian
+                    </button>
+                </div>
+
                 {loading ? (
                     <div className="flex justify-center py-20">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-b-indigo-500 font-bold text-indigo-500"></div>
                     </div>
                 ) : submissions.length === 0 ? (
                     <div className="text-center py-20 bg-slate-900/50 border border-slate-800 rounded-3xl">
                         <Check className="w-16 h-16 text-slate-700 mx-auto mb-4" />
-                        <h2 className="text-xl font-bold text-slate-500">Tidak ada pengajuan KRS baru</h2>
-                        <p className="text-slate-600">Semua tugas Anda telah selesai.</p>
+                        <h2 className="text-xl font-bold text-slate-500">
+                            {activeTab === 'pending' ? 'Tidak ada pengajuan KRS baru' : 'Tidak ada ujian yang perlu dinilai'}
+                        </h2>
+                        <p className="text-slate-600">Terima kasih atas dedikasi Anda.</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {submissions.map((sub) => (
+                        {submissions.map((sub: KRSSubmission) => (
                             <div
                                 key={sub.id}
                                 className="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-indigo-500/50 transition-all group relative overflow-hidden"
@@ -150,15 +192,22 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                 <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full -mr-12 -mt-12 group-hover:bg-indigo-500/10 transition-colors"></div>
 
                                 <div className="flex flex-col h-full space-y-4">
-                                    <div>
-                                        <div className="text-xs font-black text-indigo-400 uppercase mb-1">{sub.kelas}</div>
-                                        <h3 className="text-xl font-bold text-white truncate">{sub.siswa_nama}</h3>
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <div className="text-xs font-black text-indigo-400 uppercase mb-1">{sub.kelas}</div>
+                                            <h3 className="text-xl font-bold text-white truncate">{sub.siswa_nama}</h3>
+                                        </div>
+                                        {sub.status === 'scheduled' && (
+                                            <div className="px-2 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded text-[10px] text-emerald-500 font-black uppercase">
+                                                Jadwal: {sub.exam_date}
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className="flex-1">
                                         <div className="text-xs text-slate-500 font-bold uppercase mb-2">Kompetensi yang dipilih:</div>
                                         <ul className="space-y-1">
-                                            {sub.items.map((item, i) => (
+                                            {sub.items.map((item: string, i: number) => (
                                                 <li key={i} className="text-sm text-slate-300 flex gap-2">
                                                     <span className="text-indigo-500 mt-1">•</span>
                                                     {item}
@@ -168,10 +217,19 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                     </div>
 
                                     <button
-                                        onClick={() => setSelectedSub(sub)}
-                                        className="w-full py-3 bg-white/5 border border-white/10 rounded-xl font-bold hover:bg-white/10 hover:border-white/20 transition-all text-sm"
+                                        onClick={() => {
+                                            if (activeTab === 'pending') {
+                                                setSelectedSub(sub);
+                                            } else {
+                                                setGradingSub(sub);
+                                            }
+                                        }}
+                                        className={`w-full py-3 rounded-xl font-bold transition-all text-sm ${activeTab === 'pending'
+                                            ? 'bg-white/5 border border-white/10 hover:bg-white/10'
+                                            : 'bg-indigo-600 text-white hover:bg-indigo-500'
+                                            }`}
                                     >
-                                        Review Pengajuan
+                                        {activeTab === 'pending' ? 'Review Pengajuan' : 'Input Nilai Ujian'}
                                     </button>
                                 </div>
                             </div>
@@ -179,6 +237,15 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                     </div>
                 )}
             </div>
+
+            {/* Grading Modal */}
+            {gradingSub && (
+                <GradingModal
+                    submission={gradingSub}
+                    onClose={() => setGradingSub(null)}
+                    onConfirm={handleGrading}
+                />
+            )}
 
             {/* Review Modal */}
             {selectedSub && (
@@ -203,7 +270,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                             <div className="space-y-3 font-medium">
                                 <div className="text-xs font-black text-slate-500 uppercase tracking-widest">Kriteria yang diajukan:</div>
                                 <div className="space-y-2">
-                                    {selectedSub.items.map((item, i) => (
+                                    {(selectedSub.items as string[]).map((item: string, i: number) => (
                                         <div key={i} className="p-3 bg-slate-800/50 border border-slate-800 rounded-xl text-sm">
                                             {item}
                                         </div>

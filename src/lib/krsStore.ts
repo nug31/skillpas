@@ -1,4 +1,4 @@
-import { KRSSubmission, KRSStatus, StudentDiscipline } from '../types';
+import { KRSSubmission } from '../types';
 import mockData from '../mocks/mockData';
 
 const STORAGE_KEY = 'skillpas_krs_submissions';
@@ -91,7 +91,7 @@ export const krsStore = {
         return true;
     },
 
-    completeKRS(submissionId: string): boolean {
+    completeKRS(submissionId: string, score: number, result: string, notes?: string, examinerName?: string): boolean {
         const submissions = this.getSubmissions();
         const idx = submissions.findIndex(s => s.id === submissionId);
         if (idx === -1) return false;
@@ -99,38 +99,49 @@ export const krsStore = {
         const submission = submissions[idx];
         if (submission.status !== 'scheduled') return false;
 
+        const now = new Date().toISOString();
+        const dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+
         submission.status = 'completed';
-        submission.updated_at = new Date().toISOString();
+        submission.updated_at = now;
+        submission.final_score = score;
+        if (notes) submission.notes = notes;
 
-        // Calculate points based on level (simplified logic: get from mockLevels or default)
-        // Assume submission.items contains criteria. We can infer level from the first item or pass level info.
-        // For now, let's just award a fixed amount per "Exam" or try to find the level.
-        // We'll award +10 points for now as a baseline for any completed exam.
-        const pointsAwarded = 10;
+        // 1. Update Student Score and Poin in Mock Skill Siswa
+        const skillIdx = mockData.mockSkillSiswa.findIndex(s => s.siswa_id === submission.siswa_id);
+        const levelObj = mockData.mockLevels.find(l => score >= l.min_skor && score <= l.max_skor) || mockData.mockLevels[0];
+        const pointsAwarded = Math.floor(score / 2); // Award half the score as XP points
 
-        // Update mock discipline data (in-memory)
-        // In a real app, this would be a DB call to `discipline_scores` table
+        if (skillIdx >= 0) {
+            mockData.mockSkillSiswa[skillIdx].skor = score;
+            mockData.mockSkillSiswa[skillIdx].poin += pointsAwarded;
+            mockData.mockSkillSiswa[skillIdx].level_id = levelObj.id;
+            mockData.mockSkillSiswa[skillIdx].updated_at = now;
+        }
+
+        // 2. Add to Competency History
+        const newHistory = {
+            id: `hist-${Date.now()}`,
+            siswa_id: submission.siswa_id,
+            level_id: levelObj.id,
+            unit_kompetensi: submission.items.join(', '),
+            aktivitas_pembuktian: 'Ujian KRS Terverifikasi',
+            penilai: examinerName || 'Guru Produktif',
+            hasil: result,
+            tanggal: dateStr,
+            catatan: notes
+        };
+
+        mockData.mockCompetencyHistory.push(newHistory);
+
+        // 3. Update Discipline (Engagement)
         const discIdx = mockData.mockDiscipline.findIndex(d => d.siswa_id === submission.siswa_id);
         if (discIdx >= 0) {
             mockData.mockDiscipline[discIdx].attitude_scores = mockData.mockDiscipline[discIdx].attitude_scores.map(s => ({
                 ...s,
-                score: Math.min(s.score + pointsAwarded, 1000) // Cap at 1000 instead of 100 to show accumulation
+                score: Math.min(s.score + 5, 100)
             }));
-        } else {
-            // Create new if not exists
-            mockData.mockDiscipline.push({
-                id: `disc-${submission.siswa_id}`,
-                siswa_id: submission.siswa_id,
-                attendance_pcent: 100,
-                attitude_scores: [
-                    { aspect: 'Disiplin', score: pointsAwarded },
-                    { aspect: 'Tanggung Jawab', score: pointsAwarded },
-                    { aspect: 'Jujur', score: pointsAwarded },
-                    { aspect: 'Kerjasama', score: pointsAwarded },
-                    { aspect: 'Peduli', score: pointsAwarded }
-                ],
-                updated_at: new Date().toISOString()
-            });
+            mockData.mockDiscipline[discIdx].updated_at = now;
         }
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));

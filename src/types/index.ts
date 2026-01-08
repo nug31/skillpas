@@ -124,4 +124,5 @@ export interface KRSSubmission {
   hod_approved_at?: string;
   exam_date?: string;
   notes?: string;
+  final_score?: number;
 }
