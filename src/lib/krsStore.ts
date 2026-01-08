@@ -140,7 +140,22 @@ export const krsStore = {
                 mockData.mockSkillSiswa[skillIdx].updated_at = now;
             }
         } else {
-            // Supabase Persistence
+            // Resolve the actual siswa UUID from the database using name
+            const { data: siswaRecord, error: siswaLookupError } = await supabase
+                .from('siswa')
+                .select('id')
+                .eq('nama', submission.siswa_nama)
+                .maybeSingle();
+
+            if (siswaLookupError || !siswaRecord) {
+                console.error('Failed to find siswa in Supabase:', siswaLookupError || 'No matching record');
+                return false;
+            }
+
+            const dbSiswaId = siswaRecord.id;
+            console.log(`Resolved siswa_id: ${submission.siswa_id} -> ${dbSiswaId} for ${submission.siswa_nama}`);
+
+            // Supabase Persistence - use resolved ID
             const { error: skillError } = await supabase
                 .from('skill_siswa')
                 .update({
@@ -148,7 +163,7 @@ export const krsStore = {
                     level_id: levelObj.id,
                     updated_at: now
                 })
-                .eq('siswa_id', submission.siswa_id);
+                .eq('siswa_id', dbSiswaId);
 
             if (skillError) {
                 console.error('Failed to update skill_siswa in Supabase', skillError);
@@ -156,15 +171,47 @@ export const krsStore = {
             }
 
             // Increment points separately since it's a relative update
-            const { data: currentSkill } = await supabase.from('skill_siswa').select('poin').eq('siswa_id', submission.siswa_id).maybeSingle();
+            const { data: currentSkill } = await supabase.from('skill_siswa').select('poin').eq('siswa_id', dbSiswaId).maybeSingle();
             const currentPoin = currentSkill?.poin || 0;
-            await supabase.from('skill_siswa').update({ poin: currentPoin + pointsAwarded }).eq('siswa_id', submission.siswa_id);
+            await supabase.from('skill_siswa').update({ poin: currentPoin + pointsAwarded }).eq('siswa_id', dbSiswaId);
+
+            // Store resolved ID for competency history insert
+            (submission as any)._resolvedSiswaId = dbSiswaId;
         }
 
         // 2. Add to Competency History
+        // Use resolved ID for Supabase, original for mock
+        const resolvedSiswaId = isMockMode ? submission.siswa_id : (submission as any)._resolvedSiswaId;
+
+        // For Supabase, also get the correct level_id from the database
+        let dbLevelId = levelObj.id;
+        if (!isMockMode) {
+            const { data: levelRecord } = await supabase
+                .from('level_skill')
+                .select('id')
+                .gte('max_skor', score)
+                .lte('min_skor', score)
+                .maybeSingle();
+
+            if (levelRecord) {
+                dbLevelId = levelRecord.id;
+            } else {
+                // Fallback: try to find by score range
+                const { data: allLevels } = await supabase
+                    .from('level_skill')
+                    .select('id, min_skor, max_skor')
+                    .order('urutan');
+
+                const matchedLevel = (allLevels || []).find((l: any) => score >= l.min_skor && score <= l.max_skor);
+                if (matchedLevel) {
+                    dbLevelId = matchedLevel.id;
+                }
+            }
+        }
+
         const historyEntry = {
-            siswa_id: submission.siswa_id,
-            level_id: levelObj.id,
+            siswa_id: resolvedSiswaId,
+            level_id: dbLevelId,
             unit_kompetensi: submission.items.join(', '),
             aktivitas_pembuktian: 'Ujian KRS Terverifikasi',
             penilai: examinerName || 'Guru Produktif',
@@ -179,13 +226,16 @@ export const krsStore = {
                 ...historyEntry
             });
         } else {
+            console.log('Inserting competency_history:', historyEntry);
             const { error: histError } = await supabase
                 .from('competency_history')
                 .insert(historyEntry);
 
             if (histError) {
-                console.warn('Failed to insert competency history in Supabase', histError);
+                console.error('Failed to insert competency history in Supabase', histError);
                 // Continue anyway since skill was updated
+            } else {
+                console.log('Successfully inserted competency_history entry!');
             }
         }
 
