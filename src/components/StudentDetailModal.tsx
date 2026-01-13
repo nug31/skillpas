@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { X, Check, Clock, Pencil, Save, TrendingUp, Download } from 'lucide-react';
+import { X, Check, Clock, Pencil, Save, TrendingUp, Download, CreditCard } from 'lucide-react';
 import type { StudentListItem, LevelSkill, StudentDiscipline } from '../types';
 import { generateCertificate } from '../lib/certificateGenerator';
 import { mockDiscipline } from '../mocks/mockData';
 import { useAuth } from '../contexts/AuthContext';
 import formatClassLabel from '../lib/formatJurusan';
 import { ProfileAvatar } from './ProfileAvatar';
+import { SkillCard } from './SkillCard';
 
 export function StudentDetailModal({
   student,
@@ -26,6 +27,7 @@ export function StudentDetailModal({
   const [editPoin, setEditPoin] = useState(student.poin);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'history'>('overview');
+  const [showSkillCard, setShowSkillCard] = useState(false);
   const { user } = useAuth();
   const [discipline, setDiscipline] = useState<StudentDiscipline | null>(null);
 
@@ -199,6 +201,15 @@ export function StudentDetailModal({
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {/* Skill Card Button */}
+            <button
+              onClick={() => setShowSkillCard(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-cyan-400 hover:from-cyan-500/30 hover:to-purple-500/30 transition-all border border-cyan-500/20 text-sm font-medium"
+              title="Lihat Skill Card"
+            >
+              <CreditCard className="w-4 h-4" />
+              <span className="hidden sm:inline">Skill Card</span>
+            </button>
             {isEditing ? (
               <>
                 <button onClick={handleSave} disabled={saving} className="p-2 rounded bg-green-500/20 text-green-500 hover:bg-green-500/30 transition-colors">
@@ -507,6 +518,16 @@ export function StudentDetailModal({
           )}
         </div>
       </div>
+
+      {/* Skill Card Modal */}
+      {showSkillCard && (
+        <SkillCard
+          student={student}
+          levels={levels}
+          jurusanName={jurusanName}
+          onClose={() => setShowSkillCard(false)}
+        />
+      )}
     </div>
   );
 }
