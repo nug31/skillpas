@@ -297,6 +297,27 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                 {level.criteria && level.criteria.map((mission, idx) => {
                                                     const isSelected = selectedKRS.includes(mission);
+
+                                                    // Helper to render **bold** text and handle \n
+                                                    const renderBold = (text: string) => {
+                                                        const parts = text.split(/(\*\*.*?\*\*)/g);
+                                                        return parts.map((part, index) => {
+                                                            if (part.startsWith('**') && part.endsWith('**')) {
+                                                                return <strong key={index} className="font-black text-white">{part.slice(2, -2)}</strong>;
+                                                            }
+                                                            return (
+                                                                <span key={index}>
+                                                                    {part.split('\n').map((line, i) => (
+                                                                        <span key={i}>
+                                                                            {i > 0 && <br />}
+                                                                            {line}
+                                                                        </span>
+                                                                    ))}
+                                                                </span>
+                                                            );
+                                                        });
+                                                    };
+
                                                     return (
                                                         <div
                                                             key={`${level.id}-${idx}`}
@@ -313,7 +334,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                                                     {isSelected ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
                                                                 </div>
                                                                 <span className={`text-xs sm:text-sm transition-colors ${isSelected ? 'text-white font-medium' : 'text-gray-400 group-hover:text-gray-200'}`}>
-                                                                    {mission}
+                                                                    {renderBold(mission)}
                                                                 </span>
                                                             </div>
                                                         </div>

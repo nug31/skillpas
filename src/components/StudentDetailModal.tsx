@@ -266,9 +266,28 @@ export function StudentDetailModal({
                         <div className="text-sm text-[color:var(--text-muted)] mt-1">
                           {lvl.criteria && lvl.criteria.length > 0 ? (
                             <ul className="list-disc list-outside ml-4 space-y-0.5">
-                              {lvl.criteria.map((c, i) => (
-                                <li key={i}>{c}</li>
-                              ))}
+                              {lvl.criteria.map((c, i) => {
+                                // Helper to render **bold** text and handle \n
+                                const renderBold = (text: string) => {
+                                  const parts = text.split(/(\*\*.*?\*\*)/g);
+                                  return parts.map((part, index) => {
+                                    if (part.startsWith('**') && part.endsWith('**')) {
+                                      return <strong key={index} className="font-black text-[color:var(--text-primary)]">{part.slice(2, -2)}</strong>;
+                                    }
+                                    return (
+                                      <span key={index}>
+                                        {part.split('\n').map((line, i) => (
+                                          <span key={i}>
+                                            {i > 0 && <br />}
+                                            {line}
+                                          </span>
+                                        ))}
+                                      </span>
+                                    );
+                                  });
+                                };
+                                return <li key={i}>{renderBold(c)}</li>;
+                              })}
                             </ul>
                           ) : (
                             <div>{lvl.hasil_belajar}</div>
@@ -359,9 +378,28 @@ export function StudentDetailModal({
                         <div className="text-sm text-[color:var(--text-muted)] mt-1">
                           {lvl.criteria && lvl.criteria.length > 0 ? (
                             <ul className="list-disc list-outside ml-4 space-y-0.5">
-                              {lvl.criteria.map((c, i) => (
-                                <li key={i}>{c}</li>
-                              ))}
+                              {lvl.criteria.map((c, i) => {
+                                // Helper to render **bold** text and handle \n
+                                const renderBold = (text: string) => {
+                                  const parts = text.split(/(\*\*.*?\*\*)/g);
+                                  return parts.map((part, index) => {
+                                    if (part.startsWith('**') && part.endsWith('**')) {
+                                      return <strong key={index} className="font-black text-[color:var(--text-primary)]">{part.slice(2, -2)}</strong>;
+                                    }
+                                    return (
+                                      <span key={index}>
+                                        {part.split('\n').map((line, i) => (
+                                          <span key={i}>
+                                            {i > 0 && <br />}
+                                            {line}
+                                          </span>
+                                        ))}
+                                      </span>
+                                    );
+                                  });
+                                };
+                                return <li key={i}>{renderBold(c)}</li>;
+                              })}
                             </ul>
                           ) : (
                             <div>{lvl.hasil_belajar}</div>
@@ -523,7 +561,6 @@ export function StudentDetailModal({
       {showSkillCard && (
         <SkillCard
           student={student}
-          levels={levels}
           jurusanName={jurusanName}
           onClose={() => setShowSkillCard(false)}
         />
