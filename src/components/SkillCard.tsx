@@ -1,9 +1,10 @@
-import { useRef, useState } from 'react';
-import { Download, Share2, X, Award, Star, Sparkles } from 'lucide-react';
+import { useRef, useState, useEffect } from 'react';
+import { Download, Share2, X } from 'lucide-react';
 import QRCode from 'qrcode';
 import html2canvas from 'html2canvas';
 import type { StudentListItem, LevelSkill } from '../types';
 import { ProfileAvatar } from './ProfileAvatar';
+import smkLogo from '../assets/smk-logo.png';
 
 interface SkillCardProps {
     student: StudentListItem;
@@ -16,7 +17,7 @@ interface SkillCardProps {
 async function generateQRCode(text: string): Promise<string> {
     try {
         return await QRCode.toDataURL(text, {
-            width: 80,
+            width: 100,
             margin: 1,
             color: {
                 dark: '#ffffff',
@@ -28,55 +29,82 @@ async function generateQRCode(text: string): Promise<string> {
     }
 }
 
-// Get badge configuration based on level
-function getBadgeConfig(levelName: string): { color: string; gradient: string; icon: typeof Award } {
-    const configs: Record<string, { color: string; gradient: string; icon: typeof Award }> = {
-        'Mastery': {
-            color: '#FFD700',
-            gradient: 'from-amber-400 via-yellow-500 to-amber-600',
-            icon: Star
-        },
-        'Advanced': {
-            color: '#C0C0C0',
-            gradient: 'from-slate-300 via-gray-400 to-slate-500',
-            icon: Award
-        },
-        'Intermediate': {
-            color: '#CD7F32',
-            gradient: 'from-orange-400 via-amber-600 to-orange-700',
-            icon: Sparkles
-        },
-        'Beginner 2': {
-            color: '#4CAF50',
-            gradient: 'from-emerald-400 via-green-500 to-emerald-600',
-            icon: Award
-        },
-        'Beginner 1': {
-            color: '#2196F3',
-            gradient: 'from-blue-400 via-cyan-500 to-blue-600',
-            icon: Award
-        },
-    };
-    return configs[levelName] || configs['Beginner 1'];
-}
+// Custom Gold Medal Component
+const GoldMedal = ({ level }: { level: string }) => (
+    <div className="relative flex flex-col items-center">
+        <div className="relative w-24 h-24">
+            {/* Medal Bloom/Glow */}
+            <div className="absolute inset-0 bg-yellow-400 blur-2xl opacity-20 animate-pulse" />
 
-export function SkillCard({ student, levels, jurusanName, onClose }: SkillCardProps) {
+            {/* The Medal SVG */}
+            <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)]">
+                <defs>
+                    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#FBDF7E" />
+                        <stop offset="50%" stopColor="#D4AF37" />
+                        <stop offset="100%" stopColor="#8A6624" />
+                    </linearGradient>
+                    <filter id="innerShadow">
+                        <feOffset dx="0" dy="2" />
+                        <feGaussianBlur stdDeviation="1" result="offset-blur" />
+                        <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse" />
+                        <feFlood floodColor="black" floodOpacity="0.4" result="color" />
+                        <feComposite operator="in" in="color" in2="inverse" result="shadow" />
+                        <feComposite operator="over" in="shadow" in2="SourceGraphic" />
+                    </filter>
+                </defs>
+
+                {/* Outer decorative circle */}
+                <circle cx="50" cy="45" r="35" fill="url(#goldGradient)" />
+                <circle cx="50" cy="45" r="32" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+
+                {/* Main Medal face */}
+                <circle cx="50" cy="45" r="30" fill="url(#goldGradient)" filter="url(#innerShadow)" />
+
+                {/* Center Star */}
+                <path
+                    d="M50 25 L56 38 L70 38 L59 47 L63 60 L50 52 L37 60 L41 47 L30 38 L44 38 Z"
+                    fill="rgba(255,255,255,0.4)"
+                    className="animate-pulse"
+                />
+
+                {/* Banner/Ribbon */}
+                <path
+                    d="M15 55 L30 55 L35 48 L65 48 L70 55 L85 55 L85 68 L70 68 L65 61 L35 61 L30 68 L15 68 Z"
+                    fill="#B8860B"
+                    stroke="rgba(255,255,255,0.2)"
+                    strokeWidth="0.5"
+                />
+                <path
+                    d="M30 55 L70 55 L70 68 L30 68 Z"
+                    fill="url(#goldGradient)"
+                />
+            </svg>
+
+            {/* Banner Text */}
+            <div className="absolute inset-x-0 top-[53px] flex justify-center">
+                <span className="text-[9px] font-black text-amber-900 uppercase tracking-tighter">
+                    {level || 'MASTERY'}
+                </span>
+            </div>
+        </div>
+    </div>
+);
+
+export function SkillCard({ student, jurusanName, onClose }: Omit<SkillCardProps, 'levels'>) {
     const cardRef = useRef<HTMLDivElement>(null);
     const [qrCode, setQrCode] = useState<string>('');
     const [isDownloading, setIsDownloading] = useState(false);
     const [isSharing, setIsSharing] = useState(false);
 
     // Generate QR code on mount
-    useState(() => {
+    useEffect(() => {
         const url = `${window.location.origin}/verify/${student.id}`;
         generateQRCode(url).then(setQrCode);
-    });
+    }, [student.id]);
 
-    // Get current level info
-    const currentLevel = levels.find(l => l.nama_level === student.level_name) || levels[0];
-    const badgeConfig = getBadgeConfig(student.level_name);
-    const BadgeIcon = badgeConfig.icon;
     const currentYear = new Date().getFullYear();
+    const scoreProgress = (student.skor / 100) * 100;
 
     // Download card as image
     const handleDownload = async () => {
@@ -85,8 +113,9 @@ export function SkillCard({ student, levels, jurusanName, onClose }: SkillCardPr
         try {
             const canvas = await html2canvas(cardRef.current, {
                 backgroundColor: null,
-                scale: 2,
+                scale: 3,
                 useCORS: true,
+                logging: false,
             });
             const link = document.createElement('a');
             link.download = `skill-card-${student.nama.replace(/\s+/g, '-').toLowerCase()}.png`;
@@ -106,7 +135,7 @@ export function SkillCard({ student, levels, jurusanName, onClose }: SkillCardPr
         try {
             const canvas = await html2canvas(cardRef.current, {
                 backgroundColor: null,
-                scale: 2,
+                scale: 3,
                 useCORS: true,
             });
             canvas.toBlob(async (blob) => {
@@ -120,7 +149,6 @@ export function SkillCard({ student, levels, jurusanName, onClose }: SkillCardPr
                         files: [file],
                     });
                 } else {
-                    // Fallback: copy image URL to clipboard
                     const url = canvas.toDataURL('image/png');
                     await navigator.clipboard.writeText(url);
                     alert('Link gambar telah disalin ke clipboard!');
@@ -135,15 +163,15 @@ export function SkillCard({ student, levels, jurusanName, onClose }: SkillCardPr
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-4">
-            <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={onClose} />
+            <div className="absolute inset-0 bg-black/95 backdrop-blur-2xl" onClick={onClose} />
 
             <div className="relative z-10 flex flex-col items-center gap-6">
                 {/* Action Buttons */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 no-canvas-hide">
                     <button
                         onClick={handleDownload}
                         disabled={isDownloading}
-                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-semibold text-sm hover:from-cyan-600 hover:to-blue-700 transition-all shadow-lg shadow-cyan-500/30 disabled:opacity-50"
+                        className="flex items-center gap-2 px-5 py-2.5 bg-white/10 text-white rounded-2xl font-bold text-sm hover:bg-white/20 transition-all backdrop-blur-md border border-white/10 disabled:opacity-50"
                     >
                         <Download className="w-4 h-4" />
                         {isDownloading ? 'Mengunduh...' : 'Unduh Kartu'}
@@ -151,204 +179,169 @@ export function SkillCard({ student, levels, jurusanName, onClose }: SkillCardPr
                     <button
                         onClick={handleShare}
                         disabled={isSharing}
-                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl font-semibold text-sm hover:from-purple-600 hover:to-pink-700 transition-all shadow-lg shadow-purple-500/30 disabled:opacity-50"
+                        className="flex items-center gap-2 px-5 py-2.5 bg-cyan-500/20 text-cyan-400 rounded-2xl font-bold text-sm hover:bg-cyan-500/30 transition-all backdrop-blur-md border border-cyan-500/20 disabled:opacity-50"
                     >
                         <Share2 className="w-4 h-4" />
                         {isSharing ? 'Membagikan...' : 'Bagikan'}
                     </button>
                     <button
                         onClick={onClose}
-                        className="p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors"
+                        className="p-2.5 bg-red-500/10 hover:bg-red-500/20 rounded-2xl transition-colors border border-red-500/10 group"
                     >
-                        <X className="w-5 h-5 text-white" />
+                        <X className="w-5 h-5 text-red-400 group-hover:scale-110 transition-transform" />
                     </button>
                 </div>
 
-                {/* The Skill Card */}
+                {/* The Skill Card Container */}
                 <div
                     ref={cardRef}
-                    className="relative w-[320px] rounded-3xl overflow-hidden"
+                    className="relative w-[360px] aspect-[3/4] rounded-[40px] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/10"
                     style={{
-                        background: 'linear-gradient(145deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
-                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255,255,255,0.1), 0 0 60px rgba(59, 130, 246, 0.15)',
+                        background: 'linear-gradient(135deg, #0f172a 0%, #020617 100%)',
                     }}
                 >
-                    {/* Holographic overlay */}
-                    <div
-                        className="absolute inset-0 opacity-30 pointer-events-none"
-                        style={{
-                            background: 'linear-gradient(135deg, transparent 20%, rgba(99,102,241,0.3) 40%, rgba(139,92,246,0.3) 50%, rgba(236,72,153,0.3) 60%, transparent 80%)',
-                            backgroundSize: '200% 200%',
-                            animation: 'shimmer 3s ease-in-out infinite',
-                        }}
-                    />
+                    {/* Background Visual Effects */}
+                    <div className="absolute inset-0 overflow-hidden">
+                        <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-blue-600/10 blur-[100px] rounded-full" />
+                        <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-purple-600/10 blur-[100px] rounded-full" />
 
-                    {/* Circuit pattern overlay */}
-                    <div className="absolute inset-0 opacity-20 pointer-events-none">
-                        <svg className="w-full h-full" viewBox="0 0 320 480">
-                            {/* Left circuit lines */}
-                            <path d="M 0 120 L 40 120 L 50 130 L 50 200 L 40 210 L 0 210" stroke="url(#circuitGradient)" strokeWidth="1" fill="none" />
-                            <path d="M 0 150 L 30 150 L 35 155 L 35 180 L 30 185 L 0 185" stroke="url(#circuitGradient)" strokeWidth="0.5" fill="none" />
-                            {/* Right circuit lines */}
-                            <path d="M 320 120 L 280 120 L 270 130 L 270 200 L 280 210 L 320 210" stroke="url(#circuitGradient)" strokeWidth="1" fill="none" />
-                            <path d="M 320 150 L 290 150 L 285 155 L 285 180 L 290 185 L 320 185" stroke="url(#circuitGradient)" strokeWidth="0.5" fill="none" />
-                            {/* Dots */}
-                            <circle cx="50" cy="200" r="2" fill="#818cf8" />
-                            <circle cx="270" cy="200" r="2" fill="#818cf8" />
-                            <circle cx="35" cy="175" r="1.5" fill="#a78bfa" />
-                            <circle cx="285" cy="175" r="1.5" fill="#a78bfa" />
+                        {/* Grid Pattern Overlay */}
+                        <div className="absolute inset-0 opacity-[0.03]"
+                            style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '24px 24px' }}
+                        />
+                    </div>
+
+                    {/* Circuit Lines Background */}
+                    <div className="absolute top-[20%] inset-x-0 h-48 opacity-[0.15]">
+                        <svg className="w-full h-full" viewBox="0 0 360 200" preserveAspectRatio="none">
                             <defs>
-                                <linearGradient id="circuitGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stopColor="#818cf8" />
-                                    <stop offset="100%" stopColor="#c084fc" />
+                                <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stopColor="transparent" />
+                                    <stop offset="50%" stopColor="#3b82f6" />
+                                    <stop offset="100%" stopColor="transparent" />
                                 </linearGradient>
                             </defs>
+                            {/* Horizontal and diagonal lines matching the image style */}
+                            {[...Array(6)].map((_, i) => (
+                                <g key={i} className="animate-pulse" style={{ animationDelay: `${i * 0.5}s` }}>
+                                    <path d={`M 0 ${60 + i * 20} H 120 L 150 ${90 + i * 10}`} stroke="url(#lineGrad)" strokeWidth="1" fill="none" />
+                                    <path d={`M 360 ${60 + i * 20} H 240 L 210 ${90 + i * 10}`} stroke="url(#lineGrad)" strokeWidth="1" fill="none" />
+                                    <circle cx={150} cy={90 + i * 10} r="1.5" fill="#3b82f6" />
+                                    <circle cx={210} cy={90 + i * 10} r="1.5" fill="#3b82f6" />
+                                </g>
+                            ))}
                         </svg>
                     </div>
 
-                    {/* Card content */}
-                    <div className="relative z-10 p-6">
-                        {/* Header: Logo & Year */}
-                        <div className="flex items-start justify-between mb-6">
-                            {/* School Logo */}
-                            <div className="flex items-center gap-2">
-                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400/20 to-purple-500/20 border border-white/10 flex items-center justify-center backdrop-blur-sm">
-                                    <div className="text-[8px] font-bold text-cyan-300 text-center leading-tight">
-                                        SMK<br />MITRA
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Year Badge */}
-                            <div className="px-4 py-1.5 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-white/10 backdrop-blur-sm">
-                                <span className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-400">
-                                    {currentYear}
-                                </span>
+                    {/* Content Layer */}
+                    <div className="relative z-10 p-8 h-full flex flex-col">
+                        {/* Header */}
+                        <div className="flex items-start justify-between">
+                            <img src={smkLogo} alt="Logo" className="w-14 h-14 object-contain filter drop-shadow-[0_0_10px_rgba(59,130,246,0.3)]" />
+                            <div className="text-3xl font-black text-white tracking-tighter drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">
+                                {currentYear}
                             </div>
                         </div>
 
-                        {/* Photo with ring */}
-                        <div className="flex justify-center mb-5">
+                        {/* Profile Section */}
+                        <div className="mt-4 flex flex-col items-center">
                             <div className="relative">
-                                {/* Outer glow */}
+                                {/* Double Glowing Ring */}
+                                <div className="absolute inset-[-12px] rounded-full border-[1.5px] border-cyan-400/20 blur-[2px]" />
+                                <div className="absolute inset-[-8px] rounded-full border-[2.5px] border-cyan-400/40 blur-[1px]" />
+                                <div className="absolute inset-[-4px] rounded-full border-2 border-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.5)]" />
+
+                                <div className="relative w-36 h-36 rounded-full overflow-hidden bg-slate-900 border-2 border-slate-700">
+                                    {student.photo_url ? (
+                                        <img src={student.photo_url} alt={student.nama} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <ProfileAvatar name={student.nama} avatarUrl={student.avatar_url} size="lg" />
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Bio */}
+                            <div className="mt-8 text-center">
+                                <h2 className="text-3xl font-black text-white mb-1 tracking-tight">
+                                    {student.nama}
+                                </h2>
+                                <p className="text-lg font-medium text-slate-400">
+                                    {jurusanName || 'Teknik'}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Medal & Level */}
+                        <div className="mt-6 flex justify-center">
+                            <GoldMedal level={student.level_name} />
+                        </div>
+
+                        {/* Score & Progress */}
+                        <div className="mt-auto mb-4 flex flex-col items-center gap-4">
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-4xl font-black text-white">{student.skor}</span>
+                                <span className="text-xl font-bold text-slate-500">/100</span>
+                            </div>
+
+                            {/* Custom Progress Bar */}
+                            <div className="w-full max-w-[200px] h-2.5 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-white/5">
                                 <div
-                                    className="absolute inset-0 rounded-full opacity-50 blur-md"
-                                    style={{ background: `linear-gradient(135deg, ${badgeConfig.color}, #6366f1)` }}
+                                    className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.5)]"
+                                    style={{ width: `${scoreProgress}%` }}
                                 />
-                                {/* Ring */}
-                                <div
-                                    className="relative w-32 h-32 rounded-full p-1"
-                                    style={{
-                                        background: `linear-gradient(135deg, ${badgeConfig.color}, #6366f1, ${badgeConfig.color})`,
-                                    }}
-                                >
-                                    <div className="w-full h-full rounded-full overflow-hidden bg-slate-800">
-                                        {student.photo_url ? (
-                                            <img
-                                                src={student.photo_url}
-                                                alt={student.nama}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            <ProfileAvatar
-                                                name={student.nama}
-                                                avatarUrl={student.avatar_url}
-                                                level={student.level_name}
-                                                size="lg"
-                                                showRing={false}
-                                            />
-                                        )}
-                                    </div>
+                            </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="flex justify-start">
+                            {qrCode && (
+                                <div className="relative p-2 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 group overflow-hidden">
+                                    <div className="absolute inset-0 bg-white opacity-[0.02] transform rotate-45 translate-y-full group-hover:translate-y-[-100%] transition-transform duration-700" />
+                                    <img src={qrCode} alt="QR" className="w-16 h-16 invert opacity-80" />
                                 </div>
-                            </div>
-                        </div>
-
-                        {/* Name & Department */}
-                        <div className="text-center mb-6">
-                            <h2 className="text-2xl font-black text-white mb-1 tracking-wide">
-                                {student.nama}
-                            </h2>
-                            <p className="text-sm font-medium text-cyan-300/80">
-                                {jurusanName || 'Teknik'}
-                            </p>
-                        </div>
-
-                        {/* Level Badge Section - Without Score */}
-                        <div
-                            className="relative rounded-2xl p-4 mb-4 border border-white/10"
-                            style={{
-                                background: 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
-                            }}
-                        >
-                            {/* Level Badge */}
-                            <div className="flex justify-center mb-3">
-                                <div
-                                    className={`relative px-5 py-2 rounded-full bg-gradient-to-r ${badgeConfig.gradient} shadow-lg`}
-                                    style={{ boxShadow: `0 4px 15px ${badgeConfig.color}40` }}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <BadgeIcon className="w-5 h-5 text-white drop-shadow-md" />
-                                        <span className="text-sm font-black text-white uppercase tracking-widest drop-shadow-md">
-                                            {student.level_name || 'Beginner'}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Status text instead of score */}
-                            <div className="text-center">
-                                <p className="text-xs font-medium text-white/60 uppercase tracking-wider">
-                                    Skill Passport Active
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Footer: QR Code & Verification */}
-                        <div className="flex items-end justify-between">
-                            {/* QR Code */}
-                            <div className="flex flex-col items-center">
-                                {qrCode ? (
-                                    <div className="p-1.5 bg-white/10 rounded-lg backdrop-blur-sm border border-white/10">
-                                        <img src={qrCode} alt="QR Code" className="w-16 h-16" />
-                                    </div>
-                                ) : (
-                                    <div className="w-16 h-16 bg-white/5 rounded-lg animate-pulse" />
-                                )}
-                                <span className="text-[8px] text-white/40 mt-1 font-mono">SCAN TO VERIFY</span>
-                            </div>
-
-                            {/* Verification info */}
-                            <div className="text-right">
-                                <p className="text-[10px] font-semibold text-white/50 uppercase tracking-wider mb-0.5">
-                                    Verified by
-                                </p>
-                                <p className="text-xs font-bold text-cyan-300">
-                                    SMK Mitra Industri
-                                </p>
-                                <p className="text-[10px] text-white/40 font-mono mt-1">
-                                    ID: {student.id.slice(0, 8).toUpperCase()}
-                                </p>
-                            </div>
+                            )}
                         </div>
                     </div>
 
-                    {/* Bottom gradient line */}
-                    <div className="h-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500" />
+                    {/* Glass Overlay Shine */}
+                    <div className="absolute inset-0 pointer-events-none"
+                        style={{
+                            background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 40%, rgba(255,255,255,0.05) 50%, transparent 100%)',
+                        }}
+                    />
                 </div>
 
-                {/* Caption */}
-                <p className="text-center text-white/50 text-sm max-w-xs">
-                    Kartu ini adalah bukti pencapaian kompetensi resmi yang dapat diverifikasi
+                <p className="text-center text-slate-500 text-xs font-medium tracking-wide bg-white/5 px-4 py-2 rounded-full backdrop-blur-sm border border-white/5">
+                    VERIFIED SKILL PASSPORT • {student.id.slice(0, 8).toUpperCase()}
                 </p>
             </div>
 
-            {/* Keyframes for shimmer animation */}
             <style>{`
-        @keyframes shimmer {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-      `}</style>
+                @keyframes shimmer {
+                    0% { transform: translateX(-100%) rotate(45deg); }
+                    100% { transform: translateX(200%) rotate(45deg); }
+                }
+                .shimmer-effect {
+                    position: relative;
+                    overflow: hidden;
+                }
+                .shimmer-effect::after {
+                    content: '';
+                    position: absolute;
+                    top: -50%;
+                    left: -50%;
+                    width: 200%;
+                    height: 200%;
+                    background: linear-gradient(
+                        to right,
+                        transparent,
+                        rgba(255, 255, 255, 0.1),
+                        transparent
+                    );
+                    transform: rotate(45deg);
+                    animation: shimmer 3s infinite;
+                }
+            `}</style>
         </div>
     );
 }

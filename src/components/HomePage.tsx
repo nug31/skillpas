@@ -9,8 +9,9 @@ import { useAuth } from '../contexts/AuthContext';
 import { MissionModal } from './MissionModal';
 import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
-import { Edit3, CheckCircle } from 'lucide-react';
+import { Edit3, CheckCircle, Contact } from 'lucide-react';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
+import { SkillCard } from './SkillCard';
 
 interface HomePageProps {
   onSelectJurusan: (jurusan: Jurusan, classFilter?: string) => void;
@@ -35,10 +36,10 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
   } | null>(null);
 
   const [showMissionModal, setShowMissionModal] = useState(false);
+  const [showSkillCard, setShowSkillCard] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [pendingKRSCount, setPendingKRSCount] = useState(0);
   const [toApproveCount, setToApproveCount] = useState(0);
-  const [toGradeCount, setToGradeCount] = useState(0);
   const { updateUser } = useAuth();
 
   const useMock = isMockMode;
@@ -312,11 +313,10 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
     });
 
     const toApprove = pendingItems.filter((s: KRSSubmission) => s.status !== 'scheduled');
-    const toGrade = pendingItems.filter((s: KRSSubmission) => s.status === 'scheduled');
 
     setToApproveCount(toApprove.length);
-    setToGradeCount(toGrade.length);
     setPendingKRSCount(pendingItems.length);
+
   }
 
   const [scheduledExam, setScheduledExam] = useState<{ date: string, notes?: string } | null>(null);
@@ -528,19 +528,30 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                     <div className="text-2xl font-bold text-white truncate max-w-[200px]">{user.name}</div>
 
                     {myStats ? (
-                      <div className="flex items-center gap-2 mt-2">
-                        <div className="px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm border border-white/10" style={{ backgroundColor: myStats.levelColor }}>
-                          {myStats.level} Badge
+                      <div className="flex flex-col gap-3 mt-2">
+                        <div className="flex items-center gap-2">
+                          <div className="px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm border border-white/10" style={{ backgroundColor: myStats.levelColor }}>
+                            {myStats.level} Badge
+                          </div>
+                          <div className="text-sm text-white/50 px-2 border-l border-white/10">
+                            {myStats.className}
+                          </div>
                         </div>
-                        <div className="text-sm text-white/50 px-2 border-l border-white/10">
-                          {myStats.className}
-                        </div>
+
+                        <button
+                          onClick={() => setShowSkillCard(true)}
+                          className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 hover:from-blue-600/30 hover:to-indigo-600/30 text-blue-300 rounded-lg text-xs font-bold border border-blue-500/20 transition-all group"
+                        >
+                          <Contact className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                          Lihat Skill Card
+                        </button>
                       </div>
                     ) : (
                       <div className="text-sm text-white/40 animate-pulse">Loading stats...</div>
                     )}
                   </div>
                 </div>
+
               ) : (
                 <>
                   <div className="flex items-center justify-between mb-4">
@@ -646,7 +657,29 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             setIsAvatarModalOpen(false);
           }}
         />
+
+
+        {/* Skill Card Modal */}
+        {showSkillCard && user && myStats && (
+          <SkillCard
+            student={{
+              id: user.id || (user.name === 'Siswa Mesin' ? 'siswa_mesin' : ''),
+              nama: user.name,
+              kelas: myStats.className,
+              skor: myStats.score,
+              poin: myStats.poin,
+              badge_name: myStats.level as any,
+              badge_color: myStats.levelColor,
+              level_name: myStats.level,
+              avatar_url: (user as any).avatar_url,
+              photo_url: (user as any).photo_url,
+            }}
+            jurusanName={jurusanList[0]?.nama_jurusan}
+            onClose={() => setShowSkillCard(false)}
+          />
+        )}
       </div>
+
     </div>
   );
 }
