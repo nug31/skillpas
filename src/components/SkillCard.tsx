@@ -71,7 +71,7 @@ const GoldMedal = ({ level }: { level: string }) => (
         {/* Glow behind medal */}
         <div className="absolute w-24 h-24 bg-yellow-400 blur-[30px] opacity-40 animate-pulse" />
 
-        <div className="relative w-32 h-32 flex items-center justify-center z-10">
+        <div className="relative w-28 h-28 flex items-center justify-center z-10">
             <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-2xl">
                 <defs>
                     <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -218,16 +218,16 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                         {/* Content Area */}
                         <div className="flex-grow flex flex-col items-center">
                             {/* Avatar with Thick Neon Ring */}
-                            <div className="relative mb-3">
+                            <div className="relative mb-2 scale-90">
                                 {/* Glow layers */}
                                 <div className="absolute inset-[-12px] rounded-full border border-cyan-400/10 blur-[4px]" />
                                 <div className="absolute inset-[-6px] rounded-full border-[6px] border-cyan-400 shadow-[0_0_50px_rgba(34,211,238,0.6)]" />
 
-                                <div className="w-40 h-40 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center overflow-hidden relative">
+                                <div className="w-32 h-32 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center overflow-hidden relative">
                                     {student.photo_url || student.avatar_url ? (
                                         <img src={student.photo_url || student.avatar_url} alt={student.nama} className="w-full h-full object-cover" />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-blue-600 text-white text-4xl font-black italic">
+                                        <div className="w-full h-full flex items-center justify-center bg-blue-600 text-white text-3xl font-black italic">
                                             {getInitials(student.nama)}
                                         </div>
                                     )}
@@ -245,22 +245,22 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                             </div>
 
                             {/* Medal */}
-                            <div className="mt-1 transform scale-90">
+                            <div className="mt-0 transform scale-75">
                                 <GoldMedal level={student.level_name} />
                             </div>
                         </div>
 
                         {/* Metrics Section */}
-                        <div className="mt-auto flex flex-col items-center gap-4 pb-1">
+                        <div className="mt-auto flex flex-col items-center gap-3 pb-0.5">
                             {/* Score Display */}
-                            <div className="flex flex-col items-center gap-1.5">
+                            <div className="flex flex-col items-center gap-1">
                                 <div className="flex items-baseline gap-1">
-                                    <span className="text-[58px] font-black text-white drop-shadow-2xl leading-none">{student.skor ?? 0}</span>
-                                    <span className="text-lg font-black text-slate-500 italic">/100</span>
+                                    <span className="text-[52px] font-black text-white drop-shadow-2xl leading-none">{student.skor ?? 0}</span>
+                                    <span className="text-base font-black text-slate-500 italic">/100</span>
                                 </div>
 
                                 {/* Vibrant Progress Bar */}
-                                <div className="w-[180px] h-2 bg-black/40 rounded-full overflow-hidden p-[1.5px] border border-white/5">
+                                <div className="w-[160px] h-1.5 bg-black/40 rounded-full overflow-hidden p-[1px] border border-white/5">
                                     <div
                                         className="h-full bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500 rounded-full shadow-[0_0_15px_rgba(34,211,238,0.8)]"
                                         style={{ width: `${scoreProgress}%` }}
@@ -269,21 +269,21 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                             </div>
 
                             {/* Footer / QR */}
-                            <div className="w-full flex items-center justify-between mt-2">
+                            <div className="w-full flex items-center justify-between mt-1">
                                 <div className="flex flex-col">
                                     {qrCode ? (
-                                        <div className="p-1 px-1.5 bg-white rounded-lg shadow-[0_0_20px_rgba(255,255,255,0.3)] border border-white/20 overflow-hidden">
-                                            <img src={qrCode} alt="QR" className="w-9 h-9 block grayscale-0" />
+                                        <div className="p-1 px-1.5 bg-white rounded shadow-[0_0_20px_rgba(255,255,255,0.3)] border border-white/20 overflow-hidden">
+                                            <img src={qrCode} alt="QR" className="w-8 h-8 block grayscale-0" />
                                         </div>
                                     ) : (
-                                        <div className="w-9 h-9 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center">
-                                            <div className="w-5 h-5 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
+                                        <div className="w-8 h-8 bg-white/5 rounded border border-white/10 flex items-center justify-center">
+                                            <div className="w-4 h-4 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
                                         </div>
                                     )}
                                 </div>
                                 <div className="text-right">
-                                    <span className="text-slate-500 text-[9px] font-bold tracking-[0.3em] uppercase block">VERIFIED PASS</span>
-                                    <span className="text-slate-700 text-[8px] font-mono font-bold opacity-60">{student.id?.slice(0, 10).toUpperCase()}</span>
+                                    <span className="text-slate-500 text-[8px] font-bold tracking-[0.2em] uppercase block">VERIFIED PASS</span>
+                                    <span className="text-slate-700 text-[7px] font-mono font-bold opacity-50">{student.id?.slice(0, 10).toUpperCase()}</span>
                                 </div>
                             </div>
                         </div>
