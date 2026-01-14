@@ -206,11 +206,11 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                     {/* Reflection / Shine Sweep */}
                     <div className="absolute top-0 left-0 right-0 h-[250px] bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none skew-y-[-15deg] transform -translate-y-[50px]" />
 
-                    <div className="relative z-10 h-full flex flex-col p-8">
+                    <div className="relative z-10 h-full flex flex-col p-7">
                         {/* Header */}
-                        <div className="flex justify-between items-start mb-8">
-                            <img src={smkLogo} alt="Logo" className="w-16 h-16 object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" />
-                            <div className="text-[18px] font-black text-white/90 tracking-tighter leading-none pt-2 opacity-80">
+                        <div className="flex justify-between items-start mb-4">
+                            <img src={smkLogo} alt="Logo" className="w-14 h-14 object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" />
+                            <div className="text-[16px] font-black text-white/90 tracking-tighter leading-none pt-2 opacity-80">
                                 {currentYear}
                             </div>
                         </div>
@@ -218,16 +218,16 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                         {/* Content Area */}
                         <div className="flex-grow flex flex-col items-center">
                             {/* Avatar with Thick Neon Ring */}
-                            <div className="relative mb-6">
+                            <div className="relative mb-3">
                                 {/* Glow layers */}
                                 <div className="absolute inset-[-12px] rounded-full border border-cyan-400/10 blur-[4px]" />
                                 <div className="absolute inset-[-6px] rounded-full border-[6px] border-cyan-400 shadow-[0_0_50px_rgba(34,211,238,0.6)]" />
 
-                                <div className="w-44 h-44 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center overflow-hidden relative">
+                                <div className="w-40 h-40 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center overflow-hidden relative">
                                     {student.photo_url || student.avatar_url ? (
                                         <img src={student.photo_url || student.avatar_url} alt={student.nama} className="w-full h-full object-cover" />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-blue-600 text-white text-5xl font-black italic">
+                                        <div className="w-full h-full flex items-center justify-center bg-blue-600 text-white text-4xl font-black italic">
                                             {getInitials(student.nama)}
                                         </div>
                                     )}
@@ -245,22 +245,22 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                             </div>
 
                             {/* Medal */}
-                            <div className="mt-4">
+                            <div className="mt-1 transform scale-90">
                                 <GoldMedal level={student.level_name} />
                             </div>
                         </div>
 
                         {/* Metrics Section */}
-                        <div className="mt-auto flex flex-col items-center gap-6 pb-2">
+                        <div className="mt-auto flex flex-col items-center gap-4 pb-1">
                             {/* Score Display */}
-                            <div className="flex flex-col items-center gap-2">
+                            <div className="flex flex-col items-center gap-1.5">
                                 <div className="flex items-baseline gap-1">
-                                    <span className="text-[62px] font-black text-white drop-shadow-2xl leading-none">{student.skor ?? 0}</span>
-                                    <span className="text-xl font-black text-slate-500 italic">/100</span>
+                                    <span className="text-[58px] font-black text-white drop-shadow-2xl leading-none">{student.skor ?? 0}</span>
+                                    <span className="text-lg font-black text-slate-500 italic">/100</span>
                                 </div>
 
                                 {/* Vibrant Progress Bar */}
-                                <div className="w-[200px] h-2.5 bg-black/40 rounded-full overflow-hidden p-[2px] border border-white/5">
+                                <div className="w-[180px] h-2 bg-black/40 rounded-full overflow-hidden p-[1.5px] border border-white/5">
                                     <div
                                         className="h-full bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500 rounded-full shadow-[0_0_15px_rgba(34,211,238,0.8)]"
                                         style={{ width: `${scoreProgress}%` }}
@@ -269,21 +269,21 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                             </div>
 
                             {/* Footer / QR */}
-                            <div className="w-full flex items-center justify-between mt-4">
+                            <div className="w-full flex items-center justify-between mt-2">
                                 <div className="flex flex-col">
                                     {qrCode ? (
-                                        <div className="p-1 px-1.5 bg-white rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] border border-white/20 overflow-hidden">
-                                            <img src={qrCode} alt="QR" className="w-11 h-11 block grayscale-0" />
+                                        <div className="p-1 px-1.5 bg-white rounded-lg shadow-[0_0_20px_rgba(255,255,255,0.3)] border border-white/20 overflow-hidden">
+                                            <img src={qrCode} alt="QR" className="w-9 h-9 block grayscale-0" />
                                         </div>
                                     ) : (
-                                        <div className="w-11 h-11 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center">
-                                            <div className="w-6 h-6 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
+                                        <div className="w-9 h-9 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center">
+                                            <div className="w-5 h-5 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
                                         </div>
                                     )}
                                 </div>
                                 <div className="text-right">
-                                    <span className="text-slate-500 text-[10px] font-bold tracking-[0.4em] uppercase block">VERIFIED PASS</span>
-                                    <span className="text-slate-700 text-[9px] font-mono font-bold">{student.id?.slice(0, 10).toUpperCase()}</span>
+                                    <span className="text-slate-500 text-[9px] font-bold tracking-[0.3em] uppercase block">VERIFIED PASS</span>
+                                    <span className="text-slate-700 text-[8px] font-mono font-bold opacity-60">{student.id?.slice(0, 10).toUpperCase()}</span>
                                 </div>
                             </div>
                         </div>
