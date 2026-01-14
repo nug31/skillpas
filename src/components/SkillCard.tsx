@@ -207,7 +207,7 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                         {/* Header */}
                         <div className="flex justify-between items-start mb-8">
                             <img src={smkLogo} alt="Logo" className="w-16 h-16 object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" />
-                            <div className="text-[48px] font-black text-white/90 tracking-tighter leading-none drop-shadow-xl">
+                            <div className="text-[38px] font-black text-white/90 tracking-tighter leading-none drop-shadow-xl">
                                 {currentYear}
                             </div>
                         </div>
@@ -224,7 +224,7 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                                     {student.photo_url || student.avatar_url ? (
                                         <img src={student.photo_url || student.avatar_url} alt={student.nama} className="w-full h-full object-cover" />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-blue-600 text-white text-6xl font-black italic">
+                                        <div className="w-full h-full flex items-center justify-center bg-blue-600 text-white text-5xl font-black italic">
                                             {getInitials(student.nama)}
                                         </div>
                                     )}
@@ -233,10 +233,10 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
 
                             {/* Name & Major */}
                             <div className="text-center space-y-1 z-20">
-                                <h2 className="text-[36px] font-black text-white leading-none tracking-tight drop-shadow-lg uppercase">
+                                <h2 className="text-[28px] font-black text-white leading-none tracking-tight drop-shadow-lg uppercase">
                                     {student.nama}
                                 </h2>
-                                <p className="text-[14px] font-bold text-slate-400 uppercase tracking-[0.25em] opacity-80">
+                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.25em] opacity-80">
                                     {jurusanName || 'Teknik'}
                                 </p>
                             </div>
@@ -252,8 +252,8 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                             {/* Score Display */}
                             <div className="flex flex-col items-center gap-2">
                                 <div className="flex items-baseline gap-1">
-                                    <span className="text-[72px] font-black text-white drop-shadow-2xl leading-none">{student.skor ?? 0}</span>
-                                    <span className="text-2xl font-black text-slate-500 italic">/100</span>
+                                    <span className="text-[62px] font-black text-white drop-shadow-2xl leading-none">{student.skor ?? 0}</span>
+                                    <span className="text-xl font-black text-slate-500 italic">/100</span>
                                 </div>
 
                                 {/* Vibrant Progress Bar */}
