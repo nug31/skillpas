@@ -45,12 +45,6 @@ const GoldMedal = ({ level }: { level: string }) => (
                         <stop offset="50%" stopColor="white" stopOpacity="0" />
                         <stop offset="100%" stopColor="white" stopOpacity="0.1" />
                     </linearGradient>
-                    <filter id="metal-texture">
-                        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" result="noise" />
-                        <feDiffuseLighting in="noise" lightingColor="#FDE68A" surfaceScale="1">
-                            <feDistantLight azimuth="45" elevation="60" />
-                        </feDiffuseLighting>
-                    </filter>
                 </defs>
 
                 {/* Ribbon behind */}
