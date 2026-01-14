@@ -64,6 +64,7 @@ export interface StudentListItem {
   nisn?: string;
   avatar_url?: string;
   photo_url?: string;
+  wa_number?: string;
   riwayat_kompetensi?: CompetencyHistory[];
   discipline_data?: StudentDiscipline;
 }

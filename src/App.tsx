@@ -42,6 +42,14 @@ function AppContent() {
     try { localStorage.setItem('theme', themeClear ? 'clear' : 'dark'); } catch (e) { }
   }, [themeClear]);
 
+  useEffect(() => {
+    if (isAuthenticated && user?.id) {
+      import('./lib/notificationStore').then(({ notificationStore }) => {
+        notificationStore.actions.fetchNotifications(user.id);
+      });
+    }
+  }, [isAuthenticated, user?.id]);
+
   // Show login page if not authenticated
   if (!isAuthenticated) {
     return <LoginPage />;

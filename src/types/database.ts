@@ -80,6 +80,7 @@ export interface Database {
           nisn?: string
           avatar_url?: string
           photo_url?: string
+          wa_number?: string
         }
         Insert: {
           id?: string
@@ -90,6 +91,7 @@ export interface Database {
           nisn?: string
           avatar_url?: string
           photo_url?: string
+          wa_number?: string
         }
         Update: {
           id?: string
@@ -100,6 +102,7 @@ export interface Database {
           nisn?: string
           avatar_url?: string
           photo_url?: string
+          wa_number?: string
         }
       }
       skill_siswa: {

@@ -1,6 +1,9 @@
-// Simple vanilla implementation
+// Simple vanilla implementation with Supabase backup
+import { supabase, isMockMode } from './supabase';
+
 export interface Notification {
     id: string;
+    user_id?: string;
     type: 'info' | 'success' | 'warning' | 'error';
     title: string;
     message: string;
@@ -11,36 +14,69 @@ export interface Notification {
 interface NotificationStore {
     notifications: Notification[];
     unreadCount: number;
-    addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void;
-    markAsRead: (id: string) => void;
+    addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => Promise<void>;
+    markAsRead: (id: string) => Promise<void>;
+    fetchNotifications: (userId: string) => Promise<void>;
     clearAll: () => void;
 }
-
-// Check if we need to install zustand. package.json didn't show it.
-// I'll use a simple vanilla implementation if zustand is missing, 
-// but wait, I can just create a simple custom store.
 
 const listeners = new Set<(state: NotificationStore) => void>();
 let state: NotificationStore = {
     notifications: [],
     unreadCount: 0,
-    addNotification: (n) => {
-        const newNotif: Notification = {
-            ...n,
-            id: crypto.randomUUID(),
-            timestamp: new Date().toISOString(),
-            read: false,
-        };
+    addNotification: async (n) => {
+        const id = crypto.randomUUID();
+        const timestamp = new Date().toISOString();
+
+        // Add to local state immediately for UI responsiveness
+        const newNotif: Notification = { ...n, id, timestamp, read: false };
         state.notifications = [newNotif, ...state.notifications];
         state.unreadCount += 1;
         notify();
+
+        // Persist to Supabase if not in mock mode and user_id is provided
+        if (!isMockMode && n.user_id) {
+            await supabase.from('notifications').insert({
+                user_id: n.user_id,
+                title: n.title,
+                message: n.message,
+                type: n.type
+            });
+        }
     },
-    markAsRead: (id) => {
+    markAsRead: async (id) => {
         state.notifications = state.notifications.map(n =>
             n.id === id ? { ...n, read: true } : n
         );
         state.unreadCount = state.notifications.filter(n => !n.read).length;
         notify();
+
+        if (!isMockMode) {
+            await supabase.from('notifications').update({ read: true }).eq('id', id);
+        }
+    },
+    fetchNotifications: async (userId) => {
+        if (isMockMode) return;
+
+        const { data, error } = await supabase
+            .from('notifications')
+            .select('*')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false });
+
+        if (!error && data) {
+            state.notifications = data.map((d: any) => ({
+                id: d.id,
+                user_id: d.user_id,
+                title: d.title,
+                message: d.message,
+                type: d.type as any,
+                timestamp: d.created_at,
+                read: d.read
+            }));
+            state.unreadCount = state.notifications.filter(n => !n.read).length;
+            notify();
+        }
     },
     clearAll: () => {
         state.notifications = [];
@@ -62,6 +98,7 @@ export const notificationStore = {
     actions: {
         addNotification: state.addNotification,
         markAsRead: state.markAsRead,
+        fetchNotifications: state.fetchNotifications,
         clearAll: state.clearAll
     }
 };

@@ -295,5 +295,44 @@ export const krsStore = {
 
     notifyUpdate() {
         window.dispatchEvent(new CustomEvent(KRS_UPDATED_EVENT));
+    },
+
+    async notifyWalas(kelas: string, siswaNama: string, examDate: string) {
+        // In real app, we fetch Walas by class
+        // For now, if mock mode, we find from mockUsers
+        // If production, we use the notifications table
+        const title = 'Jadwal Ujian Siswa';
+        const message = `Siswa Anda, ${siswaNama} (${kelas}), telah dijadwalkan ujian pada ${examDate}.`;
+
+        if (isMockMode) {
+            const { mockUsers } = await import('../mocks/mockUsers');
+            const walas = mockUsers.find(u => u.role === 'wali_kelas' && u.kelas && u.kelas.includes(kelas));
+            if (walas) {
+                notificationStore.actions.addNotification({
+                    user_id: walas.id,
+                    type: 'info',
+                    title,
+                    message
+                });
+            }
+        } else {
+            // Find Walas ID from users table where role='wali_kelas' and kelas contains current kelas
+            const { data: walasUsers } = await supabase
+                .from('users')
+                .select('id')
+                .eq('role', 'wali_kelas')
+                .ilike('kelas', `%${kelas}%`);
+
+            if (walasUsers) {
+                for (const walas of walasUsers) {
+                    await notificationStore.actions.addNotification({
+                        user_id: walas.id,
+                        type: 'info',
+                        title,
+                        message
+                    });
+                }
+            }
+        }
     }
 };
