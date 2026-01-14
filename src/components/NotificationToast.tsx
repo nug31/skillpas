@@ -46,10 +46,10 @@ export function NotificationToast() {
     return (
         <AnimatePresence>
             <motion.div
-                initial={{ opacity: 0, y: -50, scale: 0.9 }}
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -20, scale: 0.9 }}
-                className="fixed top-6 right-6 z-[200] w-full max-w-sm"
+                exit={{ opacity: 0, y: 20, scale: 0.9 }}
+                className="fixed bottom-6 right-6 z-[200] w-full max-w-sm"
             >
                 <div className="bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl flex items-start gap-4 ring-1 ring-white/5">
                     <div className="p-2 bg-white/5 rounded-xl">
