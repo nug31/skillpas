@@ -14,12 +14,15 @@ interface SkillCardProps {
 
 async function generateQRCode(text: string): Promise<string> {
     try {
+        if (!text) return '';
         return await QRCode.toDataURL(text, {
-            width: 100,
+            width: 120,
             margin: 1,
             color: { dark: '#000000', light: '#ffffff' },
+            errorCorrectionLevel: 'H'
         });
-    } catch {
+    } catch (err) {
+        console.error('QR Error:', err);
         return '';
     }
 }
@@ -207,7 +210,7 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                         {/* Header */}
                         <div className="flex justify-between items-start mb-8">
                             <img src={smkLogo} alt="Logo" className="w-16 h-16 object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" />
-                            <div className="text-[24px] font-black text-white/90 tracking-tighter leading-none drop-shadow-xl pt-2">
+                            <div className="text-[18px] font-black text-white/90 tracking-tighter leading-none pt-2 opacity-80">
                                 {currentYear}
                             </div>
                         </div>
@@ -268,9 +271,13 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                             {/* Footer / QR */}
                             <div className="w-full flex items-center justify-between mt-4">
                                 <div className="flex flex-col">
-                                    {qrCode && (
-                                        <div className="p-1 px-1.5 bg-white backdrop-blur-3xl rounded-xl border border-white/10 shadow-2xl">
-                                            <img src={qrCode} alt="QR" className="w-11 h-11 mix-blend-multiply opacity-90 drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" />
+                                    {qrCode ? (
+                                        <div className="p-1 px-1.5 bg-white rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] border border-white/20 overflow-hidden">
+                                            <img src={qrCode} alt="QR" className="w-11 h-11 block grayscale-0" />
+                                        </div>
+                                    ) : (
+                                        <div className="w-11 h-11 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center">
+                                            <div className="w-6 h-6 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
                                         </div>
                                     )}
                                 </div>
