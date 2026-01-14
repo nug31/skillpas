@@ -1,6 +1,7 @@
 import { KRSSubmission } from '../types';
 import mockData from '../mocks/mockData';
 import { supabase, isMockMode } from './supabase';
+import { notificationStore } from './notificationStore';
 
 const STORAGE_KEY = 'skillpas_krs_submissions';
 
@@ -58,6 +59,13 @@ export const krsStore = {
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
         this.notifyUpdate();
+
+        notificationStore.actions.addNotification({
+            type: 'success',
+            title: 'KRS Terkirim',
+            message: `KRS untuk ${submission.siswa_nama} telah berhasil diajukan ke Guru Produktif.`,
+        });
+
         return newSubmission;
     },
 
@@ -91,6 +99,21 @@ export const krsStore = {
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
         this.notifyUpdate();
+
+        let notifTitle = 'KRS Disetujui';
+        let notifMsg = `KRS ${submission.siswa_nama} telah disetujui di tahap ${role.replace('_', ' ')}.`;
+
+        if (submission.status === 'scheduled') {
+            notifTitle = 'Jadwal Ujian Ditetapkan';
+            notifMsg = `Ujian KRS ${submission.siswa_nama} dijadwalkan pada ${submission.exam_date}.`;
+        }
+
+        notificationStore.actions.addNotification({
+            type: 'info',
+            title: notifTitle,
+            message: notifMsg,
+        });
+
         return true;
     },
 
@@ -105,10 +128,17 @@ export const krsStore = {
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
         this.notifyUpdate();
+
+        notificationStore.actions.addNotification({
+            type: 'error',
+            title: 'KRS Ditolak',
+            message: `KRS ${submissions[idx].siswa_nama} telah ditolak. Catatan: ${notes}`,
+        });
+
         return true;
     },
 
-    async completeKRS(submissionId: string, score: number, result: string, notes?: string, examinerName?: string): Promise<boolean> {
+    async completeKRS(submissionId: string, score: number, result: 'Lulus' | 'Tidak Lulus', notes?: string, examinerName?: string): Promise<boolean> {
         const submissions = this.getSubmissions();
         const idx = submissions.findIndex(s => s.id === submissionId);
         if (idx === -1) return false;
@@ -253,6 +283,13 @@ export const krsStore = {
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
         this.notifyUpdate();
+
+        notificationStore.actions.addNotification({
+            type: 'success',
+            title: 'Ujian Selesai',
+            message: `Penilaian untuk ${submission.siswa_nama} telah disimpan. Hasil: ${result}.`,
+        });
+
         return true;
     },
 

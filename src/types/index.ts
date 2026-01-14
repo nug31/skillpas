@@ -100,7 +100,7 @@ export type UserRole = 'student' | 'teacher_produktif' | 'wali_kelas' | 'hod' | 
 export interface User {
   id: string;
   username: string;
-  nama: string;
+  name: string;
   role: UserRole;
   jurusan_id?: string;
   kelas?: string;

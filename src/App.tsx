@@ -10,6 +10,7 @@ import smkLogo from './assets/smk-logo.png';
 import { LogOut } from 'lucide-react';
 import { ProfileAvatar } from './components/ProfileAvatar';
 import { TeacherKRSApproval } from './components/TeacherKRSApproval';
+import { NotificationToast } from './components/NotificationToast';
 
 function AppContent() {
   const { user, logout, isAuthenticated, isTeacher } = useAuth();
@@ -141,6 +142,7 @@ function AppContent() {
         )}
       </main>
       <FooterReflexGame />
+      <NotificationToast />
     </div>
   );
 }

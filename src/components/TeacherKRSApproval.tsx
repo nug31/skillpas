@@ -121,7 +121,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
 
     const handleGrading = async (score: number, result: 'Lulus' | 'Tidak Lulus', gradingNotes: string) => {
         if (!gradingSub) return;
-        const success = await krsStore.completeKRS(gradingSub.id, score, result, gradingNotes, user.nama);
+        const success = await krsStore.completeKRS(gradingSub.id, score, result, gradingNotes, user.name);
         if (success) {
             setGradingSub(null);
             alert("Penilaian berhasil disimpan!");
