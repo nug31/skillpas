@@ -42,7 +42,6 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
         setLoading(true);
         const all = krsStore.getSubmissions();
         const userDeptId = user.jurusan_id;
-        const userNormClass = normalizeClass(user.kelas);
 
         // Filter based on role, department, and class
         const filtered = all.filter((s: KRSSubmission) => {
@@ -75,7 +74,10 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
             // 3. Check Class Match for Wali Kelas (specifically for the walas stage)
             if (userRole === 'wali_kelas' && s.status === 'pending_wali') {
                 const studentNormClass = normalizeClass(s.kelas);
-                if (userNormClass && studentNormClass !== userNormClass) return false;
+                // Support multiple classes (comma-separated in user.kelas)
+                const userClasses = (user.kelas || '').split(',').map(c => normalizeClass(c.trim())).filter(Boolean);
+
+                if (userClasses.length > 0 && !userClasses.includes(studentNormClass)) return false;
             }
 
             return true;
