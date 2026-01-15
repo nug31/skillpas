@@ -377,10 +377,11 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
               const isAdmin = user?.role === 'admin';
               const isHOD = user?.role === 'hod';
               const isTeacherProduktif = user?.role === 'teacher_produktif';
+              const isWaliKelas = user?.role === 'wali_kelas';
               const hasMatchingJurusan = !!user?.jurusan_id && !!jurusan.id &&
                 String(user.jurusan_id).toLowerCase() === String(jurusan.id).toLowerCase();
 
-              const canEditCriteria = isAdmin || ((isHOD || isTeacherProduktif) && hasMatchingJurusan);
+              const canEditCriteria = isAdmin || ((isHOD || isTeacherProduktif || isWaliKelas) && hasMatchingJurusan);
 
               return (
                 <>
