@@ -587,12 +587,13 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                       </button>
 
                       {/* Info Section */}
-                      <div className="flex-1 text-center md:text-left space-y-2">
-                        <div className="flex flex-col md:flex-row items-center gap-3">
-                          <h2 className="text-3xl font-bold text-white tracking-tight drop-shadow-sm">
-                            {user?.name || 'Guest User'}
-                          </h2>
-                          <span className="px-3 py-1 rounded-full bg-white/10 border border-white/10 text-xs font-medium text-indigo-200 backdrop-blur-sm uppercase tracking-wider">
+                      <div className="flex-1 min-w-0 text-center md:text-left space-y-1 z-10">
+                        <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight drop-shadow-sm leading-tight">
+                          {user?.name || 'Guest User'}
+                        </h2>
+
+                        <div className="flex items-center justify-center md:justify-start gap-3 mt-2">
+                          <span className="px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-[10px] md:text-xs font-bold text-indigo-100 backdrop-blur-md uppercase tracking-wider shadow-sm">
                             {(() => {
                               const roleLabels: Record<string, string> = {
                                 admin: 'Administrator',
@@ -606,24 +607,25 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                             })()}
                           </span>
                         </div>
-                        <p className="text-slate-400 max-w-md mx-auto md:mx-0 text-sm leading-relaxed">
-                          Selamat datang kembali di Dashboard Skill Passport. Pantau perkembangan kompetensi siswa Anda secara real-time.
+
+                        <p className="text-slate-300/80 text-xs md:text-sm leading-relaxed max-w-lg mx-auto md:mx-0 pt-2 hidden sm:block">
+                          Selamat datang di Dashboard Skill Passport. Pantau kompetensi siswa secara real-time.
                         </p>
                       </div>
 
                       {/* Stats Section */}
-                      <div className="flex gap-6 shrink-0 bg-white/5 p-4 rounded-xl border border-white/10 backdrop-blur-sm">
-                        <div className="text-center px-4 border-r border-white/10 last:border-0">
-                          <div className="text-3xl font-bold bg-gradient-to-br from-white to-indigo-200 bg-clip-text text-transparent">
+                      <div className="flex gap-4 shrink-0 bg-black/20 p-3 rounded-xl border border-white/5 backdrop-blur-md shadow-inner">
+                        <div className="text-center px-3 border-r border-white/10 last:border-0">
+                          <div className="text-2xl md:text-3xl font-bold text-white">
                             {useMock ? mockData.mockJurusan.length : jurusanList.length}
                           </div>
-                          <div className="text-[10px] uppercase font-bold text-slate-500 mt-1 tracking-wider">Jurusan</div>
+                          <div className="text-[10px] font-bold text-indigo-200/70 mt-0.5 tracking-wider">JURUSAN</div>
                         </div>
-                        <div className="text-center px-4">
-                          <div className="text-3xl font-bold bg-gradient-to-br from-white to-indigo-200 bg-clip-text text-transparent">
+                        <div className="text-center px-3">
+                          <div className="text-2xl md:text-3xl font-bold text-white">
                             {overallStats.totalStudents}
                           </div>
-                          <div className="text-[10px] uppercase font-bold text-slate-500 mt-1 tracking-wider">Siswa</div>
+                          <div className="text-[10px] font-bold text-indigo-200/70 mt-0.5 tracking-wider">SISWA</div>
                         </div>
                       </div>
                     </div>
