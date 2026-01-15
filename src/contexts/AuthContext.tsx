@@ -121,14 +121,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const updateUser = (updates: Partial<User>) => {
+    const updateUser = async (updates: Partial<User>) => {
         if (!user) return;
         const updatedUser = { ...user, ...updates };
         setUser(updatedUser);
         try {
             localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(updatedUser));
-            // Trigger storage event for other components if needed
             window.dispatchEvent(new Event('storage'));
+
+            // Persist to Supabase if not in mock mode
+            if (!isMockMode) {
+                // Determine if user is student or staff based on role
+                const table = user.role === 'student' ? 'siswa' : 'users';
+
+                // Only update fields that exist in DB columns roughly
+                // For now, specifically targeting photo/avatar updates
+                const dbUpdates: any = {};
+                if (updates.photo_url !== undefined) dbUpdates.photo_url = updates.photo_url;
+                if (updates.avatar_url !== undefined) dbUpdates.avatar_url = updates.avatar_url;
+
+                if (Object.keys(dbUpdates).length > 0) {
+                    const { error } = await supabase
+                        .from(table)
+                        .update(dbUpdates)
+                        .eq('id', user.id);
+
+                    if (error) {
+                        console.error(`Failed to persist user update to ${table}:`, error);
+                    }
+                }
+            }
         } catch (error) {
             console.error('Failed to update user in storage:', error);
         }
