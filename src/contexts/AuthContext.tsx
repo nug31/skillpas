@@ -141,13 +141,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 if (updates.avatar_url !== undefined) dbUpdates.avatar_url = updates.avatar_url;
 
                 if (Object.keys(dbUpdates).length > 0) {
-                    const { error } = await supabase
+                    console.log(`[AuthContext] Attempting DB update for user ${user.id} in table ${table}`, dbUpdates);
+                    console.log(`[AuthContext] isMockMode: ${isMockMode}`);
+
+                    const { error, count, data } = await supabase
                         .from(table)
                         .update(dbUpdates)
-                        .eq('id', user.id);
+                        .eq('id', user.id)
+                        .select('id');
 
                     if (error) {
-                        console.error(`Failed to persist user update to ${table}:`, error);
+                        console.error(`[AuthContext] FAILED to persist user update to ${table}:`, error);
+                    } else {
+                        console.log(`[AuthContext] SUCCESS: Updated user in ${table}. Count: ${count ? count : 'N/A'}. Data:`, data);
+                        if (!data || data.length === 0) {
+                            console.warn(`[AuthContext] WARNING: Update succeeded but NO rows matched user ID ${user.id}. Is this a Mock User ID?`);
+                        }
                     }
                 }
             }
