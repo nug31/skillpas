@@ -75,13 +75,14 @@ export const StudentHistoryModal: React.FC<StudentHistoryModalProps> = ({
                                         <th className="px-4 py-3">Hasil</th>
                                         <th className="px-4 py-3">Tanggal</th>
                                         <th className="px-4 py-3">Penilai</th>
+                                        <th className="px-4 py-3">Catatan</th>
                                         <th className="px-4 py-3 text-right">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody className="text-xs text-slate-300">
                                     {history.length === 0 ? (
                                         <tr>
-                                            <td colSpan={7} className="px-4 py-12 text-center text-slate-500 italic">
+                                            <td colSpan={8} className="px-4 py-12 text-center text-slate-500 italic">
                                                 Belum ada riwayat kompetensi yang tercatat.
                                             </td>
                                         </tr>
@@ -109,6 +110,9 @@ export const StudentHistoryModal: React.FC<StudentHistoryModalProps> = ({
                                                     </td>
                                                     <td className="px-4 py-4 text-slate-400">{entry.tanggal}</td>
                                                     <td className="px-4 py-4 text-slate-400">{entry.penilai}</td>
+                                                    <td className="px-4 py-4 text-slate-400 max-w-[150px] truncate" title={entry.catatan || '-'}>
+                                                        {entry.catatan || '-'}
+                                                    </td>
                                                     <td className="px-4 py-4 text-right">
                                                         {isLulus && (
                                                             <button
