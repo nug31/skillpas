@@ -50,6 +50,22 @@ function AppContent() {
     }
   }, [isAuthenticated, user?.id]);
 
+  // Reset app state when user changes (login/logout)
+  useEffect(() => {
+    const handleAuthChange = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      if (customEvent.detail?.action === 'login' || customEvent.detail?.action === 'logout') {
+        // Reset all navigation state to go back to main dashboard
+        setSelectedJurusan(null);
+        setSelectedClassFilter(undefined);
+        setShowKRSApproval(false);
+      }
+    };
+
+    window.addEventListener('auth-changed', handleAuthChange);
+    return () => window.removeEventListener('auth-changed', handleAuthChange);
+  }, []);
+
   // Show login page if not authenticated
   if (!isAuthenticated) {
     return <LoginPage />;

@@ -79,11 +79,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     name: staff.name,
                     role: staff.role as any,
                     jurusan_id: staff.jurusan_id,
+                    kelas: staff.kelas,
                     avatar_url: staff.avatar_url,
                     photo_url: staff.photo_url
                 };
                 setUser(authenticatedUser);
                 localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authenticatedUser));
+                // Dispatch auth change event so other components can reload data
+                window.dispatchEvent(new CustomEvent('auth-changed', { detail: { action: 'login', user: authenticatedUser } }));
                 return true;
             }
         }
@@ -94,6 +97,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(authenticatedUser);
             try {
                 localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authenticatedUser));
+                // Dispatch auth change event so other components can reload data
+                window.dispatchEvent(new CustomEvent('auth-changed', { detail: { action: 'login', user: authenticatedUser } }));
             } catch (error) {
                 console.error('Failed to save user to storage:', error);
             }
@@ -107,6 +112,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null);
         try {
             localStorage.removeItem(AUTH_STORAGE_KEY);
+            // Clear all related app caches to ensure fresh state on next login
+            localStorage.removeItem('skillpas_krs_submissions');
+            // Dispatch auth change event so other components can reset
+            window.dispatchEvent(new CustomEvent('auth-changed', { detail: { action: 'logout' } }));
         } catch (error) {
             console.error('Failed to remove user from storage:', error);
         }
