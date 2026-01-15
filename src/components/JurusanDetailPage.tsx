@@ -374,17 +374,35 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
             <StudentRace students={classFilteredStudents} jurusanName={jurusan.nama_jurusan} />
 
             {(() => {
-              const canEditCriteria = user?.role === 'admin' ||
-                ((user?.role === 'hod' || user?.role === 'teacher_produktif') && user?.jurusan_id === jurusan.id);
+              const isAdmin = user?.role === 'admin';
+              const isHOD = user?.role === 'hod';
+              const isTeacherProduktif = user?.role === 'teacher_produktif';
+              const hasMatchingJurusan = !!user?.jurusan_id && !!jurusan.id &&
+                String(user.jurusan_id).toLowerCase() === String(jurusan.id).toLowerCase();
+
+              const canEditCriteria = isAdmin || ((isHOD || isTeacherProduktif) && hasMatchingJurusan);
 
               return (
-                <LevelTable
-                  levels={levels}
-                  jurusanId={jurusan.id}
-                  onUpdateCriteria={handleUpdateCriteria}
-                  isTeacher={isTeacher}
-                  allowEdit={canEditCriteria}
-                />
+                <>
+                  {/* Debug Info for Teachers (Temporary) */}
+                  {isTeacher && (
+                    <div className="text-[10px] text-[color:var(--text-muted)] mb-2 px-2 flex gap-4 opacity-50">
+                      <span>Role: {user?.role}</span>
+                      <span>User Jurusan: {user?.jurusan_id?.slice(-4)}</span>
+                      <span>Page Jurusan: {jurusan.id.slice(-4)}</span>
+                      <span className={canEditCriteria ? 'text-green-400' : 'text-red-400'}>
+                        Access: {canEditCriteria ? 'GRANTED' : 'DENIED'}
+                      </span>
+                    </div>
+                  )}
+                  <LevelTable
+                    levels={levels}
+                    jurusanId={jurusan.id}
+                    onUpdateCriteria={handleUpdateCriteria}
+                    isTeacher={isTeacher}
+                    allowEdit={canEditCriteria}
+                  />
+                </>
               );
             })()}
 
