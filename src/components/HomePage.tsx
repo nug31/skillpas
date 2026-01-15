@@ -285,7 +285,6 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
     const all = krsStore.getSubmissions();
     const userRole = user.role;
     const userDeptId = user.jurusan_id;
-    const userNormClass = normalizeClass(user.kelas);
     const pendingItems = all.filter((s: KRSSubmission) => {
       // 1. Status Match
       let statusMatch = false;
