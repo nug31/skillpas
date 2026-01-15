@@ -55,11 +55,11 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
             // 1. Check Status Role Match
             let statusMatch = false;
             if (userRole === 'teacher_produktif' || userRole === 'teacher') {
-                statusMatch = s.status === 'pending_produktif' || s.status === 'scheduled';
+                statusMatch = s.status === 'pending_produktif' || s.status === 'pending_wali' || s.status === 'scheduled';
             } else if (userRole === 'wali_kelas') {
                 statusMatch = s.status === 'pending_wali' || s.status === 'pending_produktif' || s.status === 'scheduled';
             } else if (userRole === 'hod') {
-                statusMatch = s.status === 'pending_hod' || s.status === 'scheduled';
+                statusMatch = s.status === 'pending_hod' || s.status === 'pending_wali' || s.status === 'scheduled';
             } else if (userRole === 'admin') {
                 statusMatch = true;
             }
@@ -72,12 +72,14 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
             }
 
             // 3. Check Class Match for Wali Kelas (specifically for the walas stage)
-            if (userRole === 'wali_kelas' && s.status === 'pending_wali') {
+            // 3. Check Class Match for anyone looking at the Walas stage
+            if (s.status === 'pending_wali') {
                 const studentNormClass = normalizeClass(s.kelas);
-                // Support multiple classes (comma-separated in user.kelas)
                 const userClasses = (user.kelas || '').split(',').map(c => normalizeClass(c.trim())).filter(Boolean);
 
                 if (userClasses.length > 0 && !userClasses.includes(studentNormClass)) return false;
+                // If user doesn't have any class assigned but is trying to see a Walas stage, hide it
+                if (userClasses.length === 0) return false;
             }
 
             return true;

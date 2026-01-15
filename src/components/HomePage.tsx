@@ -290,11 +290,11 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
       // 1. Status Match
       let statusMatch = false;
       if (userRole === 'teacher_produktif' || userRole === 'teacher') {
-        statusMatch = s.status === 'pending_produktif' || s.status === 'scheduled';
+        statusMatch = s.status === 'pending_produktif' || s.status === 'pending_wali' || s.status === 'scheduled';
       } else if (userRole === 'wali_kelas') {
         statusMatch = s.status === 'pending_wali' || s.status === 'pending_produktif' || s.status === 'scheduled';
       } else if (userRole === 'hod') {
-        statusMatch = s.status === 'pending_hod' || s.status === 'scheduled';
+        statusMatch = s.status === 'pending_hod' || s.status === 'pending_wali' || s.status === 'scheduled';
       } else if (userRole === 'admin') {
         statusMatch = true;
       }
@@ -304,9 +304,12 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
       // 2. Department Match
       if (userRole !== 'admin' && userDeptId && s.jurusan_id !== userDeptId) return false;
 
-      // 3. Class Match for Walas
-      if (userRole === 'wali_kelas' && s.status === 'pending_wali') {
-        if (userNormClass && normalizeClass(s.kelas) !== userNormClass) return false;
+      // 3. Class Match for Anyone looking at pending_wali
+      if (s.status === 'pending_wali') {
+        const studentNormClass = normalizeClass(s.kelas);
+        const userClasses = (user.kelas || '').split(',').map(c => normalizeClass(c.trim())).filter(Boolean);
+        if (userClasses.length > 0 && !userClasses.includes(studentNormClass)) return false;
+        if (userClasses.length === 0) return false;
       }
 
       return true;
