@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Check, Stamp } from 'lucide-react';
+import { Check } from 'lucide-react';
 
 interface PassportStampProps {
     userName: string;
+    photoUrl?: string;
+    avatarUrl?: string;
     onComplete: () => void;
 }
 
-export function PassportStamp({ userName, onComplete }: PassportStampProps) {
+export function PassportStamp({ userName, photoUrl, avatarUrl, onComplete }: PassportStampProps) {
     const [showStamp, setShowStamp] = useState(false);
     const [showText, setShowText] = useState(false);
 
@@ -15,9 +17,11 @@ export function PassportStamp({ userName, onComplete }: PassportStampProps) {
         const stampTimer = setTimeout(() => {
             setShowStamp(true);
             // Play stamp sound (optional)
+            /* 
             try {
                 const audio = new Audio('data:audio/wav;base64,UklGRl9vT19teleXBla2VybmVsWyJhdW...');
             } catch (e) { }
+            */
         }, 300);
 
         // Show welcome text
@@ -62,11 +66,16 @@ export function PassportStamp({ userName, onComplete }: PassportStampProps) {
 
                     {/* Content Area */}
                     <div className="pt-24 px-6 flex flex-col items-center relative z-10">
-                        {/* User Avatar Placeholder with Neon Ring */}
                         <div className="relative mb-6 group">
-                            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500 blur-md opacity-70 group-hover:opacity-100 transition-opacity" />
-                            <div className="relative w-24 h-24 rounded-full bg-[#1a1f3a] [.theme-clear_&]:bg-white flex items-center justify-center text-white [.theme-clear_&]:text-indigo-600 text-3xl font-bold shadow-2xl ring-2 ring-white/20">
-                                {userName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                            <div className="absolute inset-[-4px] rounded-full bg-gradient-to-r from-cyan-400 to-purple-500 blur-md opacity-70 group-hover:opacity-100 transition-opacity" />
+                            <div className="relative w-24 h-24 rounded-full bg-[#1a1f3a] [.theme-clear_&]:bg-white overflow-hidden flex items-center justify-center text-white [.theme-clear_&]:text-indigo-600 shadow-2xl ring-2 ring-white/20">
+                                {photoUrl || avatarUrl ? (
+                                    <img src={photoUrl || avatarUrl} alt={userName} className="w-full h-full object-cover" />
+                                ) : (
+                                    <span className="text-3xl font-bold">
+                                        {userName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                                    </span>
+                                )}
                             </div>
                         </div>
 

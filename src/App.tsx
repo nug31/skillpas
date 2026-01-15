@@ -76,6 +76,8 @@ function AppContent() {
     return (
       <PassportStamp
         userName={user.name}
+        photoUrl={(user as any)?.photo_url}
+        avatarUrl={(user as any)?.avatar_url}
         onComplete={() => setShowStampAnimation(false)}
       />
     );
