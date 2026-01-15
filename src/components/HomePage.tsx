@@ -9,7 +9,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { MissionModal } from './MissionModal';
 import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
-import { Edit3, CheckCircle, Contact, TrendingUp, Check } from 'lucide-react';
+import { Edit3, CheckCircle, Contact } from 'lucide-react';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import { SkillCard } from './SkillCard';
 
@@ -556,103 +556,63 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
 
               ) : (
                 <>
-                  {/* Glassmorphism Header */}
-                  <div className="relative overflow-hidden rounded-2xl mb-6 p-[2px] bg-gradient-to-br from-indigo-500/50 via-purple-500/50 to-pink-500/50">
-                    <div className="relative rounded-2xl bg-slate-950/80 backdrop-blur-xl p-8 flex flex-col md:flex-row items-center gap-8 overflow-hidden">
-                      {/* Decorative Background Elements */}
-                      <div className="absolute -top-20 -left-20 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
-                      <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl pointer-events-none" />
-
-                      {/* Avatar Section */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-4">
+                      {/* Teacher Avatar Trigger */}
                       <button
                         onClick={() => setIsAvatarModalOpen(true)}
-                        className="relative group shrink-0"
+                        className="relative group transition-transform hover:scale-105 active:scale-95 shrink-0"
                         title="Ubah Foto Profil"
                       >
-                        <div className="relative z-10 p-1 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/10 backdrop-blur-md transition-transform group-hover:scale-105">
-                          <ProfileAvatar
-                            name={user?.name || 'User'}
-                            avatarUrl={(user as any)?.avatar_url}
-                            photoUrl={(user as any)?.photo_url}
-                            size="lg"
-                            jurusanColor="#6366f1"
-                            className="w-24 h-24 sm:w-28 sm:h-28"
-                          />
-                          <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-full">
-                            <Edit3 className="w-6 h-6 text-white drop-shadow-md" />
-                          </div>
+                        <ProfileAvatar
+                          name={user?.name || 'User'}
+                          avatarUrl={(user as any)?.avatar_url}
+                          photoUrl={(user as any)?.photo_url}
+                          size="md"
+                          jurusanColor="#6366f1" // Indigo for teachers
+                          className="shadow-lg border-2 border-white/20"
+                        />
+                        <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                          <Edit3 className="w-4 h-4 text-white" />
                         </div>
-                        {/* Glow effect */}
-                        <div className="absolute inset-0 bg-indigo-500/30 blur-2xl rounded-full -z-10 group-hover:bg-indigo-400/40 transition-colors" />
                       </button>
 
-                      {/* Info Section */}
-                      <div className="flex-1 min-w-0 text-center md:text-left z-10 w-full">
-                        <div className="flex flex-col md:flex-row items-center md:items-end gap-3 md:gap-4 mb-2">
-                          <h2 className="text-2xl md:text-4xl font-bold text-white tracking-tight drop-shadow-sm leading-none whitespace-nowrap">
-                            {user?.name || 'Guest User'}
-                          </h2>
-                          <span className="px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-[10px] md:text-xs font-bold text-indigo-100 backdrop-blur-md uppercase tracking-wider shadow-sm mb-0.5">
-                            {(() => {
-                              let label = 'Pengajar';
-                              if (user?.role === 'admin') label = 'Administrator';
-                              if (user?.role === 'wali_kelas') label = 'Wali Kelas';
-                              if (user?.role === 'teacher_produktif') label = 'Guru Produktif';
-
-                              if (user?.role === 'hod') {
-                                const userJurusanId = (user as any)?.jurusan_id;
-                                const jurusan = jurusanList.find(j => j.id === userJurusanId);
-                                label = jurusan ? `HOD ${jurusan.nama_jurusan}` : 'HOD';
-                              }
-                              return label;
-                            })()}
-                          </span>
+                      <div>
+                        <div className="text-sm text-white/70">Overview</div>
+                        <div className="text-2xl font-bold">
+                          {useMock ? mockData.mockJurusan.length : jurusanList.length} Jurusan • {overallStats.totalStudents} Siswa
                         </div>
-
-                        <p className="text-slate-300/80 text-xs md:text-sm leading-relaxed w-full hidden md:block">
-                          Selamat datang di Dashboard Skill Passport. Pantau kompetensi siswa secara real-time.
-                        </p>
                       </div>
+                    </div>
+                    <div className="text-sm text-white/60 text-right">
+                      <div className="font-semibold">{user?.name}</div>
+                      <div className="text-xs">
+                        {(() => {
+                          let label = 'Pengajar';
+                          if (user?.role === 'admin') label = 'Administrator';
+                          if (user?.role === 'wali_kelas') label = 'Wali Kelas';
+                          if (user?.role === 'teacher_produktif') label = 'Guru Produktif';
 
-                      {/* Stats Section */}
-                      <div className="flex gap-4 shrink-0 bg-black/20 p-3 rounded-xl border border-white/5 backdrop-blur-md shadow-inner">
-                        <div className="text-center px-3 border-r border-white/10 last:border-0">
-                          <div className="text-2xl md:text-3xl font-bold text-white">
-                            {useMock ? mockData.mockJurusan.length : jurusanList.length}
-                          </div>
-                          <div className="text-[10px] font-bold text-indigo-200/70 mt-0.5 tracking-wider">JURUSAN</div>
-                        </div>
-                        <div className="text-center px-3">
-                          <div className="text-2xl md:text-3xl font-bold text-white">
-                            {overallStats.totalStudents}
-                          </div>
-                          <div className="text-[10px] font-bold text-indigo-200/70 mt-0.5 tracking-wider">SISWA</div>
-                        </div>
+                          if (user?.role === 'hod') {
+                            const userJurusanId = (user as any)?.jurusan_id;
+                            const jurusan = jurusanList.find(j => j.id === userJurusanId);
+                            label = jurusan ? `HOD ${jurusan.nama_jurusan}` : 'HOD';
+                          }
+                          return label;
+                        })()}
                       </div>
                     </div>
                   </div>
 
-                  {/* Secondary Stats */}
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <div className="p-4 bg-slate-900/50 border border-white/5 rounded-xl flex items-center gap-4 hover:border-indigo-500/30 transition-colors group">
-                      <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:text-indigo-300 group-hover:bg-indigo-500/20 transition-all">
-                        <TrendingUp className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <div className="text-xs text-slate-500 uppercase font-bold tracking-wider">Avg. Skor</div>
-                        <div className="text-lg font-bold text-white">{globalAvg}</div>
-                      </div>
+                  <div className="grid grid-cols-2 gap-3 mt-2">
+                    <div className="p-3 bg-gradient-to-r from-white/5 to-transparent rounded-lg border border-white/6">
+                      <div className="text-xs text-white/70">Top Jurusan</div>
+                      <div className="text-sm font-semibold mt-2">{overallStats.topJurusan}</div>
                     </div>
-                    <div className="p-4 bg-slate-900/50 border border-white/5 rounded-xl flex items-center gap-4 hover:border-emerald-500/30 transition-colors group">
-                      <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 group-hover:text-emerald-300 group-hover:bg-emerald-500/20 transition-all">
-                        <Check className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <div className="text-xs text-slate-500 uppercase font-bold tracking-wider">Top Jurusan</div>
-                        <div className="text-sm font-bold text-white truncate max-w-[120px]" title={overallStats.topJurusan}>{overallStats.topJurusan}</div>
-                      </div>
+                    <div className="p-3 bg-gradient-to-r from-white/5 to-transparent rounded-lg border border-white/6">
+                      <div className="text-xs text-white/70">Average Skor</div>
+                      <div className="text-sm font-semibold mt-2">{globalAvg}</div>
                     </div>
-                    {/* You can add more cards here for other stats if needed */}
                   </div>
                 </>
               )}
