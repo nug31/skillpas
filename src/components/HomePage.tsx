@@ -587,13 +587,12 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                       </button>
 
                       {/* Info Section */}
-                      <div className="flex-1 min-w-0 text-center md:text-left space-y-1 z-10">
-                        <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight drop-shadow-sm leading-tight">
-                          {user?.name || 'Guest User'}
-                        </h2>
-
-                        <div className="flex items-center justify-center md:justify-start gap-3 mt-2">
-                          <span className="px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-[10px] md:text-xs font-bold text-indigo-100 backdrop-blur-md uppercase tracking-wider shadow-sm">
+                      <div className="flex-1 min-w-0 text-center md:text-left z-10">
+                        <div className="flex flex-col md:flex-row items-center md:items-end gap-3 md:gap-4 mb-1">
+                          <h2 className="text-2xl md:text-4xl font-bold text-white tracking-tight drop-shadow-sm leading-none whitespace-nowrap">
+                            {user?.name || 'Guest User'}
+                          </h2>
+                          <span className="px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-[10px] md:text-xs font-bold text-indigo-100 backdrop-blur-md uppercase tracking-wider shadow-sm mb-1">
                             {(() => {
                               const roleLabels: Record<string, string> = {
                                 admin: 'Administrator',
@@ -608,7 +607,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                           </span>
                         </div>
 
-                        <p className="text-slate-300/80 text-xs md:text-sm leading-relaxed max-w-lg mx-auto md:mx-0 pt-2 hidden sm:block">
+                        <p className="text-slate-300/80 text-xs md:text-sm leading-relaxed max-w-lg mx-auto md:mx-0 hidden sm:block">
                           Selamat datang di Dashboard Skill Passport. Pantau kompetensi siswa secara real-time.
                         </p>
                       </div>
