@@ -556,17 +556,41 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
 
               ) : (
                 <>
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <div className="text-sm text-white/70">Overview</div>
-                      <div className="text-2xl font-bold">
-                        {useMock ? mockData.mockJurusan.length : jurusanList.length} Jurusan • {overallStats.totalStudents} Siswa aktif
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-4">
+                      {/* Teacher Avatar Trigger */}
+                      <button
+                        onClick={() => setIsAvatarModalOpen(true)}
+                        className="relative group transition-transform hover:scale-105 active:scale-95 shrink-0"
+                        title="Ubah Foto Profil"
+                      >
+                        <ProfileAvatar
+                          name={user?.name || 'User'}
+                          avatarUrl={(user as any)?.avatar_url}
+                          photoUrl={(user as any)?.photo_url}
+                          size="md"
+                          jurusanColor="#6366f1" // Indigo for teachers
+                          className="shadow-lg border-2 border-white/20"
+                        />
+                        <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                          <Edit3 className="w-4 h-4 text-white" />
+                        </div>
+                      </button>
+
+                      <div>
+                        <div className="text-sm text-white/70">Overview</div>
+                        <div className="text-2xl font-bold">
+                          {useMock ? mockData.mockJurusan.length : jurusanList.length} Jurusan • {overallStats.totalStudents} Siswa
+                        </div>
                       </div>
                     </div>
-                    <div className="text-sm text-white/60">Terakhir diperbarui: Hari ini</div>
+                    <div className="text-sm text-white/60 text-right">
+                      <div className="font-semibold">{user?.name}</div>
+                      <div className="text-xs">{user?.role === 'admin' ? 'Administrator' : 'Pengajar'}</div>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-3 mt-2">
                     <div className="p-3 bg-gradient-to-r from-white/5 to-transparent rounded-lg border border-white/6">
                       <div className="text-xs text-white/70">Top Jurusan</div>
                       <div className="text-sm font-semibold mt-2">{overallStats.topJurusan}</div>
