@@ -1,4 +1,5 @@
 import { jsPDF } from 'jspdf';
+import smkLogo from '../assets/smk-logo.png';
 
 export interface CertificateData {
     studentName: string;
@@ -11,78 +12,135 @@ export interface CertificateData {
     penilai: string;
 }
 
-export const generateCertificate = (data: CertificateData) => {
+const loadImage = (url: string): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'Anonymous';
+        img.src = url;
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+    });
+};
+
+export const generateCertificate = async (data: CertificateData) => {
     const doc = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
         format: 'a5'
     });
 
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
+
     // --- Background / Border ---
+    // Outer Border
     doc.setDrawColor(20, 30, 70); // Dark Blue
     doc.setLineWidth(1);
-    doc.rect(5, 5, doc.internal.pageSize.width - 10, doc.internal.pageSize.height - 10);
+    doc.rect(5, 5, pageWidth - 10, pageHeight - 10);
 
+    // Inner Gold Border
     doc.setDrawColor(200, 160, 50); // Gold-ish
     doc.setLineWidth(0.5);
-    doc.rect(7, 7, doc.internal.pageSize.width - 14, doc.internal.pageSize.height - 14);
+    doc.rect(7, 7, pageWidth - 14, pageHeight - 14);
 
     // --- Header ---
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(18);
-    doc.setTextColor(20, 30, 70);
-    doc.text('KARTU VERIFIKASI KOMPETENSI', doc.internal.pageSize.width / 2, 25, { align: 'center' });
+    // Logo (Centered Top)
+    try {
+        const logoImg = await loadImage(smkLogo);
+        const logoWidth = 20;
+        const logoHeight = 20; // Aspect ratio might vary, assuming square-ish
+        const xPos = (pageWidth - logoWidth) / 2;
+        doc.addImage(logoImg, 'PNG', xPos, 10, logoWidth, logoHeight);
+    } catch (e) {
+        console.error("Failed to load logo", e);
+    }
 
-    doc.setFontSize(10);
+    const textStartY = 35;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(20, 30, 70);
+    doc.text('KARTU VERIFIKASI KOMPETENSI', pageWidth / 2, textStartY, { align: 'center' });
+
+    doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
-    doc.text('SKILL PASSPORT METRA INDUSTRI VOCATIONAL HS', doc.internal.pageSize.width / 2, 32, { align: 'center' });
+    doc.text('SKILL PASSPORT SMK Mitra Industri', pageWidth / 2, textStartY + 5, { align: 'center' });
 
     doc.setDrawColor(20, 30, 70);
-    doc.setLineWidth(0.8);
-    doc.line(40, 35, doc.internal.pageSize.width - 40, 35);
+    doc.setLineWidth(0.5);
+    doc.line(30, textStartY + 8, pageWidth - 30, textStartY + 8);
 
     // --- Body Content ---
-    doc.setFontSize(11);
-    doc.text('Diberikan kepada siswa:', doc.internal.pageSize.width / 2, 45, { align: 'center' });
-
-    doc.setFontSize(16);
-    doc.setFont('helvetica', 'bold');
-    doc.text(data.studentName.toUpperCase(), doc.internal.pageSize.width / 2, 55, { align: 'center' });
+    let yPos = textStartY + 18;
 
     doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`NISN: ${data.nisn} | Kelas: ${data.kelas}`, doc.internal.pageSize.width / 2, 62, { align: 'center' });
-    doc.text(`Jurusan: ${data.jurusan}`, doc.internal.pageSize.width / 2, 67, { align: 'center' });
+    doc.text('Diberikan kepada siswa:', pageWidth / 2, yPos, { align: 'center' });
 
-    doc.setDrawColor(200, 200, 200);
-    doc.setLineWidth(0.1);
-    doc.line(30, 75, doc.internal.pageSize.width - 30, 75);
-
-    doc.setFontSize(11);
-    doc.text('Telah dinyatakan LULUS verifikasi pada kompetensi:', doc.internal.pageSize.width / 2, 85, { align: 'center' });
-
+    yPos += 8;
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(30, 100, 30); // Dark Green
-    doc.text(data.unitKompetensi, doc.internal.pageSize.width / 2, 95, { align: 'center' });
+    doc.text(data.studentName.toUpperCase(), pageWidth / 2, yPos, { align: 'center' });
 
+    yPos += 6;
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`NISN: ${data.nisn} | Kelas: ${data.kelas}`, pageWidth / 2, yPos, { align: 'center' });
+    doc.text(`Jurusan: ${data.jurusan}`, pageWidth / 2, yPos + 4, { align: 'center' });
+
+    yPos += 10;
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.1);
+    doc.line(40, yPos, pageWidth - 40, yPos);
+
+    yPos += 8;
     doc.setFontSize(10);
+    doc.text('Telah dinyatakan LULUS verifikasi pada kompetensi:', pageWidth / 2, yPos, { align: 'center' });
+
+    yPos += 8;
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(30, 100, 30); // Dark Green
+    doc.text(data.unitKompetensi, pageWidth / 2, yPos, { align: 'center' });
+
+    yPos += 6;
+    doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(0, 0, 0);
-    doc.text(`Level Pencapaian: ${data.level}`, doc.internal.pageSize.width / 2, 103, { align: 'center' });
+    doc.text(`Level Pencapaian: ${data.level}`, pageWidth / 2, yPos, { align: 'center' });
 
     // --- Footer / Signatures ---
+    // Date
     const dateStr = new Date(data.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Tanggal: ${dateStr}`, 30, 120);
-    doc.text(`Penilai: ${data.penilai}`, 30, 125);
+    // Signatures Position
+    const sigY = pageHeight - 35;
+    const sigLeftX = 40;
+    const sigRightX = pageWidth - 40;
 
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+
+    // Right: Date & Principal
+    // Date usually above the signature place city? "Cikarang Barat, [Date]"
+    // Using standard format
+    doc.text(`Bekasi, ${dateStr}`, sigRightX, sigY - 5, { align: 'center' });
+
+    // Titles
+    doc.text('Kepala Sekolah,', sigRightX, sigY, { align: 'center' });
+    doc.text(`Kajur ${data.jurusan},`, sigLeftX, sigY, { align: 'center' });
+
+    // Names (Bottom, underlined or in parens)
+    const nameY = sigY + 20;
+
+    doc.setFont('helvetica', 'bold');
+    doc.text('Lispiyatmini, M.Pd', sigRightX, nameY, { align: 'center' });
+    doc.text('( ................................. )', sigLeftX, nameY, { align: 'center' }); // Placeholder for HOD if name unknown
+
+    // Disclaimer
     doc.setFont('helvetica', 'italic');
-    doc.setFontSize(8);
+    doc.setFontSize(7);
     doc.setTextColor(100, 100, 100);
-    doc.text('Dokumen ini diterbitkan secara digital melalui Sistem Skill Passport.', doc.internal.pageSize.width - 30, 135, { align: 'right' });
+    doc.text('Dokumen ini diterbitkan secara digital melalui Sistem Skill Passport.', pageWidth - 10, pageHeight - 6, { align: 'right' });
 
     // Save PDF
     doc.save(`Sertifikat_${data.studentName.replace(/\s+/g, '_')}_${data.level}.pdf`);
