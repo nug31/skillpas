@@ -586,7 +586,19 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                     </div>
                     <div className="text-sm text-white/60 text-right">
                       <div className="font-semibold">{user?.name}</div>
-                      <div className="text-xs">{user?.role === 'admin' ? 'Administrator' : 'Pengajar'}</div>
+                      <div className="text-xs">
+                        {(() => {
+                          const roleLabels: Record<string, string> = {
+                            admin: 'Administrator',
+                            hod: 'HOD',
+                            wali_kelas: 'Wali Kelas',
+                            teacher_produktif: 'Guru Produktif',
+                            teacher: 'Pengajar',
+                            student: 'Siswa'
+                          };
+                          return roleLabels[user?.role || ''] || 'Pengajar';
+                        })()}
+                      </div>
                     </div>
                   </div>
 
