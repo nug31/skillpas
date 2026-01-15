@@ -163,7 +163,7 @@ export const mockCompetencyHistory: CompetencyHistory[] = [
   {
     id: 'h1',
     siswa_id: 's-j1-user',
-    level_id: 'lvl-basic',
+    level_id: LEVEL_IDS.BASIC1,
     unit_kompetensi: 'K3 Dasar',
     aktivitas_pembuktian: 'Praktik bengkel',
     penilai: 'Guru Produktif',
@@ -174,7 +174,7 @@ export const mockCompetencyHistory: CompetencyHistory[] = [
   {
     id: 'h2',
     siswa_id: 's-j1-user',
-    level_id: 'lvl-inter',
+    level_id: LEVEL_IDS.INTER,
     unit_kompetensi: 'Operasi Mesin Bubut',
     aktivitas_pembuktian: 'Job Sheet',
     penilai: 'Guru + Instruktur',
@@ -185,7 +185,7 @@ export const mockCompetencyHistory: CompetencyHistory[] = [
   {
     id: 'h3',
     siswa_id: 's-j1-user',
-    level_id: 'lvl-adv',
+    level_id: LEVEL_IDS.ADV,
     unit_kompetensi: 'Produksi Komponen',
     aktivitas_pembuktian: 'Teaching Factory',
     penilai: 'Industri',

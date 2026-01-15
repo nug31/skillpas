@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { GraduationCap } from 'lucide-react';
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
-import type { Jurusan, KRSSubmission } from '../types';
+import type { Jurusan, KRSSubmission, CompetencyHistory } from '../types';
 import { JurusanCard } from './JurusanCard';
 import { DashboardRace } from './DashboardRace';
 import { useAuth } from '../contexts/AuthContext';
@@ -12,6 +12,8 @@ import { AvatarSelectionModal } from './AvatarSelectionModal';
 import { Edit3, CheckCircle, Contact } from 'lucide-react';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import { SkillCard } from './SkillCard';
+import { StudentHistoryModal } from './StudentHistoryModal';
+import { History } from 'lucide-react';
 
 interface HomePageProps {
   onSelectJurusan: (jurusan: Jurusan, classFilter?: string) => void;
@@ -37,6 +39,9 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
 
   const [showMissionModal, setShowMissionModal] = useState(false);
   const [showSkillCard, setShowSkillCard] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [myHistory, setMyHistory] = useState<CompetencyHistory[]>([]);
+  const [hodName, setHodName] = useState<string | undefined>(undefined);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [pendingKRSCount, setPendingKRSCount] = useState(0);
   const [toApproveCount, setToApproveCount] = useState(0);
@@ -189,6 +194,10 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             levelColor: levelObj?.badge_color || '#94a3b8',
             className: student.kelas
           });
+
+          // Mock history
+          const history = (mockData as any).mockCompetencyHistory?.filter((r: any) => r.siswa_id === student.id) || [];
+          setMyHistory(history);
         }
       } else {
         // Supabase implementation
@@ -240,6 +249,29 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             levelColor: color,
             className: student.kelas
           });
+
+          // Fetch History
+          const { data: historyData } = await supabase
+            .from('competency_history')
+            .select('*')
+            .eq('siswa_id', student.id)
+            .order('tanggal', { ascending: false });
+
+          if (historyData) {
+            setMyHistory(historyData);
+          }
+
+          // Fetch HOD for certificate
+          const { data: hodData } = await supabase
+            .from('users')
+            .select('name')
+            .eq('role', 'hod')
+            .eq('jurusan_id', student.jurusan_id)
+            .maybeSingle();
+
+          if (hodData) {
+            setHodName(hodData.name);
+          }
         } else {
           // No student record found in Supabase (unimported student)
           // Set default empty stats so UI doesn't hang in loading
@@ -540,13 +572,23 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                           </div>
                         </div>
 
-                        <button
-                          onClick={() => setShowSkillCard(true)}
-                          className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 hover:from-blue-600/30 hover:to-indigo-600/30 text-blue-300 rounded-lg text-xs font-bold border border-blue-500/20 transition-all group"
-                        >
-                          <Contact className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                          Lihat Skill Card
-                        </button>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          <button
+                            onClick={() => setShowSkillCard(true)}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 hover:from-blue-600/30 hover:to-indigo-600/30 text-blue-300 rounded-lg text-xs font-bold border border-blue-500/20 transition-all group"
+                          >
+                            <Contact className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                            Skill Card
+                          </button>
+
+                          <button
+                            onClick={() => setShowHistoryModal(true)}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 text-emerald-300 rounded-lg text-xs font-bold border border-emerald-500/20 transition-all group"
+                          >
+                            <History className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                            Riwayat
+                          </button>
+                        </div>
                       </div>
                     ) : (
                       <div className="text-sm text-white/40 animate-pulse">Loading stats...</div>
@@ -716,6 +758,20 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             }}
             jurusanName={jurusanList[0]?.nama_jurusan}
             onClose={() => setShowSkillCard(false)}
+          />
+        )}
+        {/* Student History Modal */}
+        {showHistoryModal && user && myStats && (
+          <StudentHistoryModal
+            isOpen={showHistoryModal}
+            onClose={() => setShowHistoryModal(false)}
+            studentName={user.name}
+            studentNisn={user.nisn}
+            studentKelas={myStats.className}
+            jurusanName={jurusanList.find(j => j.id === user.jurusan_id)?.nama_jurusan || 'Teknik'}
+            history={myHistory}
+            levels={mockData.mockLevels}
+            hodName={hodName}
           />
         )}
       </div>
