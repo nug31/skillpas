@@ -195,10 +195,10 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                 {/* Card Container - The "Glass" */}
                 <div
                     ref={cardRef}
-                    className="relative w-[360px] h-[600px] rounded-[48px] overflow-hidden shadow-2xl bg-[#0a0f1e] border border-white/10"
+                    className="relative w-[360px] h-[600px] rounded-[48px] overflow-hidden shadow-2xl bg-[#0a0f1e] border border-white/10 [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200"
                 >
                     {/* Deep Background with Gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#0a0f1e] via-[#020617] to-[#0a0f1e]" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#0a0f1e] via-[#020617] to-[#0a0f1e] [.theme-clear_&]:bg-gradient-to-br [.theme-clear_&]:from-slate-50 [.theme-clear_&]:via-white [.theme-clear_&]:to-slate-100" />
 
                     {/* Circuit Lines Background */}
                     <CircuitLines />
@@ -210,7 +210,7 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                         {/* Header */}
                         <div className="flex justify-between items-start mb-4">
                             <img src={smkLogo} alt="Logo" className="w-14 h-14 object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" />
-                            <div className="text-[16px] font-black text-white/90 tracking-tighter leading-none pt-2 opacity-80">
+                            <div className="text-[16px] font-black text-white/90 [.theme-clear_&]:text-slate-800 tracking-tighter leading-none pt-2 opacity-80">
                                 {currentYear}
                             </div>
                         </div>
@@ -236,10 +236,10 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
 
                             {/* Name & Major */}
                             <div className="text-center space-y-1 z-20">
-                                <h2 className="text-[28px] font-black text-white leading-none tracking-tight drop-shadow-lg uppercase">
+                                <h2 className="text-[28px] font-black text-white [.theme-clear_&]:text-slate-900 leading-none tracking-tight drop-shadow-lg uppercase">
                                     {student.nama}
                                 </h2>
-                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.25em] opacity-80">
+                                <p className="text-[11px] font-bold text-slate-400 [.theme-clear_&]:text-slate-500 uppercase tracking-[0.25em] opacity-80">
                                     {jurusanName || 'Teknik'}
                                 </p>
                             </div>
@@ -254,13 +254,11 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                         <div className="mt-auto flex flex-col items-center gap-3 pb-0.5">
                             {/* Score Display */}
                             <div className="flex flex-col items-center gap-1">
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-[52px] font-black text-white drop-shadow-2xl leading-none">{student.skor ?? 0}</span>
-                                    <span className="text-base font-black text-slate-500 italic">/100</span>
-                                </div>
+                                <span className="text-[52px] font-black text-white [.theme-clear_&]:text-slate-900 drop-shadow-2xl leading-none">{student.skor ?? 0}</span>
+                                <span className="text-base font-black text-slate-500 [.theme-clear_&]:text-slate-400 italic">/100</span>
 
                                 {/* Vibrant Progress Bar */}
-                                <div className="w-[160px] h-1.5 bg-black/40 rounded-full overflow-hidden p-[1px] border border-white/5">
+                                <div className="w-[160px] h-1.5 bg-black/40 [.theme-clear_&]:bg-slate-200 rounded-full overflow-hidden p-[1px] border border-white/5 [.theme-clear_&]:border-slate-300">
                                     <div
                                         className="h-full bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500 rounded-full shadow-[0_0_15px_rgba(34,211,238,0.8)]"
                                         style={{ width: `${scoreProgress}%` }}
@@ -282,8 +280,8 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                                     )}
                                 </div>
                                 <div className="text-right">
-                                    <span className="text-slate-500 text-[8px] font-bold tracking-[0.2em] uppercase block">VERIFIED PASS</span>
-                                    <span className="text-slate-700 text-[7px] font-mono font-bold opacity-50">{student.id?.slice(0, 10).toUpperCase()}</span>
+                                    <span className="text-slate-500 [.theme-clear_&]:text-slate-400 text-[8px] font-bold tracking-[0.2em] uppercase block">VERIFIED PASS</span>
+                                    <span className="text-slate-700 [.theme-clear_&]:text-slate-400 text-[7px] font-mono font-bold opacity-50">{student.id?.slice(0, 10).toUpperCase()}</span>
                                 </div>
                             </div>
                         </div>
@@ -294,7 +292,7 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                     <div className="absolute inset-0 pointer-events-none rounded-[48px] border-t border-white/15" />
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
