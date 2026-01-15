@@ -20,12 +20,12 @@ export function Podium({ participants, title = "Champions Podium", subtitle }: P
     ];
 
     return (
-        <div className="relative min-h-[600px] w-full flex items-end justify-center gap-4 sm:gap-8 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/40 via-[#0f172a] to-[#0f172a] dark:from-indigo-900/40 dark:via-[#0f172a] dark:to-[#0f172a] theme-clear:bg-gradient-to-b theme-clear:from-white theme-clear:to-slate-100 rounded-2xl border border-white/10 theme-clear:border-slate-200 p-8 overflow-hidden shadow-2xl">
+        <div className="relative min-h-[600px] w-full flex items-end justify-center gap-4 sm:gap-8 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/40 via-[#0f172a] to-[#0f172a] [.theme-clear_&]:bg-gradient-to-b [.theme-clear_&]:from-indigo-50 [.theme-clear_&]:via-slate-100 [.theme-clear_&]:to-white rounded-2xl border border-white/10 [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-lg p-8 overflow-hidden shadow-2xl">
             {/* Background Spotlights */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none [.theme-clear_&]:hidden">
                 <div className="absolute top-0 left-1/4 w-[2px] h-[400px] bg-yellow-400/20 rotate-[25deg] blur-md origin-top animate-pulse" />
                 <div className="absolute top-0 right-1/4 w-[2px] h-[400px] bg-yellow-400/20 rotate-[-25deg] blur-md origin-top animate-pulse delay-75" />
-                <div className="absolute top-0 left-1/2 w-[100px] h-[400px] bg-gradient-to-b from-white/10 to-transparent -translate-x-1/2 blur-2xl theme-clear:from-indigo-500/10" />
+                <div className="absolute top-0 left-1/2 w-[100px] h-[400px] bg-gradient-to-b from-white/10 to-transparent -translate-x-1/2 blur-2xl" />
             </div>
 
             <div className="absolute top-6 left-0 right-0 text-center z-10">
@@ -33,12 +33,12 @@ export function Podium({ participants, title = "Champions Podium", subtitle }: P
                     initial={{ y: -50, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 theme-clear:bg-white/40 theme-clear:border-slate-200"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 [.theme-clear_&]:bg-indigo-50 [.theme-clear_&]:border-indigo-200"
                 >
                     <Crown className="w-4 h-4 text-yellow-500" />
-                    <span className="text-sm font-bold text-white theme-clear:text-slate-800 tracking-widest uppercase">{title}</span>
+                    <span className="text-sm font-bold text-white [.theme-clear_&]:text-slate-800 tracking-widest uppercase">{title}</span>
                 </motion.div>
-                {subtitle && <div className="text-white/40 theme-clear:text-slate-500 text-xs mt-2">{subtitle}</div>}
+                {subtitle && <div className="text-white/40 [.theme-clear_&]:text-slate-500 text-xs mt-2">{subtitle}</div>}
             </div>
 
             {podiumData.map((p, index) => {
@@ -71,15 +71,15 @@ export function Podium({ participants, title = "Champions Podium", subtitle }: P
                             {place === 1 && (
                                 <Crown className="absolute -top-8 left-1/2 -translate-x-1/2 w-8 h-8 text-yellow-400 drop-shadow-[0_0_10px_rgba(234,179,8,0.8)] animate-bounce" />
                             )}
-                            <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 shadow-xl flex items-center justify-center bg-[#1e293b] theme-clear:bg-white overflow-hidden ${place === 1 ? 'border-yellow-400 shadow-yellow-500/50' :
-                                place === 2 ? 'border-gray-300 shadow-gray-400/50 theme-clear:border-slate-300' : 'border-orange-400 shadow-orange-500/50'
+                            <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 shadow-xl flex items-center justify-center bg-[#1e293b] [.theme-clear_&]:bg-white overflow-hidden ${place === 1 ? 'border-yellow-400 shadow-yellow-500/50' :
+                                place === 2 ? 'border-gray-300 shadow-gray-400/50 [.theme-clear_&]:border-slate-400' : 'border-orange-400 shadow-orange-500/50'
                                 }`}>
                                 {/* Prioritize icon/alias if available */}
-                                <span className="text-xl sm:text-2xl font-bold text-white theme-clear:text-slate-800">
+                                <span className="text-xl sm:text-2xl font-bold text-white [.theme-clear_&]:text-slate-800">
                                     {p.alias || p.name.substring(0, 2).toUpperCase()}
                                 </span>
                             </div>
-                            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-black/80 theme-clear:bg-white theme-clear:text-slate-700 theme-clear:border-slate-200 rounded text-[10px] text-white whitespace-nowrap border border-white/20">
+                            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-black/80 [.theme-clear_&]:bg-white [.theme-clear_&]:text-slate-700 [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-sm rounded text-[10px] text-white whitespace-nowrap border border-white/20">
                                 {place === 1 ? 'Champion' : place === 2 ? 'Runner Up' : 'Third'}
                             </div>
                         </motion.div>
@@ -95,10 +95,10 @@ export function Podium({ participants, title = "Champions Podium", subtitle }: P
                             </div>
 
                             {/* Info Card on Base */}
-                            <div className="absolute bottom-4 left-0 right-0 px-2 text-center text-white theme-clear:text-white drop-shadow-md">
+                            <div className="absolute bottom-4 left-0 right-0 px-2 text-center text-white drop-shadow-md">
                                 <div className="font-bold text-sm sm:text-base truncate">{p.name}</div>
                                 <div className="text-xs opacity-90">{p.label}</div>
-                                <div className="mt-2 inline-block px-2 py-0.5 bg-black/30 theme-clear:bg-white/20 rounded text-xs font-mono border border-white/10 theme-clear:border-white/30">
+                                <div className="mt-2 inline-block px-2 py-0.5 bg-black/30 [.theme-clear_&]:bg-white/40 rounded text-xs font-mono border border-white/10 [.theme-clear_&]:border-white/50">
                                     {typeof p.score === 'number' && !Number.isInteger(p.score) ? p.score.toFixed(1) : p.score} XP
                                 </div>
                             </div>
