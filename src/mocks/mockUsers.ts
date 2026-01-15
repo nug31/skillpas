@@ -50,6 +50,9 @@ export const mockUsers: User[] = [
     // Admin account (can edit all departments)
     { id: 'u-admin', username: 'admin', password: '123', name: 'Administrator', role: 'admin' },
 
+    // HOD Coordinator (can edit all departments)
+    { id: 'u-koord-hod', username: 'koord_hod', password: '123', name: 'Aprilia Rahayu Wilujeng, S.Pd Gr', role: 'admin' },
+
     // HOD Accounts from user request
     { id: 'hod-tsm', username: 'hod_tsm', password: '123', name: 'Okxy Ixganda, S.Pd', role: 'hod', jurusan_id: JURUSAN_IDS.TSM },
     { id: 'hod-tkr', username: 'hod_tkr', password: '123', name: 'Abdillah Putra, A.Md', role: 'hod', jurusan_id: JURUSAN_IDS.TKR },
