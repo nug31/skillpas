@@ -373,7 +373,20 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
             {/* Student Race uses the class-filtered list, ignoring the table level filter */}
             <StudentRace students={classFilteredStudents} jurusanName={jurusan.nama_jurusan} />
 
-            <LevelTable levels={levels} jurusanId={jurusan.id} onUpdateCriteria={handleUpdateCriteria} isTeacher={isTeacher} />
+            {(() => {
+              const canEditCriteria = user?.role === 'admin' ||
+                ((user?.role === 'hod' || user?.role === 'teacher_produktif') && user?.jurusan_id === jurusan.id);
+
+              return (
+                <LevelTable
+                  levels={levels}
+                  jurusanId={jurusan.id}
+                  onUpdateCriteria={handleUpdateCriteria}
+                  isTeacher={isTeacher}
+                  allowEdit={canEditCriteria}
+                />
+              );
+            })()}
 
             {user?.role !== 'student' && (
               <div className="card-glass rounded-xl shadow-sm p-6">

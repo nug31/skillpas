@@ -158,10 +158,11 @@ interface LevelTableProps {
   levels: LevelSkill[];
   jurusanId?: string; // optional - used when editing per-jurusan descriptions
   onUpdateCriteria?: (levelId: string, criteria: string[]) => Promise<void> | void; // Changed from onUpdateHasil to onUpdateCriteria
-  isTeacher?: boolean; // role-based access control
+  isTeacher?: boolean; // role-based access control (general visibility)
+  allowEdit?: boolean; // explicit permission to edit criteria
 }
 
-export function LevelTable({ levels, jurusanId, onUpdateCriteria, isTeacher = false }: LevelTableProps) {
+export function LevelTable({ levels, jurusanId, onUpdateCriteria, isTeacher = false, allowEdit = false }: LevelTableProps) {
   return (
     <div className="card-glass rounded-xl shadow-sm overflow-hidden">
       <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700">
@@ -188,7 +189,7 @@ export function LevelTable({ levels, jurusanId, onUpdateCriteria, isTeacher = fa
                   <div className="text-xs font-semibold text-[color:var(--text-muted)] mb-1">Kriteria:</div>
                   <LevelCriteriaCell
                     level={level}
-                    allowEdit={isTeacher && !!jurusanId && !!onUpdateCriteria}
+                    allowEdit={allowEdit && !!jurusanId && !!onUpdateCriteria}
                     onUpdate={onUpdateCriteria}
                   />
                 </div>
@@ -242,7 +243,7 @@ export function LevelTable({ levels, jurusanId, onUpdateCriteria, isTeacher = fa
                 <td className="px-6 py-4">
                   <LevelCriteriaCell
                     level={level}
-                    allowEdit={isTeacher && !!jurusanId && !!onUpdateCriteria}
+                    allowEdit={allowEdit && !!jurusanId && !!onUpdateCriteria}
                     onUpdate={onUpdateCriteria}
                   />
                 </td>
