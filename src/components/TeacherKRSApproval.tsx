@@ -57,7 +57,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
             if (userRole === 'teacher_produktif' || userRole === 'teacher') {
                 statusMatch = s.status === 'pending_produktif' || s.status === 'pending_wali' || s.status === 'scheduled';
             } else if (userRole === 'wali_kelas') {
-                statusMatch = s.status === 'pending_wali' || s.status === 'pending_produktif' || s.status === 'scheduled';
+                statusMatch = s.status === 'pending_wali' || s.status === 'pending_produktif';
             } else if (userRole === 'hod') {
                 statusMatch = s.status === 'pending_hod' || s.status === 'pending_wali' || s.status === 'scheduled';
             } else if (userRole === 'admin') {
@@ -168,16 +168,18 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                         <Clock className="w-4 h-4" />
                         Pengajuan
                     </button>
-                    <button
-                        onClick={() => setActiveTab('grading')}
-                        className={`px-8 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeTab === 'grading'
-                            ? 'bg-indigo-600 text-white shadow-lg'
-                            : 'text-slate-400 hover:text-white'
-                            }`}
-                    >
-                        <Award className="w-4 h-4" />
-                        Penilaian Ujian
-                    </button>
+                    {['teacher_produktif', 'hod', 'admin', 'teacher'].includes(userRole) && (
+                        <button
+                            onClick={() => setActiveTab('grading')}
+                            className={`px-8 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeTab === 'grading'
+                                ? 'bg-indigo-600 text-white shadow-lg'
+                                : 'text-slate-400 hover:text-white'
+                                }`}
+                        >
+                            <Award className="w-4 h-4" />
+                            Penilaian Ujian
+                        </button>
+                    )}
                 </div>
 
                 {loading ? (

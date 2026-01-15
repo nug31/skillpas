@@ -291,7 +291,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
       if (userRole === 'teacher_produktif' || userRole === 'teacher') {
         statusMatch = s.status === 'pending_produktif' || s.status === 'pending_wali' || s.status === 'scheduled';
       } else if (userRole === 'wali_kelas') {
-        statusMatch = s.status === 'pending_wali' || s.status === 'pending_produktif' || s.status === 'scheduled';
+        statusMatch = s.status === 'pending_wali' || s.status === 'pending_produktif';
       } else if (userRole === 'hod') {
         statusMatch = s.status === 'pending_hod' || s.status === 'pending_wali' || s.status === 'scheduled';
       } else if (userRole === 'admin') {
