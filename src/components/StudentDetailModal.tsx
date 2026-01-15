@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { X, Check, Clock, Pencil, Save, TrendingUp, Download, CreditCard } from 'lucide-react';
 import type { StudentListItem, LevelSkill, StudentDiscipline } from '../types';
 import { generateCertificate } from '../lib/certificateGenerator';
+import { supabase, isMockMode } from '../lib/supabase';
 import { mockDiscipline } from '../mocks/mockData';
 import { useAuth } from '../contexts/AuthContext';
 import formatClassLabel from '../lib/formatJurusan';
@@ -34,6 +35,40 @@ export function StudentDetailModal({
   // Edit states for discipline
   const [editAttendance, setEditAttendance] = useState(0);
   const [editAttitude, setEditAttitude] = useState<{ aspect: string, score: number }[]>([]);
+
+  // HOD Name state
+  const [hodName, setHodName] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    // Fetch HOD name based on student.jurusan_id
+    const fetchHOD = async () => {
+      if (!student.jurusan_id) return;
+
+      // Mock Mode: check if we have mock HOD data (hardcoded fallback or extends mockData logic)
+      // For simplicity in mock, we might just leave undefined or use a mock name if needed.
+      // But the user specific asked to "ambil dari database saja" which implies real DB usage.
+
+      if (!isMockMode) {
+        try {
+          const { data, error } = await supabase
+            .from('users')
+            .select('name')
+            .eq('role', 'hod')
+            .eq('jurusan_id', student.jurusan_id)
+            .single();
+
+          if (data && data.name) {
+            setHodName(data.name);
+          } else if (error) {
+            console.error("Error fetching HOD:", error);
+          }
+        } catch (err) {
+          console.error("Failed to fetch HOD", err);
+        }
+      }
+    };
+    fetchHOD();
+  }, [student.jurusan_id]);
 
   useEffect(() => {
     // Load discipline data
@@ -535,7 +570,8 @@ export function StudentDetailModal({
                                     unitKompetensi: entry.unit_kompetensi,
                                     level: lvl?.nama_level || 'Advanced',
                                     tanggal: entry.tanggal,
-                                    penilai: entry.penilai
+                                    penilai: entry.penilai,
+                                    hodName: hodName
                                   })}
                                   className="ml-auto inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-indigo-500/10 hover:bg-indigo-600 text-indigo-400 hover:text-white rounded-lg transition-all text-[10px] font-black uppercase ring-1 ring-indigo-500/20 hover:ring-0"
                                   title="Unduh Sertifikat PDF"

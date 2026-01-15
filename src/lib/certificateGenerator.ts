@@ -10,6 +10,7 @@ export interface CertificateData {
     level: string;
     tanggal: string;
     penilai: string;
+    hodName?: string;
 }
 
 const loadImage = (url: string): Promise<HTMLImageElement> => {
@@ -127,14 +128,16 @@ export const generateCertificate = async (data: CertificateData) => {
 
     // Titles
     doc.text('Kepala Sekolah,', sigRightX, sigY, { align: 'center' });
-    doc.text(`Kajur ${data.jurusan},`, sigLeftX, sigY, { align: 'center' });
+    doc.text(`HOD ${data.jurusan},`, sigLeftX, sigY, { align: 'center' });
 
     // Names (Bottom, underlined or in parens)
     const nameY = sigY + 20;
 
     doc.setFont('helvetica', 'bold');
     doc.text('Lispiyatmini, M.Pd', sigRightX, nameY, { align: 'center' });
-    doc.text('( ................................. )', sigLeftX, nameY, { align: 'center' }); // Placeholder for HOD if name unknown
+    // Dynamic HOD Name or Placeholder
+    const hodNameDisplay = data.hodName ? data.hodName : '( ................................. )';
+    doc.text(hodNameDisplay, sigLeftX, nameY, { align: 'center' });
 
     // Disclaimer
     doc.setFont('helvetica', 'italic');

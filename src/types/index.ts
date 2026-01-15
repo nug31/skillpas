@@ -56,6 +56,7 @@ export interface StudentListItem {
   id: string;
   nama: string;
   kelas: string;
+  jurusan_id?: string;
   skor: number;
   poin: number;
   badge_name: BadgeLevel;
