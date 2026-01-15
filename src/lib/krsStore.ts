@@ -3,20 +3,26 @@ import mockData from '../mocks/mockData';
 import { supabase, isMockMode } from './supabase';
 import { notificationStore } from './notificationStore';
 
-const STORAGE_KEY = 'skillpas_krs_submissions';
-
 export const KRS_UPDATED_EVENT = 'krs-updated';
 
 export const krsStore = {
-    getSubmissions(): KRSSubmission[] {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (!saved) return [];
-        try {
-            return JSON.parse(saved);
-        } catch (e) {
-            console.error('Failed to parse KRS submissions', e);
+    async getSubmissions(): Promise<KRSSubmission[]> {
+        if (isMockMode) {
+            const saved = localStorage.getItem('skillpas_krs_submissions');
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        const { data, error } = await supabase
+            .from('krs')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('Failed to fetch KRS submissions', error);
             return [];
         }
+
+        return data as KRSSubmission[];
     },
 
     async getStudentScore(siswaId: string): Promise<number> {
@@ -35,29 +41,83 @@ export const krsStore = {
         }
     },
 
-    getStudentSubmission(siswaId: string): KRSSubmission | undefined {
-        const submissions = this.getSubmissions();
-        return submissions.find(s => s.siswa_id === siswaId);
+    async getStudentSubmission(siswaId: string): Promise<KRSSubmission | undefined> {
+        if (isMockMode) {
+            const submissions = await this.getSubmissions();
+            return submissions.find(s => s.siswa_id === siswaId);
+        }
+
+        const { data, error } = await supabase
+            .from('krs')
+            .select('*')
+            .eq('siswa_id', siswaId)
+            .maybeSingle();
+
+        if (error) return undefined;
+        return data as KRSSubmission;
     },
 
-    submitKRS(submission: Omit<KRSSubmission, 'status' | 'submitted_at' | 'updated_at'>): KRSSubmission {
-        const submissions = this.getSubmissions();
-        const existingIdx = submissions.findIndex(s => s.siswa_id === submission.siswa_id);
-
-        const newSubmission: KRSSubmission = {
-            ...submission,
+    async submitKRS(submission: Omit<KRSSubmission, 'status' | 'submitted_at' | 'updated_at'>): Promise<KRSSubmission | null> {
+        const newSubmission = {
+            siswa_id: submission.siswa_id,
+            siswa_nama: submission.siswa_nama,
+            kelas: submission.kelas,
+            jurusan_id: submission.jurusan_id,
+            items: submission.items,
             status: 'pending_produktif',
             submitted_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
+            notes: ''
         };
 
-        if (existingIdx >= 0) {
-            submissions[existingIdx] = newSubmission;
-        } else {
-            submissions.push(newSubmission);
+        if (isMockMode) {
+            const submissions = await this.getSubmissions();
+            const existingIdx = submissions.findIndex(s => s.siswa_id === submission.siswa_id);
+            const mockSub = { ...newSubmission, id: submission.id || `krs-${Date.now()}` } as KRSSubmission; // Cast to satisfy type
+
+            if (existingIdx >= 0) {
+                submissions[existingIdx] = mockSub;
+            } else {
+                submissions.push(mockSub);
+            }
+            localStorage.setItem('skillpas_krs_submissions', JSON.stringify(submissions));
+            this.notifyUpdate();
+
+            notificationStore.actions.addNotification({
+                type: 'success',
+                title: 'KRS Terkirim',
+                message: `KRS untuk ${submission.siswa_nama} telah berhasil diajukan ke Guru Produktif (Mock).`,
+            });
+
+            return mockSub;
         }
 
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
+        // Check if exists
+        const { data: existing } = await supabase.from('krs').select('id').eq('siswa_id', submission.siswa_id).maybeSingle();
+
+        let result;
+        if (existing) {
+            const { data, error } = await supabase
+                .from('krs')
+                .update({
+                    ...newSubmission,
+                    status: 'pending_produktif'
+                })
+                .eq('id', existing.id)
+                .select()
+                .single();
+            if (error) { console.error(error); return null; }
+            result = data;
+        } else {
+            const { data, error } = await supabase
+                .from('krs')
+                .insert(newSubmission)
+                .select()
+                .single();
+            if (error) { console.error(error); return null; }
+            result = data;
+        }
+
         this.notifyUpdate();
 
         notificationStore.actions.addNotification({
@@ -66,46 +126,67 @@ export const krsStore = {
             message: `KRS untuk ${submission.siswa_nama} telah berhasil diajukan ke Guru Produktif.`,
         });
 
-        return newSubmission;
+        return result as KRSSubmission;
     },
 
-    approveKRS(submissionId: string, role: string, notes?: string, examDate?: string): boolean {
-        const submissions = this.getSubmissions();
-        const idx = submissions.findIndex(s => s.id === submissionId);
-        if (idx === -1) return false;
+    async approveKRS(submissionId: string, role: string, notes?: string, examDate?: string): Promise<boolean> {
+        let submission: KRSSubmission | undefined;
 
-        const submission = submissions[idx];
-        const now = new Date().toISOString();
-
-        if (role === 'teacher_produktif' && submission.status === 'pending_produktif') {
-            submission.status = 'pending_wali';
-            submission.guru_produktif_approved_at = now;
-        } else if (role === 'wali_kelas' && submission.status === 'pending_wali') {
-            submission.status = 'pending_hod';
-            submission.wali_kelas_approved_at = now;
-        } else if (role === 'hod' && submission.status === 'pending_hod') {
-            submission.status = 'approved';
-            submission.hod_approved_at = now;
-            if (examDate) {
-                submission.status = 'scheduled';
-                submission.exam_date = examDate;
-            }
+        if (isMockMode) {
+            const subs = await this.getSubmissions();
+            submission = subs.find(s => s.id === submissionId);
         } else {
-            return false; // Invalid role or status for approval
+            const { data } = await supabase.from('krs').select('*').eq('id', submissionId).single();
+            if (data) submission = data as KRSSubmission;
         }
 
-        if (notes) submission.notes = notes;
-        submission.updated_at = now;
+        if (!submission) return false;
 
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
+        const now = new Date().toISOString();
+        const updates: any = { updated_at: now };
+
+        if (role === 'teacher_produktif' && submission.status === 'pending_produktif') {
+            updates.status = 'pending_wali';
+            updates.guru_produktif_approved_at = now;
+        } else if (role === 'wali_kelas' && submission.status === 'pending_wali') {
+            updates.status = 'pending_hod';
+            updates.wali_kelas_approved_at = now;
+        } else if (role === 'hod' && submission.status === 'pending_hod') {
+            updates.status = 'approved';
+            updates.hod_approved_at = now;
+            if (examDate) {
+                updates.status = 'scheduled';
+                updates.exam_date = examDate;
+            }
+        } else {
+            return false;
+        }
+
+        if (notes) updates.notes = notes;
+
+        if (isMockMode) {
+            const subs = await this.getSubmissions();
+            const idx = subs.findIndex(s => s.id === submissionId);
+            if (idx !== -1) {
+                subs[idx] = { ...subs[idx], ...updates };
+                localStorage.setItem('skillpas_krs_submissions', JSON.stringify(subs));
+            }
+        } else {
+            const { error } = await supabase.from('krs').update(updates).eq('id', submissionId);
+            if (error) {
+                console.error("Error approving KRS", error);
+                return false;
+            }
+        }
+
         this.notifyUpdate();
 
         let notifTitle = 'KRS Disetujui';
         let notifMsg = `KRS ${submission.siswa_nama} telah disetujui di tahap ${role.replace('_', ' ')}.`;
 
-        if (submission.status === 'scheduled') {
+        if (updates.status === 'scheduled') {
             notifTitle = 'Jadwal Ujian Ditetapkan';
-            notifMsg = `Ujian KRS ${submission.siswa_nama} dijadwalkan pada ${submission.exam_date}.`;
+            notifMsg = `Ujian KRS ${submission.siswa_nama} dijadwalkan pada ${updates.exam_date}.`;
         }
 
         notificationStore.actions.addNotification({
@@ -117,75 +198,114 @@ export const krsStore = {
         return true;
     },
 
-    rejectKRS(submissionId: string, notes: string): boolean {
-        const submissions = this.getSubmissions();
-        const idx = submissions.findIndex(s => s.id === submissionId);
-        if (idx === -1) return false;
+    async rejectKRS(submissionId: string, notes: string): Promise<boolean> {
+        if (isMockMode) {
+            const subs = await this.getSubmissions();
+            const idx = subs.findIndex(s => s.id === submissionId);
+            if (idx !== -1) {
+                subs[idx].status = 'rejected';
+                subs[idx].notes = notes;
+                subs[idx].updated_at = new Date().toISOString();
+                localStorage.setItem('skillpas_krs_submissions', JSON.stringify(subs));
+            }
+        } else {
+            const { error } = await supabase
+                .from('krs')
+                .update({
+                    status: 'rejected',
+                    notes: notes,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', submissionId);
 
-        submissions[idx].status = 'rejected';
-        submissions[idx].notes = notes;
-        submissions[idx].updated_at = new Date().toISOString();
+            if (error) return false;
+        }
 
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
+        let name = 'Siswa';
+        if (!isMockMode) {
+            const { data } = await supabase.from('krs').select('siswa_nama').eq('id', submissionId).maybeSingle();
+            if (data) name = data.siswa_nama;
+        }
+
         this.notifyUpdate();
 
         notificationStore.actions.addNotification({
             type: 'error',
             title: 'KRS Ditolak',
-            message: `KRS ${submissions[idx].siswa_nama} telah ditolak. Catatan: ${notes}`,
+            message: `KRS ${name} telah ditolak. Catatan: ${notes}`,
         });
 
         return true;
     },
 
     async completeKRS(submissionId: string, score: number, result: 'Lulus' | 'Tidak Lulus', notes?: string, examinerName?: string): Promise<boolean> {
-        const submissions = this.getSubmissions();
-        const idx = submissions.findIndex(s => s.id === submissionId);
-        if (idx === -1) return false;
+        let submission: KRSSubmission | undefined;
+        // Fetch fresh data
+        if (isMockMode) {
+            const subs = await this.getSubmissions();
+            submission = subs.find(s => s.id === submissionId);
+        } else {
+            const { data } = await supabase.from('krs').select('*').eq('id', submissionId).single();
+            if (data) submission = data as KRSSubmission;
+        }
 
-        const submission = submissions[idx];
-        if (submission.status !== 'scheduled') return false;
+        if (!submission || submission.status !== 'scheduled') return false;
 
         const now = new Date().toISOString();
-        const isoDate = now.split('T')[0]; // YYYY-MM-DD for database
+        const isoDate = now.split('T')[0];
         const displayDate = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
 
-        submission.status = 'completed';
-        submission.updated_at = now;
-        submission.final_score = score;
-        delete submission.exam_date;
-        if (notes) submission.notes = notes;
+        const krsUpdates: any = {
+            status: 'completed',
+            updated_at: now,
+            final_score: score,
+            exam_date: null,
+            notes: notes || submission.notes
+        };
 
-        // 1. Update Student Score and Poin
+        // 1. Update KRS
+        if (isMockMode) {
+            const subs = await this.getSubmissions();
+            const idx = subs.findIndex(s => s.id === submissionId);
+            if (idx !== -1) {
+                subs[idx] = { ...subs[idx], ...krsUpdates };
+                delete subs[idx].exam_date;
+                localStorage.setItem('skillpas_krs_submissions', JSON.stringify(subs));
+            }
+        } else {
+            await supabase.from('krs').update(krsUpdates).eq('id', submissionId);
+        }
+
+        // 2. Logic for Skill Update
         const levelIdx = mockData.mockLevels.findIndex(l => score >= l.min_skor && score <= l.max_skor);
         const levelObj = levelIdx >= 0 ? mockData.mockLevels[levelIdx] : mockData.mockLevels[0];
-        const pointsAwarded = Math.floor(score / 2); // Award half the score as XP points
+        const pointsAwarded = Math.floor(score / 2);
 
         if (isMockMode) {
-            const skillIdx = mockData.mockSkillSiswa.findIndex(s => s.siswa_id === submission.siswa_id);
+            const skillIdx = mockData.mockSkillSiswa.findIndex(s => s.siswa_id === submission!.siswa_id);
             if (skillIdx >= 0) {
                 mockData.mockSkillSiswa[skillIdx].skor = score;
                 mockData.mockSkillSiswa[skillIdx].poin += pointsAwarded;
                 mockData.mockSkillSiswa[skillIdx].level_id = levelObj.id;
                 mockData.mockSkillSiswa[skillIdx].updated_at = now;
             }
+            // Add history
+            mockData.mockCompetencyHistory.push({
+                id: `hist-${Date.now()}`,
+                siswa_id: submission.siswa_id,
+                level_id: levelObj.id,
+                unit_kompetensi: (submission.items || []).join(', '),
+                aktivitas_pembuktian: 'Ujian KRS Terverifikasi',
+                penilai: examinerName || 'Guru Produktif',
+                hasil: result,
+                tanggal: displayDate,
+                catatan: notes || ''
+            });
+
         } else {
-            // Resolve the actual siswa UUID from the database using name
-            const { data: siswaRecord, error: siswaLookupError } = await supabase
-                .from('siswa')
-                .select('id')
-                .eq('nama', submission.siswa_nama)
-                .maybeSingle();
+            const dbSiswaId = submission.siswa_id;
 
-            if (siswaLookupError || !siswaRecord) {
-                console.error('Failed to find siswa in Supabase:', siswaLookupError || 'No matching record');
-                return false;
-            }
-
-            const dbSiswaId = siswaRecord.id;
-            console.log(`Resolved siswa_id: ${submission.siswa_id} -> ${dbSiswaId} for ${submission.siswa_nama}`);
-
-            // Supabase Persistence - use resolved ID
+            // Update skill_siswa
             const { error: skillError } = await supabase
                 .from('skill_siswa')
                 .update({
@@ -195,93 +315,37 @@ export const krsStore = {
                 })
                 .eq('siswa_id', dbSiswaId);
 
-            if (skillError) {
-                console.error('Failed to update skill_siswa in Supabase', skillError);
-                return false;
+            // Update Poin
+            if (!skillError) {
+                const { data: currentSkill } = await supabase.from('skill_siswa').select('poin').eq('siswa_id', dbSiswaId).maybeSingle();
+                const currentPoin = currentSkill?.poin || 0;
+                await supabase.from('skill_siswa').update({ poin: currentPoin + pointsAwarded }).eq('siswa_id', dbSiswaId);
             }
 
-            // Increment points separately since it's a relative update
-            const { data: currentSkill } = await supabase.from('skill_siswa').select('poin').eq('siswa_id', dbSiswaId).maybeSingle();
-            const currentPoin = currentSkill?.poin || 0;
-            await supabase.from('skill_siswa').update({ poin: currentPoin + pointsAwarded }).eq('siswa_id', dbSiswaId);
-
-            // Store resolved ID for competency history insert
-            (submission as any)._resolvedSiswaId = dbSiswaId;
-        }
-
-        // 2. Add to Competency History
-        // Use resolved ID for Supabase, original for mock
-        const resolvedSiswaId = isMockMode ? submission.siswa_id : (submission as any)._resolvedSiswaId;
-
-        // For Supabase, also get the correct level_id from the database
-        let dbLevelId = levelObj.id;
-        if (!isMockMode) {
+            // Get DB Level ID
+            let dbLevelId = levelObj.id;
             const { data: levelRecord } = await supabase
                 .from('level_skill')
                 .select('id')
                 .gte('max_skor', score)
                 .lte('min_skor', score)
                 .maybeSingle();
+            if (levelRecord) dbLevelId = levelRecord.id;
 
-            if (levelRecord) {
-                dbLevelId = levelRecord.id;
-            } else {
-                // Fallback: try to find by score range
-                const { data: allLevels } = await supabase
-                    .from('level_skill')
-                    .select('id, min_skor, max_skor')
-                    .order('urutan');
+            const historyEntry = {
+                siswa_id: dbSiswaId,
+                level_id: dbLevelId,
+                unit_kompetensi: (submission.items || []).join(', '), // Should be Array validation
+                aktivitas_pembuktian: 'Ujian KRS Terverifikasi',
+                penilai: examinerName || 'Guru Produktif',
+                hasil: result,
+                tanggal: isoDate,
+                catatan: notes || ''
+            };
 
-                const matchedLevel = (allLevels || []).find((l: any) => score >= l.min_skor && score <= l.max_skor);
-                if (matchedLevel) {
-                    dbLevelId = matchedLevel.id;
-                }
-            }
+            await supabase.from('competency_history').insert(historyEntry);
         }
 
-        const historyEntry = {
-            siswa_id: resolvedSiswaId,
-            level_id: dbLevelId,
-            unit_kompetensi: submission.items.join(', '),
-            aktivitas_pembuktian: 'Ujian KRS Terverifikasi',
-            penilai: examinerName || 'Guru Produktif',
-            hasil: result,
-            tanggal: isMockMode ? displayDate : isoDate,
-            catatan: notes || ''
-        };
-
-        if (isMockMode) {
-            mockData.mockCompetencyHistory.push({
-                id: `hist-${Date.now()}`,
-                ...historyEntry
-            });
-        } else {
-            console.log('Inserting competency_history:', historyEntry);
-            const { error: histError } = await supabase
-                .from('competency_history')
-                .insert(historyEntry);
-
-            if (histError) {
-                console.error('Failed to insert competency history in Supabase', histError);
-                // Continue anyway since skill was updated
-            } else {
-                console.log('Successfully inserted competency_history entry!');
-            }
-        }
-
-        // 3. Update Discipline (Engagement) - Mock only for now
-        if (isMockMode) {
-            const discIdx = mockData.mockDiscipline.findIndex(d => d.siswa_id === submission.siswa_id);
-            if (discIdx >= 0) {
-                mockData.mockDiscipline[discIdx].attitude_scores = mockData.mockDiscipline[discIdx].attitude_scores.map(s => ({
-                    ...s,
-                    score: Math.min(s.score + 5, 100)
-                }));
-                mockData.mockDiscipline[discIdx].updated_at = now;
-            }
-        }
-
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
         this.notifyUpdate();
 
         notificationStore.actions.addNotification({
@@ -298,9 +362,6 @@ export const krsStore = {
     },
 
     async notifyWalas(kelas: string, siswaNama: string, examDate: string) {
-        // In real app, we fetch Walas by class
-        // For now, if mock mode, we find from mockUsers
-        // If production, we use the notifications table
         const title = 'Jadwal Ujian Siswa';
         const message = `Siswa Anda, ${siswaNama} (${kelas}), telah dijadwalkan ujian pada ${examDate}.`;
 
@@ -316,7 +377,6 @@ export const krsStore = {
                 });
             }
         } else {
-            // Find Walas ID from users table where role='wali_kelas' and kelas contains current kelas
             const { data: walasUsers } = await supabase
                 .from('users')
                 .select('id')

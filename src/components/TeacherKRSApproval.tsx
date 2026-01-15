@@ -38,9 +38,9 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
         return () => window.removeEventListener(KRS_UPDATED_EVENT, loadSubmissions);
     }, [user.id, userRole, activeTab]);
 
-    const loadSubmissions = () => {
+    const loadSubmissions = async () => {
         setLoading(true);
-        const all = krsStore.getSubmissions();
+        const all = await krsStore.getSubmissions();
         const userDeptId = user.jurusan_id;
 
         // Filter based on role, department, and class
@@ -88,7 +88,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
         setLoading(false);
     };
 
-    const handleApprove = (id: string | KRSSubmission) => {
+    const handleApprove = async (id: string | KRSSubmission) => {
         const submissionId = typeof id === 'string' ? id : id.id;
         const sub = typeof id === 'string' ? submissions.find(s => s.id === id) : id;
 
@@ -105,18 +105,18 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
             actingRole = 'teacher_produktif';
         }
 
-        krsStore.approveKRS(submissionId, actingRole, notes, examDate);
+        await krsStore.approveKRS(submissionId, actingRole, notes, examDate);
         setSelectedSub(null);
         setExamDate('');
         setNotes('');
     };
 
-    const handleReject = (id: string) => {
+    const handleReject = async (id: string) => {
         if (!notes) {
             alert("Harap berikan catatan alasan penolakan.");
             return;
         }
-        krsStore.rejectKRS(id, notes);
+        await krsStore.rejectKRS(id, notes);
         setSelectedSub(null);
         setNotes('');
     };

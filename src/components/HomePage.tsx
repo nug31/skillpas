@@ -314,7 +314,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
 
   async function loadPendingKRS() {
     if (!user || user.role === 'student') return;
-    const all = krsStore.getSubmissions();
+    const all = await krsStore.getSubmissions();
     const userRole = user.role;
     const userDeptId = user.jurusan_id;
     const pendingItems = all.filter((s: KRSSubmission) => {
@@ -357,9 +357,9 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
 
   useEffect(() => {
     if (user?.role === 'student') {
-      const checkExamSchedule = () => {
+      const checkExamSchedule = async () => {
         const userId = user.name === 'Siswa Mesin' ? 'siswa_mesin' : user.id; // handle specific mock mapping
-        const sub = krsStore.getStudentSubmission(userId);
+        const sub = await krsStore.getStudentSubmission(userId);
         if (sub && sub.status === 'scheduled' && sub.exam_date) {
           setScheduledExam({
             date: sub.exam_date,

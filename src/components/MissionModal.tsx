@@ -66,8 +66,8 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
     const storageKey = `skillpas_krs_${siswaId}`;
 
     useEffect(() => {
-        const loadKRS = () => {
-            const sub = krsStore.getStudentSubmission(siswaId);
+        const loadKRS = async () => {
+            const sub = await krsStore.getStudentSubmission(siswaId);
             setSubmission(sub || null);
             if (sub) {
                 setSelectedKRS(sub.items);
@@ -162,13 +162,13 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
         localStorage.setItem(storageKey, JSON.stringify(newKRS));
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (selectedKRS.length === 0) {
             alert("Pilih minimal satu kriteria kompetensi.");
             return;
         }
 
-        krsStore.submitKRS({
+        await krsStore.submitKRS({
             id: submission?.id || Math.random().toString(36).substr(2, 9),
             siswa_id: siswaId,
             siswa_nama: user?.name || 'Siswa',
