@@ -587,27 +587,29 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                       </button>
 
                       {/* Info Section */}
-                      <div className="flex-1 min-w-0 text-center md:text-left z-10">
-                        <div className="flex flex-col md:flex-row items-center md:items-end gap-3 md:gap-4 mb-1">
+                      <div className="flex-1 min-w-0 text-center md:text-left z-10 w-full">
+                        <div className="flex flex-col md:flex-row items-center md:items-end gap-3 md:gap-4 mb-2">
                           <h2 className="text-2xl md:text-4xl font-bold text-white tracking-tight drop-shadow-sm leading-none whitespace-nowrap">
                             {user?.name || 'Guest User'}
                           </h2>
-                          <span className="px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-[10px] md:text-xs font-bold text-indigo-100 backdrop-blur-md uppercase tracking-wider shadow-sm mb-1">
+                          <span className="px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-[10px] md:text-xs font-bold text-indigo-100 backdrop-blur-md uppercase tracking-wider shadow-sm mb-0.5">
                             {(() => {
-                              const roleLabels: Record<string, string> = {
-                                admin: 'Administrator',
-                                hod: 'Head of Department',
-                                wali_kelas: 'Wali Kelas',
-                                teacher_produktif: 'Guru Produktif',
-                                teacher: 'Teacher',
-                                student: 'Siswa'
-                              };
-                              return roleLabels[user?.role || ''] || 'Pengajar';
+                              let label = 'Pengajar';
+                              if (user?.role === 'admin') label = 'Administrator';
+                              if (user?.role === 'wali_kelas') label = 'Wali Kelas';
+                              if (user?.role === 'teacher_produktif') label = 'Guru Produktif';
+
+                              if (user?.role === 'hod') {
+                                const userJurusanId = (user as any)?.jurusan_id;
+                                const jurusan = jurusanList.find(j => j.id === userJurusanId);
+                                label = jurusan ? `HOD ${jurusan.nama_jurusan}` : 'HOD';
+                              }
+                              return label;
                             })()}
                           </span>
                         </div>
 
-                        <p className="text-slate-300/80 text-xs md:text-sm leading-relaxed max-w-lg mx-auto md:mx-0 hidden sm:block">
+                        <p className="text-slate-300/80 text-xs md:text-sm leading-relaxed w-full hidden md:block">
                           Selamat datang di Dashboard Skill Passport. Pantau kompetensi siswa secara real-time.
                         </p>
                       </div>
