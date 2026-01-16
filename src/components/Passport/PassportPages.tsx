@@ -114,13 +114,13 @@ export const PassportIdentityPage: React.FC<IdentityPageProps> = ({ siswa, jurus
                         </div>
                         <div>
                             <span className="block text-[10px] text-slate-500 uppercase">Jurusan / Major</span>
-                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 truncate">
+                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 leading-tight mb-1">
                                 {jurusanName}
                             </span>
                         </div>
                         <div>
                             <span className="block text-[10px] text-slate-500 uppercase">Wali Kelas / Homeroom Teacher</span>
-                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 truncate">
+                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 leading-tight mb-1">
                                 {walasName}
                             </span>
                         </div>
@@ -141,14 +141,14 @@ export const PassportIdentityPage: React.FC<IdentityPageProps> = ({ siswa, jurus
                     </div>
                 </div>
 
-                <div className="mt-auto mb-4">
-                    <span className="block text-[10px] text-slate-500 uppercase mb-2">Tanda Tangan Pemilik / Signature</span>
-                    <div className="h-16 border-b border-slate-800 flex items-end pb-2 font-handwriting text-2xl text-slate-600 rotate-[-2deg]">
+                <div className="mt-auto mb-1">
+                    <span className="block text-[10px] text-slate-500 uppercase mb-1">Tanda Tangan Pemilik / Signature</span>
+                    <div className="h-14 border-b border-slate-800 flex items-end pb-1 font-handwriting text-2xl text-slate-600 rotate-[-2deg]">
                         {siswa.nama}
                     </div>
                 </div>
 
-                <div className="text-[10px] text-center text-slate-400 leading-tight">
+                <div className="text-[9px] text-center text-slate-400 leading-tight">
                     <p>Paspor ini adalah dokumen resmi riwayat kompetensi siswa.</p>
                 </div>
             </div>

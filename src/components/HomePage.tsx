@@ -15,6 +15,21 @@ import { SkillCard } from './SkillCard';
 import { StudentHistoryModal } from './StudentHistoryModal';
 import { History } from 'lucide-react';
 
+// Simple helper to get a mock Walas name based on class
+function getWalasForClass(className?: string): string {
+  if (!className) return "Sri Wahyuni, S.Pd";
+  const cls = className.toUpperCase();
+  if (cls.includes('MESIN')) return "Budi Santoso, S.T.";
+  if (cls.includes('TKR')) return "Deni Prasetyo, S.Pd.";
+  if (cls.includes('TSM')) return "Rina Kurnia, S.Pd.";
+  if (cls.includes('ELIND')) return "Hendra Wijaya, S.T.";
+  if (cls.includes('LISTRIK')) return "Taufik Hidayat, S.T.";
+  if (cls.includes('KIMIA')) return "Sari Melati, S.Si.";
+  if (cls.includes('AKUNTANSI') || cls.includes('AK')) return "Dewi Susanti, S.E.";
+  if (cls.includes('HOTEL')) return "Mita Sari, S.Par.";
+  return "Sri Wahyuni, S.Pd";
+}
+
 interface HomePageProps {
   onSelectJurusan: (jurusan: Jurusan, classFilter?: string) => void;
   onOpenKRSApproval?: () => void;
@@ -42,6 +57,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [myHistory, setMyHistory] = useState<CompetencyHistory[]>([]);
   const [hodName, setHodName] = useState<string | undefined>(undefined);
+  const [walasName, setWalasName] = useState<string>('Sri Wahyuni, S.Pd');
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [pendingKRSCount, setPendingKRSCount] = useState(0);
   const [toApproveCount, setToApproveCount] = useState(0);
@@ -271,6 +287,21 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
 
           if (hodData) {
             setHodName(hodData.name);
+          }
+
+          // Fetch Walas (Homeroom Teacher)
+          const { data: walasData } = await supabase
+            .from('users')
+            .select('name')
+            .eq('role', 'wali_kelas')
+            .eq('kelas', student.kelas)
+            .maybeSingle();
+
+          if (walasData) {
+            setWalasName(walasData.name);
+          } else {
+            // Fallback
+            setWalasName(getWalasForClass(student.kelas));
           }
         } else {
           // No student record found in Supabase (unimported student)
@@ -772,7 +803,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             history={myHistory}
             levels={mockData.mockLevels} // Use mock levels or real levels depending on context, keeping as is for now
             hodName={hodName}
-            walasName="Sri Wahyuni, S.Pd" // Placeholder for now
+            walasName={walasName}
             avatarUrl={(user as any)?.avatar_url}
             photoUrl={(user as any)?.photo_url}
           />
