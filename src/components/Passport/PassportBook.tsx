@@ -30,7 +30,6 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
     // We'll generate an array of React Nodes.
     const history = siswa.riwayat_kompetensi || [];
     const stampsPerPage = 6;
-    const totalStampPages = Math.ceil(Math.max(history.length, 1) / stampsPerPage);
 
     const handleStampClick = (item: CompetencyHistory) => {
         const lvl = levels.find(l => l.id === item.level_id);
@@ -59,19 +58,33 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
     ];
 
     // Add Stamp Pages
-    for (let i = 0; i < totalStampPages; i++) {
-        pages.push(
-            <PassportStampsPage
-                key={`stamps-${i}`}
-                history={history}
-                startIndex={i * stampsPerPage}
-                itemsPerPage={stampsPerPage}
-                pageNumber={3 + i}
-                levels={levels}
-                onStampClick={handleStampClick}
-            />
-        );
-    }
+    // Add Stamp Pages grouped by Level
+    // Ensure levels are sorted (lowest to highest)
+    const sortedLevels = [...levels].sort((a, b) => a.min_skor - b.min_skor);
+
+    sortedLevels.forEach(level => {
+        const levelHistory = history.filter(h => h.level_id === level.id);
+
+        // Calculate pages needed for this level (at least 1 page if there are items, 
+        // OR optionally show 1 empty page per level to encourage progress?)
+        // Let's show at least 1 page per level even if empty, so students see what's next.
+        const levelPages = Math.max(1, Math.ceil(levelHistory.length / stampsPerPage));
+
+        for (let i = 0; i < levelPages; i++) {
+            pages.push(
+                <PassportStampsPage
+                    key={`stamps-${level.id}-${i}`}
+                    history={levelHistory}
+                    startIndex={i * stampsPerPage}
+                    itemsPerPage={stampsPerPage}
+                    pageNumber={pages.length + 1}
+                    levels={levels}
+                    onStampClick={handleStampClick}
+                    title={level.nama_level?.toUpperCase()}
+                />
+            );
+        }
+    });
 
     // Ensure even number of pages for back cover
     if (pages.length % 2 === 0) {

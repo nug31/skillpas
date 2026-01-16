@@ -163,16 +163,17 @@ interface StampsPageProps {
     pageNumber: number;
     levels: LevelSkill[];
     onStampClick: (item: CompetencyHistory) => void;
+    title?: string;
 }
 
-export const PassportStampsPage: React.FC<StampsPageProps> = ({ history, startIndex, itemsPerPage, pageNumber, levels, onStampClick }) => {
+export const PassportStampsPage: React.FC<StampsPageProps> = ({ history, startIndex, itemsPerPage, pageNumber, levels, onStampClick, title }) => {
     const pageItems = history.slice(startIndex, startIndex + itemsPerPage);
 
     return (
         <PassportPage pageNumber={pageNumber}>
             <div className="p-5 h-full">
                 <h3 className="text-center text-slate-400 text-xs font-bold uppercase mb-4 tracking-widest border-b border-slate-200 pb-2">
-                    Visa & Validasi Kompetensi
+                    {title || "Visa & Validasi Kompetensi"}
                 </h3>
 
                 <div className="grid grid-cols-2 gap-4 h-[350px] content-start">
