@@ -770,8 +770,11 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             studentKelas={myStats.className}
             jurusanName={jurusanList.find(j => j.id === user.jurusan_id)?.nama_jurusan || 'Teknik'}
             history={myHistory}
-            levels={mockData.mockLevels}
+            levels={mockData.mockLevels} // Use mock levels or real levels depending on context, keeping as is for now
             hodName={hodName}
+            walasName="Sri Wahyuni, S.Pd" // Placeholder for now
+            avatarUrl={(user as any)?.avatar_url}
+            photoUrl={(user as any)?.photo_url}
           />
         )}
       </div>
