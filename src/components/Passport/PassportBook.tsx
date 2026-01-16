@@ -30,24 +30,31 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
     // We'll generate an array of React Nodes.
     const history = siswa.riwayat_kompetensi || [];
     const stampsPerPage = 6;
+    const [selectedCompetency, setSelectedCompetency] = useState<CompetencyHistory | null>(null);
 
     const handleStampClick = (item: CompetencyHistory) => {
-        const lvl = levels.find(l => l.id === item.level_id);
-        const isLulus = item.hasil.toLowerCase() === 'lulus';
+        // Open detail modal instead of directly downloading
+        setSelectedCompetency(item);
+    };
 
+    const handleDownloadCertificate = () => {
+        if (!selectedCompetency) return;
+        const lvl = levels.find(l => l.id === selectedCompetency.level_id);
+        const isLulus = selectedCompetency.hasil.toLowerCase() === 'lulus';
         if (isLulus) {
             generateCertificate({
                 studentName: siswa.nama,
                 nisn: siswa.nisn || '-',
                 kelas: siswa.kelas,
                 jurusan: jurusanName,
-                unitKompetensi: item.unit_kompetensi,
+                unitKompetensi: selectedCompetency.unit_kompetensi,
                 level: lvl?.nama_level || 'Advanced',
-                tanggal: item.tanggal,
-                penilai: item.penilai,
+                tanggal: selectedCompetency.tanggal,
+                penilai: selectedCompetency.penilai,
                 hodName: hodName
             });
         }
+        setSelectedCompetency(null); // Close modal after download
     };
 
     // Construct pages array
@@ -213,6 +220,83 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
             <div className="absolute bottom-8 text-white/50 text-sm font-medium animate-pulse">
                 {spreadIndex === 0 ? "Click arrow to open passport" : "Flip pages to view history"}
             </div>
+
+            {/* Competency Detail Modal */}
+            <AnimatePresence>
+                {selectedCompetency && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 z-50 flex items-center justify-center bg-black/70 rounded-xl"
+                        onClick={() => setSelectedCompetency(null)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.8, opacity: 0 }}
+                            className="bg-white rounded-lg shadow-2xl w-80 max-w-[90%] p-6 text-slate-800 relative"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <button
+                                onClick={() => setSelectedCompetency(null)}
+                                className="absolute top-2 right-2 text-slate-400 hover:text-slate-600"
+                            >
+                                <X size={20} />
+                            </button>
+                            <h3 className="text-lg font-bold text-emerald-700 mb-4 border-b pb-2">
+                                Detail Kompetensi
+                            </h3>
+                            <div className="space-y-3 text-sm">
+                                <div>
+                                    <span className="block text-xs text-slate-400 uppercase">Unit Kompetensi</span>
+                                    <span className="font-medium">{selectedCompetency.unit_kompetensi}</span>
+                                </div>
+                                <div>
+                                    <span className="block text-xs text-slate-400 uppercase">Level</span>
+                                    <span className="font-medium">
+                                        {levels.find(l => l.id === selectedCompetency.level_id)?.nama_level || '-'}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span className="block text-xs text-slate-400 uppercase">Aktivitas Pembuktian</span>
+                                    <span className="font-medium">{selectedCompetency.aktivitas_pembuktian || '-'}</span>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="flex-1">
+                                        <span className="block text-xs text-slate-400 uppercase">Tanggal</span>
+                                        <span className="font-medium">{selectedCompetency.tanggal}</span>
+                                    </div>
+                                    <div className="flex-1">
+                                        <span className="block text-xs text-slate-400 uppercase">Hasil</span>
+                                        <span className={`font-bold ${selectedCompetency.hasil.toLowerCase() === 'lulus' ? 'text-emerald-600' : 'text-red-600'}`}>
+                                            {selectedCompetency.hasil}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span className="block text-xs text-slate-400 uppercase">Penilai</span>
+                                    <span className="font-medium">{selectedCompetency.penilai}</span>
+                                </div>
+                                {selectedCompetency.catatan && (
+                                    <div>
+                                        <span className="block text-xs text-slate-400 uppercase">Catatan</span>
+                                        <span className="font-medium italic">{selectedCompetency.catatan}</span>
+                                    </div>
+                                )}
+                            </div>
+                            {selectedCompetency.hasil.toLowerCase() === 'lulus' && (
+                                <button
+                                    onClick={handleDownloadCertificate}
+                                    className="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors"
+                                >
+                                    Download Sertifikat
+                                </button>
+                            )}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
