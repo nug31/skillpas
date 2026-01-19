@@ -114,6 +114,7 @@ export const mockSiswa: Siswa[] = [
   { id: 's-j8-user', nama: 'Siswa Perhotelan', kelas: 'XII HOTEL 1', jurusan_id: JURUSAN_IDS.HOTEL, nisn: '82345', wa_number: '628123456796', created_at: new Date().toISOString() },
   // --- New Student for 'siswa' login ---
   { id: 's-raka-new', nama: 'Raka Aditya', kelas: 'XII TKR 1', jurusan_id: JURUSAN_IDS.MESIN, nisn: '0012345678', wa_number: '628123456797', created_at: new Date().toISOString(), avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Raka', photo_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop' },
+  { id: 's-bayu-sapta', nama: 'Bayu Sapta', kelas: 'XII TKR 3', jurusan_id: JURUSAN_IDS.TKR, nisn: '0083581133', created_at: new Date().toISOString(), avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bayu', photo_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop' },
 ];
 
 export const mockSkillSiswa: SkillSiswa[] = [
@@ -221,6 +222,20 @@ export const mockDiscipline: import('../types').StudentDiscipline[] = [
       { aspect: 'Jujur', score: 75 },
       { aspect: 'Kerjasama', score: 85 },
       { aspect: 'Peduli', score: 80 }
+    ],
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: 'disc-s-bayu-sapta',
+    siswa_id: 's-bayu-sapta',
+    attendance_pcent: 92,
+    attendance_counts: { masuk: 175, izin: 3, sakit: 2, alfa: 0 },
+    attitude_scores: [
+      { aspect: 'Disiplin', score: 88 },
+      { aspect: 'Tanggung Jawab', score: 90 },
+      { aspect: 'Jujur', score: 85 },
+      { aspect: 'Kerjasama', score: 82 },
+      { aspect: 'Peduli', score: 85 }
     ],
     updated_at: new Date().toISOString()
   }

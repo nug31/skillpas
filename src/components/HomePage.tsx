@@ -203,8 +203,8 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             level: levelObj?.badge_name || 'Basic',
             levelColor: levelObj?.badge_color || '#94a3b8',
             className: student.kelas,
-            attendance_pcent: discipline?.attendance_pcent,
-            attendance_counts: discipline?.attendance_counts
+            attendance_pcent: discipline?.attendance_pcent ?? 100,
+            attendance_counts: discipline?.attendance_counts ?? { masuk: 0, izin: 0, sakit: 0, alfa: 0 }
           });
 
           // Mock history
@@ -267,13 +267,13 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             level: badge,
             levelColor: color,
             className: student.kelas,
-            attendance_pcent: discData?.attendance_pcent,
+            attendance_pcent: discData?.attendance_pcent ?? 100,
             attendance_counts: discData ? {
               masuk: discData.masuk,
               izin: discData.izin,
               sakit: discData.sakit,
               alfa: discData.alfa
-            } : undefined
+            } : { masuk: 0, izin: 0, sakit: 0, alfa: 0 }
           });
 
           // Fetch History
