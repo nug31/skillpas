@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { GraduationCap } from 'lucide-react';
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
-import type { Jurusan, KRSSubmission, CompetencyHistory } from '../types';
+import type { Jurusan, KRSSubmission, CompetencyHistory, StudentStats } from '../types';
 import { JurusanCard } from './JurusanCard';
 import { DashboardRace } from './DashboardRace';
 import { useAuth } from '../contexts/AuthContext';
@@ -42,15 +42,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
   const [raceData, setRaceData] = useState<Array<{ jurusan: Jurusan; averageSkor: number; studentCount: number }>>([]);
   const [loading, setLoading] = useState(true);
   const [triggerRace, setTriggerRace] = useState(0);
-  const [myStats, setMyStats] = useState<{
-    rank: number;
-    totalStudents: number;
-    score: number;
-    poin: number;
-    level: string;
-    levelColor: string;
-    className: string;
-  } | null>(null);
+  const [myStats, setMyStats] = useState<StudentStats | null>(null);
 
   const [showMissionModal, setShowMissionModal] = useState(false);
   const [showSkillCard, setShowSkillCard] = useState(false);
@@ -201,6 +193,8 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
 
           const levelObj = mockData.mockLevels.find(l => score >= l.min_skor && score <= l.max_skor);
 
+          const discipline = mockData.mockDiscipline.find(d => d.siswa_id === student.id);
+
           setMyStats({
             rank: rank > 0 ? rank : 0,
             totalStudents: classStudents.length,
@@ -208,7 +202,9 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             poin: poin,
             level: levelObj?.badge_name || 'Basic',
             levelColor: levelObj?.badge_color || '#94a3b8',
-            className: student.kelas
+            className: student.kelas,
+            attendance_pcent: discipline?.attendance_pcent,
+            attendance_counts: discipline?.attendance_counts
           });
 
           // Mock history
@@ -256,6 +252,13 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
           else if (score >= 51) { badge = 'Specialist'; color = '#3b82f6'; }
           else if (score >= 26) { badge = 'Basic 2'; color = '#64748b'; }
 
+          // Fetch attendance
+          const { data: discData } = await supabase
+            .from('student_discipline')
+            .select('attendance_pcent, masuk, izin, sakit, alfa')
+            .eq('siswa_id', student.id)
+            .maybeSingle();
+
           setMyStats({
             rank,
             totalStudents: totalClass || 0,
@@ -263,7 +266,14 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             poin,
             level: badge,
             levelColor: color,
-            className: student.kelas
+            className: student.kelas,
+            attendance_pcent: discData?.attendance_pcent,
+            attendance_counts: discData ? {
+              masuk: discData.masuk,
+              izin: discData.izin,
+              sakit: discData.sakit,
+              alfa: discData.alfa
+            } : undefined
           });
 
           // Fetch History
@@ -313,7 +323,9 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             poin: 0,
             level: 'Basic',
             levelColor: '#94a3b8',
-            className: user.role === 'student' ? '...' : ''
+            className: user.role === 'student' ? '...' : '',
+            attendance_pcent: 0,
+            attendance_counts: { masuk: 0, izin: 0, sakit: 0, alfa: 0 }
           });
         }
       }
@@ -601,6 +613,45 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                           <div className="text-sm text-white/50 px-2 border-l border-white/10">
                             {myStats.className}
                           </div>
+                          {myStats.attendance_pcent !== undefined && (
+                            <div className="flex items-center gap-3 px-2 border-l border-white/10 shrink-0">
+                              <div className="flex flex-col">
+                                <span className="text-[10px] text-white/40 font-bold uppercase tracking-tight">PRESENSI</span>
+                                <div className="flex items-center gap-2">
+                                  <span className={`text-sm font-black ${myStats.attendance_pcent >= 90 ? 'text-emerald-400' : myStats.attendance_pcent >= 75 ? 'text-amber-400' : 'text-red-400'}`}>
+                                    {myStats.attendance_pcent}%
+                                  </span>
+                                  <div className="w-12 h-1 bg-white/10 rounded-full overflow-hidden">
+                                    <div
+                                      className={`h-full transition-all duration-1000 ${myStats.attendance_pcent >= 90 ? 'bg-emerald-500' : myStats.attendance_pcent >= 75 ? 'bg-amber-500' : 'bg-red-500'}`}
+                                      style={{ width: `${myStats.attendance_pcent}%` }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              {myStats.attendance_counts && (
+                                <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
+                                  <div className="flex items-center gap-1">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                    <span className="text-[10px] font-bold text-white/60">{myStats.attendance_counts.masuk} <span className="font-normal opacity-50">M</span></span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                                    <span className="text-[10px] font-bold text-white/60">{myStats.attendance_counts.izin} <span className="font-normal opacity-50">I</span></span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                                    <span className="text-[10px] font-bold text-white/60">{myStats.attendance_counts.sakit} <span className="font-normal opacity-50">S</span></span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+                                    <span className="text-[10px] font-bold text-white/60">{myStats.attendance_counts.alfa} <span className="font-normal opacity-50">A</span></span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
 
                         <div className="flex flex-wrap gap-2 mt-2">
