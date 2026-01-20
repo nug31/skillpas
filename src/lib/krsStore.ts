@@ -146,11 +146,8 @@ export const krsStore = {
         const updates: any = { updated_at: now };
 
         if (role === 'teacher_produktif' && submission.status === 'pending_produktif') {
-            updates.status = 'pending_wali';
-            updates.guru_produktif_approved_at = now;
-        } else if (role === 'wali_kelas' && submission.status === 'pending_wali') {
             updates.status = 'pending_hod';
-            updates.wali_kelas_approved_at = now;
+            updates.guru_produktif_approved_at = now;
         } else if (role === 'hod' && submission.status === 'pending_hod') {
             updates.status = 'approved';
             updates.hod_approved_at = now;

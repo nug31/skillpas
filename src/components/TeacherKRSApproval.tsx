@@ -55,11 +55,12 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
             // 1. Check Status Role Match
             let statusMatch = false;
             if (userRole === 'teacher_produktif' || userRole === 'teacher') {
-                statusMatch = s.status === 'pending_produktif' || s.status === 'pending_wali' || s.status === 'scheduled';
+                statusMatch = s.status === 'pending_produktif' || s.status === 'scheduled';
             } else if (userRole === 'wali_kelas') {
-                statusMatch = s.status === 'pending_wali' || s.status === 'pending_produktif';
+                // Walas can see everything submitted in their class, regardless of current status stage
+                statusMatch = true;
             } else if (userRole === 'hod') {
-                statusMatch = s.status === 'pending_hod' || s.status === 'pending_wali' || s.status === 'scheduled';
+                statusMatch = s.status === 'pending_hod' || s.status === 'scheduled';
             } else if (userRole === 'admin') {
                 statusMatch = true;
             }
@@ -71,14 +72,12 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                 if (userDeptId && s.jurusan_id !== userDeptId) return false;
             }
 
-            // 3. Check Class Match for Wali Kelas (specifically for the walas stage)
-            // 3. Check Class Match for anyone looking at the Walas stage
-            if (s.status === 'pending_wali') {
-                const studentNormClass = normalizeClass(s.kelas);
-                const userClasses = (user.kelas || '').split(',').map(c => normalizeClass(c.trim())).filter(Boolean);
+            // 3. Class Match for Wali Kelas or checking specific class assignments
+            const studentNormClass = normalizeClass(s.kelas);
+            const userClasses = (user.kelas || '').split(',').map(c => normalizeClass(c.trim())).filter(Boolean);
 
+            if (userRole === 'wali_kelas') {
                 if (userClasses.length > 0 && !userClasses.includes(studentNormClass)) return false;
-                // If user doesn't have any class assigned but is trying to see a Walas stage, hide it
                 if (userClasses.length === 0) return false;
             }
 
@@ -260,7 +259,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                             : 'bg-indigo-600 text-white hover:bg-indigo-500'
                                             }`}
                                     >
-                                        {activeTab === 'pending' ? 'Review Pengajuan' : 'Input Nilai Ujian'}
+                                        {activeTab === 'pending' ? (userRole === 'wali_kelas' ? 'Lihat Detail' : 'Review Pengajuan') : 'Input Nilai Ujian'}
                                     </button>
                                 </div>
                             </div>
@@ -299,6 +298,12 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                         </div>
 
                         <div className="flex-1 overflow-y-auto p-8 space-y-6">
+                            {userRole === 'wali_kelas' && (
+                                <div className="p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-indigo-400 text-xs font-medium italic mb-4">
+                                    Wali Kelas hanya memantau progres pengajuan ini. Persetujuan dilakukan oleh Guru Produktif dan HOD.
+                                </div>
+                            )}
+
                             <div className="space-y-3 font-medium">
                                 <div className="text-xs font-black text-slate-500 uppercase tracking-widest">Kriteria yang diajukan:</div>
                                 <div className="space-y-2">
@@ -337,20 +342,22 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                             </div>
                         </div>
 
-                        <div className="p-8 border-t border-slate-800 bg-slate-950/50 flex gap-4">
-                            <button
-                                onClick={() => handleReject(selectedSub.id)}
-                                className="flex-1 py-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl font-bold hover:bg-red-500/20 transition-all"
-                            >
-                                Tolak
-                            </button>
-                            <button
-                                onClick={() => handleApprove(selectedSub.id)}
-                                className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-500 active:scale-95 transition-all shadow-lg shadow-indigo-500/20"
-                            >
-                                Setujui
-                            </button>
-                        </div>
+                        {userRole !== 'wali_kelas' && (
+                            <div className="p-8 border-t border-slate-800 bg-slate-950/50 flex gap-4">
+                                <button
+                                    onClick={() => handleReject(selectedSub.id)}
+                                    className="flex-1 py-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl font-bold hover:bg-red-500/20 transition-all"
+                                >
+                                    Tolak
+                                </button>
+                                <button
+                                    onClick={() => handleApprove(selectedSub.id)}
+                                    className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-500 active:scale-95 transition-all shadow-lg shadow-indigo-500/20"
+                                >
+                                    Setujui
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

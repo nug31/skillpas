@@ -184,7 +184,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
     const getStatusLabel = (status: string) => {
         switch (status) {
             case 'pending_produktif': return 'Menunggu Guru Produktif';
-            case 'pending_wali': return 'Menunggu Wali Kelas';
+            case 'pending_wali': return 'Dipantau Wali Kelas';
             case 'pending_hod': return 'Menunggu Kaprodi (HOD)';
             case 'approved': return 'Disetujui';
             case 'scheduled': return 'Ujian Terjadwal';

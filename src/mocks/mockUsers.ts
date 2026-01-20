@@ -66,6 +66,16 @@ export const mockUsers: User[] = [
     { id: 'hod-tkr03', username: 'hod_tkr03', password: '123', name: 'Rahmat Hidayat, S.Pd.Gr', role: 'hod', jurusan_id: JURUSAN_IDS.TKR },
     { id: 't-joko-tkr', username: 'joko_tkr', password: '123', name: 'Joko Setyo Nugroho, S.T', role: 'teacher_produktif', kelas: 'XII TKR 3', jurusan_id: JURUSAN_IDS.TKR },
     { id: 'hod-listrik-astri', username: 'hod_listrik', password: '123', name: 'Astri Afmi Wulandari, S.Pd', role: 'hod', jurusan_id: JURUSAN_IDS.LISTRIK },
+
+    // Default Teacher Produktif accounts for all majors
+    { id: 'p-mesin', username: 'prod_mesin', password: '123', name: 'Guru Produktif Mesin', role: 'teacher_produktif', jurusan_id: JURUSAN_IDS.MESIN },
+    { id: 'p-tkr', username: 'prod_tkr', password: '123', name: 'Guru Produktif TKR', role: 'teacher_produktif', jurusan_id: JURUSAN_IDS.TKR },
+    { id: 'p-tsm', username: 'prod_tsm', password: '123', name: 'Guru Produktif TSM', role: 'teacher_produktif', jurusan_id: JURUSAN_IDS.TSM },
+    { id: 'p-elind', username: 'prod_elind', password: '123', name: 'Guru Produktif Elind', role: 'teacher_produktif', jurusan_id: JURUSAN_IDS.ELIND },
+    { id: 'p-listrik', username: 'prod_listrik', password: '123', name: 'Guru Produktif Listrik', role: 'teacher_produktif', jurusan_id: JURUSAN_IDS.LISTRIK },
+    { id: 'p-kimia', username: 'prod_kimia', password: '123', name: 'Guru Produktif Kimia', role: 'teacher_produktif', jurusan_id: JURUSAN_IDS.KIMIA },
+    { id: 'p-akuntansi', username: 'prod_akuntansi', password: '123', name: 'Guru Produktif Akuntansi', role: 'teacher_produktif', jurusan_id: JURUSAN_IDS.AKUNTANSI },
+    { id: 'p-hotel', username: 'prod_hotel', password: '123', name: 'Guru Produktif Perhotelan', role: 'teacher_produktif', jurusan_id: JURUSAN_IDS.HOTEL },
 ];
 
 export function authenticateUser(username: string, password: string, selectedRole?: 'student' | 'teacher'): User | null {
