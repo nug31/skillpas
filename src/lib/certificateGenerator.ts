@@ -103,12 +103,6 @@ export const generateCertificate = async (data: CertificateData) => {
     doc.setTextColor(30, 100, 30); // Dark Green
     doc.text(data.unitKompetensi, pageWidth / 2, yPos, { align: 'center' });
 
-    yPos += 6;
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(0, 0, 0);
-    doc.text(`Level Pencapaian: ${data.level}`, pageWidth / 2, yPos, { align: 'center' });
-
     // --- Footer / Signatures ---
     // Date
     const dateStr = new Date(data.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -119,6 +113,12 @@ export const generateCertificate = async (data: CertificateData) => {
     const sigRightX = pageWidth - 40;
 
     doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+
+    // Level Pencapaian (Bottom Left)
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Level Pencapaian: ${data.level}`, 10, pageHeight - 6, { align: 'left' });
     doc.setFont('helvetica', 'normal');
 
     // Right: Date & Principal
