@@ -127,6 +127,35 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
     const leftPage = leftPageIndex >= 0 && leftPageIndex < pages.length ? pages[leftPageIndex] : null;
     const rightPage = rightPageIndex < pages.length ? pages[rightPageIndex] : null;
 
+    // Helper for rich text rendering (**bold** and \n)
+    const renderRichText = (text: string) => {
+        if (!text) return null;
+
+        // Handle JSON array or single string
+        let processedText = text;
+        try {
+            if (text.trim().startsWith('[') && text.trim().endsWith(']')) {
+                const parsed = JSON.parse(text);
+                processedText = Array.isArray(parsed) ? parsed.join('\n') : text;
+            }
+        } catch (e) {
+            // Not JSON or parse error, use original
+        }
+
+        const segments = processedText.split(/(\*\*.*?\*\*)/g);
+        return segments.map((segment, index) => {
+            if (segment.startsWith('**') && segment.endsWith('**')) {
+                return <strong key={index} className="font-bold text-slate-900">{segment.slice(2, -2)}</strong>;
+            }
+            return segment.split('\n').map((line, i) => (
+                <span key={`${index}-${i}`}>
+                    {i > 0 && <br />}
+                    {line}
+                </span>
+            ));
+        });
+    };
+
     return (
         <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 perspective-[2000px]">
             {/* Close Button */}
@@ -250,7 +279,9 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
                             <div className="space-y-3 text-sm">
                                 <div>
                                     <span className="block text-xs text-slate-400 uppercase">Unit Kompetensi</span>
-                                    <span className="font-medium">{selectedCompetency.unit_kompetensi}</span>
+                                    <span className="font-medium leading-relaxed">
+                                        {renderRichText(selectedCompetency.unit_kompetensi)}
+                                    </span>
                                 </div>
                                 <div>
                                     <span className="block text-xs text-slate-400 uppercase">Level</span>

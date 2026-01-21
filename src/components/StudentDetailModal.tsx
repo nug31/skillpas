@@ -148,6 +148,35 @@ export function StudentDetailModal({
     }
   };
 
+  // Helper for rich text rendering (**bold** and \n)
+  const renderRichText = (text: string) => {
+    if (!text) return null;
+
+    // Handle JSON array or single string
+    let processedText = text;
+    try {
+      if (text.trim().startsWith('[') && text.trim().endsWith(']')) {
+        const parsed = JSON.parse(text);
+        processedText = Array.isArray(parsed) ? parsed.join('\n') : text;
+      }
+    } catch (e) {
+      // Not JSON or parse error, use original
+    }
+
+    const segments = processedText.split(/(\*\*.*?\*\*)/g);
+    return segments.map((segment, index) => {
+      if (segment.startsWith('**') && segment.endsWith('**')) {
+        return <strong key={index} className="font-black text-[color:var(--text-primary)]">{segment.slice(2, -2)}</strong>;
+      }
+      return segment.split('\n').map((line, i) => (
+        <span key={`${index}-${i}`}>
+          {i > 0 && <br />}
+          {line}
+        </span>
+      ));
+    });
+  };
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-4 sm:py-6">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
@@ -551,7 +580,9 @@ export function StudentDetailModal({
                             <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100">{student.kelas}</td>
                             <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100">{jurusanName || '-'}</td>
                             <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100">{lvl?.nama_level || '-'}</td>
-                            <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100">{entry.unit_kompetensi}</td>
+                            <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100 leading-relaxed">
+                              {renderRichText(entry.unit_kompetensi)}
+                            </td>
                             <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100">{entry.aktivitas_pembuktian}</td>
                             <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100">{entry.penilai}</td>
                             <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100">
