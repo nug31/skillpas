@@ -66,7 +66,7 @@ export const generateCertificate = async (data: CertificateData) => {
     } catch (e) { console.error("Logo error", e); }
 
     // Main Titles
-    let y = 50;
+    let y = 42; // Moved up from 50
     doc.setTextColor(20, 30, 70);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(18);
@@ -77,7 +77,7 @@ export const generateCertificate = async (data: CertificateData) => {
     doc.setFontSize(16);
     doc.text('CERTIFICATE OF COMPETENCY', pageWidth / 2, y, { align: 'center' });
 
-    y += 10;
+    y += 9;
     const certNumber = `2025${data.nisn}${new Date().getTime().toString().slice(-6)}`;
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
@@ -88,7 +88,7 @@ export const generateCertificate = async (data: CertificateData) => {
     doc.setFont('helvetica', 'italic');
     doc.text('This is to certify that', pageWidth / 2, y + 4, { align: 'center' });
 
-    y += 18;
+    y += 16;
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(24);
     doc.text(data.studentName.toUpperCase(), pageWidth / 2, y, { align: 'center' });
@@ -98,14 +98,14 @@ export const generateCertificate = async (data: CertificateData) => {
     doc.setFontSize(12);
     doc.text(`NISN: ${data.nisn}`, pageWidth / 2, y, { align: 'center' });
 
-    y += 12;
+    y += 10;
     doc.setFontSize(10);
     doc.text('Telah kompeten pada bidang:', pageWidth / 2, y, { align: 'center' });
     doc.setFont('helvetica', 'italic');
     doc.text('Is competent in the area of:', pageWidth / 2, y + 4, { align: 'center' });
     doc.setFont('helvetica', 'normal');
 
-    y += 15;
+    y += 14;
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(30, 58, 138);
@@ -121,15 +121,15 @@ export const generateCertificate = async (data: CertificateData) => {
     doc.text('With Qualification / Competency', pageWidth / 2, y + 4, { align: 'center' });
     doc.setFont('helvetica', 'normal');
 
-    y += 12;
+    y += 10;
     doc.setFont('helvetica', 'bold');
     doc.text(data.level, pageWidth / 2, y, { align: 'center' });
 
     // Date
     const dateStr = new Date(data.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    // Page 1 Signatures
-    const sigY = pageHeight - 45;
+    // Page 1 Signatures - Moved UP to avoid wave overlap
+    const sigY = pageHeight - 55; // Moved up by 10mm
     doc.setFontSize(9);
     doc.text('SMK MITRA INDUSTRI MM2100', 40, sigY, { align: 'center' });
     doc.text('Kepala Sekolah,', 40, sigY + 4, { align: 'center' });
@@ -137,15 +137,15 @@ export const generateCertificate = async (data: CertificateData) => {
     doc.text('Penguji,', pageWidth - 40, sigY + 4, { align: 'center' });
 
     doc.setFont('helvetica', 'bold');
-    doc.text('Lispiyatmini, M.Pd', 40, sigY + 25, { align: 'center' });
-    doc.text('( ........................... )', pageWidth - 40, sigY + 25, { align: 'center' });
+    doc.text('Lispiyatmini, M.Pd', 40, sigY + 22, { align: 'center' });
+    doc.text('( ........................... )', pageWidth - 40, sigY + 22, { align: 'center' });
 
     // --- PAGE 2: COMPETENCY LIST ---
     doc.addPage();
     drawWaves(doc, true);
     drawWaves(doc, false);
 
-    y = 40;
+    y = 35; // Moved up from 40
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
     doc.text('DAFTAR UNIT KOMPETENSI', pageWidth / 2, y, { align: 'center' });
@@ -155,22 +155,22 @@ export const generateCertificate = async (data: CertificateData) => {
     doc.text('List of Unit of Competency', pageWidth / 2, y, { align: 'center' });
 
     // Table
-    y += 15;
+    y += 10;
     const tableX = 25;
     const colWidths = [20, pageWidth - tableX * 2 - 20];
-    const rowHeight = 8;
+    const baseRowHeight = 8;
 
     // Header
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
     doc.setFillColor(240, 240, 240);
-    doc.rect(tableX, y, pageWidth - tableX * 2, rowHeight, 'F');
-    doc.rect(tableX, y, pageWidth - tableX * 2, rowHeight);
+    doc.rect(tableX, y, pageWidth - tableX * 2, baseRowHeight, 'F');
+    doc.rect(tableX, y, pageWidth - tableX * 2, baseRowHeight);
 
     doc.text('NO', tableX + 10, y + 5, { align: 'center' });
     doc.text('Elemen Kompetensi / Element of Competency', tableX + 20 + colWidths[1] / 2, y + 5, { align: 'center' });
 
-    y += rowHeight;
+    y += baseRowHeight;
 
     // Parse Items
     let competencies: string[] = [];
@@ -185,25 +185,28 @@ export const generateCertificate = async (data: CertificateData) => {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     competencies.forEach((item, index) => {
-        const itemY = y + index * rowHeight;
-        if (itemY > pageHeight - 60) return; // Prevent overflow on page 2
+        const textLines = doc.splitTextToSize(item, colWidths[1] - 10);
+        const itemHeight = Math.max(baseRowHeight, textLines.length * 5 + 2);
 
-        doc.rect(tableX, itemY, colWidths[0], rowHeight);
-        doc.rect(tableX + colWidths[0], itemY, colWidths[1], rowHeight);
+        if (y + itemHeight > pageHeight - 65) return; // Prevent overflow
 
-        doc.text((index + 1).toString(), tableX + 10, itemY + 5, { align: 'center' });
-        doc.text(item, tableX + 20 + 5, itemY + 5, { maxWidth: colWidths[1] - 10 });
+        doc.rect(tableX, y, colWidths[0], itemHeight);
+        doc.rect(tableX + colWidths[0], y, colWidths[1], itemHeight);
+
+        doc.text((index + 1).toString(), tableX + 10, y + (itemHeight / 2) + 1.5, { align: 'center' });
+        doc.text(textLines, tableX + 20 + 5, y + 5);
+        y += itemHeight;
     });
 
-    // Score & Sign
-    const bottomY = pageHeight - 60;
+    // Score & Sign - Moved UP to avoid wave overlap
+    const bottomY = pageHeight - 75; // Moved up by 15mm
     doc.setFont('helvetica', 'bold');
     doc.text(`Bekasi, ${dateStr}`, pageWidth - 60, bottomY + 10, { align: 'center' });
-    doc.text(data.jurusan, pageWidth - 60, bottomY + 20, { align: 'center' });
+    doc.text(data.jurusan, pageWidth - 60, bottomY + 18, { align: 'center' });
 
-    doc.text(data.hodName || '( ........................... )', pageWidth - 60, bottomY + 40, { align: 'center' });
+    doc.text(data.hodName || '( ........................... )', pageWidth - 60, bottomY + 38, { align: 'center' });
     doc.setFont('helvetica', 'normal');
-    doc.text('Head of Department', pageWidth - 60, bottomY + 44, { align: 'center' });
+    doc.text('Head of Department', pageWidth - 60, bottomY + 42, { align: 'center' });
 
     // Save PDF
     doc.save(`Sertifikat_${data.studentName.replace(/\s+/g, '_')}.pdf`);
