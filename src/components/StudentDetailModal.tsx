@@ -339,282 +339,203 @@ export function StudentDetailModal({
 
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6">
           {activeTab === 'overview' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="text-sm font-semibold text-[color:var(--text-primary)] mb-2">Pencapaian (Level tercapai)</h4>
-                <div className="space-y-3">
-                  {achievedLevels.length === 0 && (
-                    <div className="text-sm text-[color:var(--text-muted)] flex items-center gap-2"><Clock className="w-4 h-4 text-[color:var(--text-muted)]" /> Belum mencapai level apapun</div>
-                  )}
-                  {achievedLevels.map((lvl) => (
-                    <div key={lvl.id} className="p-3 rounded-lg border flex items-start gap-3" style={{ background: 'transparent' }}>
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0" style={{ background: lvl.badge_color }}>{lvl.badge_name.charAt(0)}</div>
-                      <div>
-                        <div className="text-sm font-semibold text-[color:var(--text-primary)]">{lvl.nama_level} <span className="text-xs text-[color:var(--text-muted)]">({lvl.badge_name})</span></div>
-                        <div className="text-sm text-[color:var(--text-muted)] mt-1">
-                          {lvl.criteria && lvl.criteria.length > 0 ? (
-                            <ul className="list-disc list-outside ml-4 space-y-0.5">
-                              {lvl.criteria.map((c, i) => {
-                                // Helper to render **bold** text and handle \n
-                                const renderBold = (text: string) => {
-                                  const parts = text.split(/(\*\*.*?\*\*)/g);
-                                  return parts.map((part, index) => {
-                                    if (part.startsWith('**') && part.endsWith('**')) {
-                                      return <strong key={index} className="font-black text-[color:var(--text-primary)]">{part.slice(2, -2)}</strong>;
-                                    }
-                                    return (
-                                      <span key={index}>
-                                        {part.split('\n').map((line, i) => (
-                                          <span key={i}>
-                                            {i > 0 && <br />}
-                                            {line}
-                                          </span>
-                                        ))}
-                                      </span>
-                                    );
-                                  });
-                                };
-                                return <li key={i}>{renderBold(c)}</li>;
-                              })}
-                            </ul>
-                          ) : (
-                            <div>{lvl.hasil_belajar}</div>
-                          )}
+            <div className="space-y-6">
+              {/* Centralized Attendance & Discipline Section */}
+              <div className="p-4 rounded-xl border border-white/10 [.theme-clear_&]:border-slate-200 bg-white/5 [.theme-clear_&]:bg-slate-50">
+                <div className="text-xs uppercase font-bold text-[color:var(--text-muted)] mb-4 flex items-center gap-1 border-b border-white/5 pb-2">
+                  <Clock className="w-4 h-4" /> Data Kehadiran & Kedisiplinan
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Detailed Attendance Counts */}
+                  <div className="space-y-3">
+                    <div className="text-[10px] uppercase font-bold text-[color:var(--text-muted)] opacity-50">Statistik Presensi</div>
+                    {isEditing && canEdit ? (
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <div>
+                          <label className="text-[10px] text-slate-500 block mb-1">Masuk</label>
+                          <input type="number" value={editMasuk} onChange={(e) => setEditMasuk(Number(e.target.value))} className="w-full px-2 py-1.5 bg-black/20 border border-white/10 rounded text-sm text-white text-center" />
                         </div>
-                        <div className="mt-3 pt-3 border-t border-white/5 mx-[-12px] px-3 bg-white/5">
-                          {/* Detailed Attendance Header */}
-                          <div className="text-[10px] uppercase font-bold text-[color:var(--text-muted)] mb-3 flex items-center gap-1 border-b border-white/5 pb-1">
-                            <Clock className="w-3 h-3" /> Data Kehadiran
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-4">
-                            {/* Detailed Attendance Counts */}
-                            <div className="space-y-2">
-                              {isEditing && canEdit ? (
-                                <div className="grid grid-cols-2 gap-x-2 gap-y-1">
-                                  <div>
-                                    <label className="text-[10px] text-slate-500 block">Masuk</label>
-                                    <input type="number" value={editMasuk} onChange={(e) => setEditMasuk(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
-                                  </div>
-                                  <div>
-                                    <label className="text-[10px] text-slate-500 block">Izin</label>
-                                    <input type="number" value={editIzin} onChange={(e) => setEditIzin(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
-                                  </div>
-                                  <div>
-                                    <label className="text-[10px] text-slate-500 block">Sakit</label>
-                                    <input type="number" value={editSakit} onChange={(e) => setEditSakit(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
-                                  </div>
-                                  <div>
-                                    <label className="text-[10px] text-slate-500 block">Alfa</label>
-                                    <input type="number" value={editAlfa} onChange={(e) => setEditAlfa(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="grid grid-cols-2 gap-2">
-                                  <div className="bg-white/5 rounded p-1.5 text-center">
-                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Masuk</div>
-                                    <div className="text-xs font-bold text-emerald-500">{discipline?.masuk || 0}</div>
-                                  </div>
-                                  <div className="bg-white/5 rounded p-1.5 text-center">
-                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Izin</div>
-                                    <div className="text-xs font-bold text-blue-500">{discipline?.izin || 0}</div>
-                                  </div>
-                                  <div className="bg-white/5 rounded p-1.5 text-center">
-                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Sakit</div>
-                                    <div className="text-xs font-bold text-amber-500">{discipline?.sakit || 0}</div>
-                                  </div>
-                                  <div className="bg-white/5 rounded p-1.5 text-center">
-                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Alfa</div>
-                                    <div className="text-xs font-bold text-rose-500">{discipline?.alfa || 0}</div>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Percentage & Attitude */}
-                            <div className="space-y-3">
-                              <div>
-                                <div className="flex justify-between items-center mb-1">
-                                  <span className="text-[10px] uppercase font-bold text-[color:var(--text-muted)]">Presensi</span>
-                                  {isEditing && canEdit ? (
-                                    <input type="number" max="100" value={editAttendance} onChange={(e) => setEditAttendance(Number(e.target.value))} className="w-12 px-1 bg-black/20 border border-white/10 rounded text-[10px] text-right text-[color:var(--accent-1)]" />
-                                  ) : (
-                                    <span className="text-xs font-bold text-[color:var(--accent-1)]">{discipline?.attendance_pcent || 0}%</span>
-                                  )}
-                                </div>
-                                <div className="overflow-hidden h-1 rounded bg-white/5">
-                                  <div style={{ width: `${discipline?.attendance_pcent || 0}%` }} className="h-full bg-[color:var(--accent-1)]" />
-                                </div>
-                              </div>
-
-                              <div className="space-y-1">
-                                {discipline?.attitude_scores.slice(0, 3).map((att, idx) => (
-                                  <div key={idx} className="flex justify-between items-center text-[10px]">
-                                    <span className="text-slate-500 truncate">{att.aspect}</span>
-                                    {isEditing && canEdit ? (
-                                      <input
-                                        type="number"
-                                        min="0" max="100"
-                                        value={editAttitude[idx]?.score || 0}
-                                        onChange={(e) => {
-                                          const val = Number(e.target.value);
-                                          const newAtt = [...editAttitude];
-                                          newAtt[idx] = { ...newAtt[idx], score: val };
-                                          setEditAttitude(newAtt);
-                                        }}
-                                        className="w-10 px-1 bg-black/20 border border-white/10 rounded text-[10px] text-center text-white"
-                                      />
-                                    ) : (
-                                      <span className={`font-bold ${att.score >= 80 ? 'text-emerald-500' : 'text-amber-500'}`}>{att.score}</span>
-                                    )}
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
+                        <div>
+                          <label className="text-[10px] text-slate-500 block mb-1">Izin</label>
+                          <input type="number" value={editIzin} onChange={(e) => setEditIzin(Number(e.target.value))} className="w-full px-2 py-1.5 bg-black/20 border border-white/10 rounded text-sm text-white text-center" />
+                        </div>
+                        <div>
+                          <label className="text-[10px] text-slate-500 block mb-1">Sakit</label>
+                          <input type="number" value={editSakit} onChange={(e) => setEditSakit(Number(e.target.value))} className="w-full px-2 py-1.5 bg-black/20 border border-white/10 rounded text-sm text-white text-center" />
+                        </div>
+                        <div>
+                          <label className="text-[10px] text-slate-500 block mb-1">Alfa</label>
+                          <input type="number" value={editAlfa} onChange={(e) => setEditAlfa(Number(e.target.value))} className="w-full px-2 py-1.5 bg-black/20 border border-white/10 rounded text-sm text-white text-center" />
                         </div>
                       </div>
+                    ) : (
+                      <div className="grid grid-cols-4 gap-2">
+                        <div className="bg-white/5 rounded p-2 text-center">
+                          <div className="text-[9px] text-slate-500 uppercase font-bold">Masuk</div>
+                          <div className="text-sm font-black text-emerald-500">{discipline?.masuk || 0}</div>
+                        </div>
+                        <div className="bg-white/5 rounded p-2 text-center">
+                          <div className="text-[9px] text-slate-500 uppercase font-bold">Izin</div>
+                          <div className="text-sm font-black text-blue-500">{discipline?.izin || 0}</div>
+                        </div>
+                        <div className="bg-white/5 rounded p-2 text-center">
+                          <div className="text-[9px] text-slate-500 uppercase font-bold">Sakit</div>
+                          <div className="text-sm font-black text-amber-500">{discipline?.sakit || 0}</div>
+                        </div>
+                        <div className="bg-white/5 rounded p-2 text-center">
+                          <div className="text-[9px] text-slate-500 uppercase font-bold">Alfa</div>
+                          <div className="text-sm font-black text-rose-500">{discipline?.alfa || 0}</div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="pt-2">
+                      <div className="flex justify-between items-center mb-1.5">
+                        <span className="text-[10px] uppercase font-bold text-[color:var(--text-muted)]">Persentase Kehadiran</span>
+                        {isEditing && canEdit ? (
+                          <div className="flex items-center gap-1">
+                            <input type="number" max="100" value={editAttendance} onChange={(e) => setEditAttendance(Number(e.target.value))} className="w-12 px-1 bg-black/20 border border-white/10 rounded text-xs text-right text-[color:var(--accent-1)] font-bold" />
+                            <span className="text-xs text-[color:var(--text-muted)]">%</span>
+                          </div>
+                        ) : (
+                          <span className="text-xs font-black text-[color:var(--accent-1)]">{discipline?.attendance_pcent || 0}%</span>
+                        )}
+                      </div>
+                      <div className="overflow-hidden h-2 rounded-full bg-white/5">
+                        <div style={{ width: `${discipline?.attendance_pcent || 0}%` }} className="h-full bg-gradient-to-r from-[color:var(--accent-1)] to-indigo-500 shadow-[0_0_10px_rgba(var(--accent-1-rgb),0.3)]" />
+                      </div>
                     </div>
-                  ))}
+                  </div>
+
+                  {/* Attitude Scores Section */}
+                  <div className="space-y-3">
+                    <div className="text-[10px] uppercase font-bold text-[color:var(--text-muted)] opacity-50">Penilaian Sikap</div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+                      {discipline?.attitude_scores.map((att, idx) => (
+                        <div key={idx} className="flex justify-between items-center group">
+                          <span className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors uppercase tracking-wide font-medium">{att.aspect}</span>
+                          {isEditing && canEdit ? (
+                            <input
+                              type="number"
+                              min="0" max="100"
+                              value={editAttitude[idx]?.score || 0}
+                              onChange={(e) => {
+                                const val = Number(e.target.value);
+                                const newAtt = [...editAttitude];
+                                newAtt[idx] = { ...newAtt[idx], score: val };
+                                setEditAttitude(newAtt);
+                              }}
+                              className="w-12 px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-center text-white font-bold"
+                            />
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              <span className={`text-xs font-black ${att.score >= 80 ? 'text-emerald-500' : att.score >= 70 ? 'text-amber-500' : 'text-rose-500'}`}>{att.score}</span>
+                              <div className="w-8 h-1 bg-white/5 rounded-full overflow-hidden hidden sm:block">
+                                <div style={{ width: `${att.score}%` }} className={`h-full ${att.score >= 80 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <h4 className="text-sm font-semibold text-[color:var(--text-primary)] mb-2">Belum tercapai</h4>
-                <div className="space-y-3">
-                  {notAchieved.length === 0 && (
-                    <div className="text-sm text-[color:var(--text-muted)] flex items-center gap-2"><Check className="w-4 h-4 text-[color:var(--accent-1)]" /> Semua level telah dicapai</div>
-                  )}
-                  {notAchieved.map((lvl) => (
-                    <div key={lvl.id} className="p-3 rounded-lg border flex items-start gap-3" style={{ background: 'transparent' }}>
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold text-[color:var(--text-primary)] shrink-0" style={{ background: '#efefef' }}>{lvl.badge_name.charAt(0)}</div>
-                      <div>
-                        <div className="text-sm font-semibold text-[color:var(--text-primary)]">{lvl.nama_level} <span className="text-xs text-[color:var(--text-muted)]">({lvl.badge_name})</span></div>
-                        <div className="text-sm text-[color:var(--text-muted)] mt-1">
-                          {lvl.criteria && lvl.criteria.length > 0 ? (
-                            <ul className="list-disc list-outside ml-4 space-y-0.5">
-                              {lvl.criteria.map((c, i) => {
-                                // Helper to render **bold** text and handle \n
-                                const renderBold = (text: string) => {
-                                  const parts = text.split(/(\*\*.*?\*\*)/g);
-                                  return parts.map((part, index) => {
-                                    if (part.startsWith('**') && part.endsWith('**')) {
-                                      return <strong key={index} className="font-black text-[color:var(--text-primary)]">{part.slice(2, -2)}</strong>;
-                                    }
-                                    return (
-                                      <span key={index}>
-                                        {part.split('\n').map((line, i) => (
-                                          <span key={i}>
-                                            {i > 0 && <br />}
-                                            {line}
-                                          </span>
-                                        ))}
-                                      </span>
-                                    );
-                                  });
-                                };
-                                return <li key={i}>{renderBold(c)}</li>;
-                              })}
-                            </ul>
-                          ) : (
-                            <div>{lvl.hasil_belajar}</div>
-                          )}
-                        </div>
-                        <div className="mt-3 pt-3 border-t border-white/5 mx-[-12px] px-3 bg-white/5">
-                          {/* Detailed Attendance Header */}
-                          <div className="text-[10px] uppercase font-bold text-[color:var(--text-muted)] mb-3 flex items-center gap-1 border-b border-white/5 pb-1">
-                            <Clock className="w-3 h-3" /> Data Kehadiran
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-4">
-                            {/* Detailed Attendance Counts */}
-                            <div className="space-y-2">
-                              {isEditing && canEdit ? (
-                                <div className="grid grid-cols-2 gap-x-2 gap-y-1">
-                                  <div>
-                                    <label className="text-[10px] text-slate-500 block">Masuk</label>
-                                    <input type="number" value={editMasuk} onChange={(e) => setEditMasuk(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
-                                  </div>
-                                  <div>
-                                    <label className="text-[10px] text-slate-500 block">Izin</label>
-                                    <input type="number" value={editIzin} onChange={(e) => setEditIzin(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
-                                  </div>
-                                  <div>
-                                    <label className="text-[10px] text-slate-500 block">Sakit</label>
-                                    <input type="number" value={editSakit} onChange={(e) => setEditSakit(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
-                                  </div>
-                                  <div>
-                                    <label className="text-[10px] text-slate-500 block">Alfa</label>
-                                    <input type="number" value={editAlfa} onChange={(e) => setEditAlfa(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="grid grid-cols-2 gap-2">
-                                  <div className="bg-white/5 rounded p-1.5 text-center">
-                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Masuk</div>
-                                    <div className="text-xs font-bold text-emerald-500">{discipline?.masuk || 0}</div>
-                                  </div>
-                                  <div className="bg-white/5 rounded p-1.5 text-center">
-                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Izin</div>
-                                    <div className="text-xs font-bold text-blue-500">{discipline?.izin || 0}</div>
-                                  </div>
-                                  <div className="bg-white/5 rounded p-1.5 text-center">
-                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Sakit</div>
-                                    <div className="text-xs font-bold text-amber-500">{discipline?.sakit || 0}</div>
-                                  </div>
-                                  <div className="bg-white/5 rounded p-1.5 text-center">
-                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Alfa</div>
-                                    <div className="text-xs font-bold text-rose-500">{discipline?.alfa || 0}</div>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Percentage & Attitude */}
-                            <div className="space-y-3">
-                              <div>
-                                <div className="flex justify-between items-center mb-1">
-                                  <span className="text-[10px] uppercase font-bold text-[color:var(--text-muted)]">Presensi</span>
-                                  {isEditing && canEdit ? (
-                                    <input type="number" max="100" value={editAttendance} onChange={(e) => setEditAttendance(Number(e.target.value))} className="w-12 px-1 bg-black/20 border border-white/10 rounded text-[10px] text-right text-[color:var(--accent-1)]" />
-                                  ) : (
-                                    <span className="text-xs font-bold text-[color:var(--accent-1)]">{discipline?.attendance_pcent || 0}%</span>
-                                  )}
-                                </div>
-                                <div className="overflow-hidden h-1 rounded bg-white/5">
-                                  <div style={{ width: `${discipline?.attendance_pcent || 0}%` }} className="h-full bg-[color:var(--accent-1)]" />
-                                </div>
-                              </div>
-
-                              <div className="space-y-1">
-                                {discipline?.attitude_scores.slice(0, 3).map((att, idx) => (
-                                  <div key={idx} className="flex justify-between items-center text-[10px]">
-                                    <span className="text-slate-500 truncate">{att.aspect}</span>
-                                    {isEditing && canEdit ? (
-                                      <input
-                                        type="number"
-                                        min="0" max="100"
-                                        value={editAttitude[idx]?.score || 0}
-                                        onChange={(e) => {
-                                          const val = Number(e.target.value);
-                                          const newAtt = [...editAttitude];
-                                          newAtt[idx] = { ...newAtt[idx], score: val };
-                                          setEditAttitude(newAtt);
-                                        }}
-                                        className="w-10 px-1 bg-black/20 border border-white/10 rounded text-[10px] text-center text-white"
-                                      />
-                                    ) : (
-                                      <span className={`font-bold ${att.score >= 80 ? 'text-emerald-500' : 'text-amber-500'}`}>{att.score}</span>
-                                    )}
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-sm font-semibold text-[color:var(--text-primary)] mb-2">Pencapaian (Level tercapai)</h4>
+                  <div className="space-y-3">
+                    {achievedLevels.length === 0 && (
+                      <div className="text-sm text-[color:var(--text-muted)] flex items-center gap-2"><Clock className="w-4 h-4 text-[color:var(--text-muted)]" /> Belum mencapai level apapun</div>
+                    )}
+                    {achievedLevels.map((lvl) => (
+                      <div key={lvl.id} className="p-3 rounded-lg border flex items-start gap-3" style={{ background: 'transparent' }}>
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0" style={{ background: lvl.badge_color }}>{lvl.badge_name.charAt(0)}</div>
+                        <div>
+                          <div className="text-sm font-semibold text-[color:var(--text-primary)]">{lvl.nama_level} <span className="text-xs text-[color:var(--text-muted)]">({lvl.badge_name})</span></div>
+                          <div className="text-sm text-[color:var(--text-muted)] mt-1">
+                            {lvl.criteria && lvl.criteria.length > 0 ? (
+                              <ul className="list-disc list-outside ml-4 space-y-0.5">
+                                {lvl.criteria.map((c, i) => {
+                                  // Helper to render **bold** text and handle \n
+                                  const renderBold = (text: string) => {
+                                    const parts = text.split(/(\*\*.*?\*\*)/g);
+                                    return parts.map((part, index) => {
+                                      if (part.startsWith('**') && part.endsWith('**')) {
+                                        return <strong key={index} className="font-black text-[color:var(--text-primary)]">{part.slice(2, -2)}</strong>;
+                                      }
+                                      return (
+                                        <span key={index}>
+                                          {part.split('\n').map((line, i) => (
+                                            <span key={i}>
+                                              {i > 0 && <br />}
+                                              {line}
+                                            </span>
+                                          ))}
+                                        </span>
+                                      );
+                                    });
+                                  };
+                                  return <li key={i}>{renderBold(c)}</li>;
+                                })}
+                              </ul>
+                            ) : (
+                              <div>{lvl.hasil_belajar}</div>
+                            )}
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-semibold text-[color:var(--text-primary)] mb-2">Belum tercapai</h4>
+                  <div className="space-y-3">
+                    {notAchieved.length === 0 && (
+                      <div className="text-sm text-[color:var(--text-muted)] flex items-center gap-2"><Check className="w-4 h-4 text-[color:var(--accent-1)]" /> Semua level telah dicapai</div>
+                    )}
+                    {notAchieved.map((lvl) => (
+                      <div key={lvl.id} className="p-3 rounded-lg border flex items-start gap-3" style={{ background: 'transparent' }}>
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold text-[color:var(--text-primary)] shrink-0" style={{ background: '#efefef' }}>{lvl.badge_name.charAt(0)}</div>
+                        <div>
+                          <div className="text-sm font-semibold text-[color:var(--text-primary)]">{lvl.nama_level} <span className="text-xs text-[color:var(--text-muted)]">({lvl.badge_name})</span></div>
+                          <div className="text-sm text-[color:var(--text-muted)] mt-1">
+                            {lvl.criteria && lvl.criteria.length > 0 ? (
+                              <ul className="list-disc list-outside ml-4 space-y-0.5">
+                                {lvl.criteria.map((c, i) => {
+                                  // Helper to render **bold** text and handle \n
+                                  const renderBold = (text: string) => {
+                                    const parts = text.split(/(\*\*.*?\*\*)/g);
+                                    return parts.map((part, index) => {
+                                      if (part.startsWith('**') && part.endsWith('**')) {
+                                        return <strong key={index} className="font-black text-[color:var(--text-primary)]">{part.slice(2, -2)}</strong>;
+                                      }
+                                      return (
+                                        <span key={index}>
+                                          {part.split('\n').map((line, i) => (
+                                            <span key={i}>
+                                              {i > 0 && <br />}
+                                              {line}
+                                            </span>
+                                          ))}
+                                        </span>
+                                      );
+                                    });
+                                  };
+                                  return <li key={i}>{renderBold(c)}</li>;
+                                })}
+                              </ul>
+                            ) : (
+                              <div>{lvl.hasil_belajar}</div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
