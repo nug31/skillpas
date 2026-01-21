@@ -65,11 +65,6 @@ export const generateCertificate = async (data: CertificateData) => {
         doc.addImage(logoImg, 'PNG', 15, 12, 18, 18);
     } catch (e) { console.error("Logo error", e); }
 
-    // Partner Logo Placeholder (Right)
-    doc.setFontSize(8);
-    doc.setTextColor(100, 100, 100);
-    doc.text('PT. TOYOTA MOTOR MANUFACTURING\nINDONESIA', pageWidth - 15, 18, { align: 'right' });
-
     // Main Titles
     let y = 50;
     doc.setTextColor(20, 30, 70);
@@ -119,7 +114,6 @@ export const generateCertificate = async (data: CertificateData) => {
     y += 10;
     doc.setFontSize(10);
     doc.setTextColor(20, 30, 70);
-    doc.text('Spesialisasi Jurusan', pageWidth / 2, y, { align: 'center' });
 
     y += 7;
     doc.text('Dengan Kualifikasi / Kompetensi:', pageWidth / 2, y, { align: 'center' });
@@ -139,15 +133,14 @@ export const generateCertificate = async (data: CertificateData) => {
     // Page 1 Signatures
     const sigY = pageHeight - 45;
     doc.setFontSize(9);
-    doc.text('SMK Mitra Industri MM2100', 40, sigY, { align: 'center' });
+    doc.text('SMK MITRA INDUSTRI MM2100', 40, sigY, { align: 'center' });
     doc.text('Kepala Sekolah,', 40, sigY + 4, { align: 'center' });
 
-    doc.text('PT. Toyota Motor Manufacturing Indonesia', pageWidth - 40, sigY, { align: 'center' });
     doc.text('Penguji,', pageWidth - 40, sigY + 4, { align: 'center' });
 
     doc.setFont('helvetica', 'bold');
     doc.text('Lispiyatmini, M.Pd', 40, sigY + 25, { align: 'center' });
-    doc.text('Joko Pramono', pageWidth - 40, sigY + 25, { align: 'center' });
+    doc.text('( ........................... )', pageWidth - 40, sigY + 25, { align: 'center' });
 
     // --- PAGE 2: COMPETENCY LIST ---
     doc.addPage();
@@ -166,7 +159,7 @@ export const generateCertificate = async (data: CertificateData) => {
     // Table
     y += 15;
     const tableX = 25;
-    const colWidths = [15, 45, pageWidth - tableX * 2 - 60];
+    const colWidths = [20, pageWidth - tableX * 2 - 20];
     const rowHeight = 8;
 
     // Header
@@ -176,9 +169,8 @@ export const generateCertificate = async (data: CertificateData) => {
     doc.rect(tableX, y, pageWidth - tableX * 2, rowHeight, 'F');
     doc.rect(tableX, y, pageWidth - tableX * 2, rowHeight);
 
-    doc.text('NO', tableX + 7.5, y + 5, { align: 'center' });
-    doc.text('Kode Kompetensi', tableX + 15 + 22.5, y + 5, { align: 'center' });
-    doc.text('Elemen Kompetensi', tableX + 60 + colWidths[2] / 2, y + 5, { align: 'center' });
+    doc.text('NO', tableX + 10, y + 5, { align: 'center' });
+    doc.text('Elemen Kompetensi / Element of Competency', tableX + 20 + colWidths[1] / 2, y + 5, { align: 'center' });
 
     y += rowHeight;
 
@@ -200,22 +192,18 @@ export const generateCertificate = async (data: CertificateData) => {
 
         doc.rect(tableX, itemY, colWidths[0], rowHeight);
         doc.rect(tableX + colWidths[0], itemY, colWidths[1], rowHeight);
-        doc.rect(tableX + colWidths[0] + colWidths[1], itemY, colWidths[2], rowHeight);
 
-        doc.text((index + 1).toString(), tableX + 7.5, itemY + 5, { align: 'center' });
-        doc.text(`G.45OTO01.${(index + 1).toString().padStart(3, '0')}.2`, tableX + 15 + 5, itemY + 5);
-        doc.text(item, tableX + 60 + 5, itemY + 5, { maxWidth: colWidths[2] - 10 });
+        doc.text((index + 1).toString(), tableX + 10, itemY + 5, { align: 'center' });
+        doc.text(item, tableX + 20 + 5, itemY + 5, { maxWidth: colWidths[1] - 10 });
     });
 
     // Score & Sign
     const bottomY = pageHeight - 60;
     doc.setFont('helvetica', 'bold');
-    doc.text(`Total Score: 85`, tableX, bottomY);
-
     doc.text(`Bekasi, ${dateStr}`, pageWidth - 60, bottomY + 10, { align: 'center' });
     doc.text(data.jurusan, pageWidth - 60, bottomY + 20, { align: 'center' });
 
-    doc.text(data.hodName || 'Abdillah Putra', pageWidth - 60, bottomY + 40, { align: 'center' });
+    doc.text(data.hodName || '( ........................... )', pageWidth - 60, bottomY + 40, { align: 'center' });
     doc.setFont('helvetica', 'normal');
     doc.text('Head of Department', pageWidth - 60, bottomY + 44, { align: 'center' });
 
