@@ -95,20 +95,68 @@ export const generateCertificate = async (data: CertificateData) => {
 
     yPos += 8;
     doc.setFontSize(10);
+    const sigY = pageHeight - 35; // Signature start position 
     doc.text('Telah dinyatakan LULUS verifikasi pada kompetensi:', pageWidth / 2, yPos, { align: 'center' });
 
-    yPos += 8;
-    doc.setFontSize(12);
+    yPos += 7;
+
+    // --- Competency List Parsing & Rendering ---
+    let competencies: string[] = [];
+    try {
+        if (data.unitKompetensi.startsWith('[') && data.unitKompetensi.endsWith(']')) {
+            competencies = JSON.parse(data.unitKompetensi);
+        } else {
+            competencies = [data.unitKompetensi];
+        }
+    } catch (e) {
+        competencies = [data.unitKompetensi];
+    }
+
+    // Dynamic Font Size & Layout
+    const maxItemsPerCol = 10;
+
+    let fontSize = 9;
+    if (competencies.length > 5) fontSize = 8;
+    if (competencies.length > 15) fontSize = 7;
+
+    doc.setFontSize(fontSize);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(30, 100, 30); // Dark Green
-    doc.text(data.unitKompetensi, pageWidth / 2, yPos, { align: 'center' });
+
+    if (competencies.length <= maxItemsPerCol) {
+        // Single Column Centered
+        competencies.forEach((item) => {
+            if (yPos > sigY - 10) return; // Basic safety
+            doc.text(`- ${item}`, pageWidth / 2, yPos, { align: 'center', maxWidth: pageWidth - 60 });
+            yPos += (fontSize / 2) + 1;
+        });
+    } else {
+        // Two Columns
+        const midPoint = Math.ceil(competencies.length / 2);
+        const col1 = competencies.slice(0, midPoint);
+        const col2 = competencies.slice(midPoint);
+
+        let leftY = yPos;
+        let rightY = yPos;
+
+        col1.forEach((item) => {
+            doc.text(`• ${item}`, 25, leftY, { align: 'left', maxWidth: (pageWidth / 2) - 30 });
+            leftY += (fontSize / 2) + 0.5;
+        });
+
+        col2.forEach((item) => {
+            doc.text(`• ${item}`, (pageWidth / 2) + 5, rightY, { align: 'left', maxWidth: (pageWidth / 2) - 30 });
+            rightY += (fontSize / 2) + 0.5;
+        });
+
+        yPos = Math.max(leftY, rightY);
+    }
 
     // --- Footer / Signatures ---
     // Date
     const dateStr = new Date(data.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
     // Signatures Position
-    const sigY = pageHeight - 35;
     const sigLeftX = 40;
     const sigRightX = pageWidth - 40;
 
