@@ -204,7 +204,10 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             levelColor: levelObj?.badge_color || '#94a3b8',
             className: student.kelas,
             attendance_pcent: discipline?.attendance_pcent ?? 100,
-            attendance_counts: discipline?.attendance_counts ?? { masuk: 0, izin: 0, sakit: 0, alfa: 0 }
+            masuk: discipline?.masuk ?? 0,
+            izin: discipline?.izin ?? 0,
+            sakit: discipline?.sakit ?? 0,
+            alfa: discipline?.alfa ?? 0
           });
 
           // Mock history
@@ -268,12 +271,10 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             levelColor: color,
             className: student.kelas,
             attendance_pcent: discData?.attendance_pcent ?? 100,
-            attendance_counts: discData ? {
-              masuk: discData.masuk,
-              izin: discData.izin,
-              sakit: discData.sakit,
-              alfa: discData.alfa
-            } : { masuk: 0, izin: 0, sakit: 0, alfa: 0 }
+            masuk: discData?.masuk ?? 0,
+            izin: discData?.izin ?? 0,
+            sakit: discData?.sakit ?? 0,
+            alfa: discData?.alfa ?? 0
           });
 
           // Fetch History
@@ -325,7 +326,10 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             levelColor: '#94a3b8',
             className: user.role === 'student' ? '...' : '',
             attendance_pcent: 0,
-            attendance_counts: { masuk: 0, izin: 0, sakit: 0, alfa: 0 }
+            masuk: 0,
+            izin: 0,
+            sakit: 0,
+            alfa: 0
           });
         }
       }
@@ -632,26 +636,24 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                                 </div>
                               </div>
 
-                              {myStats.attendance_counts && (
-                                <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
-                                  <div className="flex items-center gap-1">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                                    <span className="text-[10px] font-bold text-white/60">{myStats.attendance_counts.masuk} <span className="font-normal opacity-50">M</span></span>
-                                  </div>
-                                  <div className="flex items-center gap-1">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                                    <span className="text-[10px] font-bold text-white/60">{myStats.attendance_counts.izin} <span className="font-normal opacity-50">I</span></span>
-                                  </div>
-                                  <div className="flex items-center gap-1">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                                    <span className="text-[10px] font-bold text-white/60">{myStats.attendance_counts.sakit} <span className="font-normal opacity-50">S</span></span>
-                                  </div>
-                                  <div className="flex items-center gap-1">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
-                                    <span className="text-[10px] font-bold text-white/60">{myStats.attendance_counts.alfa} <span className="font-normal opacity-50">A</span></span>
-                                  </div>
+                              <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
+                                <div className="flex items-center gap-1">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                  <span className="text-[10px] font-bold text-white/60">{myStats.masuk} <span className="font-normal opacity-50">M</span></span>
                                 </div>
-                              )}
+                                <div className="flex items-center gap-1">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                                  <span className="text-[10px] font-bold text-white/60">{myStats.izin} <span className="font-normal opacity-50">I</span></span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                                  <span className="text-[10px] font-bold text-white/60">{myStats.sakit} <span className="font-normal opacity-50">S</span></span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+                                  <span className="text-[10px] font-bold text-white/60">{myStats.alfa} <span className="font-normal opacity-50">A</span></span>
+                                </div>
+                              </div>
                             </div>
                           )}
                         </div>

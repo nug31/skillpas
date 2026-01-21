@@ -45,12 +45,10 @@ export interface StudentDiscipline {
   id: string; // usually `disc-${siswa_id}`
   siswa_id: string;
   attendance_pcent: number; // 0-100
-  attendance_counts?: {
-    masuk: number;
-    izin: number;
-    sakit: number;
-    alfa: number;
-  };
+  masuk: number;
+  izin: number;
+  sakit: number;
+  alfa: number;
   attitude_scores: {
     aspect: string;
     score: number; // 1-100 or 1-5
@@ -100,12 +98,10 @@ export interface StudentStats {
   levelColor: string;
   className: string;
   attendance_pcent?: number;
-  attendance_counts?: {
-    masuk: number;
-    izin: number;
-    sakit: number;
-    alfa: number;
-  };
+  masuk?: number;
+  izin?: number;
+  sakit?: number;
+  alfa?: number;
 }
 
 export type ViewMode = 'list' | 'race' | 'podium';

@@ -201,7 +201,7 @@ export const mockDiscipline: import('../types').StudentDiscipline[] = [
     id: 'disc-s-j1-user',
     siswa_id: 's-j1-user',
     attendance_pcent: 95,
-    attendance_counts: { masuk: 180, izin: 2, sakit: 1, alfa: 0 },
+    masuk: 180, izin: 2, sakit: 1, alfa: 0,
     attitude_scores: [
       { aspect: 'Disiplin', score: 85 },
       { aspect: 'Tanggung Jawab', score: 92 },
@@ -215,7 +215,7 @@ export const mockDiscipline: import('../types').StudentDiscipline[] = [
     id: 'disc-raka-new',
     siswa_id: 's-raka-new',
     attendance_pcent: 88,
-    attendance_counts: { masuk: 165, izin: 5, sakit: 3, alfa: 2 },
+    masuk: 165, izin: 5, sakit: 3, alfa: 2,
     attitude_scores: [
       { aspect: 'Disiplin', score: 80 },
       { aspect: 'Tanggung Jawab', score: 82 },
@@ -229,7 +229,7 @@ export const mockDiscipline: import('../types').StudentDiscipline[] = [
     id: 'disc-s-bayu-sapta',
     siswa_id: 's-bayu-sapta',
     attendance_pcent: 92,
-    attendance_counts: { masuk: 175, izin: 3, sakit: 2, alfa: 0 },
+    masuk: 175, izin: 3, sakit: 2, alfa: 0,
     attitude_scores: [
       { aspect: 'Disiplin', score: 88 },
       { aspect: 'Tanggung Jawab', score: 90 },

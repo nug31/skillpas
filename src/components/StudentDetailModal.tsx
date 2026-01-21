@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Check, Clock, Pencil, Save, TrendingUp, Download, CreditCard } from 'lucide-react';
+import { X, Clock, Award, CheckCircle2, Pencil, Save, ChevronRight } from 'lucide-react';
 import type { StudentListItem, LevelSkill, StudentDiscipline } from '../types';
 import { generateCertificate } from '../lib/certificateGenerator';
 import { supabase, isMockMode } from '../lib/supabase';
@@ -34,7 +34,17 @@ export function StudentDetailModal({
 
   // Edit states for discipline
   const [editAttendance, setEditAttendance] = useState(0);
+  const [editMasuk, setEditMasuk] = useState(0);
+  const [editIzin, setEditIzin] = useState(0);
+  const [editSakit, setEditSakit] = useState(0);
+  const [editAlfa, setEditAlfa] = useState(0);
   const [editAttitude, setEditAttitude] = useState<{ aspect: string, score: number }[]>([]);
+
+  // Check if current user can edit this student
+  const canEdit = user?.role === 'admin' ||
+    user?.role === 'hod' ||
+    (user?.role === 'wali_kelas' && user.kelas === student.kelas) ||
+    (user?.role === 'teacher_produktif');
 
   // HOD Name state
   const [hodName, setHodName] = useState<string | undefined>(undefined);
@@ -76,6 +86,10 @@ export function StudentDetailModal({
     if (data) {
       setDiscipline(data);
       setEditAttendance(data.attendance_pcent);
+      setEditMasuk(data.masuk || 0);
+      setEditIzin(data.izin || 0);
+      setEditSakit(data.sakit || 0);
+      setEditAlfa(data.alfa || 0);
       setEditAttitude(JSON.parse(JSON.stringify(data.attitude_scores)));
     } else {
       // Default template
@@ -83,6 +97,10 @@ export function StudentDetailModal({
         id: `new-${student.id}`,
         siswa_id: student.id,
         attendance_pcent: 80,
+        masuk: 0,
+        izin: 0,
+        sakit: 0,
+        alfa: 0,
         attitude_scores: [
           { aspect: 'Disiplin', score: 75 },
           { aspect: 'Tanggung Jawab', score: 75 },
@@ -92,19 +110,25 @@ export function StudentDetailModal({
         ],
         updated_at: new Date().toISOString()
       };
-      setDiscipline(defaultData);
+      setDiscipline(defaultData as any);
       setEditAttendance(80);
+      setEditMasuk(0);
+      setEditIzin(0);
+      setEditSakit(0);
+      setEditAlfa(0);
       setEditAttitude(defaultData.attitude_scores);
     }
   }, [student.id]);
 
   const handleSaveDiscipline = () => {
-    // Here you would typically call an API to save
-    // For now we just update the local state to reflect changes immediately
     if (discipline) {
       const updated = {
         ...discipline,
         attendance_pcent: editAttendance,
+        masuk: editMasuk,
+        izin: editIzin,
+        sakit: editSakit,
+        alfa: editAlfa,
         attitude_scores: editAttitude,
         updated_at: new Date().toISOString()
       };
@@ -228,7 +252,7 @@ export function StudentDetailModal({
                 <>
                   <div className="text-lg font-semibold text-[color:var(--text-primary)] flex items-center gap-2">
                     {student.nama}
-                    {onUpdate && !isEditing && (
+                    {onUpdate && !isEditing && canEdit && (
                       <button onClick={() => setIsEditing(true)} className="p-1 text-[color:var(--text-muted)] hover:text-[color:var(--accent-1)] transition-colors" title="Edit Data">
                         <Pencil className="w-4 h-4" />
                       </button>
@@ -358,47 +382,76 @@ export function StudentDetailModal({
                           )}
                         </div>
                         <div className="mt-3 pt-3 border-t border-white/5 mx-[-12px] px-3 bg-white/5">
+                          {/* Detailed Attendance Header */}
+                          <div className="text-[10px] uppercase font-bold text-[color:var(--text-muted)] mb-3 flex items-center gap-1 border-b border-white/5 pb-1">
+                            <Clock className="w-3 h-3" /> Data Kehadiran
+                          </div>
+
                           <div className="grid grid-cols-2 gap-4">
-                            {/* Attendance Section */}
-                            <div>
-                              <div className="text-[10px] uppercase font-bold text-[color:var(--text-muted)] mb-1 flex items-center gap-1">
-                                <Clock className="w-3 h-3" /> Kehadiran
-                              </div>
-                              {isEditing && user?.role === 'wali_kelas' ? (
-                                <div className="flex items-center gap-2">
-                                  <input
-                                    type="number"
-                                    min="0" max="100"
-                                    value={editAttendance}
-                                    onChange={(e) => setEditAttendance(Number(e.target.value))}
-                                    className="w-16 px-2 py-1 bg-black/20 border border-white/10 rounded text-sm text-center text-white"
-                                  />
-                                  <span className="text-sm text-[color:var(--text-muted)]">%</span>
+                            {/* Detailed Attendance Counts */}
+                            <div className="space-y-2">
+                              {isEditing && canEdit ? (
+                                <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+                                  <div>
+                                    <label className="text-[10px] text-slate-500 block">Masuk</label>
+                                    <input type="number" value={editMasuk} onChange={(e) => setEditMasuk(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
+                                  </div>
+                                  <div>
+                                    <label className="text-[10px] text-slate-500 block">Izin</label>
+                                    <input type="number" value={editIzin} onChange={(e) => setEditIzin(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
+                                  </div>
+                                  <div>
+                                    <label className="text-[10px] text-slate-500 block">Sakit</label>
+                                    <input type="number" value={editSakit} onChange={(e) => setEditSakit(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
+                                  </div>
+                                  <div>
+                                    <label className="text-[10px] text-slate-500 block">Alfa</label>
+                                    <input type="number" value={editAlfa} onChange={(e) => setEditAlfa(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
+                                  </div>
                                 </div>
                               ) : (
-                                <div className="relative pt-1">
-                                  <div className="flex items-center justify-between mb-1">
-                                    <span className="text-xs font-semibold inline-block text-[color:var(--accent-1)]">
-                                      {discipline?.attendance_pcent || 0}%
-                                    </span>
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div className="bg-white/5 rounded p-1.5 text-center">
+                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Masuk</div>
+                                    <div className="text-xs font-bold text-emerald-500">{discipline?.masuk || 0}</div>
                                   </div>
-                                  <div className="overflow-hidden h-1.5 mb-1 text-xs flex rounded bg-indigo-200/20">
-                                    <div style={{ width: `${discipline?.attendance_pcent || 0}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[color:var(--accent-1)]"></div>
+                                  <div className="bg-white/5 rounded p-1.5 text-center">
+                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Izin</div>
+                                    <div className="text-xs font-bold text-blue-500">{discipline?.izin || 0}</div>
+                                  </div>
+                                  <div className="bg-white/5 rounded p-1.5 text-center">
+                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Sakit</div>
+                                    <div className="text-xs font-bold text-amber-500">{discipline?.sakit || 0}</div>
+                                  </div>
+                                  <div className="bg-white/5 rounded p-1.5 text-center">
+                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Alfa</div>
+                                    <div className="text-xs font-bold text-rose-500">{discipline?.alfa || 0}</div>
                                   </div>
                                 </div>
                               )}
                             </div>
 
-                            {/* Attitude Section */}
-                            <div>
-                              <div className="text-[10px] uppercase font-bold text-[color:var(--text-muted)] mb-1 flex items-center gap-1">
-                                <TrendingUp className="w-3 h-3" /> Attitude
+                            {/* Percentage & Attitude */}
+                            <div className="space-y-3">
+                              <div>
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="text-[10px] uppercase font-bold text-[color:var(--text-muted)]">Presensi</span>
+                                  {isEditing && canEdit ? (
+                                    <input type="number" max="100" value={editAttendance} onChange={(e) => setEditAttendance(Number(e.target.value))} className="w-12 px-1 bg-black/20 border border-white/10 rounded text-[10px] text-right text-[color:var(--accent-1)]" />
+                                  ) : (
+                                    <span className="text-xs font-bold text-[color:var(--accent-1)]">{discipline?.attendance_pcent || 0}%</span>
+                                  )}
+                                </div>
+                                <div className="overflow-hidden h-1 rounded bg-white/5">
+                                  <div style={{ width: `${discipline?.attendance_pcent || 0}%` }} className="h-full bg-[color:var(--accent-1)]" />
+                                </div>
                               </div>
+
                               <div className="space-y-1">
-                                {discipline?.attitude_scores.slice(0, 5).map((att, idx) => (
-                                  <div key={idx} className="flex justify-between items-center text-xs">
-                                    <span className="text-[color:var(--text-muted)] truncate max-w-[80px]" title={att.aspect}>{att.aspect}</span>
-                                    {isEditing && user?.role === 'wali_kelas' ? (
+                                {discipline?.attitude_scores.slice(0, 3).map((att, idx) => (
+                                  <div key={idx} className="flex justify-between items-center text-[10px]">
+                                    <span className="text-slate-500 truncate">{att.aspect}</span>
+                                    {isEditing && canEdit ? (
                                       <input
                                         type="number"
                                         min="0" max="100"
@@ -409,12 +462,10 @@ export function StudentDetailModal({
                                           newAtt[idx] = { ...newAtt[idx], score: val };
                                           setEditAttitude(newAtt);
                                         }}
-                                        className="w-10 px-1 py-0.5 bg-black/20 border border-white/10 rounded text-[10px] text-center text-white"
+                                        className="w-10 px-1 bg-black/20 border border-white/10 rounded text-[10px] text-center text-white"
                                       />
                                     ) : (
-                                      <span className={`font-mono font-bold ${att.score >= 90 ? 'text-green-400' : att.score >= 80 ? 'text-blue-400' : 'text-orange-400'}`}>
-                                        {att.score}
-                                      </span>
+                                      <span className={`font-bold ${att.score >= 80 ? 'text-emerald-500' : 'text-amber-500'}`}>{att.score}</span>
                                     )}
                                   </div>
                                 ))}
@@ -470,47 +521,76 @@ export function StudentDetailModal({
                           )}
                         </div>
                         <div className="mt-3 pt-3 border-t border-white/5 mx-[-12px] px-3 bg-white/5">
+                          {/* Detailed Attendance Header */}
+                          <div className="text-[10px] uppercase font-bold text-[color:var(--text-muted)] mb-3 flex items-center gap-1 border-b border-white/5 pb-1">
+                            <Clock className="w-3 h-3" /> Data Kehadiran
+                          </div>
+
                           <div className="grid grid-cols-2 gap-4">
-                            {/* Attendance Section */}
-                            <div>
-                              <div className="text-[10px] uppercase font-bold text-[color:var(--text-muted)] mb-1 flex items-center gap-1">
-                                <Clock className="w-3 h-3" /> Kehadiran
-                              </div>
-                              {isEditing && user?.role === 'wali_kelas' ? (
-                                <div className="flex items-center gap-2">
-                                  <input
-                                    type="number"
-                                    min="0" max="100"
-                                    value={editAttendance}
-                                    onChange={(e) => setEditAttendance(Number(e.target.value))}
-                                    className="w-16 px-2 py-1 bg-black/20 border border-white/10 rounded text-sm text-center text-white"
-                                  />
-                                  <span className="text-sm text-[color:var(--text-muted)]">%</span>
+                            {/* Detailed Attendance Counts */}
+                            <div className="space-y-2">
+                              {isEditing && canEdit ? (
+                                <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+                                  <div>
+                                    <label className="text-[10px] text-slate-500 block">Masuk</label>
+                                    <input type="number" value={editMasuk} onChange={(e) => setEditMasuk(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
+                                  </div>
+                                  <div>
+                                    <label className="text-[10px] text-slate-500 block">Izin</label>
+                                    <input type="number" value={editIzin} onChange={(e) => setEditIzin(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
+                                  </div>
+                                  <div>
+                                    <label className="text-[10px] text-slate-500 block">Sakit</label>
+                                    <input type="number" value={editSakit} onChange={(e) => setEditSakit(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
+                                  </div>
+                                  <div>
+                                    <label className="text-[10px] text-slate-500 block">Alfa</label>
+                                    <input type="number" value={editAlfa} onChange={(e) => setEditAlfa(Number(e.target.value))} className="w-full px-2 py-0.5 bg-black/20 border border-white/10 rounded text-xs text-white" />
+                                  </div>
                                 </div>
                               ) : (
-                                <div className="relative pt-1">
-                                  <div className="flex items-center justify-between mb-1">
-                                    <span className="text-xs font-semibold inline-block text-[color:var(--accent-1)]">
-                                      {discipline?.attendance_pcent || 0}%
-                                    </span>
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div className="bg-white/5 rounded p-1.5 text-center">
+                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Masuk</div>
+                                    <div className="text-xs font-bold text-emerald-500">{discipline?.masuk || 0}</div>
                                   </div>
-                                  <div className="overflow-hidden h-1.5 mb-1 text-xs flex rounded bg-indigo-200/20">
-                                    <div style={{ width: `${discipline?.attendance_pcent || 0}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[color:var(--accent-1)]"></div>
+                                  <div className="bg-white/5 rounded p-1.5 text-center">
+                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Izin</div>
+                                    <div className="text-xs font-bold text-blue-500">{discipline?.izin || 0}</div>
+                                  </div>
+                                  <div className="bg-white/5 rounded p-1.5 text-center">
+                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Sakit</div>
+                                    <div className="text-xs font-bold text-amber-500">{discipline?.sakit || 0}</div>
+                                  </div>
+                                  <div className="bg-white/5 rounded p-1.5 text-center">
+                                    <div className="text-[9px] text-slate-500 uppercase font-bold">Alfa</div>
+                                    <div className="text-xs font-bold text-rose-500">{discipline?.alfa || 0}</div>
                                   </div>
                                 </div>
                               )}
                             </div>
 
-                            {/* Attitude Section */}
-                            <div>
-                              <div className="text-[10px] uppercase font-bold text-[color:var(--text-muted)] mb-1 flex items-center gap-1">
-                                <TrendingUp className="w-3 h-3" /> Attitude
+                            {/* Percentage & Attitude */}
+                            <div className="space-y-3">
+                              <div>
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="text-[10px] uppercase font-bold text-[color:var(--text-muted)]">Presensi</span>
+                                  {isEditing && canEdit ? (
+                                    <input type="number" max="100" value={editAttendance} onChange={(e) => setEditAttendance(Number(e.target.value))} className="w-12 px-1 bg-black/20 border border-white/10 rounded text-[10px] text-right text-[color:var(--accent-1)]" />
+                                  ) : (
+                                    <span className="text-xs font-bold text-[color:var(--accent-1)]">{discipline?.attendance_pcent || 0}%</span>
+                                  )}
+                                </div>
+                                <div className="overflow-hidden h-1 rounded bg-white/5">
+                                  <div style={{ width: `${discipline?.attendance_pcent || 0}%` }} className="h-full bg-[color:var(--accent-1)]" />
+                                </div>
                               </div>
+
                               <div className="space-y-1">
-                                {discipline?.attitude_scores.slice(0, 5).map((att, idx) => (
-                                  <div key={idx} className="flex justify-between items-center text-xs">
-                                    <span className="text-[color:var(--text-muted)] truncate max-w-[80px]" title={att.aspect}>{att.aspect}</span>
-                                    {isEditing && user?.role === 'wali_kelas' ? (
+                                {discipline?.attitude_scores.slice(0, 3).map((att, idx) => (
+                                  <div key={idx} className="flex justify-between items-center text-[10px]">
+                                    <span className="text-slate-500 truncate">{att.aspect}</span>
+                                    {isEditing && canEdit ? (
                                       <input
                                         type="number"
                                         min="0" max="100"
@@ -521,12 +601,10 @@ export function StudentDetailModal({
                                           newAtt[idx] = { ...newAtt[idx], score: val };
                                           setEditAttitude(newAtt);
                                         }}
-                                        className="w-10 px-1 py-0.5 bg-black/20 border border-white/10 rounded text-[10px] text-center text-white"
+                                        className="w-10 px-1 bg-black/20 border border-white/10 rounded text-[10px] text-center text-white"
                                       />
                                     ) : (
-                                      <span className={`font-mono font-bold ${att.score >= 90 ? 'text-green-400' : att.score >= 80 ? 'text-blue-400' : 'text-orange-400'}`}>
-                                        {att.score}
-                                      </span>
+                                      <span className={`font-bold ${att.score >= 80 ? 'text-emerald-500' : 'text-amber-500'}`}>{att.score}</span>
                                     )}
                                   </div>
                                 ))}
