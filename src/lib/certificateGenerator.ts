@@ -127,8 +127,6 @@ export const generateCertificate = async (data: CertificateData) => {
 
     // Date
     const dateStr = new Date(data.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Bekasi, ${dateStr}`, pageWidth / 2, pageHeight - 65, { align: 'center' });
 
     // Page 1 Signatures
     const sigY = pageHeight - 45;
