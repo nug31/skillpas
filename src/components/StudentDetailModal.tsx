@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Clock, Award, CheckCircle2, Pencil, Save, ChevronRight } from 'lucide-react';
+import { X, Clock, Pencil, Save, Check, CreditCard, Download } from 'lucide-react';
 import type { StudentListItem, LevelSkill, StudentDiscipline } from '../types';
 import { generateCertificate } from '../lib/certificateGenerator';
 import { supabase, isMockMode } from '../lib/supabase';
