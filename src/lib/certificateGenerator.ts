@@ -182,24 +182,58 @@ export const generateCertificate = async (data: CertificateData) => {
         }
     } catch (e) { competencies = [data.unitKompetensi]; }
 
-    doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     competencies.forEach((item, index) => {
-        const textLines = doc.splitTextToSize(item, colWidths[1] - 10);
+        // Prepare segments for bold text support (split by **)
+        const segments = item.split(/(\*\*.*?\*\*)/g);
+
+        // Calculate total lines needed to determine row height
+        const textLines = doc.splitTextToSize(item.replace(/\*\*/g, ''), colWidths[1] - 10);
         const itemHeight = Math.max(baseRowHeight, textLines.length * 5 + 2);
 
-        if (y + itemHeight > pageHeight - 75) return; // Stop table earlier (was 65)
+        if (y + itemHeight > pageHeight - 75) return;
 
         doc.rect(tableX, y, colWidths[0], itemHeight);
         doc.rect(tableX + colWidths[0], y, colWidths[1], itemHeight);
 
+        // Render Number
+        doc.setFont('helvetica', 'normal');
         doc.text((index + 1).toString(), tableX + 10, y + (itemHeight / 2) + 1.5, { align: 'center' });
-        doc.text(textLines, tableX + 20 + 5, y + 5);
+
+        // Render Rich Text (supporting **bold**)
+        let currentX = tableX + 20 + 5;
+        let currentY = y + 5;
+
+        // Simplified multi-line rich text rendering
+        // For simplicity with jsPDF and multi-line, we iterate segments
+        // Note: For very complex cases, a more robust layout engine would be needed.
+        segments.forEach(segment => {
+            const isBold = segment.startsWith('**') && segment.endsWith('**');
+            const cleanText = isBold ? segment.slice(2, -2) : segment;
+
+            doc.setFont('helvetica', isBold ? 'bold' : 'normal');
+
+            // Handle newlines if present in the segment
+            const lines = cleanText.split('\n');
+            lines.forEach((line, lineIdx) => {
+                if (lineIdx > 0) {
+                    currentY += 5;
+                    currentX = tableX + 20 + 5;
+                }
+
+                // If line is too long, we'd need to wrap it. 
+                // Using splitTextToSize here is tricky with mixed fonts.
+                // We'll use a simplified wrap for the whole item or render lines as-is if short.
+                doc.text(line, currentX, currentY);
+                currentX += doc.getTextWidth(line);
+            });
+        });
+
         y += itemHeight;
     });
 
     // Score & Sign - Moved further down (bottomY adjusted)
-    const bottomY = pageHeight - 68; // Was 75, moved down slightly
+    const bottomY = pageHeight - 68;
     doc.setFont('helvetica', 'bold');
     doc.text(`Bekasi, ${dateStr}`, pageWidth - 60, bottomY + 10, { align: 'center' });
     doc.text(data.jurusan, pageWidth - 60, bottomY + 18, { align: 'center' });
