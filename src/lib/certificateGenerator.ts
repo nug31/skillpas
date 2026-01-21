@@ -188,7 +188,7 @@ export const generateCertificate = async (data: CertificateData) => {
         const textLines = doc.splitTextToSize(item, colWidths[1] - 10);
         const itemHeight = Math.max(baseRowHeight, textLines.length * 5 + 2);
 
-        if (y + itemHeight > pageHeight - 65) return; // Prevent overflow
+        if (y + itemHeight > pageHeight - 75) return; // Stop table earlier (was 65)
 
         doc.rect(tableX, y, colWidths[0], itemHeight);
         doc.rect(tableX + colWidths[0], y, colWidths[1], itemHeight);
@@ -198,8 +198,8 @@ export const generateCertificate = async (data: CertificateData) => {
         y += itemHeight;
     });
 
-    // Score & Sign - Moved UP to avoid wave overlap
-    const bottomY = pageHeight - 75; // Moved up by 15mm
+    // Score & Sign - Moved further down (bottomY adjusted)
+    const bottomY = pageHeight - 68; // Was 75, moved down slightly
     doc.setFont('helvetica', 'bold');
     doc.text(`Bekasi, ${dateStr}`, pageWidth - 60, bottomY + 10, { align: 'center' });
     doc.text(data.jurusan, pageWidth - 60, bottomY + 18, { align: 'center' });
