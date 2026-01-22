@@ -8,6 +8,8 @@ Platform ini membantu Bapak/Ibu Guru dalam memantau secara real-time perkembanga
 3. Klik tombol **Masuk**.
 4. Setelah berhasil login, Anda akan diarahkan ke Dashboard utama.
 
+![Login Page](assets/login.png)
+
 ## Pahami Peran Anda
 
 Sistem ini membagi akses berdasarkan peran masing-masing pengajar untuk menjaga akurasi data:
@@ -18,6 +20,8 @@ Tugas utama Anda adalah memantau kehadiran dan karakter siswa di kelas yang Anda
 - **Update Kehadiran**: Klik Nama Siswa > Tab Kehadiran. Masukkan jumlah Masuk, Izin, Sakit, dan Alfa.
 - **Update Sikap**: Klik Nama Siswa > Tab Skor Sikap. Berikan penilaian pada aspek Disiplin, Tanggung Jawab, Jujur, dll.
 - **Monitoring KRS**: Anda dapat melihat status pengajuan KRS siswa kelas Anda.
+
+![Dashboard Guru/Walas](assets/guru_home.png)
 
 ### 2. Guru Produktif
 Tugas utama Anda adalah memverifikasi kompetensi teknis siswa:
@@ -30,6 +34,8 @@ Tugas utama Anda adalah sebagai verifikator akhir dan pengelola standar jurusan:
 - **Kelola Kriteria**: Mengubah kriteria kompetensi di setiap level (Menu Detail Jurusan > Level Skill).
 - **Persetujuan KRS (Tahap Final)**: Memberikan persetujuan akhir dan **wajib menentukan Tanggal Ujian**.
 - **Import Data**: Mengelola data massal siswa dalam satu jurusan.
+
+![Edit Kriteria](assets/guru_criteria.png)
 
 ---
 
@@ -47,6 +53,8 @@ Setelah masuk ke halaman jurusan:
 
 ### Cetak Sertifikat & Laporan
 Siswa yang telah mencapai level tertentu dapat memiliki sertifikat PDF. Bapak/Ibu dapat membantu mendownloadkan sertifikat tersebut melalui modal detail siswa (Tab Riwayat).
+
+![Persetujuan KRS](assets/guru_krs.png)
 
 ---
 *Skill Passport mempermudah administrasi dan meningkatkan transparansi progres belajar siswa.*

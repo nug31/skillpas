@@ -2,21 +2,23 @@
 
 Selamat datang di **Skill Passport**! Platform ini dirancang untuk membantumu melacak pencapaian kompetensi, poin, dan progres belajarmu selama di sekolah.
 
-## 1. Login ke Akunmu
-1. Buka alamat website Skill Passport.
-2. Masukkan **Username** dan **Password** yang telah diberikan oleh admin sekolah.
-3. Klik tombol **Masuk**.
+## 1. Cara Login
+1. Buka halaman website **Skill Passport**.
+2. Masukkan **Username** dan **Password** yang diberikan oleh admin sekolah.
+3. Klik tombol **Masuk Sistem**.
+
+![Login Page](assets/login.png)
 4. Setelah berhasil login, kamu akan melihat animasi **Passport Stamp** sebagai tanda kamu telah masuk ke sistem.
 
-## 2. Memahami Dashboard (Beranda)
-Di halaman utama, kamu akan melihat informasi penting:
-- **Profil Siswa**: Foto/Avatar, Nama, NISN, dan Kelas.
-- **Statistik Utama**:
-  - **Skor**: Nilai kompetensi saat ini (0-100).
-  - **Poin**: Total poin yang dikumpulkan dari berbagai aktivitas (XP).
-  - **Level**: Tingkatanmu saat ini (misal: *Beginner 1*, *Specialist*, atau *Master*).
-- **Badge**: Lencana visual yang menunjukkan tingkatan keahlianmu.
-- **Riwayat Kompetensi**: Daftar unit kompetensi yang telah kamu selesaikan dan diverifikasi oleh guru.
+## 2. Dashboard Siswa
+Setelah login, kamu akan melihat Dashboard utama yang berisi:
+- **Profil Siswa**: Foto/Avatar, Nama, dan Kelas.
+- **Statistik Skor**: Total Skor Kompetensi yang telah dicapai.
+- **Peringkat**: Posisimu di dalam kelas.
+- **Badge Level**: Level kompetensi saat ini (misal: Basic 1, Master).
+- **Presensi**: Rangkuman kehadiran (Masuk, Izin, Sakit, Alfa).
+
+![Dashboard Siswa](assets/siswa_home.png)
 
 ## 3. Melihat Detail Kompetensi & Sertifikat
 1. Klik tombol **Lihat Riwayat** atau bagian kartu profilmu.
@@ -31,6 +33,9 @@ Fitur ini digunakan untuk pengujian kompetensi mandiri:
 2. Lihat **Misi Spesial** yang tersedia untuk menambah XP/Poin.
 3. Di bagian **Daftar Unit Kompetensi**, kamu bisa melihat syarat untuk mencapai level berikutnya.
 4. Pilih unit yang ingin kamu uji, lalu klik **Ajukan Persetujuan KRS**.
+
+![Modal KRS](assets/siswa_krs.png)
+
 5. **Persetujuan & Jadwal Ujian**: 
    - Jika guru menyetujui, status akan berubah.
    - Jika HOD (Kepala Program) menjadwalkan ujian, kamu akan melihat **Notifikasi Berwarna Hijau** di Dashboard bertuliskan **"Ujian KRS Terjadwal!"**.
@@ -45,6 +50,8 @@ Kamu bisa melihat posisimu dibandingkan teman sekelas atau seangkatan:
    - **Student Race**: Animasi balapan yang menunjukkan progres skor siswa secara visual.
    - **Podium**: Menampilkan 3 besar siswa dengan skor tertinggi.
    - **Daftar Siswa**: Tabel lengkap peringkat seluruh siswa di kelas tersebut.
+
+![Student Race & Leaderboard](assets/siswa_leaderboard.png)
 
 ## 6. Game Refleks (Hiburan)
 Di bagian bawah (footer), terdapat game refleks sederhana. Kamu bisa memainkannya di sela-sela waktu istirahat untuk melatih ketangkasan klik!
