@@ -26,16 +26,30 @@ Di halaman utama, kamu akan melihat informasi penting:
    - **Download Sertifikat**: Untuk kompetensi yang sudah lulus (Lulus), kamu bisa klik tombol **Download Sertifikat** untuk mengunduh bukti kompetensimu dalam bentuk PDF.
 
 ## 4. Kartu Rencana Studi (KRS) & Misi
-Fitur ini digunakan jika sekolahmu mengaktifkan sistem pengujian kompetensi mandiri:
+Fitur ini digunakan untuk pengujian kompetensi mandiri:
 1. Klik tombol **Misi / KRS** (ikon target/trofi).
 2. Lihat **Misi Spesial** yang tersedia untuk menambah XP/Poin.
 3. Di bagian **Daftar Unit Kompetensi**, kamu bisa melihat syarat untuk mencapai level berikutnya.
-4. Pilih unit yang ingin kamu uji, lalu klik **Ajukan Persetujuan KRS**. Guru akan meninjau pengajuanmu.
+4. Pilih unit yang ingin kamu uji, lalu klik **Ajukan Persetujuan KRS**.
+5. **Persetujuan & Jadwal Ujian**: 
+   - Jika guru menyetujui, status akan berubah.
+   - Jika HOD (Kepala Program) menjadwalkan ujian, kamu akan melihat **Notifikasi Berwarna Hijau** di Dashboard bertuliskan **"Ujian KRS Terjadwal!"**.
+   - Catat tanggal dan jam ujian yang muncul di notifikasi tersebut.
 
-## 5. Game Refleks (Hiburan)
+## 5. Melihat Leaderboard & Student Race (Klik Kelas)
+Kamu bisa melihat posisimu dibandingkan teman sekelas atau seangkatan:
+1. Di halaman Utama, scroll ke bawah ke bagian kartu jurusan.
+2. Kamu akan melihat pilihan kelas: **Kelas X, XI, dan XII**.
+3. **Klik pada kartu kelasmu** (misal: "Teknik Mesin X").
+4. Kamu akan diarahkan ke halaman detail yang menampilkan:
+   - **Student Race**: Animasi balapan yang menunjukkan progres skor siswa secara visual.
+   - **Podium**: Menampilkan 3 besar siswa dengan skor tertinggi.
+   - **Daftar Siswa**: Tabel lengkap peringkat seluruh siswa di kelas tersebut.
+
+## 6. Game Refleks (Hiburan)
 Di bagian bawah (footer), terdapat game refleks sederhana. Kamu bisa memainkannya di sela-sela waktu istirahat untuk melatih ketangkasan klik!
 
-## 6. Keluar (Logout)
+## 7. Keluar (Logout)
 Klik ikon **Logout** (pintu keluar) di pojok kanan atas untuk keluar dari sistem demi keamanan akunmu.
 
 ---
