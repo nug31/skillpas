@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import type { LevelSkill } from '../types';
 import { Badge } from './Badge';
@@ -19,6 +19,15 @@ function LevelCriteriaCell({
       ? level.criteria
       : (level.hasil_belajar ? [level.hasil_belajar] : [])
   );
+
+  // Sync local items state when level prop changes (e.g. after update from parent)
+  useEffect(() => {
+    setItems(
+      Array.isArray(level.criteria) && level.criteria.length > 0
+        ? level.criteria
+        : (level.hasil_belajar ? [level.hasil_belajar] : [])
+    );
+  }, [level.criteria, level.hasil_belajar]);
 
   async function save() {
     if (!onUpdate) return;

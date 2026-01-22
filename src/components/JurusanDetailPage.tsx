@@ -242,7 +242,8 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
             hasil_belajar: JSON.stringify(criteria)
           });
         }
-        // No need to reload data, optimistic update already applied
+        // Refresh data to ensure all state is in sync with mock data
+        await loadData();
         return;
       }
 
@@ -264,7 +265,8 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
         throw error;
       }
 
-      // Success! The optimistic update is already applied, no need to refresh
+      // Success! Refresh to ensure everything is in sync
+      await loadData();
     } catch (err) {
       console.error('Error updating criteria:', err);
       throw err;
