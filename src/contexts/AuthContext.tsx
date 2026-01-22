@@ -59,6 +59,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     };
                     setUser(authenticatedUser);
                     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authenticatedUser));
+                    // Dispatch auth change event so other components can reload data
+                    window.dispatchEvent(new CustomEvent('auth-changed', { detail: { action: 'login', user: authenticatedUser } }));
                     return true;
                 }
             }

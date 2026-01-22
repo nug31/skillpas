@@ -233,13 +233,13 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
         const idx = mockData.mockLevelOverrides.findIndex((o) => o.jurusan_id === jurusan.id && o.level_id === levelId);
         if (idx >= 0) {
           mockData.mockLevelOverrides[idx].criteria = criteria;
-          mockData.mockLevelOverrides[idx].hasil_belajar = criteria[0] || ''; // Fallback for legacy
+          mockData.mockLevelOverrides[idx].hasil_belajar = JSON.stringify(criteria);
         } else {
           mockData.mockLevelOverrides.push({
             jurusan_id: jurusan.id,
             level_id: levelId,
             criteria: criteria,
-            hasil_belajar: criteria[0] || ''
+            hasil_belajar: JSON.stringify(criteria)
           });
         }
         // No need to reload data, optimistic update already applied

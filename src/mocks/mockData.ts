@@ -519,11 +519,18 @@ export function getLevelsForJurusan(jurusanId: string) {
     const finalHasilBelajar = ov?.hasil_belajar ?? lvl.hasil_belajar;
 
     let criteria = lvl.criteria;
-    if (ov?.hasil_belajar && ov.hasil_belajar.startsWith('[')) {
+    if (finalHasilBelajar) {
       try {
-        criteria = JSON.parse(ov.hasil_belajar);
+        if (typeof finalHasilBelajar === 'string' && finalHasilBelajar.trim().startsWith('[')) {
+          criteria = JSON.parse(finalHasilBelajar);
+        } else if (Array.isArray(finalHasilBelajar)) {
+          criteria = finalHasilBelajar;
+        } else if (typeof finalHasilBelajar === 'string') {
+          criteria = [finalHasilBelajar];
+        }
       } catch (e) {
-        // use default
+        console.warn(`Failed to parse criteria for level ${lvl.id}`, e);
+        criteria = lvl.criteria;
       }
     }
 
