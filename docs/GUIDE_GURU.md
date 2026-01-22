@@ -2,6 +2,12 @@
 
 Platform ini membantu Bapak/Ibu Guru dalam memantau secara real-time perkembangan kompetensi siswa sesuai dengan standar industri.
 
+## 1. Cara Login
+1. Buka halaman website **Skill Passport**.
+2. Masukkan **Username** dan **Password** guru yang telah didaftarkan.
+3. Klik tombol **Masuk**.
+4. Setelah berhasil login, Anda akan diarahkan ke Dashboard utama.
+
 ## Pahami Peran Anda
 
 Sistem ini membagi akses berdasarkan peran masing-masing pengajar untuk menjaga akurasi data:
