@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, ChevronDown, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { LevelSkill } from '../types';
 import { Badge } from './Badge';
+import { groupCriteria, cleanSubItemText } from '../lib/criteriaHelper';
 
 function LevelCriteriaCell({
   level,
@@ -12,6 +14,7 @@ function LevelCriteriaCell({
   allowEdit: boolean;
   onUpdate?: (levelId: string, newCriteria: string[]) => Promise<void> | void;
 }) {
+  const [expandedGroups, setExpandedGroups] = useState<Set<number>>(new Set());
   const [editing, setEditing] = useState(false);
   // Ensure criteria is always an array
   const [items, setItems] = useState<string[]>(
@@ -56,16 +59,19 @@ function LevelCriteriaCell({
     setItems(newItems);
   }
 
-  // Display mode: render list
-  const displayItems = Array.isArray(level.criteria) && level.criteria.length > 0
-    ? level.criteria
-    : (level.hasil_belajar ? [level.hasil_belajar] : []);
+  const toggleGroup = (groupIdx: number) => {
+    const next = new Set(expandedGroups);
+    if (next.has(groupIdx)) next.delete(groupIdx);
+    else next.add(groupIdx);
+    setExpandedGroups(next);
+  };
 
   // Helper to render formatting
-  const renderText = (text: string) => {
-    const parts = text.split(/(\*\*.*?\*\*)/g);
+  const renderText = (text: string, isSub = false) => {
+    const cleanText = isSub ? cleanSubItemText(text) : text;
+    const parts = cleanText.split(/(\*\*.*?\*\*)/g);
     return (
-      <span>
+      <span className={isSub ? 'opacity-90' : ''}>
         {parts.map((part, index) => {
           if (part.startsWith('**') && part.endsWith('**')) {
             return <strong key={index} className="font-bold text-[color:var(--text-primary)]">{part.slice(2, -2)}</strong>;
@@ -96,7 +102,7 @@ function LevelCriteriaCell({
                 onChange={(e) => handleItemChange(idx, e.target.value)}
                 rows={2}
                 className="flex-1 p-2 bg-black/20 border border-white/10 rounded text-sm text-[color:var(--text-primary)] focus:ring-1 focus:ring-[color:var(--accent-1)]"
-                placeholder="Kriteria (gunakan **tebal** untuk bold)..."
+                placeholder="Kriteria (gunakan 1. untuk sub-item)..."
               />
               <button
                 onClick={() => handleDeleteItem(idx)}
@@ -119,7 +125,7 @@ function LevelCriteriaCell({
             className="px-3 py-1 border border-white/20 rounded text-xs text-[color:var(--text-muted)] hover:bg-white/5"
             onClick={() => {
               setEditing(false);
-              setItems(displayItems);
+              setItems(items); // Just close
             }}
           >
             Batal
@@ -135,27 +141,63 @@ function LevelCriteriaCell({
     );
   }
 
+  const groups = groupCriteria(items);
+
   return (
     <div className="max-w-md group">
-      <div className="flex items-start justify-between gap-3">
-        <ul className="list-disc list-outside ml-4 space-y-1 text-sm text-[color:var(--text-primary)]">
-          {displayItems.length === 0 ? (
-            <li className="text-[color:var(--text-muted)] italic">Belum ada kriteria</li>
+      <div className="flex flex-col gap-2">
+        <div className="space-y-1.5">
+          {groups.length === 0 ? (
+            <div className="text-sm text-[color:var(--text-muted)] italic">Belum ada kriteria</div>
           ) : (
-            displayItems.map((c, i) => (
-              <li key={i}>{renderText(c)}</li>
+            groups.map((group, gIdx) => (
+              <div key={gIdx} className="space-y-1">
+                <div
+                  className={`flex items-start gap-2 text-sm text-[color:var(--text-primary)] ${group.subs.length > 0 ? 'cursor-pointer hover:text-[color:var(--accent-1)]' : ''}`}
+                  onClick={() => group.subs.length > 0 && toggleGroup(gIdx)}
+                >
+                  <span className="mt-1 shrink-0">
+                    {group.subs.length > 0 ? (
+                      expandedGroups.has(gIdx) ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />
+                    ) : (
+                      <div className="w-1 h-1 bg-white/40 rounded-full ml-1.5 mt-1.5" />
+                    )}
+                  </span>
+                  <div className="flex-1 font-medium">{renderText(group.main)}</div>
+                </div>
+
+                <AnimatePresence>
+                  {group.subs.length > 0 && expandedGroups.has(gIdx) && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <ul className="ml-6 space-y-1 py-1 border-l border-white/5 pl-3">
+                        {group.subs.map((sub, sIdx) => (
+                          <li key={sIdx} className="text-[13px] text-[color:var(--text-muted)] list-none flex gap-2">
+                            <span className="opacity-40">{sIdx + 1}.</span>
+                            {renderText(sub, true)}
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ))
           )}
-        </ul>
+        </div>
+
         {allowEdit && (
           <button
-            className="opacity-0 group-hover:opacity-100 transition-opacity px-2 py-1 text-xs text-[color:var(--accent-1)] border border-[color:var(--accent-1)]/30 rounded hover:bg-[color:var(--accent-1)]/10"
+            className="opacity-0 group-hover:opacity-100 transition-opacity mt-2 self-start px-2 py-1 text-xs text-[color:var(--accent-1)] border border-[color:var(--accent-1)]/30 rounded hover:bg-[color:var(--accent-1)]/10"
             onClick={() => {
-              setItems(displayItems);
               setEditing(true);
             }}
           >
-            Edit
+            Edit Kriteria
           </button>
         )}
       </div>

@@ -3,6 +3,7 @@ import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import { KRSSubmission, User } from '../types';
 import { Check, X, Calendar, MessageSquare, ChevronLeft, Award, Clock } from 'lucide-react';
 import { GradingModal } from './GradingModal';
+import { cleanSubItemText, isSubItem } from '../lib/criteriaHelper';
 
 interface TeacherKRSApprovalProps {
     onBack: () => void;
@@ -235,12 +236,15 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                     <div className="flex-1">
                                         <div className="text-xs text-slate-500 font-bold uppercase mb-2">Kompetensi yang dipilih:</div>
                                         <ul className="space-y-1">
-                                            {sub.items.map((item: string, i: number) => (
-                                                <li key={i} className="text-sm text-slate-300 flex gap-2">
-                                                    <span className="text-indigo-500 mt-1">•</span>
-                                                    {item}
-                                                </li>
-                                            ))}
+                                            {sub.items.map((item: string, i: number) => {
+                                                const subItem = isSubItem(item);
+                                                return (
+                                                    <li key={i} className={`text-sm flex gap-2 ${subItem ? 'ml-4 text-slate-400' : 'text-slate-300'}`}>
+                                                        <span className="text-indigo-500 mt-1">{subItem ? '└' : '•'}</span>
+                                                        {subItem ? cleanSubItemText(item) : item}
+                                                    </li>
+                                                );
+                                            })}
                                         </ul>
                                     </div>
 
@@ -307,11 +311,19 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                             <div className="space-y-3 font-medium">
                                 <div className="text-xs font-black text-slate-500 uppercase tracking-widest">Kriteria yang diajukan:</div>
                                 <div className="space-y-2">
-                                    {(selectedSub.items as string[]).map((item: string, i: number) => (
-                                        <div key={i} className="p-3 bg-slate-800/50 border border-slate-800 rounded-xl text-sm">
-                                            {item}
-                                        </div>
-                                    ))}
+                                    {(selectedSub.items as string[]).map((item: string, i: number) => {
+                                        const subItem = isSubItem(item);
+                                        return (
+                                            <div key={i} className={`p-3 bg-slate-800/50 border border-slate-800 rounded-xl text-sm ${subItem ? 'ml-6' : ''}`}>
+                                                {subItem ? (
+                                                    <div className="flex gap-2">
+                                                        <span className="text-indigo-500">└</span>
+                                                        {cleanSubItemText(item)}
+                                                    </div>
+                                                ) : item}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
 

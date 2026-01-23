@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { X, Target, Trophy, Users, Award, Plus, Check, Info } from 'lucide-react';
+import { X, Target, Trophy, Users, Award, Plus, Check, Info, ChevronDown, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Jurusan, LevelSkill } from '../types';
 import { supabase, isMockMode } from '../lib/supabase';
@@ -7,6 +7,7 @@ import mockData from '../mocks/mockData';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import { KRSSubmission } from '../types';
 import { useAuth } from '../contexts/AuthContext';
+import { groupCriteria, cleanSubItemText } from '../lib/criteriaHelper';
 
 // Special Missions / Challenges data
 interface SpecialMission {
@@ -62,6 +63,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
     const [allLevels, setAllLevels] = useState<LevelSkill[]>([]);
     const [nextLevel, setNextLevel] = useState<LevelSkill | null>(null);
     const [selectedKRS, setSelectedKRS] = useState<string[]>([]);
+    const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
     const [submission, setSubmission] = useState<KRSSubmission | null>(null);
     const storageKey = `skillpas_krs_${siswaId}`;
 
@@ -141,6 +143,13 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
             setLoading(false);
         }
     }
+
+    const toggleGroup = (groupId: string) => {
+        const next = new Set(expandedGroups);
+        if (next.has(groupId)) next.delete(groupId);
+        else next.add(groupId);
+        setExpandedGroups(next);
+    };
 
     const toggleKRS = (mission: string, levelId: string) => {
         // Prevent selection if not current level
@@ -294,13 +303,14 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                                 <div className="flex-1 h-px bg-white/10"></div>
                                             </div>
 
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                {level.criteria && level.criteria.map((mission, idx) => {
-                                                    const isSelected = selectedKRS.includes(mission);
+                                            <div className="space-y-2">
+                                                {level.criteria && (() => {
+                                                    const groups = groupCriteria(level.criteria);
 
                                                     // Helper to render **bold** text and handle \n
-                                                    const renderBold = (text: string) => {
-                                                        const parts = text.split(/(\*\*.*?\*\*)/g);
+                                                    const renderBold = (text: string, isSub = false) => {
+                                                        const cleanText = isSub ? cleanSubItemText(text) : text;
+                                                        const parts = cleanText.split(/(\*\*.*?\*\*)/g);
                                                         return parts.map((part, index) => {
                                                             if (part.startsWith('**') && part.endsWith('**')) {
                                                                 return <strong key={index} className="font-black text-white">{part.slice(2, -2)}</strong>;
@@ -318,28 +328,80 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                                         });
                                                     };
 
-                                                    return (
-                                                        <div
-                                                            key={`${level.id}-${idx}`}
-                                                            onClick={() => toggleKRS(mission, level.id)}
-                                                            className={`flex items-start justify-between gap-3 p-3.5 rounded-xl border transition-all ${isLocked ? 'cursor-not-allowed bg-white/5 border-white/5' : 'cursor-pointer group'
-                                                                } ${isSelected
-                                                                    ? 'bg-indigo-500/20 border-indigo-500 shadow-[inset_0_0_10px_rgba(99,102,241,0.2)]'
-                                                                    : !isLocked ? 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20' : ''
-                                                                }`}
-                                                        >
-                                                            <div className="flex gap-3">
-                                                                <div className={`mt-0.5 p-1 rounded-full border transition-all shrink-0 ${isSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-indigo-500/20 text-indigo-400/50 group-hover:border-indigo-500/50 group-hover:text-indigo-400'
-                                                                    }`}>
-                                                                    {isSelected ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                                                    return groups.map((group, gIdx) => {
+                                                        const groupKey = `${level.id}-${gIdx}`;
+                                                        const hasSubs = group.subs.length > 0;
+                                                        const isExpanded = expandedGroups.has(groupKey);
+                                                        const isSelected = selectedKRS.includes(group.main);
+
+                                                        return (
+                                                            <div key={groupKey} className="space-y-2">
+                                                                {/* Main Item / Group Header */}
+                                                                <div
+                                                                    onClick={() => {
+                                                                        if (hasSubs) toggleGroup(groupKey);
+                                                                        else toggleKRS(group.main, level.id);
+                                                                    }}
+                                                                    className={`flex items-start justify-between gap-3 p-3.5 rounded-xl border transition-all ${isLocked ? 'cursor-not-allowed bg-white/5 border-white/5' : 'cursor-pointer group'
+                                                                        } ${isSelected
+                                                                            ? 'bg-indigo-500/20 border-indigo-500 shadow-[inset_0_0_10px_rgba(99,102,241,0.2)]'
+                                                                            : !isLocked ? 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20' : ''
+                                                                        }`}
+                                                                >
+                                                                    <div className="flex gap-3">
+                                                                        <div className="mt-0.5 shrink-0 transition-colors">
+                                                                            {hasSubs ? (
+                                                                                isExpanded ? <ChevronDown className="w-4 h-4 text-indigo-400" /> : <ChevronRight className="w-4 h-4 text-indigo-400/50" />
+                                                                            ) : (
+                                                                                <div className={`p-1 rounded-full border ${isSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-indigo-500/20 text-indigo-400/50 group-hover:border-indigo-500/50 group-hover:text-indigo-400'}`}>
+                                                                                    {isSelected ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                        <span className={`text-xs sm:text-sm transition-colors ${isSelected ? 'text-white font-black' : 'text-gray-400 group-hover:text-gray-200'}`}>
+                                                                            {renderBold(group.main)}
+                                                                        </span>
+                                                                    </div>
+                                                                    {hasSubs && <span className="text-[10px] font-black text-indigo-400/40 uppercase mt-1">{group.subs.length} Detail</span>}
                                                                 </div>
-                                                                <span className={`text-xs sm:text-sm transition-colors ${isSelected ? 'text-white font-medium' : 'text-gray-400 group-hover:text-gray-200'}`}>
-                                                                    {renderBold(mission)}
-                                                                </span>
+
+                                                                {/* Sub Items */}
+                                                                <AnimatePresence>
+                                                                    {hasSubs && isExpanded && (
+                                                                        <motion.div
+                                                                            initial={{ height: 0, opacity: 0 }}
+                                                                            animate={{ height: 'auto', opacity: 1 }}
+                                                                            exit={{ height: 0, opacity: 0 }}
+                                                                            className="overflow-hidden space-y-2 ml-4 border-l border-white/5 pl-4"
+                                                                        >
+                                                                            {group.subs.map((sub, sIdx) => {
+                                                                                const isSubSelected = selectedKRS.includes(sub);
+                                                                                return (
+                                                                                    <div
+                                                                                        key={sIdx}
+                                                                                        onClick={() => toggleKRS(sub, level.id)}
+                                                                                        className={`flex items-start gap-3 p-3 rounded-xl border transition-all ${isLocked ? 'cursor-not-allowed bg-white/5 border-white/5' : 'cursor-pointer group'
+                                                                                            } ${isSubSelected
+                                                                                                ? 'bg-emerald-500/10 border-emerald-500/50'
+                                                                                                : !isLocked ? 'bg-white/5 border-white/5 hover:bg-white/10' : ''
+                                                                                            }`}
+                                                                                    >
+                                                                                        <div className={`mt-0.5 p-1 rounded-full border shrink-0 transition-all ${isSubSelected ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-emerald-500/20 text-emerald-400/50'}`}>
+                                                                                            {isSubSelected ? <Check className="w-2.5 h-2.5" /> : <Plus className="w-2.5 h-2.5" />}
+                                                                                        </div>
+                                                                                        <span className={`text-xs transition-colors ${isSubSelected ? 'text-white font-medium' : 'text-gray-400 group-hover:text-gray-200'}`}>
+                                                                                            {renderBold(sub, true)}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                );
+                                                                            })}
+                                                                        </motion.div>
+                                                                    )}
+                                                                </AnimatePresence>
                                                             </div>
-                                                        </div>
-                                                    );
-                                                })}
+                                                        );
+                                                    });
+                                                })()}
                                             </div>
                                         </div>
                                     );

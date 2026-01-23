@@ -253,7 +253,14 @@ export const mockLevelOverrides: Array<{
     {
       jurusan_id: JURUSAN_IDS.MESIN,
       level_id: LEVEL_IDS.BASIC1,
-      hasil_belajar: JSON.stringify(['Memahami dasar mekanika', 'Mengenal alat ukur presisi (jangka sorong, mikrometer)']),
+      hasil_belajar: JSON.stringify([
+        'Memahami dasar mekanika',
+        '**ALAT UKUR**',
+        '1. Mengukur tegangan AC & DC',
+        '2. Mengukur arus AC & DC',
+        '3. Membaca hasil pengukuran multimeter analog & Digital',
+        '4. Menafsirkan hasil pengukuran secara akurat'
+      ]),
       soft_skill: 'Kedisiplinan bengkel'
     },
     {
