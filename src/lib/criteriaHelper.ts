@@ -18,9 +18,18 @@ export interface CriteriaGroup {
  */
 export function isSubItem(text: string): boolean {
     const trimmed = text.trim();
-    // If it starts with a marker (1. , - , etc.), it's a sub-item.
-    // We don't care if it contains bold markdown like **.
-    return /^([->*]|\d+[\.\)])\s/.test(trimmed);
+    if (!trimmed) return false;
+
+    // HEURISTIC: If the whole line is BOLD and SHORT (e.g. "**Engine**" or "1. **Engine**"),
+    // it's likely a Category Header, not a sub-item.
+    // This allows headers to have numbers while still being recognized as headers.
+    const boldHeaderRegex = /^(\d+[\.\)]\s+)?\*\*[^*]{1,35}\*\*$/;
+    if (boldHeaderRegex.test(trimmed)) {
+        return false;
+    }
+
+    // Otherwise, if it starts with a marker (number or bullet), it's a sub-item.
+    return /^([->*]|\d+[\.\)])\s*/.test(trimmed);
 }
 
 /**
@@ -34,11 +43,21 @@ export function cleanSubItemText(text: string): string {
 
 /**
  * Groups a flat array of criteria strings into a hierarchical structure.
+ * Supports strings containing internal newlines by flattening them first.
  */
 export function groupCriteria(items: string[]): CriteriaGroup[] {
+    if (!items) return [];
+
+    // Flatten any items that might contain newlines (common in some database seeds)
+    const flatItems = items.flatMap(item =>
+        (typeof item === 'string' ? item.split('\n') : [])
+            .map(s => s.trim())
+            .filter(s => s !== '')
+    );
+
     const groups: CriteriaGroup[] = [];
 
-    items.forEach((item, idx) => {
+    flatItems.forEach((item, idx) => {
         if ((idx === 0) || !isSubItem(item) || groups.length === 0) {
             // Treat as main item (header)
             groups.push({ main: item, subs: [], startIndex: idx });

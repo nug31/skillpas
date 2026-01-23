@@ -311,16 +311,20 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                             <div className="space-y-3 font-medium">
                                 <div className="text-xs font-black text-slate-500 uppercase tracking-widest">Kriteria yang diajukan:</div>
                                 <div className="space-y-2">
-                                    {(selectedSub.items as string[]).map((item: string, i: number) => {
-                                        const subItem = isSubItem(item);
+                                    {(selectedSub.items as string[]).flatMap(item => typeof item === 'string' ? item.split('\n') : [item]).map((item: any, i: number) => {
+                                        const trimmed = typeof item === 'string' ? item.trim() : String(item);
+                                        if (!trimmed) return null;
+                                        const subItem = isSubItem(trimmed);
                                         return (
                                             <div key={i} className={`p-3 bg-slate-800/50 border border-slate-800 rounded-xl text-sm ${subItem ? 'ml-6' : ''}`}>
                                                 {subItem ? (
                                                     <div className="flex gap-2">
                                                         <span className="text-indigo-500">└</span>
-                                                        {cleanSubItemText(item)}
+                                                        <span className="text-slate-300">{cleanSubItemText(trimmed)}</span>
                                                     </div>
-                                                ) : item}
+                                                ) : (
+                                                    <span className="text-white font-bold">{trimmed.replace(/\*\*/g, '')}</span>
+                                                )}
                                             </div>
                                         );
                                     })}
