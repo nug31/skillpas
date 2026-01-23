@@ -18,12 +18,8 @@ export interface CriteriaGroup {
  */
 export function isSubItem(text: string): boolean {
     const trimmed = text.trim();
-    // If it contains bold markers like ** or *...*, it's a category header, not a sub-item
-    // even if it starts with a number (e.g., 1. **Engine**)
-    if (trimmed.includes('**') || (trimmed.startsWith('*') && trimmed.endsWith('*') && trimmed.length > 2)) {
-        return false;
-    }
-    // Match strings starting with bullets (-, *, >) or numbers (1., 2., 1))
+    // If it starts with a marker (1. , - , etc.), it's a sub-item.
+    // We don't care if it contains bold markdown like **.
     return /^([->*]|\d+[\.\)])\s/.test(trimmed);
 }
 
