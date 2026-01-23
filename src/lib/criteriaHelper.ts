@@ -20,11 +20,11 @@ export function isSubItem(text: string): boolean {
     const trimmed = text.trim();
     // If it contains bold markers like ** or *...*, it's a category header, not a sub-item
     // even if it starts with a number (e.g., 1. **Engine**)
-    // We check for ** at any position or balanced * at start/end
     if (trimmed.includes('**') || (trimmed.startsWith('*') && trimmed.endsWith('*') && trimmed.length > 2)) {
         return false;
     }
-    return /^[->*]\s|\d+[\.\)]\s/.test(trimmed);
+    // Match strings starting with bullets (-, *, >) or numbers (1., 2., 1))
+    return /^([->*]|\d+[\.\)])\s/.test(trimmed);
 }
 
 /**
