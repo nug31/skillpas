@@ -18,16 +18,22 @@ export interface CriteriaGroup {
  */
 export function isSubItem(text: string): boolean {
     const trimmed = text.trim();
-    // If it's bolded, it's a category header, not a sub-item, even if it has a marker (e.g., 1. **Engine**)
-    if (trimmed.includes('**')) return false;
-    return /^[->*]|\d+[\.\)]\s/.test(trimmed);
+    // If it contains bold markers like ** or *...*, it's a category header, not a sub-item
+    // even if it starts with a number (e.g., 1. **Engine**)
+    // We check for ** at any position or balanced * at start/end
+    if (trimmed.includes('**') || (trimmed.startsWith('*') && trimmed.endsWith('*') && trimmed.length > 2)) {
+        return false;
+    }
+    return /^[->*]\s|\d+[\.\)]\s/.test(trimmed);
 }
 
 /**
  * Removes sub-item markers from the start of the string for cleaner rendering.
  */
 export function cleanSubItemText(text: string): string {
-    return text.trim().replace(/^[->*]\s*|\d+[\.\)]\s*/, '');
+    // Only remove lead bullets like - or * or >
+    // We keep numbers because users often want their specific numbering (e.g. 1. 2.)
+    return text.trim().replace(/^[->*]\s*/, '');
 }
 
 /**

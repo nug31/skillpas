@@ -177,7 +177,6 @@ function LevelCriteriaCell({
                       <ul className="ml-6 space-y-1 py-1 border-l border-white/5 pl-3">
                         {group.subs.map((sub, sIdx) => (
                           <li key={sIdx} className="text-[13px] text-[color:var(--text-muted)] list-none flex gap-2">
-                            <span className="opacity-40">{sIdx + 1}.</span>
                             {renderText(sub, true)}
                           </li>
                         ))}
