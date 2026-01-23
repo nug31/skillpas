@@ -34,9 +34,9 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
     loadData();
   }, [jurusan.id]);
 
-  async function loadData() {
+  async function loadData(silent = false) {
     try {
-      setLoading(true);
+      if (!silent) setLoading(true);
 
       const useMock = isMockMode;
 
@@ -208,13 +208,15 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
       });
       if (error) throw error;
 
-      // refresh
-      await loadData();
+      // refresh silently
+      await loadData(true);
     } catch (err) {
       console.error('Error saving score:', err);
+      // rollback if needed (loadData will handle it)
+      await loadData();
       throw err;
     } finally {
-      setLoading(false);
+      if (!useMock) setLoading(false);
     }
   }
 
@@ -265,10 +267,11 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
         throw error;
       }
 
-      // Success! Refresh to ensure everything is in sync
-      await loadData();
+      // Success! Refresh silently to ensure everything is in sync
+      await loadData(true);
     } catch (err) {
       console.error('Error updating criteria:', err);
+      // rollback is already handled by loadData() or above setLevels
       throw err;
     }
   }
@@ -549,8 +552,8 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                       const { error: skError } = await supabase.from('skill_siswa').update({ poin }).eq('siswa_id', id);
                       if (skError) throw skError;
                     }
-                    await loadData();
-                    // Update selected student in local state to reflect changes immediately in modal
+                    await loadData(true);
+                    // Update selected student effectively
                     setSelectedStudent(prev => prev ? ({ ...prev, nama, kelas, poin }) : null);
                   } catch (err) {
                     console.error('Update failed', err);
