@@ -32,6 +32,11 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+    // Only cache GET requests. POST/PUT/DELETE are not supported by Cache API and shouldn't be cached anyway.
+    if (event.request.method !== 'GET') {
+        return;
+    }
+
     event.respondWith(
         caches.match(event.request).then((response) => {
             const fetchPromise = fetch(event.request).then((networkResponse) => {
