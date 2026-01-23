@@ -18,6 +18,8 @@ export interface CriteriaGroup {
  */
 export function isSubItem(text: string): boolean {
     const trimmed = text.trim();
+    // If it's bolded, it's a category header, not a sub-item, even if it has a marker (e.g., 1. **Engine**)
+    if (trimmed.includes('**')) return false;
     return /^[->*]|\d+[\.\)]\s/.test(trimmed);
 }
 
