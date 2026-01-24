@@ -20,16 +20,21 @@ export function isSubItem(text: string): boolean {
     const trimmed = text.trim();
     if (!trimmed) return false;
 
-    // HEURISTIC: If the whole line is BOLD and SHORT (e.g. "**Engine**" or "1. **Engine**"),
-    // it's likely a Category Header, not a sub-item.
-    // This allows headers to have numbers while still being recognized as headers.
-    const boldHeaderRegex = /^(\d+[\.\)]\s+)?\*\*[^*]{1,35}\*\*$/;
-    if (boldHeaderRegex.test(trimmed)) {
+    // HEURISTIC: If the whole line starts and ends with BOLD markers (**Text**),
+    // it's likely a Category Header, not a sub-item, even if it has a number.
+    // We allow up to 100 characters for long technical subjects.
+    const boldHeaderRegex = /^(\d+[\.\)]\s+)?\*\*.+\*\*$/;
+    if (boldHeaderRegex.test(trimmed) && trimmed.length < 100) {
         return false;
     }
 
-    // Otherwise, if it starts with a marker (number or bullet), it's a sub-item.
-    return /^([->*]|\d+[\.\)])\s*/.test(trimmed);
+    // Explicit check: If it starts with double asterisk, it's NOT a sub-item record.
+    // This prevents "**Heading**" from being treated as "* Heading" (a list item).
+    if (trimmed.startsWith('**')) return false;
+
+    // Otherwise, if it starts with a marker (number or bullet) FOLLOWED BY A SPACE, it's a sub-item.
+    // We require a space after single bullets -, *, > to avoid clashing with formatting.
+    return /^([->*]\s|\d+[\.\)])/.test(trimmed);
 }
 
 /**
