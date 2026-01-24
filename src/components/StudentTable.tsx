@@ -29,7 +29,8 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
 
   const uniqueClasses = useMemo(() => {
     const classes = new Set(students.map(s => s.kelas));
-    return Array.from(classes).sort();
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+    return Array.from(classes).sort(collator.compare);
   }, [students]);
 
   const handleSort = (field: SortField) => {
@@ -48,7 +49,12 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
     filtered.sort((a, b) => {
       let av: any = a[sortField];
       let bv: any = b[sortField];
-      if (typeof av === 'string' && typeof bv === 'string') { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+
+      if (typeof av === 'string' && typeof bv === 'string') {
+        const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+        return sortOrder === 'asc' ? collator.compare(av, bv) : collator.compare(bv, av);
+      }
+
       if (av < bv) return sortOrder === 'asc' ? -1 : 1;
       if (av > bv) return sortOrder === 'asc' ? 1 : -1;
       return 0;

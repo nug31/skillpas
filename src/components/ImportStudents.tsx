@@ -45,14 +45,19 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
     try {
       const buffer = await f.arrayBuffer();
       const wb = XLSX.read(buffer, { type: 'array' });
-      const mainSheet = wb.Sheets[wb.SheetNames[0]];
-      const jsonData = XLSX.utils.sheet_to_json(mainSheet);
 
-      const parsed = jsonData.map(normalizeRow).filter((r): r is ParsedRow => r !== null);
-      if (parsed.length === 0) {
+      let allParsed: ParsedRow[] = [];
+      wb.SheetNames.forEach(name => {
+        const sheet = wb.Sheets[name];
+        const jsonData = XLSX.utils.sheet_to_json(sheet);
+        const parsed = jsonData.map(normalizeRow).filter((r): r is ParsedRow => r !== null);
+        allParsed = [...allParsed, ...parsed];
+      });
+
+      if (allParsed.length === 0) {
         setError("Tidak dapat menemukan kolom 'Nama' di file Excel/CSV.");
       } else {
-        setPreview(parsed);
+        setPreview(allParsed);
       }
     } catch (err) {
       console.error(err);
