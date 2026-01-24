@@ -98,14 +98,13 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
       );
 
       const studentList: StudentListItem[] = (studentsResult.data || [])
-        .filter((siswa: any) => siswa.skill_siswa && siswa.skill_siswa.length > 0)
         .map((siswa: any) => {
-          const latestSkill = siswa.skill_siswa[0];
-          const skor = latestSkill.skor;
+          const latestSkill = siswa.skill_siswa?.[0];
+          const skor = latestSkill?.skor ?? 0;
 
           // Find the correct level based on score first (robust sync)
           const level = parsedLevels.find(l => skor >= l.min_skor && skor <= l.max_skor)
-            || levelsMap.get(latestSkill.level_id);
+            || (latestSkill ? levelsMap.get(latestSkill.level_id) : parsedLevels[0]);
 
           let badge_name = 'Basic';
           let badge_color = '#94a3b8';
@@ -141,8 +140,8 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
             nama: siswa.nama,
             kelas: siswa.kelas,
             nisn: siswa.nisn,
-            skor: latestSkill.skor,
-            poin: latestSkill.poin || 0,
+            skor: skor,
+            poin: latestSkill?.poin ?? 0,
             badge_name: badge_name as any,
             badge_color,
             level_name,

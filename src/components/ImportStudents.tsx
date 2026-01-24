@@ -120,7 +120,7 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
             if (!sdata || sdata.length === 0) continue;
             const { data: levels } = await supabase.from('level_skill').select('*');
             const skor = p.skor as number;
-            const level = levels?.find((l: any) => skor >= l.min_skor && skor <= l.max_skor);
+            const level = levels?.find((l: any) => skor >= l.min_skor && skor <= l.max_skor) || levels?.[0];
             if (level) {
               const poin = (level.urutan ?? 1) * 50 + 50;
               await supabase.from('skill_siswa').insert({ siswa_id: sdata[0].id, level_id: level.id, skor, poin });
