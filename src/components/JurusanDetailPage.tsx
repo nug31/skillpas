@@ -57,7 +57,9 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
           .from('siswa')
           .select('id, nama, kelas, nisn, skill_siswa(skor, poin, level_id), competency_history(*)')
           .eq('jurusan_id', jurusan.id)
-          .range(0, 5000),
+          .range(0, 5000)
+          .setHeader('pragma', 'no-cache')
+          .setHeader('cache-control', 'no-cache'),
         supabase
           .from('level_skill_jurusan')
           .select('*')
@@ -94,60 +96,29 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
 
       setLevels(parsedLevels);
 
-      const levelsMap = new Map(
-        parsedLevels.map((level: LevelSkill) => [level.id, level])
-      );
-
       const studentList: StudentListItem[] = (studentsResult.data || [])
         .map((siswa: any) => {
-          const latestSkill = siswa.skill_siswa?.[0];
+          const latestSkill = Array.isArray(siswa.skill_siswa) ? siswa.skill_siswa[0] : null;
           const skor = latestSkill?.skor ?? 0;
 
-          // Find the correct level based on score first (robust sync)
+          // Find the correct level based on score
           const level = parsedLevels.find(l => skor >= l.min_skor && skor <= l.max_skor)
-            || (latestSkill ? levelsMap.get(latestSkill.level_id) : parsedLevels[0]);
-
-          let badge_name = 'Basic';
-          let badge_color = '#94a3b8';
-          let level_name = 'Pemula / Beginner';
-
-          if (level) {
-            badge_name = level.badge_name;
-            badge_color = level.badge_color;
-            level_name = level.nama_level;
-          } else {
-            // Further fallback if no level found
-            if (skor >= 90) {
-              badge_name = 'Master';
-              badge_color = '#10b981';
-              level_name = 'Mastery (Expert)';
-            } else if (skor >= 76) {
-              badge_name = 'Advance';
-              badge_color = '#f59e0b';
-              level_name = 'Advanced';
-            } else if (skor >= 51) {
-              badge_name = 'Specialist';
-              badge_color = '#3b82f6';
-              level_name = 'Intermediate (Specialist)';
-            } else if (skor >= 26) {
-              badge_name = 'Basic 2';
-              badge_color = '#64748b';
-              level_name = 'Beginner 2 (Uji Kompetensi)';
-            }
-          }
+            || parsedLevels[0];
 
           return {
             id: siswa.id,
             nama: siswa.nama,
-            kelas: siswa.kelas,
+            kelas: siswa.kelas || 'X',
             nisn: siswa.nisn,
             skor: skor,
-            poin: latestSkill?.poin ?? 0,
-            badge_name: badge_name as any,
-            badge_color,
-            level_name,
+            poin: latestSkill?.poin ?? ((level?.urutan || 1) * 50 + 50),
+            badge_name: (level?.badge_name || 'Basic') as any,
+            badge_color: level?.badge_color || '#94a3b8',
+            level_name: level?.nama_level || 'Pemula',
+            avatar_url: siswa.avatar_url,
+            photo_url: siswa.photo_url,
             riwayat_kompetensi: siswa.competency_history || []
-          };
+          } as StudentListItem;
         });
 
       setStudents(studentList);
@@ -618,9 +589,9 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                                       }
                                       await loadData();
                                       alert('Semua data siswa berhasil dihapus.');
-                                    } catch (err) {
+                                    } catch (err: any) {
                                       console.error('Failed to delete all', err);
-                                      alert('Gagal menghapus data.');
+                                      alert(`Gagal menghapus data: ${err.message || 'Error tidak diketahui'}. \n\nPastikan Anda memiliki izin akses di database.`);
                                     } finally {
                                       setLoading(false);
                                     }
