@@ -29,9 +29,9 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
     const nisnKey = keys.find(k => k.toLowerCase().includes('nisn') || k.toLowerCase().includes('induk'));
 
     return {
-      nama: row[nameKey],
+      nama: String(row[nameKey]).trim(),
       nisn: nisnKey ? String(row[nisnKey]).trim() : undefined,
-      kelas: classKey ? row[classKey] : undefined,
+      kelas: classKey ? String(row[classKey]).trim() : undefined,
       skor: scoreKey ? Number(row[scoreKey]) : undefined
     };
   }
@@ -109,24 +109,45 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
           }
         }
       } else {
-        const rows = preview.map((r) => ({ nama: r.nama, nisn: r.nisn, kelas: r.kelas ?? 'X', jurusan_id: jurusanId }));
-        const { error: insertErr } = await supabase.from('siswa').insert(rows);
+        const rows = preview.map((r) => ({
+          nama: r.nama,
+          nisn: r.nisn,
+          kelas: r.kelas ?? 'X',
+          jurusan_id: jurusanId
+        }));
+
+        // Use select() to get back IDs of inserted rows immediately
+        const { data: insertedSiswa, error: insertErr } = await supabase
+          .from('siswa')
+          .insert(rows)
+          .select('id, nama');
+
         if (insertErr) throw insertErr;
 
-        const withSkor = preview.filter((p) => typeof p.skor === 'number');
-        if (withSkor.length) {
-          for (const p of withSkor) {
-            const { data: sdata } = await supabase.from('siswa').select('id').eq('nama', p.nama).eq('jurusan_id', jurusanId).limit(1);
-            if (!sdata || sdata.length === 0) continue;
-            const { data: levels } = await supabase.from('level_skill').select('*');
-            const skor = p.skor as number;
-            const level = levels?.find((l: any) => skor >= l.min_skor && skor <= l.max_skor) || levels?.[0];
-            if (level) {
+        if (insertedSiswa && insertedSiswa.length > 0) {
+          const { data: allLevels } = await supabase.from('level_skill').select('*').order('urutan');
+
+          if (allLevels && allLevels.length > 0) {
+            const skillRows = insertedSiswa.map(siswa => {
+              const previewRow = preview.find(p => p.nama === siswa.nama);
+              const skor = previewRow?.skor ?? 0;
+              const level = allLevels.find(l => skor >= l.min_skor && skor <= l.max_skor) || allLevels[0];
               const poin = (level.urutan ?? 1) * 50 + 50;
-              await supabase.from('skill_siswa').insert({ siswa_id: sdata[0].id, level_id: level.id, skor, poin });
-            }
+
+              return {
+                siswa_id: siswa.id,
+                level_id: level.id,
+                skor,
+                poin
+              };
+            });
+
+            // Batch insert all skills at once
+            const { error: skillErr } = await supabase.from('skill_siswa').insert(skillRows);
+            if (skillErr) console.error('Error importing skills:', skillErr);
           }
         }
+        alert(`Berhasil mengimpor ${insertedSiswa?.length || 0} siswa.`);
       }
 
       onImported();

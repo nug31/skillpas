@@ -281,7 +281,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
 
   // Memoize unique classes for this jurusan, sorted naturally
   const uniqueClasses = useMemo(() => {
-    const classes = new Set(students.map(s => s.kelas));
+    const classes = new Set(students.map(s => s.kelas.trim()));
     const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
     return Array.from(classes).sort(collator.compare);
   }, [students]);
@@ -292,22 +292,25 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
     const prevIndex = allNavOptions.indexOf(activeTab);
     const nextIndex = allNavOptions.indexOf(newTab);
     setDirection(nextIndex > prevIndex ? 1 : -1);
-    setActiveTab(newTab);
+    setActiveTab(newTab.trim());
   };
 
   // 1. Filter by class first (Base dataset for this page view)
   const classFilteredStudents = useMemo(() => {
+    const target = activeTab.trim();
     return students.filter((s) => {
+      const cls = s.kelas.trim();
       // If we have a forced prop filter (Student View), use it.
       if (classFilter) {
-        return s.kelas === classFilter || s.kelas.startsWith(classFilter + ' ');
+        const cf = classFilter.trim();
+        return cls === cf || cls.startsWith(cf + ' ');
       }
       // Teacher View
-      if (activeTab === 'all') return true;
-      if (['X', 'XI', 'XII'].includes(activeTab)) {
-        return s.kelas.startsWith(activeTab + ' ');
+      if (target === 'all') return true;
+      if (['X', 'XI', 'XII'].includes(target)) {
+        return cls.startsWith(target + ' ');
       }
-      return s.kelas === activeTab;
+      return cls === target;
     });
   }, [students, activeTab, classFilter]);
 
