@@ -14,12 +14,23 @@ interface StudentTableProps {
   onSelectStudent?: (student: StudentListItem) => void;
   onDelete?: (student: StudentListItem) => void;
   jurusanName?: string;
+  hideClassFilter?: boolean;
 }
 
 type SortField = 'nama' | 'kelas' | 'skor';
 type SortOrder = 'asc' | 'desc';
 
-export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore, topRanks, onSelectStudent, jurusanName, onDelete }: StudentTableProps) {
+export function StudentTable({
+  students,
+  onExportExcel,
+  onExportPDF,
+  onEditScore,
+  topRanks,
+  onSelectStudent,
+  jurusanName,
+  onDelete,
+  hideClassFilter = true
+}: StudentTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<SortField>('skor');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
@@ -42,7 +53,7 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
     const filtered = students.filter((s) => {
       const matchesSearch = s.nama.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesScore = s.skor >= minScore && s.skor <= maxScore;
-      const matchesClass = selectedClass === 'all' || s.kelas === selectedClass;
+      const matchesClass = hideClassFilter || selectedClass === 'all' || s.kelas.trim() === selectedClass.trim();
       return matchesSearch && matchesScore && matchesClass;
     });
 
@@ -93,16 +104,18 @@ export function StudentTable({ students, onExportExcel, onExportPDF, onEditScore
             </div>
 
             <div className="flex gap-2">
-              <select
-                value={selectedClass}
-                onChange={(e) => setSelectedClass(e.target.value)}
-                className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[color:var(--accent-1)] focus:border-transparent text-sm bg-transparent text-[color:var(--text-primary)] min-w-[120px]"
-              >
-                <option value="all" className="bg-[#1e293b]">Semua Kelas</option>
-                {uniqueClasses.map(c => (
-                  <option key={c} value={c} className="bg-[#1e293b]">{c}</option>
-                ))}
-              </select>
+              {!hideClassFilter && (
+                <select
+                  value={selectedClass}
+                  onChange={(e) => setSelectedClass(e.target.value)}
+                  className="px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[color:var(--accent-1)] focus:border-transparent text-sm bg-transparent text-[color:var(--text-primary)] min-w-[120px]"
+                >
+                  <option value="all" className="bg-[#1e293b]">Semua Kelas</option>
+                  {uniqueClasses.map(c => (
+                    <option key={c} value={c} className="bg-[#1e293b]">{c}</option>
+                  ))}
+                </select>
+              )}
               <button onClick={onExportExcel} className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"><Download className="w-4 h-4" />Excel</button>
               <button onClick={onExportPDF} className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"><Download className="w-4 h-4" />PDF</button>
             </div>
