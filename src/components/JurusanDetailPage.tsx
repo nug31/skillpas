@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { ArrowLeft, Trash2, Download } from 'lucide-react';
+import { useEffect, useState, useMemo } from 'react';
+import { ArrowLeft, Trash2, Download, ChevronLeft, ChevronRight, LayoutGrid } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
@@ -278,25 +278,37 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
 
   const [activeTab, setActiveTab] = useState<string>('all');
 
+  // Memoize unique classes for this jurusan, sorted naturally
+  const uniqueClasses = useMemo(() => {
+    const classes = new Set(students.map(s => s.kelas));
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+    return Array.from(classes).sort(collator.compare);
+  }, [students]);
+
   // 1. Filter by class first (Base dataset for this page view)
-  const classFilteredStudents = students.filter((s) => {
-    // If we have a forced prop filter (Student View), use it.
-    if (classFilter) {
-      return s.kelas.startsWith(classFilter + ' ');
-    }
-    // Otherwise check activeTab (Teacher View)
-    if (activeTab !== 'all') {
-      return s.kelas.startsWith(activeTab + ' ');
-    }
-    return true;
-  });
+  const classFilteredStudents = useMemo(() => {
+    return students.filter((s) => {
+      // If we have a forced prop filter (Student View), use it.
+      if (classFilter) {
+        return s.kelas === classFilter || s.kelas.startsWith(classFilter + ' ');
+      }
+      // Teacher View
+      if (activeTab === 'all') return true;
+      if (['X', 'XI', 'XII'].includes(activeTab)) {
+        return s.kelas.startsWith(activeTab + ' ');
+      }
+      return s.kelas === activeTab;
+    });
+  }, [students, activeTab, classFilter]);
 
   // 2. Filter by level (For the table display)
-  const filteredStudents = classFilteredStudents.filter((s) => {
-    if (selectedLevel === 'all') return true;
-    const level = levels.find((l) => l.id === selectedLevel);
-    return !!(level && s.skor >= level.min_skor && s.skor <= level.max_skor);
-  });
+  const filteredStudents = useMemo(() => {
+    return classFilteredStudents.filter((s) => {
+      if (selectedLevel === 'all') return true;
+      const level = levels.find((l) => l.id === selectedLevel);
+      return !!(level && s.skor >= level.min_skor && s.skor <= level.max_skor);
+    });
+  }, [classFilteredStudents, selectedLevel, levels]);
 
   // compute ranks (1-based) for ALL students in this class context, sorted by score
   const topRanks: Record<string, number> = {};
@@ -356,21 +368,87 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
         ) : (
           <div className="space-y-8">
             {/* Tabs for Teachers */}
+            {/* Class Slider View */}
             {!classFilter && isTeacher && (
-              <div className="flex justify-center mb-6">
-                <div className="bg-[color:var(--card-bg)] p-1 rounded-lg inline-flex shadow-sm border border-[color:var(--card-border)]">
-                  {['all', 'X', 'XI', 'XII'].map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === tab
-                        ? 'bg-blue-600 text-white shadow-md'
-                        : 'text-[color:var(--text-muted)] hover:text-[color:var(--text-primary)] hover:bg-[color:var(--bg-secondary)]'
-                        }`}
-                    >
-                      {tab === 'all' ? 'Semua Kelas' : `Kelas ${tab}`}
-                    </button>
-                  ))}
+              <div className="mb-8">
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between px-2">
+                    <h3 className="text-sm font-bold text-[color:var(--text-muted)] uppercase tracking-widest flex items-center gap-2">
+                      <LayoutGrid className="w-4 h-4" />
+                      Pilih Kelas
+                    </h3>
+                    <div className="text-[10px] bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-full border border-indigo-500/20 font-bold">
+                      {uniqueClasses.length} KELAS TERDETEKSI
+                    </div>
+                  </div>
+
+                  <div className="relative group">
+                    <div className="flex overflow-x-auto pb-4 gap-3 no-scrollbar snap-x scroll-smooth px-2">
+                      {/* Special "All" Slide */}
+                      <button
+                        onClick={() => setActiveTab('all')}
+                        className={`flex-shrink-0 snap-start min-w-[140px] p-4 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-2 ${activeTab === 'all'
+                          ? 'bg-indigo-600 border-indigo-400 shadow-lg shadow-indigo-500/30 text-white'
+                          : 'bg-[color:var(--card-bg)] border-[color:var(--card-border)] text-[color:var(--text-muted)] hover:border-white/20 hover:bg-white/5'
+                          }`}
+                      >
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${activeTab === 'all' ? 'bg-white/20' : 'bg-black/20'}`}>
+                          <LayoutGrid className="w-5 h-5" />
+                        </div>
+                        <span className="font-bold text-sm">Semua Kelas</span>
+                      </button>
+
+                      {/* Year Level Slides */}
+                      {['X', 'XI', 'XII'].map((year) => {
+                        const isYearSelected = activeTab === year;
+                        return (
+                          <button
+                            key={year}
+                            onClick={() => setActiveTab(year)}
+                            className={`flex-shrink-0 snap-start min-w-[140px] p-4 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-2 ${isYearSelected
+                              ? 'bg-blue-600 border-blue-400 shadow-lg shadow-blue-500/30 text-white'
+                              : 'bg-[color:var(--card-bg)] border-[color:var(--card-border)] text-[color:var(--text-muted)] hover:border-white/20 hover:bg-white/5'
+                              }`}
+                          >
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isYearSelected ? 'bg-white/20' : 'bg-black/20'}`}>
+                              <span className="font-black text-xs">{year}</span>
+                            </div>
+                            <span className="font-bold text-sm">Total {year}</span>
+                          </button>
+                        );
+                      })}
+
+                      {/* Specific Class Slides */}
+                      {uniqueClasses.map((className) => {
+                        const isSelected = activeTab === className;
+                        const label = formatClassLabel(jurusan.nama_jurusan, className);
+
+                        return (
+                          <button
+                            key={className}
+                            onClick={() => setActiveTab(className)}
+                            className={`flex-shrink-0 snap-start min-w-[140px] p-4 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-2 ${isSelected
+                              ? 'bg-emerald-600 border-emerald-400 shadow-lg shadow-emerald-500/30 text-white'
+                              : 'bg-[color:var(--card-bg)] border-[color:var(--card-border)] text-[color:var(--text-muted)] hover:border-white/20 hover:bg-white/5'
+                              }`}
+                          >
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isSelected ? 'bg-white/20' : 'bg-black/20'}`}>
+                              <span className="font-black text-[10px]">{label.split(' ').pop()}</span>
+                            </div>
+                            <span className="font-bold text-xs truncate w-full text-center">{label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Desktop Overlay Hints */}
+                    <div className="hidden group-hover:flex absolute top-1/2 -left-4 -translate-y-1/2 w-10 h-10 items-center justify-center bg-black/50 backdrop-blur-md rounded-full border border-white/10 text-white pointer-events-none transition-opacity">
+                      <ChevronLeft className="w-6 h-6" />
+                    </div>
+                    <div className="hidden group-hover:flex absolute top-1/2 -right-4 -translate-y-1/2 w-10 h-10 items-center justify-center bg-black/50 backdrop-blur-md rounded-full border border-white/10 text-white pointer-events-none transition-opacity">
+                      <ChevronRight className="w-6 h-6" />
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
