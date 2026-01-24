@@ -56,7 +56,8 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
         supabase
           .from('siswa')
           .select('id, nama, kelas, nisn, skill_siswa(skor, poin, level_id), competency_history(*)')
-          .eq('jurusan_id', jurusan.id),
+          .eq('jurusan_id', jurusan.id)
+          .range(0, 5000),
         supabase
           .from('level_skill_jurusan')
           .select('*')
