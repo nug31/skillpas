@@ -51,15 +51,8 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
         return;
       }
 
-      const [levelsResult, studentsResult, overridesResult] = await Promise.all([
+      const [levelsResult, overridesResult] = await Promise.all([
         supabase.from('level_skill').select('*').order('urutan'),
-        supabase
-          .from('siswa')
-          .select('id, nama, kelas, nisn, skill_siswa(skor, poin, level_id), competency_history(*)')
-          .eq('jurusan_id', jurusan.id)
-          .range(0, 5000)
-          .setHeader('pragma', 'no-cache')
-          .setHeader('cache-control', 'no-cache'),
         supabase
           .from('level_skill_jurusan')
           .select('*')
@@ -67,8 +60,32 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
       ]);
 
       if (levelsResult.error) throw levelsResult.error;
-      if (studentsResult.error) throw studentsResult.error;
       if (overridesResult.error) throw overridesResult.error;
+
+      // Fetch students iteratively to bypass 1000-row limit
+      let allStudentsData: any[] = [];
+      let offset = 0;
+      const pageSize = 1000;
+      let hasMore = true;
+
+      while (hasMore) {
+        const { data, error } = await supabase
+          .from('siswa')
+          .select('id, nama, kelas, nisn, skill_siswa(skor, poin, level_id), competency_history(*)')
+          .eq('jurusan_id', jurusan.id)
+          .range(offset, offset + pageSize - 1)
+          .setHeader('pragma', 'no-cache')
+          .setHeader('cache-control', 'no-cache');
+
+        if (error) throw error;
+        if (data && data.length > 0) {
+          allStudentsData = [...allStudentsData, ...data];
+          offset += pageSize;
+          hasMore = data.length === pageSize;
+        } else {
+          hasMore = false;
+        }
+      }
 
       // ensure the Supabase result is treated as LevelSkill[] so the typechecker is happy
       const levelsData = (levelsResult.data || []) as LevelSkill[];
@@ -96,7 +113,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
 
       setLevels(parsedLevels);
 
-      const studentList: StudentListItem[] = (studentsResult.data || [])
+      const studentList: StudentListItem[] = allStudentsData
         .map((siswa: any) => {
           const latestSkill = Array.isArray(siswa.skill_siswa) ? siswa.skill_siswa[0] : null;
           const skor = latestSkill?.skor ?? 0;

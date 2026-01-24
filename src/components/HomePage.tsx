@@ -455,13 +455,31 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
             .select('*', { count: 'exact', head: true })
             .eq('jurusan_id', j.id);
 
-          const { data: skillData } = await supabase
-            .from('skill_siswa')
-            .select('skor, siswa!inner(jurusan_id)')
-            .eq('siswa.jurusan_id', j.id);
+          // Fetch score data iteratively
+          let allScores: number[] = [];
+          let offset = 0;
+          const pageSize = 1000;
+          let hasMore = true;
 
-          const scores = (skillData || []).map((s: any) => s.skor).filter(Boolean);
-          const averageSkor = scores.length > 0 ? scores.reduce((a: number, b: number) => a + b, 0) / scores.length : 0;
+          while (hasMore) {
+            const { data: skillData, error } = await supabase
+              .from('skill_siswa')
+              .select('skor, siswa!inner(jurusan_id)')
+              .eq('siswa.jurusan_id', j.id)
+              .range(offset, offset + pageSize - 1);
+
+            if (error) break;
+            if (skillData && skillData.length > 0) {
+              const batchScores = (skillData || []).map((s: any) => s.skor).filter((s: number | null | undefined) => s !== null && s !== undefined);
+              allScores = [...allScores, ...batchScores];
+              offset += pageSize;
+              hasMore = skillData.length === pageSize;
+            } else {
+              hasMore = false;
+            }
+          }
+
+          const averageSkor = allScores.length > 0 ? allScores.reduce((a: number, b: number) => a + b, 0) / allScores.length : 0;
 
           return {
             jurusan: j,
