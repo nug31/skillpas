@@ -13,11 +13,6 @@ export function extractYear(kelas?: string): string | null {
   return m ? m[0] : null;
 }
 
-export function extractLastNumber(kelas?: string): number | null {
-  if (!kelas) return null;
-  const m = kelas.match(/(\d+)\s*$/);
-  return m ? Number(m[1]) : null;
-}
 
 /**
  * formatClassLabel: given a jurusan name and a kelas string, return the compact display label
@@ -33,75 +28,70 @@ export function formatClassLabel(jurusanName?: string, kelas?: string): string {
 
   const j = jurusanName.toLowerCase();
   const year = extractYear(kelas);
-  const lastNum = extractLastNumber(kelas);
 
-  // if kelas like X-A or XII-A or X-A-1, also try to extract trailing letter
-  const letterMatch = (kelas.match(/[- ]([A-Z])$/i) || []).pop() || null;
-  const letterIndex = letterMatch ? letterToIndex(letterMatch) : null;
-  const index = lastNum ?? letterIndex;
+  // Clean the string: remove year and redundant jurusan name to get the "content" (e.g. "1 03")
+  let content = kelas;
+  if (year) {
+    content = content.replace(new RegExp(`\\b${year}\\b`, 'i'), '');
+  }
+
+  // helper to remove formal jurusan tokens
+  const removeTokens = (tokens: string[]) => {
+    tokens.forEach(t => {
+      content = content.replace(new RegExp(`\\b${t}\\b`, 'i'), '');
+    });
+  };
+
+  content = content.trim();
 
   // Mesin
   if (j.includes('mesin')) {
-    if (year && index) return `${year} MESIN ${index}`;
-    if (index) return `MESIN ${index}`;
-    if (year) return `${year} MESIN`;
-    return `MESIN`;
+    removeTokens(['MESIN', 'TEKNIK']);
+    return year ? `${year} MESIN ${content}`.trim() : `MESIN ${content}`.trim();
   }
 
   // Kendaraan Ringan (TKR)
   if (j.includes('kendaraan') || j.includes('tkr')) {
-    if (year && index) return `${year} TKR ${index}`;
-    if (index) return `TKR ${index}`;
-    if (year) return `${year} TKR`;
-    return `TKR`;
+    removeTokens(['KENDARAAN', 'RINGAN', 'TKR', 'TEKNIK']);
+    return year ? `${year} TKR ${content}`.trim() : `TKR ${content}`.trim();
   }
 
   // Sepeda Motor (TSM)
   if (j.includes('sepeda') || j.includes('tsm')) {
-    if (year && index) return `${year} TSM ${index}`;
-    if (index) return `TSM ${index}`;
-    if (year) return `${year} TSM`;
-    return `TSM`;
+    removeTokens(['SEPEDA', 'MOTOR', 'TSM', 'TEKNIK', 'TBSM']);
+    return year ? `${year} TSM ${content}`.trim() : `TSM ${content}`.trim();
   }
 
   // Elektronika Industri (ELIND)
   if (j.includes('elektronika') || j.includes('elind') || j.includes('elektronika industri')) {
-    if (year && index) return `${year} ELIND ${index}`;
-    if (index) return `ELIND ${index}`;
-    if (year) return `${year} ELIND`;
-    return `ELIND`;
+    removeTokens(['ELEKTRONIKA', 'INDUSTRI', 'ELIND', 'ELIN', 'TEKNIK']);
+    return year ? `${year} ELIND ${content}`.trim() : `ELIND ${content}`.trim();
   }
 
   // Instalasi Tenaga Listrik (LISTRIK)
-  if (j.includes('listrik')) {
-    if (year && index) return `${year} LISTRIK ${index}`;
-    if (index) return `LISTRIK ${index}`;
-    if (year) return `${year} LISTRIK`;
-    return `LISTRIK`;
+  if (j.includes('listrik') || j.includes('titl')) {
+    removeTokens(['INSTALASI', 'TENAGA', 'LISTRIK', 'TITL', 'TEKNIK']);
+    return year ? `${year} LISTRIK ${content}`.trim() : `LISTRIK ${content}`.trim();
   }
 
   // Kimia -> TKI
-  if (j.includes('kimia')) {
-    if (index) return `TKI ${index}`;
-    return `TKI`;
+  if (j.includes('kimia') || j.includes('tki')) {
+    removeTokens(['KIMIA', 'INDUSTRI', 'TKI', 'TEKNIK']);
+    return `TKI ${content}`.trim();
   }
 
   // Akuntansi -> AK
-  if (j.includes('akuntan') || j.includes('akuntansi')) {
-    if (index) return `AK ${index}`;
-    return `AK`;
+  if (j.includes('akuntan') || j.includes('akuntansi') || j.includes('ak')) {
+    removeTokens(['AKUNTANSI', 'AK']);
+    return `AK ${content}`.trim();
   }
 
   // Perhotelan -> HOTEL
   if (j.includes('hotel') || j.includes('perhotelan')) {
-    if (year && index) return `${year} HOTEL ${index}`;
-    if (year) return `${year} HOTEL`;
-    if (index) return `HOTEL ${index}`;
-    return `HOTEL`;
+    removeTokens(['PERHOTELAN', 'HOTEL']);
+    return year ? `${year} HOTEL ${content}`.trim() : `HOTEL ${content}`.trim();
   }
 
-  // fallback: if we have both year and index, return them together; otherwise original kelas
-  if (year && index) return `${year} ${index}`;
   return kelas;
 }
 
