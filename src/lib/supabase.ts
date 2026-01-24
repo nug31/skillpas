@@ -7,19 +7,19 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 // Even if Supabase keys are present, we need to use Mock Data to match the IDs (e.g. 'j1') 
 // assigned to the mock users ('u-s1') in mockUsers.ts.
 // Once Auth is migrated to Supabase, this can be reverted to use env vars.
-const hasKeys = !!supabaseUrl && !!supabaseAnonKey;
-// Use mock if explicitly requested OR if keys are missing
-const useMock = import.meta.env.VITE_USE_MOCK === 'true' || !hasKeys;
+const hasSupabaseKeys = !!supabaseUrl && !!supabaseAnonKey;
 
-if (!hasKeys && !useMock) {
-  console.warn('Missing Supabase environment variables. Falling back to mock mode.');
+/**
+ * 1. Force REAL mode if keys are present (unless VITE_USE_MOCK is explicitly 'true')
+ * 2. Fall back to MOCK if keys are missing
+ */
+export const isMockMode = (import.meta.env.VITE_USE_MOCK === 'true') || !hasSupabaseKeys;
+
+if (!hasSupabaseKeys && !isMockMode) {
+  console.warn('Missing VITE_SUPABASE environment variables. Falling back to MOCK mode.');
 }
 
 // Export a single `supabase` binding — either a thin stub in mock mode or the real client.
-// This keeps the module shape consistent and avoids invalid `export` usage inside blocks.
-// Export the final mode so components know if we are using mock data
-export const isMockMode = useMock;
-
 export const supabase = isMockMode
   ? ({} as any)
   : createClient<Database>(supabaseUrl!, supabaseAnonKey!);

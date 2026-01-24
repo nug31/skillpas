@@ -383,6 +383,10 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                 <span className="text-[10px] whitespace-nowrap bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-full border border-indigo-500/30 font-bold uppercase tracking-widest">
                   {students.length} Total Data Terdeteksi
                 </span>
+                <div className={`text-[10px] px-2 py-0.5 rounded-full border font-black tracking-widest uppercase flex items-center gap-1.5 ${isMockMode ? 'bg-red-500/20 text-red-500 border-red-500/30' : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'}`}>
+                  <div className={`w-1.5 h-1.5 rounded-full ${isMockMode ? 'bg-red-500 animate-pulse' : 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]'}`} />
+                  DATABASE: {isMockMode ? 'DEMO' : 'REAL'}
+                </div>
               </div>
             </div>
           </div>
