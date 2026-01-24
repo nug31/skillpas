@@ -5,12 +5,13 @@ import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
 import type { Jurusan, LevelSkill, StudentListItem } from '../types';
 import { LevelTable } from './LevelTable';
+import { StudentRace } from './StudentRace';
+import { useAuth } from '../contexts/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
 import formatClassLabel from '../lib/formatJurusan';
 import ImportStudents from './ImportStudents';
 import { StudentTable } from './StudentTable';
 import StudentDetailModal from './StudentDetailModal';
-import { StudentRace } from './StudentRace';
-import { useAuth } from '../contexts/AuthContext';
 
 interface JurusanDetailPageProps {
   jurusan: Jurusan;
@@ -26,6 +27,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
   const [loading, setLoading] = useState(true);
   const [showImport, setShowImport] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<StudentListItem | null>(null);
+  const [direction, setDirection] = useState(0); // For slide animations: -1 or 1
 
   const IconComponent = (LucideIcons as any)[jurusan.icon] || LucideIcons.GraduationCap;
 
@@ -285,6 +287,15 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
     return Array.from(classes).sort(collator.compare);
   }, [students]);
 
+  const allNavOptions = useMemo(() => ['all', 'X', 'XI', 'XII', ...uniqueClasses], [uniqueClasses]);
+
+  const handleTabChange = (newTab: string) => {
+    const prevIndex = allNavOptions.indexOf(activeTab);
+    const nextIndex = allNavOptions.indexOf(newTab);
+    setDirection(nextIndex > prevIndex ? 1 : -1);
+    setActiveTab(newTab);
+  };
+
   // 1. Filter by class first (Base dataset for this page view)
   const classFilteredStudents = useMemo(() => {
     return students.filter((s) => {
@@ -386,7 +397,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                     <div className="flex overflow-x-auto pb-4 gap-3 no-scrollbar snap-x scroll-smooth px-2">
                       {/* Special "All" Slide */}
                       <button
-                        onClick={() => setActiveTab('all')}
+                        onClick={() => handleTabChange('all')}
                         className={`flex-shrink-0 snap-start min-w-[140px] p-4 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-2 ${activeTab === 'all'
                           ? 'bg-indigo-600 border-indigo-400 shadow-lg shadow-indigo-500/30 text-white'
                           : 'bg-[color:var(--card-bg)] border-[color:var(--card-border)] text-[color:var(--text-muted)] hover:border-white/20 hover:bg-white/5'
@@ -404,7 +415,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                         return (
                           <button
                             key={year}
-                            onClick={() => setActiveTab(year)}
+                            onClick={() => handleTabChange(year)}
                             className={`flex-shrink-0 snap-start min-w-[140px] p-4 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-2 ${isYearSelected
                               ? 'bg-blue-600 border-blue-400 shadow-lg shadow-blue-500/30 text-white'
                               : 'bg-[color:var(--card-bg)] border-[color:var(--card-border)] text-[color:var(--text-muted)] hover:border-white/20 hover:bg-white/5'
@@ -426,7 +437,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                         return (
                           <button
                             key={className}
-                            onClick={() => setActiveTab(className)}
+                            onClick={() => handleTabChange(className)}
                             className={`flex-shrink-0 snap-start min-w-[140px] p-4 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-2 ${isSelected
                               ? 'bg-emerald-600 border-emerald-400 shadow-lg shadow-emerald-500/30 text-white'
                               : 'bg-[color:var(--card-bg)] border-[color:var(--card-border)] text-[color:var(--text-muted)] hover:border-white/20 hover:bg-white/5'
@@ -453,202 +464,238 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
               </div>
             )}
 
-            {/* Student Race uses the class-filtered list, ignoring the table level filter */}
-            <StudentRace students={classFilteredStudents} jurusanName={jurusan.nama_jurusan} />
-
-            {(() => {
-              const isAdmin = user?.role === 'admin';
-              const isHOD = user?.role === 'hod';
-              const isTeacherProduktif = user?.role === 'teacher_produktif';
-              const hasMatchingJurusan = !!user?.jurusan_id && !!jurusan.id &&
-                String(user.jurusan_id).toLowerCase() === String(jurusan.id).toLowerCase();
-
-              const canEditCriteria = isAdmin || ((isHOD || isTeacherProduktif) && hasMatchingJurusan);
-
-              return (
+            {/* Class Content Carousel */}
+            <div className="relative">
+              {/* Floating Slide Navigation Arrows */}
+              {!classFilter && isTeacher && (
                 <>
-                  {/* Debug Info for Teachers (Temporary) */}
-                  {isTeacher && (
-                    <div className="text-[10px] text-[color:var(--text-muted)] mb-2 px-2 flex gap-4 opacity-50">
-                      <span>Role: {user?.role}</span>
-                      <span>User Jurusan: {user?.jurusan_id?.slice(-4)}</span>
-                      <span>Page Jurusan: {jurusan.id.slice(-4)}</span>
-                      <span className={canEditCriteria ? 'text-green-400' : 'text-red-400'}>
-                        Access: {canEditCriteria ? 'GRANTED' : 'DENIED'}
-                      </span>
-                    </div>
-                  )}
-                  <LevelTable
-                    levels={levels}
-                    jurusanId={jurusan.id}
-                    onUpdateCriteria={handleUpdateCriteria}
-                    isTeacher={isTeacher}
-                    allowEdit={canEditCriteria}
-                  />
+                  <button
+                    onClick={() => {
+                      const idx = allNavOptions.indexOf(activeTab);
+                      if (idx > 0) handleTabChange(allNavOptions[idx - 1]);
+                    }}
+                    className={`fixed left-4 top-1/2 -translate-y-1/2 z-[100] p-5 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 text-white hover:bg-indigo-600 transition-all shadow-2xl hover:scale-110 active:scale-95 group/btn ${allNavOptions.indexOf(activeTab) === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+                  >
+                    <ChevronLeft className="w-8 h-8 group-hover/btn:-translate-x-1 transition-transform" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      const idx = allNavOptions.indexOf(activeTab);
+                      if (idx < allNavOptions.length - 1) handleTabChange(allNavOptions[idx + 1]);
+                    }}
+                    className={`fixed right-4 top-1/2 -translate-y-1/2 z-[100] p-5 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 text-white hover:bg-indigo-600 transition-all shadow-2xl hover:scale-110 active:scale-95 group/btn ${allNavOptions.indexOf(activeTab) === allNavOptions.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+                  >
+                    <ChevronRight className="w-8 h-8 group-hover/btn:translate-x-1 transition-transform" />
+                  </button>
                 </>
-              );
-            })()}
+              )}
 
-            {user?.role !== 'student' && (
-              <div className="card-glass rounded-xl shadow-sm p-6">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                  <h2 className="text-xl font-semibold text-[color:var(--text-primary)]">Daftar Siswa per Level</h2>
-                  <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium text-[color:var(--text-muted)] whitespace-nowrap">
-                      Filter Level:
-                    </label>
-                    <select
-                      value={selectedLevel}
-                      onChange={(e) => setSelectedLevel(e.target.value)}
-                      className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[color:var(--accent-1)] focus:border-transparent text-sm text-[color:var(--text-primary)] bg-[color:var(--card-bg)] border-[color:var(--card-border)]"
-                      style={{
-                        backgroundColor: 'var(--card-bg)',
-                        color: 'var(--text-primary)'
-                      }}
-                    >
-                      <option value="all" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Semua Level</option>
-                      {levels.map((level) => (
-                        <option key={level.id} value={level.id} style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>
-                          {level.nama_level} ({level.badge_name})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <div className="flex justify-between items-center gap-2 mb-4">
-                  <div />
-                  {isTeacher && (
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={async () => {
-                          if (window.confirm(`PERINGATAN: Anda yakin ingin MENGHAPUS SEMUA data siswa di jurusan ${jurusan.nama_jurusan}?\n\nData yang dihapus tidak dapat dikembalikan!`)) {
-                            if (!window.confirm("Apakah anda benar-benar yakin?")) return;
+              <div className="overflow-hidden min-h-[1000px]">
+                <AnimatePresence mode="wait" custom={direction}>
+                  <motion.div
+                    key={activeTab}
+                    custom={direction}
+                    variants={{
+                      enter: (d: number) => ({ x: d > 0 ? 500 : -500, opacity: 0, scale: 0.98 }),
+                      center: { x: 0, opacity: 1, scale: 1 },
+                      exit: (d: number) => ({ x: d < 0 ? 500 : -500, opacity: 0, scale: 0.98 })
+                    }}
+                    transition={{ type: 'spring', stiffness: 350, damping: 35 }}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    className="space-y-8"
+                  >
+                    <div className="flex flex-col gap-4 mb-2">
+                      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                          <div className="h-14 w-2 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/50" />
+                          <div>
+                            <h2 className="text-4xl font-black text-[color:var(--text-primary)] uppercase tracking-tighter">
+                              {activeTab === 'all' ? 'Seluruh Siswa' :
+                                ['X', 'XI', 'XII'].includes(activeTab) ? `Total Kelas ${activeTab}` :
+                                  formatClassLabel(jurusan.nama_jurusan, activeTab)}
+                            </h2>
+                            <p className="text-sm text-[color:var(--text-muted)] font-bold uppercase tracking-widest opacity-60">
+                              MENAMPILKAN {classFilteredStudents.length} SISWA
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
+                    <StudentRace students={classFilteredStudents} jurusanName={jurusan.nama_jurusan} />
+
+                    <LevelTable
+                      levels={levels}
+                      jurusanId={jurusan.id}
+                      onUpdateCriteria={handleUpdateCriteria}
+                      isTeacher={isTeacher}
+                      allowEdit={!!user?.role && ['admin', 'hod', 'teacher_produktif'].includes(user.role)}
+                    />
+
+                    {user?.role !== 'student' && (
+                      <div className="card-glass rounded-xl shadow-sm p-6">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                          <h2 className="text-xl font-semibold text-[color:var(--text-primary)]">Daftar Siswa per Level</h2>
+                          <div className="flex items-center gap-2">
+                            <label className="text-sm font-medium text-[color:var(--text-muted)] whitespace-nowrap">
+                              Filter Level:
+                            </label>
+                            <select
+                              value={selectedLevel}
+                              onChange={(e) => setSelectedLevel(e.target.value)}
+                              className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[color:var(--accent-1)] focus:border-transparent text-sm text-[color:var(--text-primary)] bg-[color:var(--card-bg)] border-[color:var(--card-border)]"
+                              style={{
+                                backgroundColor: 'var(--card-bg)',
+                                color: 'var(--text-primary)'
+                              }}
+                            >
+                              <option value="all" style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>Semua Level</option>
+                              {levels.map((level) => (
+                                <option key={level.id} value={level.id} style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>
+                                  {level.nama_level} ({level.badge_name})
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                        <div className="flex justify-between items-center gap-2 mb-4">
+                          <div />
+                          {isTeacher && (
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={async () => {
+                                  if (window.confirm(`PERINGATAN: Anda yakin ingin MENGHAPUS SEMUA data siswa di jurusan ${jurusan.nama_jurusan}?\n\nData yang dihapus tidak dapat dikembalikan!`)) {
+                                    if (!window.confirm("Apakah anda benar-benar yakin?")) return;
+
+                                    try {
+                                      setLoading(true);
+                                      if (isMockMode) {
+                                        // Find all student IDs in this jurusan
+                                        const studentsToDelete = mockData.mockSiswa.filter(s => s.jurusan_id === jurusan.id).map(s => s.id);
+
+                                        // Delete in reverse loop to avoid index shifting issues
+                                        for (let i = mockData.mockSiswa.length - 1; i >= 0; i--) {
+                                          if (mockData.mockSiswa[i].jurusan_id === jurusan.id) {
+                                            mockData.mockSiswa.splice(i, 1);
+                                          }
+                                        }
+                                        for (let i = mockData.mockSiswa.length - 1; i >= 0; i--) {
+                                          if (mockData.mockSiswa[i].jurusan_id === jurusan.id) {
+                                            mockData.mockSiswa.splice(i, 1);
+                                          }
+                                        }
+                                        // Delete skills
+                                        for (let i = mockData.mockSkillSiswa.length - 1; i >= 0; i--) {
+                                          if (studentsToDelete.includes(mockData.mockSkillSiswa[i].siswa_id)) {
+                                            mockData.mockSkillSiswa.splice(i, 1);
+                                          }
+                                        }
+                                      } else {
+                                        const { error } = await supabase.from('siswa').delete().eq('jurusan_id', jurusan.id);
+                                        if (error) throw error;
+                                      }
+                                      await loadData();
+                                      alert('Semua data siswa berhasil dihapus.');
+                                    } catch (err) {
+                                      console.error('Failed to delete all', err);
+                                      alert('Gagal menghapus data.');
+                                    } finally {
+                                      setLoading(false);
+                                    }
+                                  }
+                                }}
+                                className="px-3 py-1 bg-red-600 text-white rounded text-sm inline-flex items-center gap-2 hover:bg-red-700 transition-colors"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                                <span>Hapus Semua</span>
+                              </button>
+                              <button onClick={() => setShowImport(true)} className="px-3 py-1 bg-indigo-600 text-white rounded text-sm inline-flex items-center gap-2 hover:bg-indigo-700 transition-colors">
+                                <Download className="w-4 h-4" />
+                                <span>Import Siswa</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+
+                        <StudentTable
+                          students={filteredStudents}
+                          onExportExcel={handleExportExcel}
+                          onExportPDF={handleExportPDF}
+                          onEditScore={isTeacher ? handleEditScore : undefined}
+                          onDelete={isTeacher ? async (s) => {
                             try {
                               setLoading(true);
+                              // Delete logic
                               if (isMockMode) {
-                                // Find all student IDs in this jurusan
-                                const studentsToDelete = mockData.mockSiswa.filter(s => s.jurusan_id === jurusan.id).map(s => s.id);
-
-                                // Delete in reverse loop to avoid index shifting issues
-                                for (let i = mockData.mockSiswa.length - 1; i >= 0; i--) {
-                                  if (mockData.mockSiswa[i].jurusan_id === jurusan.id) {
-                                    mockData.mockSiswa.splice(i, 1);
-                                  }
-                                }
-                                for (let i = mockData.mockSiswa.length - 1; i >= 0; i--) {
-                                  if (mockData.mockSiswa[i].jurusan_id === jurusan.id) {
-                                    mockData.mockSiswa.splice(i, 1);
-                                  }
-                                }
-                                // Delete skills
-                                for (let i = mockData.mockSkillSiswa.length - 1; i >= 0; i--) {
-                                  if (studentsToDelete.includes(mockData.mockSkillSiswa[i].siswa_id)) {
-                                    mockData.mockSkillSiswa.splice(i, 1);
-                                  }
-                                }
+                                const idx = mockData.mockSiswa.findIndex(ms => ms.id === s.id);
+                                if (idx >= 0) mockData.mockSiswa.splice(idx, 1);
+                                // Also delete related skill records
+                                const sIdx = mockData.mockSkillSiswa.findIndex(ss => ss.siswa_id === s.id);
+                                if (sIdx >= 0) mockData.mockSkillSiswa.splice(sIdx, 1);
                               } else {
-                                const { error } = await supabase.from('siswa').delete().eq('jurusan_id', jurusan.id);
+                                const { error } = await supabase.from('siswa').delete().eq('id', s.id);
                                 if (error) throw error;
                               }
                               await loadData();
-                              alert('Semua data siswa berhasil dihapus.');
                             } catch (err) {
-                              console.error('Failed to delete all', err);
-                              alert('Gagal menghapus data.');
-                            } finally {
+                              console.error('Delete failed', err);
+                              alert('Gagal menghapus siswa');
                               setLoading(false);
                             }
+                          } : undefined}
+                          topRanks={topRanks}
+                          onSelectStudent={(s) => setSelectedStudent(s)}
+                          jurusanName={jurusan.nama_jurusan}
+                        />
+                      </div>
+                    )}
+
+                    {selectedStudent && (
+                      <StudentDetailModal
+                        student={selectedStudent}
+                        levels={levels}
+                        onClose={() => setSelectedStudent(null)}
+                        jurusanName={jurusan.nama_jurusan}
+                        onUpdate={isTeacher ? async (id, nama, kelas, poin) => {
+                          try {
+                            setLoading(true);
+                            if (isMockMode) {
+                              const s = mockData.mockSiswa.find(ms => ms.id === id);
+                              if (s) { s.nama = nama; s.kelas = kelas; }
+                              const sk = mockData.mockSkillSiswa.find(ms => ms.siswa_id === id);
+                              if (sk) { sk.poin = poin; }
+                            } else {
+                              const { error: sError } = await supabase.from('siswa').update({ nama, kelas }).eq('id', id);
+                              if (sError) throw sError;
+                              const { error: skError } = await supabase.from('skill_siswa').update({ poin }).eq('siswa_id', id);
+                              if (skError) throw skError;
+                            }
+                            await loadData(true);
+                            setSelectedStudent(prev => prev ? ({ ...prev, nama, kelas, poin }) : null);
+                          } catch (err) {
+                            console.error('Update failed', err);
+                            throw err;
+                          } finally {
+                            setLoading(false);
                           }
-                        }}
-                        className="px-3 py-1 bg-red-600 text-white rounded text-sm inline-flex items-center gap-2 hover:bg-red-700 transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        <span>Hapus Semua</span>
-                      </button>
-                      <button onClick={() => setShowImport(true)} className="px-3 py-1 bg-indigo-600 text-white rounded text-sm inline-flex items-center gap-2 hover:bg-indigo-700 transition-colors">
-                        <Download className="w-4 h-4" />
-                        <span>Import Siswa</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
+                        } : undefined}
+                      />
+                    )}
 
-                <StudentTable
-                  students={filteredStudents}
-                  onExportExcel={handleExportExcel}
-                  onExportPDF={handleExportPDF}
-                  onEditScore={isTeacher ? handleEditScore : undefined}
-                  onDelete={isTeacher ? async (s) => {
-                    try {
-                      setLoading(true);
-                      // Delete logic
-                      if (isMockMode) {
-                        const idx = mockData.mockSiswa.findIndex(ms => ms.id === s.id);
-                        if (idx >= 0) mockData.mockSiswa.splice(idx, 1);
-                        // Also delete related skill records
-                        const sIdx = mockData.mockSkillSiswa.findIndex(ss => ss.siswa_id === s.id);
-                        if (sIdx >= 0) mockData.mockSkillSiswa.splice(sIdx, 1);
-                      } else {
-                        const { error } = await supabase.from('siswa').delete().eq('id', s.id);
-                        if (error) throw error;
-                      }
-                      await loadData();
-                    } catch (err) {
-                      console.error('Delete failed', err);
-                      alert('Gagal menghapus siswa');
-                      setLoading(false);
-                    }
-                  } : undefined}
-                  topRanks={topRanks}
-                  onSelectStudent={(s) => setSelectedStudent(s)}
-                  jurusanName={jurusan.nama_jurusan}
-                />
+                    {showImport && (
+                      <ImportStudents jurusanId={jurusan.id} onClose={() => setShowImport(false)} onImported={() => loadData()} />
+                    )}
+                  </motion.div>
+                </AnimatePresence>
               </div>
-            )}
-
-            {selectedStudent && (
-              <StudentDetailModal
-                student={selectedStudent}
-                levels={levels}
-                onClose={() => setSelectedStudent(null)}
-                jurusanName={jurusan.nama_jurusan}
-                onUpdate={isTeacher ? async (id, nama, kelas, poin) => {
-                  try {
-                    setLoading(true);
-                    if (isMockMode) {
-                      const s = mockData.mockSiswa.find(ms => ms.id === id);
-                      if (s) { s.nama = nama; s.kelas = kelas; }
-                      const sk = mockData.mockSkillSiswa.find(ms => ms.siswa_id === id);
-                      if (sk) { sk.poin = poin; }
-                    } else {
-                      // Update siswa table
-                      const { error: sError } = await supabase.from('siswa').update({ nama, kelas }).eq('id', id);
-                      if (sError) throw sError;
-
-                      // Update skill_siswa table for poin
-                      const { error: skError } = await supabase.from('skill_siswa').update({ poin }).eq('siswa_id', id);
-                      if (skError) throw skError;
-                    }
-                    await loadData(true);
-                    // Update selected student effectively
-                    setSelectedStudent(prev => prev ? ({ ...prev, nama, kelas, poin }) : null);
-                  } catch (err) {
-                    console.error('Update failed', err);
-                    throw err;
-                  } finally {
-                    setLoading(false);
-                  }
-                } : undefined}
-              />
-            )}
-
-            {showImport && (
-              <ImportStudents jurusanId={jurusan.id} onClose={() => setShowImport(false)} onImported={() => loadData()} />
-            )}
+            </div>
           </div>
         )}
       </div>
     </div>
   );
 }
+
+export default JurusanDetailPage;
