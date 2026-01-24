@@ -297,20 +297,27 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
 
   // 1. Filter by class first (Base dataset for this page view)
   const classFilteredStudents = useMemo(() => {
+    // Normalization helper for robust matching
+    const norm = (s: string) => s.toLowerCase().replace(/\s+/g, '');
     const target = activeTab.trim();
+    const targetNorm = norm(target);
+
     return students.filter((s) => {
       const cls = s.kelas.trim();
+      const clsNorm = norm(cls);
+
       // If we have a forced prop filter (Student View), use it.
       if (classFilter) {
         const cf = classFilter.trim();
-        return cls === cf || cls.startsWith(cf + ' ');
+        const cfNorm = norm(cf);
+        return clsNorm === cfNorm || clsNorm.startsWith(cfNorm);
       }
       // Teacher View
       if (target === 'all') return true;
       if (['X', 'XI', 'XII'].includes(target)) {
         return cls.startsWith(target + ' ');
       }
-      return cls === target;
+      return clsNorm === targetNorm;
     });
   }, [students, activeTab, classFilter]);
 
@@ -369,7 +376,13 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
               <h1 className="text-3xl font-bold text-[color:var(--text-primary)] mb-2">
                 {jurusan.nama_jurusan} {classFilter ? `- Kelas ${classFilter} ` : ''}
               </h1>
-              <p className="text-[color:var(--text-muted)]">{jurusan.deskripsi}</p>
+              <div className="flex items-center gap-3">
+                <p className="text-[color:var(--text-muted)] line-clamp-1">{jurusan.deskripsi}</p>
+                <div className="h-4 w-[1px] bg-white/10 hidden sm:block" />
+                <span className="text-[10px] whitespace-nowrap bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-full border border-indigo-500/30 font-bold uppercase tracking-widest">
+                  {students.length} Total Data Terdeteksi
+                </span>
+              </div>
             </div>
           </div>
         </div>
