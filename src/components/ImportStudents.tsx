@@ -100,13 +100,13 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
         for (const row of preview) {
           const id = `s-${jurusanId}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
           mockData.mockSiswa.push({ id, nama: row.nama, nisn: row.nisn, kelas: row.kelas ?? 'X', jurusan_id: jurusanId, created_at: now });
-          if (typeof row.skor === 'number') {
-            const skor = row.skor;
-            const level = mockData.mockLevels.find((l) => skor >= l.min_skor && skor <= l.max_skor) || mockData.mockLevels[0];
-            const levelId = level.id;
-            const poin = level.urutan * 50 + 50;
-            mockData.mockSkillSiswa.push({ id: `ss-${id}`, siswa_id: id, level_id: levelId, skor, poin, tanggal_pencapaian: now, created_at: now, updated_at: now });
-          }
+
+          // ALWAYS create a skill record in mock mode if not present, to match production fix
+          const skor = row.skor ?? 0;
+          const level = mockData.mockLevels.find((l) => skor >= l.min_skor && skor <= l.max_skor) || mockData.mockLevels[0];
+          const levelId = level.id;
+          const poin = level.urutan * 50 + 50;
+          mockData.mockSkillSiswa.push({ id: `ss-${id}`, siswa_id: id, level_id: levelId, skor, poin, tanggal_pencapaian: now, created_at: now, updated_at: now });
         }
       } else {
         const rows = preview.map((r) => ({

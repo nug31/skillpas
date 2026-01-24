@@ -7,9 +7,11 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 // Even if Supabase keys are present, we need to use Mock Data to match the IDs (e.g. 'j1') 
 // assigned to the mock users ('u-s1') in mockUsers.ts.
 // Once Auth is migrated to Supabase, this can be reverted to use env vars.
-const useMock = import.meta.env.VITE_USE_MOCK === 'true';
+const hasKeys = !!supabaseUrl && !!supabaseAnonKey;
+// Use mock if explicitly requested OR if keys are missing
+const useMock = import.meta.env.VITE_USE_MOCK === 'true' || !hasKeys;
 
-if (!useMock && (!supabaseUrl || !supabaseAnonKey)) {
+if (!hasKeys && !useMock) {
   console.warn('Missing Supabase environment variables. Falling back to mock mode.');
 }
 

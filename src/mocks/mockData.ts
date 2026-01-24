@@ -513,18 +513,17 @@ export function getStudentListForJurusan(jurusanId: string): StudentListItem[] {
   return students
     .map((s) => {
       const sk = mockSkillSiswa.find((r) => r.siswa_id === s.id);
-      if (!sk) return null;
-      const level = levels.find((l) => sk.skor >= l.min_skor && sk.skor <= l.max_skor);
+      const level = levels.find((l) => sk ? (sk.skor >= l.min_skor && sk.skor <= l.max_skor) : (0 >= l.min_skor && 0 <= l.max_skor)) || levels[0];
       const badge_name = (level?.badge_name ?? 'Basic') as any;
       const badge_color = level?.badge_color ?? '#94a3b8';
       const level_name = level?.nama_level ?? 'Pemula / Beginner';
-      const poin = (level?.urutan ?? 1) * 50 + 50;
+      const poin = sk?.poin ?? (level?.urutan ?? 1) * 50 + 50;
 
       return {
         id: s.id,
         nama: s.nama,
         kelas: s.kelas,
-        skor: sk.skor,
+        skor: sk?.skor ?? 0,
         poin: poin,
         badge_name,
         badge_color,
@@ -533,8 +532,7 @@ export function getStudentListForJurusan(jurusanId: string): StudentListItem[] {
         photo_url: s.photo_url,
         riwayat_kompetensi: mockCompetencyHistory.filter(h => h.siswa_id === s.id)
       } as StudentListItem;
-    })
-    .filter(Boolean) as StudentListItem[];
+    });
 }
 
 export function getLevelsForJurusan(jurusanId: string) {
