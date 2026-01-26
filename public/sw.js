@@ -42,6 +42,11 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
+    // Ignore Supabase API requests (let them go to network directly)
+    if (event.request.url.includes('supabase.co') || event.request.url.includes('/rest/v1/')) {
+        return;
+    }
+
     event.respondWith(
         caches.match(event.request).then((response) => {
             const fetchPromise = fetch(event.request).then((networkResponse) => {
