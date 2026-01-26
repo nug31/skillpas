@@ -52,11 +52,16 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
       }
 
       const [levelsResult, overridesResult] = await Promise.all([
-        supabase.from('level_skill').select('*').order('urutan'),
-        supabase
-          .from('level_skill_jurusan')
+        supabase.from('level_skill')
+          .select('*')
+          .order('urutan')
+          .setHeader('pragma', 'no-cache')
+          .setHeader('cache-control', 'no-cache'),
+        supabase.from('level_skill_jurusan')
           .select('*')
           .eq('jurusan_id', jurusan.id)
+          .setHeader('pragma', 'no-cache')
+          .setHeader('cache-control', 'no-cache')
       ]);
 
       if (levelsResult.error) throw levelsResult.error;

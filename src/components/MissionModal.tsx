@@ -103,8 +103,16 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                 levels = mockData.getLevelsForJurusan(jurusan.id);
             } else {
                 const [levelsResult, overridesResult] = await Promise.all([
-                    supabase.from('level_skill').select('*').order('urutan', { ascending: true }),
-                    supabase.from('level_skill_jurusan').select('*').eq('jurusan_id', jurusan.id)
+                    supabase.from('level_skill')
+                        .select('*')
+                        .order('urutan', { ascending: true })
+                        .setHeader('pragma', 'no-cache')
+                        .setHeader('cache-control', 'no-cache'),
+                    supabase.from('level_skill_jurusan')
+                        .select('*')
+                        .eq('jurusan_id', jurusan.id)
+                        .setHeader('pragma', 'no-cache')
+                        .setHeader('cache-control', 'no-cache')
                 ]);
 
                 if (levelsResult.error) throw levelsResult.error;

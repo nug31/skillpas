@@ -15,7 +15,9 @@ export const krsStore = {
         const { data, error } = await supabase
             .from('krs')
             .select('*')
-            .order('created_at', { ascending: false });
+            .order('created_at', { ascending: false })
+            .setHeader('pragma', 'no-cache')
+            .setHeader('cache-control', 'no-cache');
 
         if (error) {
             console.error('Failed to fetch KRS submissions', error);
@@ -34,6 +36,8 @@ export const krsStore = {
                 .from('skill_siswa')
                 .select('skor')
                 .eq('siswa_id', siswaId)
+                .setHeader('pragma', 'no-cache')
+                .setHeader('cache-control', 'no-cache')
                 .maybeSingle();
 
             if (error || !data) return 0;
@@ -51,6 +55,8 @@ export const krsStore = {
             .from('krs')
             .select('*')
             .eq('siswa_id', siswaId)
+            .setHeader('pragma', 'no-cache')
+            .setHeader('cache-control', 'no-cache')
             .maybeSingle();
 
         if (error) return undefined;
@@ -93,7 +99,13 @@ export const krsStore = {
         }
 
         // Check if exists
-        const { data: existing } = await supabase.from('krs').select('id').eq('siswa_id', submission.siswa_id).maybeSingle();
+        const { data: existing } = await supabase
+            .from('krs')
+            .select('id')
+            .eq('siswa_id', submission.siswa_id)
+            .setHeader('pragma', 'no-cache')
+            .setHeader('cache-control', 'no-cache')
+            .maybeSingle();
 
         let result;
         if (existing) {
@@ -136,7 +148,12 @@ export const krsStore = {
             const subs = await this.getSubmissions();
             submission = subs.find(s => s.id === submissionId);
         } else {
-            const { data } = await supabase.from('krs').select('*').eq('id', submissionId).single();
+            const { data } = await supabase.from('krs')
+                .select('*')
+                .eq('id', submissionId)
+                .setHeader('pragma', 'no-cache')
+                .setHeader('cache-control', 'no-cache')
+                .single();
             if (data) submission = data as KRSSubmission;
         }
 
@@ -242,7 +259,12 @@ export const krsStore = {
             const subs = await this.getSubmissions();
             submission = subs.find(s => s.id === submissionId);
         } else {
-            const { data } = await supabase.from('krs').select('*').eq('id', submissionId).single();
+            const { data } = await supabase.from('krs')
+                .select('*')
+                .eq('id', submissionId)
+                .setHeader('pragma', 'no-cache')
+                .setHeader('cache-control', 'no-cache')
+                .single();
             if (data) submission = data as KRSSubmission;
         }
 
