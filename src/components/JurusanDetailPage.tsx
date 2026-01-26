@@ -262,8 +262,9 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
         throw error;
       }
 
-      // Success! Refresh silently to ensure everything is in sync
-      await loadData(true);
+      // Success! No need to re-fetch immediately as optimistic update is faster and accurate.
+      // Re-fetching caused a race condition where stale data overwrote the new data.
+      // await loadData(true);
     } catch (err) {
       console.error('Error updating criteria:', err);
       // rollback is already handled by loadData() or above setLevels
