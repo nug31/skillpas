@@ -4,13 +4,15 @@ import { Flag, Trophy, BarChart3, Medal } from 'lucide-react';
 import type { StudentListItem, RaceParticipant } from '../types';
 import { F1RaceTrack } from './F1RaceTrack';
 import { Podium } from './Podium';
+import { SnakeLaddersGame } from './SnakeLaddersGame';
+import { Gamepad2 } from 'lucide-react';
 
 interface StudentRaceProps {
     students: StudentListItem[];
     jurusanName?: string;
 }
 
-type ViewMode = 'list' | 'race' | 'podium';
+type ViewMode = 'list' | 'race' | 'podium' | 'snake';
 
 export function StudentRace({ students, jurusanName }: StudentRaceProps) {
     const [viewMode, setViewMode] = useState<ViewMode>('race');
@@ -60,6 +62,16 @@ export function StudentRace({ students, jurusanName }: StudentRaceProps) {
                         <span>Podium 3D</span>
                     </button>
                     <button
+                        onClick={() => setViewMode('snake')}
+                        className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${viewMode === 'snake'
+                            ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/25 ring-1 ring-white/20'
+                            : 'text-gray-500 hover:text-gray-900 hover:bg-black/5 dark:text-white/40 dark:hover:text-white dark:hover:bg-white/5'
+                            }`}
+                    >
+                        <Gamepad2 className="w-4 h-4" />
+                        <span>Ular Tangga</span>
+                    </button>
+                    <button
                         onClick={() => setViewMode('list')}
                         className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${viewMode === 'list'
                             ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25 ring-1 ring-white/20'
@@ -98,6 +110,18 @@ export function StudentRace({ students, jurusanName }: StudentRaceProps) {
                         transition={{ duration: 0.3 }}
                     >
                         <Podium participants={topParticipants} title="Champions Podium" subtitle={jurusanName} />
+                    </motion.div>
+                )}
+
+                {viewMode === 'snake' && (
+                    <motion.div
+                        key="snake"
+                        initial={{ opacity: 0, scale: 1.1 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 1.1 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <SnakeLaddersGame participants={participants} />
                     </motion.div>
                 )}
 
