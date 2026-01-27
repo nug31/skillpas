@@ -64,7 +64,7 @@ export const mockUsers: User[] = [
     { id: 'hod-elin03', username: 'hod_elin03', password: '123', name: 'Eldha Luvy Zha, A.Md', role: 'hod', jurusan_id: JURUSAN_IDS.ELIND },
     { id: 'hod-tsm03', username: 'hod_tsm03', password: '123', name: 'Heri Supriyanto,S.Pd', role: 'hod', jurusan_id: JURUSAN_IDS.TSM },
     { id: 'hod-tkr03', username: 'hod_tkr03', password: '123', name: 'Rahmat Hidayat, S.Pd.Gr', role: 'hod', jurusan_id: JURUSAN_IDS.TKR },
-    { id: 't-joko-tkr', username: 'joko_tkr', password: '123', name: 'Joko Setyo Nugroho, S.T', role: 'teacher_produktif', kelas: 'XII TKR 3', jurusan_id: JURUSAN_IDS.TKR },
+    { id: 't-joko-tkr', username: 'joko_tkr', password: '123', name: 'Joko Setyo Nugroho, S.T', role: 'wali_kelas', kelas: 'XII TKR 3', jurusan_id: JURUSAN_IDS.TKR },
     { id: 'hod-listrik-astri', username: 'hod_listrik', password: '123', name: 'Astri Afmi Wulandari, S.Pd', role: 'hod', jurusan_id: JURUSAN_IDS.LISTRIK },
 
     // Default Teacher Produktif accounts for all majors

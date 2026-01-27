@@ -19,9 +19,23 @@ import { History } from 'lucide-react';
 function getWalasForClass(className?: string): string {
   if (!className) return "Sri Wahyuni, S.Pd";
   const cls = className.toUpperCase();
-  if (cls.includes('MESIN')) return "Budi Santoso, S.T.";
-  if (cls.includes('TKR')) return "Deni Prasetyo, S.Pd.";
-  if (cls.includes('TSM')) return "Rina Kurnia, S.Pd.";
+  if (cls.includes('MESIN')) {
+    if (cls.includes('XII')) return "Dwi Nugroho, S.T";
+    if (cls.includes('XI')) return "Nia Desnata Hati, S.Pd";
+    return "Gesti Khoriunnisa";
+  }
+  if (cls.includes('TKR')) {
+    if (cls.includes('XII')) {
+      if (cls.includes('1')) return "Maulana Evendi";
+      if (cls.includes('2')) return "Esa Apriyadi, S.Pd";
+      if (cls.includes('3')) return "Joko Setyo Nugroho, S.T";
+    }
+    return "Deni Prasetyo, S.Pd.";
+  }
+  if (cls.includes('TSM')) {
+    if (cls.includes('XII')) return "Ahmad Nasrul, S.Pd";
+    return "Rina Kurnia, S.Pd.";
+  }
   if (cls.includes('ELIND')) return "Hendra Wijaya, S.T.";
   if (cls.includes('LISTRIK')) return "Taufik Hidayat, S.T.";
   if (cls.includes('KIMIA')) return "Sari Melati, S.Si.";
@@ -304,7 +318,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
           const { data: walasData } = await supabase
             .from('users')
             .select('name')
-            .eq('role', 'wali_kelas')
+            .in('role', ['wali_kelas', 'teacher_produktif', 'teacher'])
             .eq('kelas', student.kelas)
             .maybeSingle();
 
