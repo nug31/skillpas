@@ -376,6 +376,73 @@ export const krsStore = {
         return true;
     },
 
+    async ensureBaselineHistory(siswaId: string, score: number) {
+        if (!siswaId) return;
+
+        try {
+            if (isMockMode) {
+                const levels = mockData.mockLevels.sort((a, b) => a.urutan - b.urutan);
+                const reachedLevels = levels.filter((l: any) => score >= l.min_skor);
+                const now = new Date().toISOString();
+
+                reachedLevels.forEach((rl: any) => {
+                    const exists = mockData.mockCompetencyHistory.some((h: any) => h.siswa_id === siswaId && h.level_id === rl.id);
+                    if (!exists) {
+                        mockData.mockCompetencyHistory.push({
+                            id: `h-sync-${siswaId}-${rl.id}`,
+                            siswa_id: siswaId,
+                            level_id: rl.id,
+                            unit_kompetensi: 'Kompetensi Dasar (Sync)',
+                            aktivitas_pembuktian: 'Verifikasi Dashboard',
+                            penilai: 'Sistem',
+                            hasil: 'Lulus',
+                            tanggal: now.split('T')[0],
+                            catatan: 'Otomatis diperbaiki oleh sistem'
+                        });
+                    }
+                });
+            } else {
+                // Fetch all levels
+                const { data: allLevels } = await supabase.from('level_skill').select('*').order('urutan');
+                if (!allLevels) return;
+
+                const reachingLevels = allLevels.filter((l: any) => score >= l.min_skor);
+
+                // Fetch existing history
+                const { data: existingHist } = await supabase
+                    .from('competency_history')
+                    .select('level_id')
+                    .eq('siswa_id', siswaId);
+
+                const existingLevelIds = new Set(existingHist?.map((h: any) => h.level_id) || []);
+                const historyRows: any[] = [];
+                const today = new Date().toISOString().split('T')[0];
+
+                reachingLevels.forEach((rl: any) => {
+                    if (!existingLevelIds.has(rl.id)) {
+                        historyRows.push({
+                            siswa_id: siswaId,
+                            level_id: rl.id,
+                            unit_kompetensi: 'Kompetensi Dasar (Sync)',
+                            aktivitas_pembuktian: 'Verifikasi Dashboard',
+                            penilai: 'Sistem',
+                            hasil: 'Lulus',
+                            tanggal: today,
+                            catatan: 'Otomatis diperbaiki oleh sistem'
+                        });
+                    }
+                });
+
+                if (historyRows.length > 0) {
+                    console.log(`[krsStore] Repairing ${historyRows.length} history records for student ${siswaId}`);
+                    await supabase.from('competency_history').insert(historyRows);
+                }
+            }
+        } catch (err) {
+            console.error('[krsStore] Error in ensureBaselineHistory:', err);
+        }
+    },
+
     notifyUpdate() {
         window.dispatchEvent(new CustomEvent(KRS_UPDATED_EVENT));
     },

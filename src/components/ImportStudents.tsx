@@ -103,10 +103,27 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
 
           // ALWAYS create a skill record in mock mode if not present, to match production fix
           const skor = row.skor ?? 0;
-          const level = mockData.mockLevels.find((l) => skor >= l.min_skor && skor <= l.max_skor) || mockData.mockLevels[0];
+          const levels = mockData.mockLevels.sort((a, b) => a.urutan - b.urutan);
+          const level = levels.find((l) => skor >= l.min_skor && skor <= l.max_skor) || levels[0];
           const levelId = level.id;
           const poin = level.urutan * 50 + 50;
           mockData.mockSkillSiswa.push({ id: `ss-${id}`, siswa_id: id, level_id: levelId, skor, poin, tanggal_pencapaian: now, created_at: now, updated_at: now });
+
+          // Generate baseline history for all levels reached
+          const reachedLevels = levels.filter(l => skor >= l.min_skor);
+          reachedLevels.forEach(rl => {
+            mockData.mockCompetencyHistory.push({
+              id: `h-base-${id}-${rl.id}`,
+              siswa_id: id,
+              level_id: rl.id,
+              unit_kompetensi: 'Kompetensi Dasar (Import)',
+              aktivitas_pembuktian: 'Verifikasi Data Awal',
+              penilai: 'Sistem',
+              hasil: 'Lulus',
+              tanggal: now.split('T')[0],
+              catatan: 'Otomatis dibuat saat import data'
+            });
+          });
         }
       } else {
         const rows = preview.map((r) => ({
@@ -128,10 +145,10 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
           const { data: allLevels } = await supabase.from('level_skill').select('*').order('urutan');
 
           if (allLevels && allLevels.length > 0) {
-            const skillRows = insertedSiswa.map(siswa => {
+            const skillRows = insertedSiswa.map((siswa: { id: string; nama: string }) => {
               const previewRow = preview.find(p => p.nama === siswa.nama);
               const skor = previewRow?.skor ?? 0;
-              const level = allLevels.find(l => skor >= l.min_skor && skor <= l.max_skor) || allLevels[0];
+              const level = allLevels.find((l: any) => skor >= l.min_skor && skor <= l.max_skor) || allLevels[0];
               const poin = (level.urutan ?? 1) * 50 + 50;
 
               return {
@@ -145,6 +162,34 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
             // Batch insert all skills at once
             const { error: skillErr } = await supabase.from('skill_siswa').insert(skillRows);
             if (skillErr) console.error('Error importing skills:', skillErr);
+
+            // Generate baseline history for all levels reached for each student
+            const historyRows: any[] = [];
+            const today = new Date().toISOString().split('T')[0];
+
+            insertedSiswa.forEach((siswa: { id: string; nama: string }) => {
+              const previewRow = preview.find(p => p.nama === siswa.nama);
+              const score = previewRow?.skor ?? 0;
+              const reachedLevels = allLevels.filter((l: any) => score >= l.min_skor);
+
+              reachedLevels.forEach((rl: any) => {
+                historyRows.push({
+                  siswa_id: siswa.id,
+                  level_id: rl.id,
+                  unit_kompetensi: 'Kompetensi Dasar (Import)',
+                  aktivitas_pembuktian: 'Verifikasi Data Awal',
+                  penilai: 'Sistem',
+                  hasil: 'Lulus',
+                  tanggal: today,
+                  catatan: 'Otomatis dibuat saat import data'
+                });
+              });
+            });
+
+            if (historyRows.length > 0) {
+              const { error: histErr } = await supabase.from('competency_history').insert(historyRows);
+              if (histErr) console.error('Error importing competency history:', histErr);
+            }
           }
         }
         alert(`Berhasil mengimpor ${insertedSiswa?.length || 0} siswa.`);

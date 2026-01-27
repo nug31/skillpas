@@ -227,6 +227,9 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
           // Mock history
           const history = (mockData as any).mockCompetencyHistory?.filter((r: any) => r.siswa_id === student.id) || [];
           setMyHistory(history);
+
+          // Auto-repair history if missing (e.g. imported student)
+          krsStore.ensureBaselineHistory(student.id, score);
         }
       } else {
         // Supabase implementation
@@ -301,6 +304,9 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
           if (historyData) {
             setMyHistory(historyData);
           }
+
+          // Auto-repair history if missing (e.g. imported student)
+          krsStore.ensureBaselineHistory(student.id, score);
 
           // Fetch HOD for certificate
           const { data: hodData } = await supabase
