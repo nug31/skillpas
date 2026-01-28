@@ -617,7 +617,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
               </div>
             </div>
 
-            <div className="card-glass rounded-xl-2 p-6 shadow-inner border border-white/6 animate-slideInRight stagger-delay-2 h-full flex flex-col justify-center">
+            <div className="card-glass rounded-xl p-5 shadow-sm border border-white/6 animate-slideInRight stagger-delay-2 h-full flex flex-col justify-center [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-none">
               {user?.role === 'student' ? (
                 <div className="flex items-center gap-6">
                   <button
@@ -651,14 +651,14 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                     {myStats ? (
                       <div className="flex flex-col gap-3 mt-2">
                         <div className="flex items-center gap-2">
-                          <div className="px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm border border-white/10" style={{ backgroundColor: myStats.levelColor }}>
+                          <div className="px-2.5 py-0.5 rounded-full text-xs font-bold text-white shadow-sm border border-white/10" style={{ backgroundColor: myStats.levelColor }}>
                             {myStats.level} Badge
                           </div>
                           <div className="text-sm text-white/50 px-2 border-l border-white/10 [.theme-clear_&]:text-slate-600 [.theme-clear_&]:border-slate-200">
                             {myStats.className}
                           </div>
                           {myStats.attendance_pcent !== undefined && (
-                            <div className="flex items-center gap-3 px-2 border-l border-white/10 shrink-0">
+                            <div className="flex items-center gap-2 px-2 border-l border-white/10 shrink-0">
                               <div className="flex flex-col">
                                 <span className="text-[10px] text-white/40 font-bold uppercase tracking-tight [.theme-clear_&]:text-slate-500">PRESENSI</span>
                                 <div className="flex items-center gap-2">

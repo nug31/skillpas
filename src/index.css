@@ -32,8 +32,8 @@ html.theme-clear {
   --text-muted: #475569;
   /* slate-600 */
   /* Airy/Glassy card look */
-  --card-bg: rgba(255, 255, 255, 0.7);
-  --card-border: rgba(148, 163, 184, 0.2);
+  --card-bg: rgba(255, 255, 255, 0.6);
+  --card-border: rgba(148, 163, 184, 0.15);
 }
 
 html,
@@ -73,7 +73,8 @@ body {
 }
 
 .rounded-xl-2 {
-  border-radius: 18px;
+  border-radius: 14px;
+  /* Reduced from 18px for more professional look */
 }
 
 /* Make previously-white text readable in clear (light) theme */
