@@ -356,6 +356,28 @@ body {
   }
 }
 
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1.05);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 15s ease-in-out infinite;
+}
+
+.glass-card-premium {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(25px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
 /* Custom Scrollbar for RaceTrack */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;

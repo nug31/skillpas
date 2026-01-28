@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { LogIn, User, GraduationCap, Sun, Moon, Instagram, Phone } from 'lucide-react';
 import smkLogo from '../assets/smk-logo.png';
+import loginBg from '../assets/login-bg.png';
+import loginLightBg from '../assets/login-light-bg.png';
 
 export function LoginPage() {
     const { login } = useAuth();
@@ -50,19 +52,28 @@ export function LoginPage() {
 
 
     return (
-        <div className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-300 relative overflow-hidden ${themeClear
-            ? 'bg-gradient-to-br from-slate-100 via-blue-50 to-slate-100'
-            : 'bg-[#050505]'
+        <div className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-500 relative overflow-hidden ${themeClear
+            ? 'bg-slate-50'
+            : 'bg-[#020617]'
             }`}>
+
+            {/* Background Image / Pattern */}
+            <div
+                className={`absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 ${themeClear ? 'opacity-30 scale-105' : 'opacity-40 mix-blend-screen scale-110 animate-pulse-slow'}`}
+                style={{
+                    backgroundImage: `url(${themeClear ? loginLightBg : loginBg})`,
+                    animationDuration: themeClear ? '0s' : '10s'
+                }}
+            />
 
             {/* Abstract Background Blobs (Dark Mode Only) */}
             {!themeClear && (
                 <>
-                    <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-purple-600/20 blur-[120px] animate-pulse" style={{ animationDuration: '4s' }} />
-                    <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-cyan-600/20 blur-[120px] animate-pulse" style={{ animationDuration: '5s' }} />
-                    <div className="absolute top-[40%] left-[40%] w-[300px] h-[300px] rounded-full bg-pink-600/10 blur-[100px]" />
-                    {/* Grid Pattern Overlay */}
-                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
+                    <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-purple-600/10 blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: '4s' }} />
+                    <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-cyan-600/10 blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: '5s' }} />
+                    {/* Noise & Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-black via-transparent to-black opacity-80 z-[1]" />
+                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none z-[2]" />
                 </>
             )}
 
@@ -96,9 +107,9 @@ export function LoginPage() {
                 </div>
 
                 {/* Login Card */}
-                <div className={`backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border transition-all duration-300 ${themeClear
-                    ? 'bg-white border-slate-200 shadow-xl'
-                    : 'bg-black/30 border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.5)]'
+                <div className={`backdrop-blur-3xl rounded-[2.5rem] p-8 lg:p-10 shadow-2xl border transition-all duration-500 ${themeClear
+                    ? 'bg-white/80 border-slate-200 shadow-xl'
+                    : 'bg-black/40 border-white/10 shadow-[0_0_80px_rgba(0,0,0,0.6)] ring-1 ring-white/5'
                     }`}>
 
                     {/* Role Selection */}
