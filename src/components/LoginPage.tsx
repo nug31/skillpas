@@ -59,7 +59,7 @@ export function LoginPage() {
 
             {/* Background Image / Pattern */}
             <div
-                className={`absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 ${themeClear ? 'opacity-30 scale-105' : 'opacity-40 mix-blend-screen scale-110 animate-pulse-slow'}`}
+                className={`absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 ${themeClear ? 'opacity-10 scale-105 saturate-[0.8]' : 'opacity-40 mix-blend-screen scale-110 animate-pulse-slow'}`}
                 style={{
                     backgroundImage: `url(${themeClear ? loginLightBg : loginBg})`,
                     animationDuration: themeClear ? '0s' : '10s'

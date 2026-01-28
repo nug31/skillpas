@@ -41,7 +41,7 @@ export function StudentXPBar({ score, level, levelColor }: StudentXPBarProps) {
                         <div className="text-xs text-[color:var(--text-muted)] font-bold tracking-wider">CURRENT LEVEL</div>
                         <div className="text-lg font-black text-[color:var(--text-primary)] flex items-center gap-2">
                             <span style={{ color: levelColor }}>{level}</span>
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/50 border border-white/10">Lvl {Math.ceil(score / 25)}</span>
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/50 border border-white/10 [.theme-clear_&]:bg-slate-200 [.theme-clear_&]:text-slate-600 [.theme-clear_&]:border-slate-300">Lvl {Math.ceil(score / 25)}</span>
                         </div>
                     </div>
                 </div>
@@ -56,7 +56,7 @@ export function StudentXPBar({ score, level, levelColor }: StudentXPBarProps) {
             </div>
 
             {/* Progress Bar Container */}
-            <div className="h-6 bg-black/20 rounded-full relative overflow-hidden border border-white/5 backdrop-blur-sm">
+            <div className="h-6 bg-black/20 rounded-full relative overflow-hidden border border-white/5 backdrop-blur-sm [.theme-clear_&]:bg-slate-200/50 [.theme-clear_&]:border-slate-300/50">
                 {/* Background Stripes */}
                 <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent)', backgroundSize: '1rem 1rem' }}></div>
 

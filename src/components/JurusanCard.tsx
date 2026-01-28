@@ -56,26 +56,26 @@ export function JurusanCard({ jurusan, onClick, topStudents, titleOverride }: Ju
           <IconComponent className="w-9 h-9 text-white opacity-95 group-hover:scale-110 transition-transform duration-300" />
         </div>
         <div>
-          <h3 className="font-semibold text-lg text-white mb-2 truncate">
+          <h3 className="font-semibold text-lg text-white mb-2 truncate [.theme-clear_&]:text-indigo-900">
             {titleOverride || formatJurusanName(jurusan.nama_jurusan)}
           </h3>
-          <p className="text-sm text-white/80 line-clamp-2">{jurusan.deskripsi}</p>
+          <p className="text-sm text-white/80 line-clamp-2 [.theme-clear_&]:text-slate-600 font-medium">{jurusan.deskripsi}</p>
 
           {/* Top student badge (optional) */}
           <div className="mt-4 w-full">
             {topStudents && topStudents.length > 0 ? (
               <div className="mt-3 w-full">
-                <div className="text-xs text-white/70 mb-1">Top 3</div>
+                <div className="text-xs text-white/70 mb-1 [.theme-clear_&]:text-slate-500 font-bold tracking-wider">TOP STUDENTS</div>
                 <div className="flex flex-col space-y-2">
                   {topStudents.slice(0, 3).map((s, idx) => (
-                    <div key={s.id} className="flex items-center justify-between text-sm text-white/90 bg-gradient-to-r from-white/10 to-transparent theme-clear:from-slate-500/10 rounded-lg p-2 border border-white/6 theme-clear:border-slate-200 shadow-sm">
+                    <div key={s.id} className="flex items-center justify-between text-sm text-white/90 bg-gradient-to-r from-white/10 to-transparent rounded-lg p-2 border border-white/6 shadow-sm [.theme-clear_&]:text-slate-900 [.theme-clear_&]:from-slate-100 [.theme-clear_&]:border-slate-200">
                       <div className="flex items-center gap-2">
                         <div className={`w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full text-black font-semibold text-xs ${idx === 0 ? 'bg-yellow-400' : idx === 1 ? 'bg-gray-300' : 'bg-orange-300'}`}>
                           {idx + 1}
                         </div>
                         <div className="leading-none">
-                          <div className="font-semibold text-sm truncate sm:w-36">{s.nama}</div>
-                          <div className="text-xs text-white/60">Skor {s.skor} — {s.kelas ?? ''}</div>
+                          <div className="font-semibold text-sm truncate sm:w-36 [.theme-clear_&]:text-indigo-950">{s.nama}</div>
+                          <div className="text-xs text-white/60 [.theme-clear_&]:text-slate-500">Skor {s.skor} — {s.kelas ?? ''}</div>
                         </div>
                       </div>
                     </div>
@@ -83,7 +83,7 @@ export function JurusanCard({ jurusan, onClick, topStudents, titleOverride }: Ju
                 </div>
               </div>
             ) : (
-              <div className="text-xs text-white/60 mt-3">Belum ada nilai</div>
+              <div className="text-xs text-white/60 mt-3 [.theme-clear_&]:text-slate-400">Belum ada nilai</div>
             )}
           </div>
         </div>

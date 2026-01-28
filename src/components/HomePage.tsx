@@ -600,15 +600,15 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                         <CheckCircle className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-emerald-300 font-bold text-lg mb-1">Ujian KRS Terjadwal!</h3>
-                        <p className="text-white text-sm">
+                        <h3 className="text-emerald-300 font-bold text-lg mb-1 [.theme-clear_&]:text-emerald-700">Ujian KRS Terjadwal!</h3>
+                        <p className="text-white text-sm [.theme-clear_&]:text-emerald-900">
                           Selamat, KRS kamu telah disetujui penuh oleh HOD.
                         </p>
-                        <div className="mt-3 inline-block px-3 py-1 bg-emerald-500/20 rounded border border-emerald-500/30 text-emerald-300 font-mono font-bold text-sm">
+                        <div className="mt-3 inline-block px-3 py-1 bg-emerald-500/20 rounded border border-emerald-500/30 text-emerald-300 font-mono font-bold text-sm [.theme-clear_&]:text-emerald-700 [.theme-clear_&]:bg-emerald-100/50">
                           📅 {new Date(scheduledExam.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                         </div>
                         {scheduledExam.notes && (
-                          <p className="text-xs text-white/50 mt-2 italic">"{scheduledExam.notes}"</p>
+                          <p className="text-xs text-white/50 mt-2 italic [.theme-clear_&]:text-emerald-600/70">"{scheduledExam.notes}"</p>
                         )}
                       </div>
                     </div>
@@ -654,18 +654,18 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                           <div className="px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm border border-white/10" style={{ backgroundColor: myStats.levelColor }}>
                             {myStats.level} Badge
                           </div>
-                          <div className="text-sm text-white/50 px-2 border-l border-white/10">
+                          <div className="text-sm text-white/50 px-2 border-l border-white/10 [.theme-clear_&]:text-slate-600 [.theme-clear_&]:border-slate-200">
                             {myStats.className}
                           </div>
                           {myStats.attendance_pcent !== undefined && (
                             <div className="flex items-center gap-3 px-2 border-l border-white/10 shrink-0">
                               <div className="flex flex-col">
-                                <span className="text-[10px] text-white/40 font-bold uppercase tracking-tight">PRESENSI</span>
+                                <span className="text-[10px] text-white/40 font-bold uppercase tracking-tight [.theme-clear_&]:text-slate-500">PRESENSI</span>
                                 <div className="flex items-center gap-2">
-                                  <span className={`text-sm font-black ${myStats.attendance_pcent >= 90 ? 'text-emerald-400' : myStats.attendance_pcent >= 75 ? 'text-amber-400' : 'text-red-400'}`}>
+                                  <span className={`text-sm font-black ${myStats.attendance_pcent >= 90 ? 'text-emerald-400 [.theme-clear_&]:text-emerald-600' : myStats.attendance_pcent >= 75 ? 'text-amber-400 [.theme-clear_&]:text-amber-600' : 'text-red-400 [.theme-clear_&]:text-red-600'}`}>
                                     {myStats.attendance_pcent}%
                                   </span>
-                                  <div className="w-12 h-1 bg-white/10 rounded-full overflow-hidden">
+                                  <div className="w-12 h-1 bg-white/10 rounded-full overflow-hidden [.theme-clear_&]:bg-slate-200">
                                     <div
                                       className={`h-full transition-all duration-1000 ${myStats.attendance_pcent >= 90 ? 'bg-emerald-500' : myStats.attendance_pcent >= 75 ? 'bg-amber-500' : 'bg-red-500'}`}
                                       style={{ width: `${myStats.attendance_pcent}%` }}
@@ -677,19 +677,19 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                               <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
                                 <div className="flex items-center gap-1">
                                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                                  <span className="text-[10px] font-bold text-white/60">{myStats.masuk} <span className="font-normal opacity-50">M</span></span>
+                                  <span className="text-[10px] font-bold text-white/60 [.theme-clear_&]:text-slate-700">{myStats.masuk} <span className="font-normal opacity-50 [.theme-clear_&]:text-slate-400">M</span></span>
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                                  <span className="text-[10px] font-bold text-white/60">{myStats.izin} <span className="font-normal opacity-50">I</span></span>
+                                  <span className="text-[10px] font-bold text-white/60 [.theme-clear_&]:text-slate-700">{myStats.izin} <span className="font-normal opacity-50 [.theme-clear_&]:text-slate-400">I</span></span>
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                                  <span className="text-[10px] font-bold text-white/60">{myStats.sakit} <span className="font-normal opacity-50">S</span></span>
+                                  <span className="text-[10px] font-bold text-white/60 [.theme-clear_&]:text-slate-700">{myStats.sakit} <span className="font-normal opacity-50 [.theme-clear_&]:text-slate-400">S</span></span>
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
-                                  <span className="text-[10px] font-bold text-white/60">{myStats.alfa} <span className="font-normal opacity-50">A</span></span>
+                                  <span className="text-[10px] font-bold text-white/60 [.theme-clear_&]:text-slate-700">{myStats.alfa} <span className="font-normal opacity-50 [.theme-clear_&]:text-slate-400">A</span></span>
                                 </div>
                               </div>
                             </div>

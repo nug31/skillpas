@@ -24,7 +24,7 @@ export function CompetencyRadar({ score }: CompetencyRadarProps) {
         <div className="w-full h-[300px] relative">
             <ResponsiveContainer width="100%" height="100%">
                 <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
-                    <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                    <PolarGrid stroke="var(--card-border)" />
                     <PolarAngleAxis
                         dataKey="subject"
                         tick={{ fill: 'var(--text-muted)', fontSize: 10, fontWeight: 'bold' }}
@@ -42,9 +42,9 @@ export function CompetencyRadar({ score }: CompetencyRadarProps) {
             </ResponsiveContainer>
 
             {/* Overlay Stat - "Industry Ready" */}
-            <div className="absolute top-0 right-0 p-3 bg-white/5 backdrop-blur-md rounded-xl border border-white/10">
-                <div className="text-[10px] text-[color:var(--text-muted)] uppercase tracking-widest text-center">Industry Ready</div>
-                <div className="text-2xl font-black text-center text-green-400">{Math.round(score * 0.95)}%</div>
+            <div className="absolute top-0 right-0 p-3 card-glass rounded-xl !bg-white/10 [.theme-clear_&]:!bg-white/30">
+                <div className="text-[10px] text-[color:var(--text-muted)] uppercase tracking-widest text-center font-bold">Industry Ready</div>
+                <div className="text-2xl font-black text-center text-green-400 [.theme-clear_&]:text-emerald-600">{Math.round(score * 0.95)}%</div>
             </div>
         </div>
     );
