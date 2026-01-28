@@ -219,7 +219,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.9, opacity: 0 }}
-                    className="w-full max-w-xl bg-[#0f172a] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+                    className="w-full max-w-xl bg-[#0f172a] [.theme-clear_&]:bg-slate-50 border border-white/10 [.theme-clear_&]:border-slate-200 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
                 >
                     {/* Header */}
                     <div className="p-6 bg-gradient-to-r from-indigo-600 to-blue-600 relative overflow-hidden shrink-0">
@@ -263,9 +263,9 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                                     submission.status === 'scheduled' ? 'bg-emerald-500' :
                                                         'bg-blue-500'
                                                     }`} />
-                                                <span className="text-xs font-bold uppercase tracking-wider text-white/70">Status KRS</span>
+                                                <span className="text-xs font-bold uppercase tracking-wider text-white/70 [.theme-clear_&]:text-slate-500">Status KRS</span>
                                             </div>
-                                            <span className="text-xs font-black text-white px-2 py-0.5 bg-white/10 rounded">
+                                            <span className="text-xs font-black text-white px-2 py-0.5 bg-white/10 rounded [.theme-clear_&]:bg-slate-200 [.theme-clear_&]:text-slate-800">
                                                 {getStatusLabel(submission.status)}
                                             </span>
                                         </div>
@@ -275,16 +275,16 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                             </div>
                                         )}
                                         {submission.notes && (
-                                            <div className="text-xs text-white/50 italic">
+                                            <div className="text-xs text-white/50 italic [.theme-clear_&]:text-slate-500">
                                                 Catatan: {submission.notes}
                                             </div>
                                         )}
                                     </div>
                                 )}
 
-                                <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 flex gap-3">
+                                <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 flex gap-3 [.theme-clear_&]:bg-blue-50 [.theme-clear_&]:border-blue-200">
                                     <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
-                                    <p className="text-sm text-blue-200 leading-relaxed">
+                                    <p className="text-sm text-blue-200 leading-relaxed [.theme-clear_&]:text-blue-800 font-medium">
                                         Pilih kriteria kompetensi di <strong>Level Kamu</strong> untuk melanjutkan rencana belajar. ({selectedKRS.length}/10)
                                     </p>
                                 </div>
@@ -302,13 +302,13 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                                 >
                                                     {level.badge_name.toUpperCase()}
                                                 </div>
-                                                <h3 className="text-white font-bold text-lg truncate">{level.nama_level}</h3>
+                                                <h3 className="text-white font-bold text-lg truncate [.theme-clear_&]:text-slate-900">{level.nama_level}</h3>
                                                 {isCurrentLevel && (
-                                                    <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded border border-emerald-500/30 whitespace-nowrap">
+                                                    <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded border border-emerald-500/30 whitespace-nowrap [.theme-clear_&]:bg-emerald-100 [.theme-clear_&]:text-emerald-700 [.theme-clear_&]:border-emerald-200">
                                                         LEVEL KAMU 📍
                                                     </span>
                                                 )}
-                                                <div className="flex-1 h-px bg-white/10"></div>
+                                                <div className="flex-1 h-px bg-white/10 [.theme-clear_&]:bg-slate-200"></div>
                                             </div>
 
                                             <div className="space-y-2">
@@ -321,7 +321,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                                         const parts = cleanText.split(/(\*\*.*?\*\*)/g);
                                                         return parts.map((part, index) => {
                                                             if (part.startsWith('**') && part.endsWith('**')) {
-                                                                return <strong key={index} className="font-black text-white">{part.slice(2, -2)}</strong>;
+                                                                return <strong key={index} className="font-black text-white [.theme-clear_&]:text-indigo-950">{part.slice(2, -2)}</strong>;
                                                             }
                                                             return (
                                                                 <span key={index}>
@@ -350,10 +350,10 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                                                         if (hasSubs) toggleGroup(groupKey);
                                                                         else toggleKRS(group.main, level.id);
                                                                     }}
-                                                                    className={`flex items-start justify-between gap-3 p-3.5 rounded-xl border transition-all ${isLocked ? 'cursor-not-allowed bg-white/5 border-white/5' : 'cursor-pointer group'
+                                                                    className={`flex items-start justify-between gap-3 p-3.5 rounded-xl border transition-all ${isLocked ? 'cursor-not-allowed bg-white/5 border-white/5 [.theme-clear_&]:bg-slate-100 [.theme-clear_&]:border-slate-200' : 'cursor-pointer group'
                                                                         } ${isSelected
-                                                                            ? 'bg-indigo-500/20 border-indigo-500 shadow-[inset_0_0_10px_rgba(99,102,241,0.2)]'
-                                                                            : !isLocked ? 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20' : ''
+                                                                            ? 'bg-indigo-500/20 border-indigo-500 shadow-[inset_0_0_10px_rgba(99,102,241,0.2)] [.theme-clear_&]:bg-indigo-50/80'
+                                                                            : !isLocked ? 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20 [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200' : ''
                                                                         }`}
                                                                 >
                                                                     <div className="flex gap-3">
@@ -366,7 +366,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                                                                 </div>
                                                                             )}
                                                                         </div>
-                                                                        <span className={`text-xs sm:text-sm transition-colors ${isSelected ? 'text-white font-black' : 'text-gray-400 group-hover:text-gray-200'}`}>
+                                                                        <span className={`text-xs sm:text-sm transition-colors ${isSelected ? 'text-white font-black [.theme-clear_&]:text-indigo-950' : 'text-gray-400 group-hover:text-gray-200 [.theme-clear_&]:text-slate-600 [.theme-clear_&]:group-hover:text-slate-900'}`}>
                                                                             {renderBold(group.main)}
                                                                         </span>
                                                                     </div>
@@ -388,16 +388,16 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                                                                     <div
                                                                                         key={sIdx}
                                                                                         onClick={() => toggleKRS(sub, level.id)}
-                                                                                        className={`flex items-start gap-3 p-3 rounded-xl border transition-all ${isLocked ? 'cursor-not-allowed bg-white/5 border-white/5' : 'cursor-pointer group'
+                                                                                        className={`flex items-start gap-3 p-3 rounded-xl border transition-all ${isLocked ? 'cursor-not-allowed bg-white/5 border-white/5 [.theme-clear_&]:bg-slate-100 [.theme-clear_&]:border-slate-200' : 'cursor-pointer group'
                                                                                             } ${isSubSelected
-                                                                                                ? 'bg-emerald-500/10 border-emerald-500/50'
-                                                                                                : !isLocked ? 'bg-white/5 border-white/5 hover:bg-white/10' : ''
+                                                                                                ? 'bg-emerald-500/10 border-emerald-500/50 [.theme-clear_&]:bg-emerald-50 [.theme-clear_&]:border-emerald-300'
+                                                                                                : !isLocked ? 'bg-white/5 border-white/5 hover:bg-white/10 [.theme-clear_&]:bg-white/80 [.theme-clear_&]:border-slate-200' : ''
                                                                                             }`}
                                                                                     >
                                                                                         <div className={`mt-0.5 p-1 rounded-full border shrink-0 transition-all ${isSubSelected ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-emerald-500/20 text-emerald-400/50'}`}>
                                                                                             {isSubSelected ? <Check className="w-2.5 h-2.5" /> : <Plus className="w-2.5 h-2.5" />}
                                                                                         </div>
-                                                                                        <span className={`text-xs transition-colors ${isSubSelected ? 'text-white font-medium' : 'text-gray-400 group-hover:text-gray-200'}`}>
+                                                                                        <span className={`text-xs transition-colors ${isSubSelected ? 'text-white font-medium [.theme-clear_&]:text-slate-900' : 'text-gray-400 group-hover:text-gray-200 [.theme-clear_&]:text-slate-500 [.theme-clear_&]:group-hover:text-slate-700'}`}>
                                                                                             {renderBold(sub, true)}
                                                                                         </span>
                                                                                     </div>
@@ -422,7 +422,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                             <Trophy className="w-5 h-5 text-white" />
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-bold text-white">🎯 Tantangan Global</h3>
+                                            <h3 className="text-lg font-bold text-white [.theme-clear_&]:text-slate-900">🎯 Tantangan Global</h3>
                                         </div>
                                     </div>
 
@@ -430,17 +430,17 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                         {specialMissions.map((mission) => (
                                             <div
                                                 key={mission.id}
-                                                className="relative p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 hover:border-purple-500/40 transition-all group cursor-pointer"
+                                                className="relative p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 hover:border-purple-500/40 transition-all group cursor-pointer [.theme-clear_&]:bg-purple-50 [.theme-clear_&]:border-purple-100"
                                             >
                                                 <div className="flex items-start gap-4">
                                                     <div className={`p-2 rounded-xl shadow-lg ${mission.difficulty === 'hard' ? 'bg-red-500' : mission.difficulty === 'medium' ? 'bg-amber-500' : 'bg-emerald-500'} text-white`}>
                                                         {mission.icon}
                                                     </div>
                                                     <div className="flex-1">
-                                                        <h4 className="font-bold text-white text-sm">{mission.title}</h4>
-                                                        <p className="text-xs text-white/50">{mission.description}</p>
+                                                        <h4 className="font-bold text-white text-sm [.theme-clear_&]:text-slate-800">{mission.title}</h4>
+                                                        <p className="text-xs text-white/50 [.theme-clear_&]:text-slate-500">{mission.description}</p>
                                                     </div>
-                                                    <div className="bg-yellow-400/10 text-yellow-400 px-2 py-1 rounded text-[10px] font-black">+{mission.xpReward} XP</div>
+                                                    <div className="bg-yellow-400/10 text-yellow-400 px-2 py-1 rounded text-[10px] font-black [.theme-clear_&]:bg-amber-100 [.theme-clear_&]:text-amber-700">+{mission.xpReward} XP</div>
                                                 </div>
                                             </div>
                                         ))}
@@ -451,10 +451,10 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                     </div>
 
                     {/* Footer */}
-                    <div className="p-6 border-t border-white/5 bg-black/20 shrink-0 flex gap-3">
+                    <div className="p-6 border-t border-white/5 bg-black/20 shrink-0 flex gap-3 [.theme-clear_&]:bg-slate-100 [.theme-clear_&]:border-slate-200">
                         <button
                             onClick={onClose}
-                            className="flex-1 py-3 bg-white/5 text-white rounded-xl font-bold hover:bg-white/10 transition-all"
+                            className="flex-1 py-3 bg-white/5 text-white rounded-xl font-bold hover:bg-white/10 transition-all [.theme-clear_&]:bg-white [.theme-clear_&]:text-slate-700 [.theme-clear_&]:border [.theme-clear_&]:border-slate-300 [.theme-clear_&]:hover:bg-slate-50"
                         >
                             Tutup
                         </button>
@@ -463,7 +463,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                             disabled={!!(submission && !['rejected', 'scheduled', 'completed'].includes(submission.status))}
                             className={`flex-[2] py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${submission && !['rejected', 'scheduled', 'completed'].includes(submission.status)
                                 ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
-                                : 'bg-white text-indigo-900 hover:bg-gray-100 active:scale-95'
+                                : 'bg-white text-indigo-900 hover:bg-gray-100 active:scale-95 [.theme-clear_&]:bg-indigo-600 [.theme-clear_&]:text-white [.theme-clear_&]:hover:bg-indigo-700'
                                 }`}
                         >
                             <span>{submission ? 'Update Rencana' : 'Ajukan KRS'}</span>

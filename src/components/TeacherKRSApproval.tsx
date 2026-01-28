@@ -134,35 +134,35 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
     };
 
     return (
-        <div className="min-h-screen bg-[#020617] text-slate-200 p-4 sm:p-8">
+        <div className="min-h-screen bg-[#020617] [.theme-clear_&]:bg-slate-50 text-slate-200 [.theme-clear_&]:text-slate-800 p-4 sm:p-8">
             <div className="max-w-6xl mx-auto space-y-8">
                 <header className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <button
                             onClick={onBack}
-                            className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                            className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors [.theme-clear_&]:bg-white [.theme-clear_&]:border [.theme-clear_&]:border-slate-200"
                         >
-                            <ChevronLeft className="w-5 h-5" />
+                            <ChevronLeft className="w-5 h-5 [.theme-clear_&]:text-slate-700" />
                         </button>
                         <div>
-                            <h1 className="text-3xl font-black tracking-tight text-white uppercase">Persetujuan KRS</h1>
-                            <p className="text-slate-400 text-sm">Review dan verifikasi rencana belajar siswa</p>
+                            <h1 className="text-3xl font-black tracking-tight text-white uppercase [.theme-clear_&]:text-indigo-950">Persetujuan KRS</h1>
+                            <p className="text-slate-400 text-sm [.theme-clear_&]:text-slate-500">Review dan verifikasi rencana belajar siswa</p>
                         </div>
                     </div>
-                    <div className="px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full">
-                        <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest">
+                    <div className="px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full [.theme-clear_&]:bg-indigo-50 [.theme-clear_&]:border-indigo-200">
+                        <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest [.theme-clear_&]:text-indigo-700">
                             Role: {userRole.replace('_', ' ')}
                         </span>
                     </div>
                 </header>
 
                 {/* Tab Navigation */}
-                <div className="flex bg-slate-900 border border-slate-800 p-1.5 rounded-2xl w-fit">
+                <div className="flex bg-slate-900 border border-slate-800 p-1.5 rounded-2xl w-fit [.theme-clear_&]:bg-slate-200/50 [.theme-clear_&]:border-slate-300">
                     <button
                         onClick={() => setActiveTab('pending')}
                         className={`px-8 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeTab === 'pending'
                             ? 'bg-indigo-600 text-white shadow-lg'
-                            : 'text-slate-400 hover:text-white'
+                            : 'text-slate-400 hover:text-white [.theme-clear_&]:text-slate-500 [.theme-clear_&]:hover:text-slate-900'
                             }`}
                     >
                         <Clock className="w-4 h-4" />
@@ -173,7 +173,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                             onClick={() => setActiveTab('grading')}
                             className={`px-8 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeTab === 'grading'
                                 ? 'bg-indigo-600 text-white shadow-lg'
-                                : 'text-slate-400 hover:text-white'
+                                : 'text-slate-400 hover:text-white [.theme-clear_&]:text-slate-500 [.theme-clear_&]:hover:text-slate-900'
                                 }`}
                         >
                             <Award className="w-4 h-4" />
@@ -187,27 +187,27 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-b-indigo-500 font-bold text-indigo-500"></div>
                     </div>
                 ) : submissions.length === 0 ? (
-                    <div className="text-center py-20 bg-slate-900/50 border border-slate-800 rounded-3xl">
-                        <Check className="w-16 h-16 text-slate-700 mx-auto mb-4" />
-                        <h2 className="text-xl font-bold text-slate-500">
+                    <div className="text-center py-20 bg-slate-900/50 border border-slate-800 rounded-3xl [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200">
+                        <Check className="w-16 h-16 text-slate-700 mx-auto mb-4 [.theme-clear_&]:text-slate-300" />
+                        <h2 className="text-xl font-bold text-slate-500 [.theme-clear_&]:text-slate-400">
                             {activeTab === 'pending' ? 'Tidak ada pengajuan KRS baru' : 'Tidak ada ujian yang perlu dinilai'}
                         </h2>
-                        <p className="text-slate-600">Terima kasih atas dedikasi Anda.</p>
+                        <p className="text-slate-600 [.theme-clear_&]:text-slate-400">Terima kasih atas dedikasi Anda.</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {submissions.map((sub: KRSSubmission) => (
                             <div
                                 key={sub.id}
-                                className="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-indigo-500/50 transition-all group relative overflow-hidden"
+                                className="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-indigo-500/50 transition-all group relative overflow-hidden [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-sm"
                             >
                                 <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full -mr-12 -mt-12 group-hover:bg-indigo-500/10 transition-colors"></div>
 
                                 <div className="flex flex-col h-full space-y-4">
                                     <div className="flex justify-between items-start">
                                         <div>
-                                            <div className="text-xs font-black text-indigo-400 uppercase mb-1">{sub.kelas}</div>
-                                            <h3 className="text-xl font-bold text-white truncate">{sub.siswa_nama}</h3>
+                                            <div className="text-xs font-black text-indigo-400 uppercase mb-1 [.theme-clear_&]:text-indigo-600">{sub.kelas}</div>
+                                            <h3 className="text-xl font-bold text-white truncate [.theme-clear_&]:text-slate-900">{sub.siswa_nama}</h3>
                                         </div>
                                         {sub.status === 'scheduled' && (
                                             <div className="flex flex-col items-end gap-2">
@@ -234,12 +234,12 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                     </div>
 
                                     <div className="flex-1">
-                                        <div className="text-xs text-slate-500 font-bold uppercase mb-2">Kompetensi yang dipilih:</div>
+                                        <div className="text-xs text-slate-500 font-bold uppercase mb-2 [.theme-clear_&]:text-slate-400">Kompetensi yang dipilih:</div>
                                         <ul className="space-y-1">
                                             {sub.items.map((item: string, i: number) => {
                                                 const subItem = isSubItem(item);
                                                 return (
-                                                    <li key={i} className={`text-sm flex gap-2 ${subItem ? 'ml-4 text-slate-400' : 'text-slate-300'}`}>
+                                                    <li key={i} className={`text-sm flex gap-2 ${subItem ? 'ml-4 text-slate-400 [.theme-clear_&]:text-slate-500' : 'text-slate-300 [.theme-clear_&]:text-slate-700'}`}>
                                                         <span className="text-indigo-500 mt-1">{subItem ? '└' : '•'}</span>
                                                         {subItem ? cleanSubItemText(item) : item}
                                                     </li>

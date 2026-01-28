@@ -30,13 +30,13 @@ export function GradingModal({ submission, onClose, onConfirm, initialScore }: G
 
     return (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-            <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden animate-scaleIn">
-                <div className="p-6 border-b border-slate-800 flex justify-between items-center">
+            <div className="w-full max-w-md bg-slate-900 [.theme-clear_&]:bg-slate-50 border border-slate-800 [.theme-clear_&]:border-slate-200 rounded-3xl shadow-2xl overflow-hidden animate-scaleIn">
+                <div className="p-6 border-b border-slate-800 [.theme-clear_&]:border-slate-200 flex justify-between items-center">
                     <div>
-                        <h2 className="text-xl font-bold text-white uppercase tracking-tight">Input Nilai Ujian</h2>
-                        <p className="text-xs text-slate-400">{submission.siswa_nama} — {submission.kelas}</p>
+                        <h2 className="text-xl font-bold text-white uppercase tracking-tight [.theme-clear_&]:text-indigo-950">Input Nilai Ujian</h2>
+                        <p className="text-xs text-slate-400 [.theme-clear_&]:text-slate-500">{submission.siswa_nama} — {submission.kelas}</p>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors text-slate-400">
+                    <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors text-slate-400 [.theme-clear_&]:text-slate-600 [.theme-clear_&]:hover:bg-slate-100">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -44,7 +44,7 @@ export function GradingModal({ submission, onClose, onConfirm, initialScore }: G
                 <div className="p-6 space-y-6">
                     {/* Score Input */}
                     <div className="space-y-3">
-                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 [.theme-clear_&]:text-slate-600">
                             <Award className="w-4 h-4 text-yellow-500" /> Skor XP (0 - 100)
                         </label>
                         <input
@@ -53,19 +53,19 @@ export function GradingModal({ submission, onClose, onConfirm, initialScore }: G
                             max="100"
                             value={score}
                             onChange={(e) => setScore(Number(e.target.value))}
-                            className="w-full px-4 py-4 bg-slate-950 border border-slate-800 rounded-2xl text-3xl font-black text-center text-white focus:border-indigo-500 transition-all outline-none"
+                            className="w-full px-4 py-4 bg-slate-950 border border-slate-800 rounded-2xl text-3xl font-black text-center text-white focus:border-indigo-500 transition-all outline-none [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-300 [.theme-clear_&]:text-slate-900"
                         />
                     </div>
 
                     {/* Result Selection */}
                     <div className="space-y-3">
-                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Hasil Keputusan</label>
+                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest [.theme-clear_&]:text-slate-600">Hasil Keputusan</label>
                         <div className="grid grid-cols-2 gap-3">
                             <button
                                 onClick={() => setResult('Lulus')}
                                 className={`py-4 rounded-2xl border-2 font-bold transition-all flex flex-col items-center gap-1 ${result === 'Lulus'
                                     ? 'bg-emerald-500/10 border-emerald-500 text-emerald-500'
-                                    : 'bg-slate-950 border-slate-800 text-slate-500 grayscale'
+                                    : 'bg-slate-950 border-slate-800 text-slate-500 grayscale [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200'
                                     }`}
                             >
                                 <CheckCircle className="w-6 h-6" />
@@ -75,7 +75,7 @@ export function GradingModal({ submission, onClose, onConfirm, initialScore }: G
                                 onClick={() => setResult('Tidak Lulus')}
                                 className={`py-4 rounded-2xl border-2 font-bold transition-all flex flex-col items-center gap-1 ${result === 'Tidak Lulus'
                                     ? 'bg-red-500/10 border-red-500 text-red-500'
-                                    : 'bg-slate-950 border-slate-800 text-slate-500 grayscale'
+                                    : 'bg-slate-950 border-slate-800 text-slate-500 grayscale [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200'
                                     }`}
                             >
                                 <AlertTriangle className="w-6 h-6" />
@@ -86,22 +86,22 @@ export function GradingModal({ submission, onClose, onConfirm, initialScore }: G
 
                     {/* Notes */}
                     <div className="space-y-3">
-                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                        <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 [.theme-clear_&]:text-slate-600">
                             <MessageSquare className="w-4 h-4 text-indigo-400" /> Catatan Feedback
                         </label>
                         <textarea
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
                             placeholder="Contoh: Sangat baik dalam perakitan, perlu diperdalam di bagian troubleshooting."
-                            className="w-full h-24 px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:border-indigo-500 transition-all outline-none resize-none text-sm"
+                            className="w-full h-24 px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:border-indigo-500 transition-all outline-none resize-none text-sm [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-300 [.theme-clear_&]:text-slate-900"
                         />
                     </div>
                 </div>
 
-                <div className="p-6 bg-slate-950/50 border-t border-slate-800 flex gap-4">
+                <div className="p-6 bg-slate-950/50 border-t border-slate-800 flex gap-4 [.theme-clear_&]:bg-slate-100 [.theme-clear_&]:border-slate-200">
                     <button
                         onClick={onClose}
-                        className="flex-1 py-4 text-slate-400 font-bold hover:text-white transition-colors"
+                        className="flex-1 py-4 text-slate-400 font-bold hover:text-white transition-colors [.theme-clear_&]:text-slate-600 [.theme-clear_&]:hover:text-slate-900"
                     >
                         Batal
                     </button>
