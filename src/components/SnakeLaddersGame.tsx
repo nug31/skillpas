@@ -86,7 +86,7 @@ export function SnakeLaddersGame({ participants }: SnakeLaddersGameProps) {
     }, [participants]);
 
     return (
-        <div className="card-glass p-4 sm:p-8 rounded-3xl shadow-2xl relative overflow-hidden backdrop-blur-xl border border-white/10">
+        <div className="card-glass p-4 sm:p-8 rounded-3xl shadow-2xl relative overflow-hidden backdrop-blur-xl border border-white/10 [.theme-clear_&]:bg-white/40 [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-sm">
             <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 via-transparent to-emerald-500/5 pointer-events-none" />
 
             <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 px-2">
@@ -94,7 +94,7 @@ export function SnakeLaddersGame({ participants }: SnakeLaddersGameProps) {
                     <h2 className="text-3xl font-black bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent uppercase tracking-tight">
                         Skill Quest
                     </h2>
-                    <p className="text-slate-400 text-sm font-medium">Ular Tangga Kompetensi</p>
+                    <p className="text-slate-400 text-sm font-medium [.theme-clear_&]:text-slate-600">Ular Tangga Kompetensi</p>
                 </div>
                 <div className="flex gap-4 text-xs font-bold uppercase tracking-wider">
                     <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -107,11 +107,11 @@ export function SnakeLaddersGame({ participants }: SnakeLaddersGameProps) {
                 </div>
             </div>
 
-            <div className="relative aspect-square w-full max-w-[600px] mx-auto bg-slate-900/50 rounded-2xl border-4 border-slate-800 shadow-[20px_20px_60px_rgba(0,0,0,0.5)] overflow-hidden">
+            <div className="relative aspect-square w-full max-w-[600px] mx-auto bg-slate-900/50 rounded-2xl border-4 border-slate-800 shadow-[20px_20px_60px_rgba(0,0,0,0.5)] overflow-hidden [.theme-clear_&]:bg-slate-50 [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-lg">
                 {/* Board Background Pattern */}
-                <div className="absolute inset-0 opacity-10 pointer-events-none"
+                <div className="absolute inset-0 opacity-10 pointer-events-none [.theme-clear_&]:opacity-[0.05]"
                     style={{
-                        backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
+                        backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)`,
                         backgroundSize: '20px 20px'
                     }}
                 />
@@ -125,14 +125,14 @@ export function SnakeLaddersGame({ participants }: SnakeLaddersGameProps) {
                         return (
                             <div
                                 key={num}
-                                className={`relative border border-white/[0.03] flex items-center justify-center transition-colors
+                                className={`relative border border-white/[0.03] flex items-center justify-center transition-colors [.theme-clear_&]:border-slate-900/[0.05]
                                     ${num === 100 ? 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20' : ''}
                                     ${num === 1 ? 'bg-indigo-500/10' : ''}
-                                    hover:bg-white/[0.02]
+                                    hover:bg-white/[0.02] [.theme-clear_&]:hover:bg-black/[0.02]
                                 `}
                             >
                                 <span className={`absolute top-1 left-1.5 text-[8px] sm:text-[10px] font-black tracking-tighter select-none pointer-events-none
-                                    ${isSpecial ? 'text-white opacity-100' : 'text-slate-600 opacity-40'}
+                                    ${isSpecial ? 'text-white opacity-100 [.theme-clear_&]:text-indigo-950' : 'text-slate-600 opacity-40'}
                                 `}>
                                     {num === 100 ? 'FINISH' : num === 1 ? 'START' : num}
                                 </span>
@@ -161,7 +161,7 @@ export function SnakeLaddersGame({ participants }: SnakeLaddersGameProps) {
 
                                                 {/* Tooltip */}
                                                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-[100] pointer-events-none">
-                                                    <div className="bg-slate-800 text-white text-[10px] py-1 px-2 rounded shadow-2xl border border-white/10 whitespace-nowrap">
+                                                    <div className="bg-slate-800 text-white text-[10px] py-1 px-2 rounded shadow-2xl border border-white/10 whitespace-nowrap [.theme-clear_&]:bg-white [.theme-clear_&]:text-slate-900 [.theme-clear_&]:border-slate-200">
                                                         {p.name} ({p.score} XP)
                                                     </div>
                                                 </div>
@@ -169,7 +169,7 @@ export function SnakeLaddersGame({ participants }: SnakeLaddersGameProps) {
                                         ))}
                                     </AnimatePresence>
                                     {playersHere.length > 3 && (
-                                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-700/80 backdrop-blur-md text-white flex items-center justify-center text-[8px] font-bold border border-white/50 z-20">
+                                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-700/80 backdrop-blur-md text-white flex items-center justify-center text-[8px] font-bold border border-white/50 z-20 [.theme-clear_&]:bg-slate-100/90 [.theme-clear_&]:text-slate-700 [.theme-clear_&]:border-slate-300">
                                             +{playersHere.length - 3}
                                         </div>
                                     )}
