@@ -160,7 +160,7 @@ export function SnakeLaddersGame({ participants }: SnakeLaddersGameProps) {
                                                 </div>
 
                                                 {/* Tooltip */}
-                                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-[100] pointer-events-none">
+                                                <div className={`absolute ${num > 90 ? 'top-full mt-2' : 'bottom-full mb-2'} left-1/2 -translate-x-1/2 hidden group-hover:block z-[100] pointer-events-none`}>
                                                     <div className="bg-slate-800 text-white text-[10px] py-1 px-2 rounded shadow-2xl border border-white/10 whitespace-nowrap [.theme-clear_&]:bg-white [.theme-clear_&]:text-slate-900 [.theme-clear_&]:border-slate-200">
                                                         {p.name} ({p.score} XP)
                                                     </div>
