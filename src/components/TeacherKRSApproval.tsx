@@ -285,7 +285,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
             {/* Review Modal */}
             {selectedSub && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-                    <div className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                    <div className="w-full max-w-lg bg-slate-900 [.theme-clear_&]:bg-slate-50 border border-slate-800 [.theme-clear_&]:border-slate-200 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                         <div className="p-8 border-b border-slate-800 bg-gradient-to-r from-indigo-600 to-blue-600 text-white">
                             <div className="flex justify-between items-start">
                                 <div>
@@ -316,14 +316,14 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                         if (!trimmed) return null;
                                         const subItem = isSubItem(trimmed);
                                         return (
-                                            <div key={i} className={`p-3 bg-slate-800/50 border border-slate-800 rounded-xl text-sm ${subItem ? 'ml-6' : ''}`}>
+                                            <div key={i} className={`p-3 bg-slate-800/50 border border-slate-800 rounded-xl text-sm ${subItem ? 'ml-6' : ''} [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200`}>
                                                 {subItem ? (
                                                     <div className="flex gap-2">
                                                         <span className="text-indigo-500">└</span>
-                                                        <span className="text-slate-300">{cleanSubItemText(trimmed)}</span>
+                                                        <span className="text-slate-300 [.theme-clear_&]:text-slate-600 font-medium">{cleanSubItemText(trimmed)}</span>
                                                     </div>
                                                 ) : (
-                                                    <span className="text-white font-bold">{trimmed.replace(/\*\*/g, '')}</span>
+                                                    <span className="text-white font-bold [.theme-clear_&]:text-indigo-950">{trimmed.replace(/\*\*/g, '')}</span>
                                                 )}
                                             </div>
                                         );
@@ -333,33 +333,33 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
 
                             {userRole === 'hod' && (
                                 <div className="space-y-3">
-                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 [.theme-clear_&]:text-slate-500">
                                         <Calendar className="w-4 h-4 text-emerald-400" /> Tentukan Jadwal Ujian (Wajib)
                                     </label>
                                     <input
                                         type="date"
                                         value={examDate}
                                         onChange={(e) => setExamDate(e.target.value)}
-                                        className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:border-indigo-500 transition-all outline-none"
+                                        className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:border-indigo-500 transition-all outline-none [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-300 [.theme-clear_&]:text-slate-900"
                                     />
                                 </div>
                             )}
 
                             <div className="space-y-3">
-                                <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 [.theme-clear_&]:text-slate-500">
                                     <MessageSquare className="w-4 h-4 text-indigo-400" /> Catatan untuk Siswa (Opsional)
                                 </label>
                                 <textarea
                                     value={notes}
                                     onChange={(e) => setNotes(e.target.value)}
                                     placeholder="Beri masukan atau alasan penolakan..."
-                                    className="w-full h-24 px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:border-indigo-500 transition-all outline-none resize-none text-sm"
+                                    className="w-full h-24 px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:border-indigo-500 transition-all outline-none resize-none text-sm [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-300 [.theme-clear_&]:text-slate-900"
                                 />
                             </div>
                         </div>
 
                         {userRole !== 'wali_kelas' && (
-                            <div className="p-8 border-t border-slate-800 bg-slate-950/50 flex gap-4">
+                            <div className="p-8 border-t border-slate-800 bg-slate-950/50 flex gap-4 [.theme-clear_&]:bg-slate-100/50 [.theme-clear_&]:border-slate-200">
                                 <button
                                     onClick={() => handleReject(selectedSub.id)}
                                     className="flex-1 py-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl font-bold hover:bg-red-500/20 transition-all"
