@@ -535,25 +535,25 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
           {/* Header section remains same */}
           <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 items-center">
             <div className="space-y-6 animate-fadeInUp">
-              <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-gradient-to-r from-yellow-500 to-amber-600 shadow-md-2">
+              <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 shadow-md-2">
                 <GraduationCap className="w-5 h-5 text-white" />
                 <span className="text-white text-xs font-semibold">DASHBOARD</span>
               </div>
 
               <div className="space-y-3">
                 <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight tracking-tight">
-                  <span className="bg-gradient-to-r from-white via-yellow-100 to-amber-200 bg-clip-text text-transparent drop-shadow-2xl [text-shadow:_0_4px_20px_rgba(234,179,8,0.3)] [.theme-clear_&]:from-amber-900 [.theme-clear_&]:via-yellow-800 [.theme-clear_&]:to-amber-900 [.theme-clear_&]:[text-shadow:_0_2px_10px_rgba(180,83,9,0.2)]">
+                  <span className="bg-gradient-to-r from-white via-emerald-100 to-cyan-200 bg-clip-text text-transparent drop-shadow-2xl [text-shadow:_0_4px_20px_rgba(16,185,129,0.3)] [.theme-clear_&]:from-emerald-900 [.theme-clear_&]:via-teal-800 [.theme-clear_&]:to-emerald-900 [.theme-clear_&]:[text-shadow:_0_2px_10px_rgba(5,150,105,0.2)]">
                     SKILL PASSPORT
                   </span>
                 </h1>
                 <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-widest">
-                  <span className="bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent [.theme-clear_&]:from-amber-700 [.theme-clear_&]:via-yellow-600 [.theme-clear_&]:to-amber-700">
+                  <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent [.theme-clear_&]:from-emerald-700 [.theme-clear_&]:via-teal-600 [.theme-clear_&]:to-emerald-700">
                     SMK Mitra Industri
                   </span>
                 </h2>
-                <div className="w-32 h-1 bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-400 rounded-full mt-4 mb-6 animate-pulse [.theme-clear_&]:from-yellow-500 [.theme-clear_&]:via-orange-500 [.theme-clear_&]:to-pink-500"></div>
+                <div className="w-32 h-1 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 rounded-full mt-4 mb-6 animate-pulse [.theme-clear_&]:from-emerald-500 [.theme-clear_&]:via-teal-500 [.theme-clear_&]:to-cyan-500"></div>
                 <p className="text-lg sm:text-xl font-medium tracking-wide">
-                  <span className="bg-gradient-to-r from-yellow-300 to-amber-300 bg-clip-text text-transparent [.theme-clear_&]:from-amber-600 [.theme-clear_&]:to-amber-800">
+                  <span className="bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent [.theme-clear_&]:from-emerald-600 [.theme-clear_&]:to-emerald-800">
                     Menuju Vokasi Berstandar Industri & Terverifikasi
                   </span>
                 </p>
@@ -581,8 +581,8 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                         <CheckCircle className="w-5 h-5 text-indigo-400" />
                         Persetujuan KRS
                         {pendingKRSCount > 0 && (
-                          <div className={`absolute -top-2 -right-2 w-6 h-6 ${toApproveCount > 0 ? 'bg-red-500' : 'bg-amber-500'
-                            } text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-[#0f172a] animate-bounce shadow-lg shadow-amber-500/20`}>
+                          <div className={`absolute -top-2 -right-2 w-6 h-6 ${toApproveCount > 0 ? 'bg-red-500' : 'bg-emerald-500'
+                            } text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-[#0f172a] animate-bounce shadow-lg shadow-emerald-500/20`}>
                             {pendingKRSCount}
                           </div>
                         )}

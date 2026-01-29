@@ -3,35 +3,31 @@
 @tailwind utilities;
 
 :root {
-  --bg-from: #0F172A;
-  --bg-to: #020617;
-  --accent-1: #EAB308;
-  /* Gold-500 */
-  --accent-2: #CA8A04;
-  /* Gold-600 */
+  --bg-from: #020617;
+  --bg-to: #0F172A;
+  --accent-1: #10B981;
+  /* Emerald-500 */
+  --accent-2: #06B6D4;
+  /* Cyan-500 */
   --glass: rgba(255, 255, 255, 0.03);
-  --text-primary: #F8FAFC;
+  --text-primary: #FFFFFF;
   --text-muted: #94A3B8;
-  --card-bg: linear-gradient(180deg, rgba(15, 23, 42, 0.8), rgba(2, 6, 23, 0.9));
-  --card-border: rgba(234, 179, 8, 0.15);
+  --card-bg: linear-gradient(180deg, rgba(2, 6, 23, 0.8), rgba(15, 23, 42, 0.9));
+  --card-border: rgba(16, 185, 129, 0.15);
 }
 
 html.theme-clear {
   --bg-from: #F8FAFC;
-  /* slate-50 */
   --bg-to: #F1F5F9;
-  /* slate-100 */
-  --accent-1: #B45309;
-  /* Amber-700 (Bronze/Gold for light mode) */
-  --accent-2: #1E3A8A;
-  /* Blue-900 (Deep Navy) */
+  --accent-1: #059669;
+  /* Emerald-600 */
+  --accent-2: #0891B2;
+  /* Cyan-600 */
   --glass: rgba(15, 23, 42, 0.05);
-  --text-primary: #0F172A;
+  --text-primary: #020617;
   --text-muted: #475569;
-  /* slate-600 */
-  /* Airy/Glassy card look */
   --card-bg: rgba(255, 255, 255, 0.7);
-  --card-border: rgba(180, 83, 9, 0.15);
+  --card-border: rgba(16, 185, 129, 0.12);
 }
 
 html,
@@ -42,7 +38,7 @@ body,
 
 body {
   @apply text-gray-100 antialiased;
-  background-image: linear-gradient(135deg, var(--bg-from) 0%, var(--bg-to) 60%), linear-gradient(90deg, rgba(234, 179, 8, 0.03), rgba(15, 23, 42, 0.05));
+  background-image: linear-gradient(135deg, var(--bg-from) 0%, var(--bg-to) 60%), linear-gradient(90deg, rgba(16, 185, 129, 0.03), rgba(6, 182, 212, 0.03));
   color: var(--text-primary);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
@@ -54,7 +50,7 @@ body {
 }
 
 .accent-outline {
-  box-shadow: 0 6px 20px rgba(234, 179, 8, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.1), 0 2px 6px rgba(6, 182, 212, 0.05);
 }
 
 .muted-text {
@@ -87,7 +83,7 @@ body {
 }
 
 .theme-clear .bg-gradient-to-r\ from-indigo-600\ to-blue-500 {
-  background-image: linear-gradient(90deg, rgba(180, 83, 9, 0.12), rgba(234, 179, 8, 0.12)) !important;
+  background-image: linear-gradient(90deg, rgba(5, 150, 105, 0.12), rgba(8, 145, 178, 0.12)) !important;
 }
 
 /* Make badges and small text align on light theme */
