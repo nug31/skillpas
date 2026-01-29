@@ -803,6 +803,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
           </div>
         )}
 
+
         {/* Mission Modal */}
         {user?.role === 'student' && jurusanList.length > 0 && myStats && (
           <MissionModal
