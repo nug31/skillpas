@@ -530,18 +530,18 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
 
   return (
     <div className="min-h-screen bg-transparent">
-      <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mb-12">
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-8">
           {/* Header section remains same */}
-          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 items-center">
-            <div className="space-y-6 animate-fadeInUp">
+          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-6 items-center">
+            <div className="space-y-4 animate-fadeInUp">
               <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-gradient-to-r from-yellow-500 to-amber-600 shadow-md-2 [.theme-clear_&]:from-emerald-500 [.theme-clear_&]:to-cyan-500">
                 <GraduationCap className="w-5 h-5 text-white" />
                 <span className="text-white text-xs font-semibold">DASHBOARD</span>
               </div>
 
-              <div className="space-y-3">
-                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight tracking-tight">
+              <div className="space-y-2">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
                   <span className="bg-gradient-to-r from-white via-yellow-100 to-amber-200 bg-clip-text text-transparent drop-shadow-2xl [text-shadow:_0_4px_20px_rgba(234,179,8,0.3)] [.theme-clear_&]:from-emerald-900 [.theme-clear_&]:via-teal-800 [.theme-clear_&]:to-emerald-900 [.theme-clear_&]:[text-shadow:_0_2px_10px_rgba(5,150,105,0.2)]">
                     SKILL PASSPORT
                   </span>
@@ -551,7 +551,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                     SMK Mitra Industri
                   </span>
                 </h2>
-                <div className="w-32 h-0.5 bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 rounded-full mt-4 mb-6 animate-pulse [.theme-clear_&]:from-emerald-500 [.theme-clear_&]:via-teal-500 [.theme-clear_&]:to-cyan-500"></div>
+                <div className="w-24 h-0.5 bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 rounded-full mt-2 mb-4 animate-pulse [.theme-clear_&]:from-emerald-500 [.theme-clear_&]:via-teal-500 [.theme-clear_&]:to-cyan-500"></div>
                 <p className="text-lg sm:text-xl font-medium tracking-wide">
                   <span className="bg-gradient-to-r from-yellow-300 to-amber-300 bg-clip-text text-transparent [.theme-clear_&]:from-emerald-600 [.theme-clear_&]:to-emerald-800">
                     Menuju Vokasi Berstandar Industri & Terverifikasi
@@ -559,7 +559,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mt-8">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mt-6">
                 {user?.role !== 'student' && (
                   <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                     <button
@@ -617,7 +617,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
               </div>
             </div>
 
-            <div className="card-glass rounded-xl p-5 shadow-sm border border-white/6 animate-slideInRight stagger-delay-2 h-full flex flex-col justify-center [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-none">
+            <div className="card-glass rounded-xl p-4 shadow-sm border border-white/6 animate-slideInRight stagger-delay-2 flex flex-col [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-none self-center">
               {user?.role === 'student' ? (
                 <div className="flex items-center gap-6">
                   <button

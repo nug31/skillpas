@@ -49,7 +49,7 @@ export function JurusanCard({ jurusan, onClick, topStudents, titleOverride }: Ju
   return (
     <button
       onClick={onClick}
-      className="group relative card-glass rounded-xl hover-lift p-4 sm:p-6 text-left border-[0.5px] border-white/6 hover:border-amber-500/20 w-full shadow-lg hover:shadow-amber-500/10 [.theme-clear_&]:border-slate-200/60 [.theme-clear_&]:hover:border-emerald-500/30 [.theme-clear_&]:shadow-sm"
+      className="group relative card-glass rounded-xl hover-lift p-4 sm:p-5 text-left border-[0.5px] border-white/6 hover:border-amber-500/20 w-full shadow-lg hover:shadow-amber-500/10 [.theme-clear_&]:border-slate-200/60 [.theme-clear_&]:hover:border-emerald-500/30 [.theme-clear_&]:shadow-sm"
     >
       <div className="flex flex-col items-center text-center space-y-4">
         <div className={`w-16 h-16 sm:w-20 sm:h-20 ${gradientClass} rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-inner`}>
