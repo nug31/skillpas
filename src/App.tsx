@@ -104,8 +104,8 @@ function AppContent() {
                 Welcome, <span className="font-medium text-white">{user?.name}</span>
               </div>
               <div className={`hidden sm:flex px-2 py-1 rounded-md text-xs font-medium ${isTeacher
-                ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
-                : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                : 'bg-slate-500/20 text-slate-300 border border-slate-500/30'
                 }`}>
                 {isTeacher ? 'Guru' : 'Siswa'}
               </div>

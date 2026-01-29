@@ -49,14 +49,14 @@ export function JurusanCard({ jurusan, onClick, topStudents, titleOverride }: Ju
   return (
     <button
       onClick={onClick}
-      className="group relative card-glass rounded-xl hover-lift p-4 sm:p-6 text-left border border-white/6 hover:border-blue-500/30 w-full shadow-lg hover:shadow-blue-500/20 [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-sm"
+      className="group relative card-glass rounded-xl hover-lift p-4 sm:p-6 text-left border border-white/6 hover:border-amber-500/30 w-full shadow-lg hover:shadow-amber-500/20 [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-sm"
     >
       <div className="flex flex-col items-center text-center space-y-4">
         <div className={`w-16 h-16 sm:w-20 sm:h-20 ${gradientClass} rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-inner`}>
           <IconComponent className="w-9 h-9 text-white opacity-95 group-hover:scale-110 transition-transform duration-300" />
         </div>
         <div>
-          <h3 className="font-semibold text-lg text-white mb-2 truncate [.theme-clear_&]:text-indigo-900">
+          <h3 className="font-semibold text-lg text-white mb-2 truncate [.theme-clear_&]:text-amber-900">
             {titleOverride || formatJurusanName(jurusan.nama_jurusan)}
           </h3>
           <p className="text-sm text-white/80 line-clamp-2 [.theme-clear_&]:text-slate-600 font-medium">{jurusan.deskripsi}</p>
@@ -74,7 +74,7 @@ export function JurusanCard({ jurusan, onClick, topStudents, titleOverride }: Ju
                           {idx + 1}
                         </div>
                         <div className="leading-none">
-                          <div className="font-semibold text-sm truncate sm:w-36 [.theme-clear_&]:text-indigo-950">{s.nama}</div>
+                          <div className="font-semibold text-sm truncate sm:w-36 [.theme-clear_&]:text-amber-950">{s.nama}</div>
                           <div className="text-xs text-white/60 [.theme-clear_&]:text-slate-500">Skor {s.skor} — {s.kelas ?? ''}</div>
                         </div>
                       </div>
@@ -89,7 +89,7 @@ export function JurusanCard({ jurusan, onClick, topStudents, titleOverride }: Ju
         </div>
       </div>
       <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-        <LucideIcons.ChevronRight className="w-5 h-5 text-blue-500" />
+        <LucideIcons.ChevronRight className="w-5 h-5 text-amber-500" />
       </div>
     </button>
   );
