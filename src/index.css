@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --bg-from: #020617;
-  --bg-to: #0F172A;
-  --accent-1: #10B981;
-  /* Emerald-500 */
-  --accent-2: #06B6D4;
-  /* Cyan-500 */
+  --bg-from: #0F172A;
+  --bg-to: #020617;
+  --accent-1: #EAB308;
+  /* Gold-500 */
+  --accent-2: #CA8A04;
+  /* Gold-600 */
   --glass: rgba(255, 255, 255, 0.03);
-  --text-primary: #FFFFFF;
+  --text-primary: #F8FAFC;
   --text-muted: #94A3B8;
-  --card-bg: linear-gradient(180deg, rgba(2, 6, 23, 0.8), rgba(15, 23, 42, 0.9));
-  --card-border: rgba(16, 185, 129, 0.15);
+  --card-bg: linear-gradient(180deg, rgba(15, 23, 42, 0.8), rgba(2, 6, 23, 0.9));
+  --card-border: rgba(234, 179, 8, 0.1);
 }
 
 html.theme-clear {
@@ -27,7 +27,7 @@ html.theme-clear {
   --text-primary: #020617;
   --text-muted: #475569;
   --card-bg: rgba(255, 255, 255, 0.7);
-  --card-border: rgba(16, 185, 129, 0.12);
+  --card-border: rgba(5, 150, 105, 0.08);
 }
 
 html,
@@ -45,7 +45,7 @@ body {
 
 .card-glass {
   background: var(--card-bg);
-  border: 1px solid var(--card-border);
+  border: 0.5px solid var(--card-border);
   backdrop-filter: blur(6px);
 }
 
