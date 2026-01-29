@@ -69,8 +69,8 @@ export function LoginPage() {
             {/* Abstract Background Blobs (Dark Mode Only) */}
             {!themeClear && (
                 <>
-                    <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-purple-600/10 blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: '4s' }} />
-                    <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-cyan-600/10 blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: '5s' }} />
+                    <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-yellow-600/10 blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: '4s' }} />
+                    <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-amber-600/10 blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: '5s' }} />
                     {/* Noise & Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-tr from-black via-transparent to-black opacity-80 z-[1]" />
                     <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none z-[2]" />
@@ -93,17 +93,17 @@ export function LoginPage() {
                 {/* Logo & Title */}
                 <div className="text-center mb-8">
                     <div className="relative inline-block mb-4 group">
-                        <div className={`absolute inset-0 rounded-full blur-xl transition-all duration-500 ${!themeClear ? 'bg-cyan-500/30 group-hover:bg-cyan-400/50' : 'bg-transparent'}`} />
+                        <div className={`absolute inset-0 rounded-full blur-xl transition-all duration-500 ${!themeClear ? 'bg-yellow-500/30 group-hover:bg-yellow-400/50' : 'bg-transparent'}`} />
                         <img
                             src={smkLogo}
                             alt="SMK Logo"
                             className="relative w-24 h-24 rounded-full object-cover bg-white p-2 shadow-2xl ring-2 ring-white/10"
                         />
                     </div>
-                    <h1 className="text-4xl font-black tracking-tight bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]">
+                    <h1 className="text-4xl font-black tracking-tight bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent mb-2 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] [.theme-clear_&]:from-emerald-600 [.theme-clear_&]:via-teal-600 [.theme-clear_&]:to-cyan-600">
                         SKILL PASSPORT
                     </h1>
-                    <p className={`text-sm font-medium tracking-wide uppercase ${themeClear ? 'text-slate-600' : 'text-cyan-200/70'}`}>Menuju Vokasi Berstandar Industri & Terverifikasi</p>
+                    <p className={`text-sm font-medium tracking-wide uppercase ${themeClear ? 'text-emerald-800' : 'text-amber-200/70'}`}>Menuju Vokasi Berstandar Industri & Terverifikasi</p>
                 </div>
 
                 {/* Login Card */}
@@ -119,8 +119,8 @@ export function LoginPage() {
                             onClick={() => setSelectedRole('student')}
                             className={`p-4 rounded-2xl border transition-all duration-300 relative overflow-hidden group ${selectedRole === 'student'
                                 ? themeClear
-                                    ? 'border-purple-500 bg-purple-50 text-purple-700 shadow-md'
-                                    : 'border-cyan-500/50 bg-cyan-950/30 text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.2)]'
+                                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-md'
+                                    : 'border-yellow-500/50 bg-yellow-950/30 text-yellow-400 shadow-[0_0_20px_rgba(234,179,8,0.2)]'
                                 : themeClear
                                     ? 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100'
                                     : 'border-white/5 bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white'
@@ -136,8 +136,8 @@ export function LoginPage() {
                             onClick={() => setSelectedRole('teacher')}
                             className={`p-4 rounded-2xl border transition-all duration-300 relative overflow-hidden group ${selectedRole === 'teacher'
                                 ? themeClear
-                                    ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-md'
-                                    : 'border-purple-500/50 bg-purple-950/30 text-purple-400 shadow-[0_0_20px_rgba(168,85,247,0.2)]'
+                                    ? 'border-teal-500 bg-teal-50 text-teal-700 shadow-md'
+                                    : 'border-amber-500/50 bg-amber-950/30 text-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.2)]'
                                 : themeClear
                                     ? 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100'
                                     : 'border-white/5 bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white'
@@ -153,7 +153,7 @@ export function LoginPage() {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Username Input */}
                         <div className="group">
-                            <label htmlFor="username" className={`block text-xs font-bold uppercase tracking-wider mb-2 ${themeClear ? 'text-slate-500' : 'text-slate-400 group-focus-within:text-cyan-400 transition-colors'}`}>
+                            <label htmlFor="username" className={`block text-xs font-bold uppercase tracking-wider mb-2 ${themeClear ? 'text-emerald-700' : 'text-slate-400 group-focus-within:text-yellow-400 transition-colors'}`}>
                                 Username
                             </label>
                             <div className="relative">
@@ -163,8 +163,8 @@ export function LoginPage() {
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                     className={`w-full px-5 py-4 rounded-xl transition-all outline-none border focus:ring-0 ${themeClear
-                                        ? 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:border-purple-500'
-                                        : 'bg-black/20 border-white/10 text-white placeholder-white/20 focus:border-cyan-500/50 focus:bg-cyan-950/10 focus:shadow-[0_0_15px_rgba(6,182,212,0.1)]'
+                                        ? 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:border-emerald-500'
+                                        : 'bg-black/20 border-white/10 text-white placeholder-white/20 focus:border-yellow-500/50 focus:bg-yellow-950/10 focus:shadow-[0_0_15px_rgba(234,179,8,0.1)]'
                                         }`}
                                     placeholder={selectedRole === 'student' ? 'siswa_mesin' : 'guru'}
                                     required
@@ -174,7 +174,7 @@ export function LoginPage() {
 
                         {/* Password Input */}
                         <div className="group">
-                            <label htmlFor="password" className={`block text-xs font-bold uppercase tracking-wider mb-2 ${themeClear ? 'text-slate-500' : 'text-slate-400 group-focus-within:text-purple-400 transition-colors'}`}>
+                            <label htmlFor="password" className={`block text-xs font-bold uppercase tracking-wider mb-2 ${themeClear ? 'text-emerald-700' : 'text-slate-400 group-focus-within:text-amber-400 transition-colors'}`}>
                                 Password
                             </label>
                             <input
@@ -183,8 +183,8 @@ export function LoginPage() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 className={`w-full px-5 py-4 rounded-xl transition-all outline-none border focus:ring-0 ${themeClear
-                                    ? 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:border-purple-500'
-                                    : 'bg-black/20 border-white/10 text-white placeholder-white/20 focus:border-purple-500/50 focus:bg-purple-950/10 focus:shadow-[0_0_15px_rgba(168,85,247,0.1)]'
+                                    ? 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:border-emerald-500'
+                                    : 'bg-black/20 border-white/10 text-white placeholder-white/20 focus:border-amber-500/50 focus:bg-amber-950/10 focus:shadow-[0_0_15px_rgba(234,179,8,0.1)]'
                                     }`}
                                 placeholder="••••••••"
                                 required
@@ -203,8 +203,8 @@ export function LoginPage() {
                             type="submit"
                             disabled={loading}
                             className={`w-full py-4 text-white font-bold tracking-widest uppercase rounded-xl transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${themeClear
-                                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg'
-                                : 'bg-gradient-to-r from-cyan-600 via-indigo-600 to-purple-600 shadow-[0_0_20px_rgba(8,145,178,0.4)] hover:shadow-[0_0_30px_rgba(147,51,234,0.6)] border border-white/10'
+                                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 shadow-lg'
+                                : 'bg-gradient-to-r from-yellow-600 via-amber-600 to-orange-600 shadow-[0_0_20px_rgba(234,179,8,0.4)] hover:shadow-[0_0_30px_rgba(234,179,8,0.6)] border border-white/10'
                                 }`}
                         >
                             {loading ? (
