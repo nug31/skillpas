@@ -276,12 +276,13 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
 
   // Memoize unique classes for this jurusan, sorted naturally
   const uniqueClasses = useMemo(() => {
-    const classes = new Set(students.map(s => s.kelas.trim()));
+    // Filter only Grade 10 classes (starts with 'X ')
+    const classes = new Set(students.map(s => s.kelas.trim()).filter(c => c.startsWith('X ')));
     const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
     return Array.from(classes).sort(collator.compare);
   }, [students]);
 
-  const allNavOptions = useMemo(() => ['all', 'X', 'XI', 'XII', ...uniqueClasses], [uniqueClasses]);
+  const allNavOptions = useMemo(() => ['all', 'X', ...uniqueClasses], [uniqueClasses]);
 
   const handleTabChange = (newTab: string) => {
     const prevIndex = allNavOptions.indexOf(activeTab);
@@ -418,7 +419,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                       </button>
 
                       {/* Year Level Slides */}
-                      {['X', 'XI', 'XII'].map((year) => {
+                      {['X'].map((year) => {
                         const isYearSelected = activeTab === year;
                         return (
                           <button

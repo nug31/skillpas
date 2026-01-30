@@ -823,8 +823,8 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
         ) : (
           <div className={user?.role === 'student' ? "flex flex-wrap justify-center gap-6" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"}>
             {user?.role === 'student' && jurusanList.length > 0 ? (
-              // If student, render 3 cards for X, XI, XII
-              ['X', 'XI', 'XII'].map((classLevel, idx) => (
+              // If student, only show Grade 10 card
+              ['X'].map((classLevel, idx) => (
                 <div key={`${jurusanList[0].id}-${classLevel}`} className="pulse-on-hover animate-fadeInUp w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]" style={{ animationDelay: `${idx * 100 + 400}ms` }}>
                   <JurusanCard
                     jurusan={jurusanList[0]}
