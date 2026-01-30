@@ -16,6 +16,7 @@ type ViewMode = 'list' | 'race' | 'podium' | 'snake';
 
 export function StudentRace({ students, jurusanName }: StudentRaceProps) {
     const [viewMode, setViewMode] = useState<ViewMode>('race');
+    const [showAll, setShowAll] = useState(false);
 
     // Sort students for podium/rankings
     const sortedStudents = [...students].sort((a, b) => b.skor - a.skor);
@@ -94,9 +95,9 @@ export function StudentRace({ students, jurusanName }: StudentRaceProps) {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
                     >
-                        <F1RaceTrack participants={participants.slice(0, 10)} title={`🏎️ Race: ${jurusanName}`} subtitle="Student Championship (Top 10)" />
+                        <F1RaceTrack participants={participants.slice(0, 10)} title={`🏎️ Race: ${jurusanName}`} subtitle={`Top 10 of ${participants.length} Students`} />
                         <div className="text-center mt-4 text-sm text-slate-500 dark:text-white/60">
-                            Showing Top 10 racers. Switch to <b>Leaderboard</b> to see all {participants.length} students.
+                            Menampilkan 10 besar. Pindah ke <b>Leaderboard</b> untuk melihat posisi semua {participants.length} siswa.
                         </div>
                     </motion.div>
                 )}
@@ -139,7 +140,7 @@ export function StudentRace({ students, jurusanName }: StudentRaceProps) {
                             <span className="text-slate-800 dark:text-white">Top Performers</span>
                         </h3>
                         <div className="space-y-3">
-                            {participants.slice(0, 10).map((p, idx) => (
+                            {participants.slice(0, showAll ? undefined : 10).map((p, idx) => (
                                 <div key={p.id} className="flex items-center justify-between p-3 bg-white dark:bg-white/5 rounded-xl border border-slate-200 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/20 transition-all shadow-sm">
                                     <div className="flex items-center gap-4">
                                         <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold ${idx === 0 ? 'bg-yellow-400 text-black' :
@@ -159,6 +160,17 @@ export function StudentRace({ students, jurusanName }: StudentRaceProps) {
                                 </div>
                             ))}
                         </div>
+
+                        {participants.length > 10 && (
+                            <div className="mt-6 text-center">
+                                <button
+                                    onClick={() => setShowAll(!showAll)}
+                                    className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full text-sm font-bold transition-all shadow-lg shadow-indigo-500/20 active:scale-95"
+                                >
+                                    {showAll ? 'Tampilkan 10 Besar (Tutup)' : `Lihat Semua (${participants.length} Siswa)`}
+                                </button>
+                            </div>
+                        )}
                     </motion.div>
                 )}
             </AnimatePresence>
