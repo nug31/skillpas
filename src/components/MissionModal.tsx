@@ -222,7 +222,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                     className="w-full max-w-xl bg-[#0f172a] [.theme-clear_&]:bg-slate-50 border border-white/10 [.theme-clear_&]:border-slate-200 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
                 >
                     {/* Header */}
-                    <div className="p-6 bg-gradient-to-r from-indigo-600 to-blue-600 relative overflow-hidden shrink-0">
+                    <div className="p-6 bg-gradient-to-r from-[color:var(--accent-1)] to-[color:var(--accent-2)] relative overflow-hidden shrink-0">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
                         <button
                             onClick={onClose}
@@ -248,7 +248,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                     <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
                         {loading ? (
                             <div className="flex justify-center py-10">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[color:var(--accent-1)]"></div>
                             </div>
                         ) : (
                             <>
@@ -282,9 +282,9 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                     </div>
                                 )}
 
-                                <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 flex gap-3 [.theme-clear_&]:bg-blue-50 [.theme-clear_&]:border-blue-200">
-                                    <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
-                                    <p className="text-sm text-blue-200 leading-relaxed [.theme-clear_&]:text-blue-800 font-medium">
+                                <div className="p-4 rounded-xl bg-[color:var(--accent-1)]/10 border border-[color:var(--accent-1)]/20 flex gap-3 [.theme-clear_&]:bg-emerald-50 [.theme-clear_&]:border-emerald-200">
+                                    <Info className="w-5 h-5 text-[color:var(--accent-1)] shrink-0 mt-0.5" />
+                                    <p className="text-sm text-[color:var(--accent-1)] leading-relaxed [.theme-clear_&]:text-emerald-800 font-medium">
                                         Pilih kriteria kompetensi di <strong>Level Kamu</strong> untuk melanjutkan rencana belajar. ({selectedKRS.length}/10)
                                     </p>
                                 </div>
@@ -463,7 +463,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                             disabled={!!(submission && !['rejected', 'scheduled', 'completed'].includes(submission.status))}
                             className={`flex-[2] py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${submission && !['rejected', 'scheduled', 'completed'].includes(submission.status)
                                 ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
-                                : 'bg-white text-indigo-900 hover:bg-gray-100 active:scale-95 [.theme-clear_&]:bg-indigo-600 [.theme-clear_&]:text-white [.theme-clear_&]:hover:bg-indigo-700'
+                                : 'bg-[color:var(--accent-1)] text-white hover:opacity-90 active:scale-95 [.theme-clear_&]:bg-emerald-600 [.theme-clear_&]:text-white [.theme-clear_&]:hover:bg-emerald-700'
                                 }`}
                         >
                             <span>{submission ? 'Update Pendaftaran' : 'Daftar Sertifikasi'}</span>
