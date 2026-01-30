@@ -215,7 +215,7 @@ interface LevelTableProps {
 export function LevelTable({ levels, jurusanId, onUpdateCriteria, isTeacher = false, allowEdit = false }: LevelTableProps) {
   return (
     <div className="card-glass rounded-xl shadow-sm overflow-hidden">
-      <div className="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700">
+      <div className="px-6 py-4 bg-gradient-to-r from-[color:var(--accent-1)] to-[color:var(--accent-2)]">
         <h2 className="text-xl font-semibold text-white">Level Skill & Badge System</h2>
       </div>
 

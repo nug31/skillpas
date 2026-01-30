@@ -358,7 +358,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
 
         <div className="card-glass rounded-xl shadow-sm p-8 mb-8">
           <div className="flex flex-col sm:flex-row items-center sm:items-start lg:items-center gap-4 text-center sm:text-left">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+            <div className="w-16 h-16 bg-gradient-to-br from-[color:var(--accent-1)] to-[color:var(--accent-2)] rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
               <IconComponent className="w-8 h-8 text-white" />
             </div>
             <div>
@@ -368,7 +368,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3">
                 <p className="text-sm text-[color:var(--text-muted)] line-clamp-1 w-full sm:w-auto">{jurusan.deskripsi}</p>
                 <div className="h-4 w-[1px] bg-white/10 hidden md:block" />
-                <span className="text-[9px] sm:text-[10px] whitespace-nowrap bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-full border border-indigo-500/30 font-bold uppercase tracking-widest">
+                <span className="text-[9px] sm:text-[10px] whitespace-nowrap bg-[color:var(--accent-1)]/20 text-[color:var(--accent-1)] px-2 py-0.5 rounded-full border border-[color:var(--accent-1)]/30 font-bold uppercase tracking-widest">
                   {students.length} Siswa
                 </span>
                 <div className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full border font-black tracking-widest uppercase flex items-center gap-1.5 ${isMockMode ? 'bg-red-500/20 text-red-500 border-red-500/30' : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'}`}>
@@ -396,7 +396,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                       <LayoutGrid className="w-4 h-4" />
                       Pilih Kelas
                     </h3>
-                    <div className="text-[9px] sm:text-[10px] bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-full border border-indigo-500/20 font-bold">
+                    <div className="text-[9px] sm:text-[10px] bg-[color:var(--accent-1)]/10 text-[color:var(--accent-1)] px-2 py-0.5 rounded-full border border-[color:var(--accent-1)]/20 font-bold">
                       {uniqueClasses.length} KELAS
                     </div>
                   </div>
@@ -407,7 +407,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                       <button
                         onClick={() => handleTabChange('all')}
                         className={`flex-shrink-0 snap-start min-w-[110px] sm:min-w-[140px] p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 sm:gap-2 ${activeTab === 'all'
-                          ? 'bg-indigo-600 border-indigo-400 shadow-lg shadow-indigo-500/30 text-white'
+                          ? 'bg-[color:var(--accent-1)] border-[color:var(--accent-1)]/50 shadow-lg shadow-[color:var(--accent-1)]/30 text-white'
                           : 'bg-[color:var(--card-bg)] border-[color:var(--card-border)] text-[color:var(--text-muted)] hover:border-white/20 hover:bg-white/5'
                           }`}
                       >
@@ -425,7 +425,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                             key={year}
                             onClick={() => handleTabChange(year)}
                             className={`flex-shrink-0 snap-start min-w-[110px] sm:min-w-[140px] p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 sm:gap-2 ${isYearSelected
-                              ? 'bg-blue-600 border-blue-400 shadow-lg shadow-blue-500/30 text-white'
+                              ? 'bg-[color:var(--accent-1)] border-[color:var(--accent-1)]/50 shadow-lg shadow-[color:var(--accent-1)]/30 text-white'
                               : 'bg-[color:var(--card-bg)] border-[color:var(--card-border)] text-[color:var(--text-muted)] hover:border-white/20 hover:bg-white/5'
                               }`}
                           >
@@ -454,7 +454,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                             key={className}
                             onClick={() => handleTabChange(className)}
                             className={`flex-shrink-0 snap-start min-w-[110px] sm:min-w-[140px] p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 sm:gap-2 ${isSelected
-                              ? 'bg-emerald-600 border-emerald-400 shadow-lg shadow-emerald-500/30 text-white'
+                              ? 'bg-[color:var(--accent-1)] border-[color:var(--accent-1)]/50 shadow-lg shadow-[color:var(--accent-1)]/30 text-white'
                               : 'bg-[color:var(--card-bg)] border-[color:var(--card-border)] text-[color:var(--text-muted)] hover:border-white/20 hover:bg-white/5'
                               }`}
                           >
@@ -489,7 +489,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                       const idx = allNavOptions.indexOf(activeTab);
                       if (idx > 0) handleTabChange(allNavOptions[idx - 1]);
                     }}
-                    className={`fixed left-4 top-1/2 -translate-y-1/2 z-[100] p-5 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 text-white hover:bg-indigo-600 transition-all shadow-2xl hover:scale-110 active:scale-95 group/btn hidden lg:flex ${allNavOptions.indexOf(activeTab) === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+                    className={`fixed left-4 top-1/2 -translate-y-1/2 z-[100] p-5 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 text-white hover:bg-[color:var(--accent-1)] transition-all shadow-2xl hover:scale-110 active:scale-95 group/btn hidden lg:flex ${allNavOptions.indexOf(activeTab) === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
                   >
                     <ChevronLeft className="w-8 h-8 group-hover/btn:-translate-x-1 transition-transform" />
                   </button>
@@ -498,7 +498,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                       const idx = allNavOptions.indexOf(activeTab);
                       if (idx < allNavOptions.length - 1) handleTabChange(allNavOptions[idx + 1]);
                     }}
-                    className={`fixed right-4 top-1/2 -translate-y-1/2 z-[100] p-5 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 text-white hover:bg-indigo-600 transition-all shadow-2xl hover:scale-110 active:scale-95 group/btn hidden lg:flex ${allNavOptions.indexOf(activeTab) === allNavOptions.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+                    className={`fixed right-4 top-1/2 -translate-y-1/2 z-[100] p-5 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 text-white hover:bg-[color:var(--accent-1)] transition-all shadow-2xl hover:scale-110 active:scale-95 group/btn hidden lg:flex ${allNavOptions.indexOf(activeTab) === allNavOptions.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
                   >
                     <ChevronRight className="w-8 h-8 group-hover/btn:translate-x-1 transition-transform" />
                   </button>
@@ -524,7 +524,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                     <div className="flex flex-col gap-4 mb-2">
                       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                         <div className="flex items-center gap-4">
-                          <div className="h-14 w-2 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/50" />
+                          <div className="h-14 w-2 bg-[color:var(--accent-1)] rounded-full shadow-lg shadow-[color:var(--accent-1)]/50" />
                           <div>
                             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[color:var(--text-primary)] uppercase tracking-tighter leading-none">
                               {activeTab === 'all' ? 'Seluruh Siswa' :
