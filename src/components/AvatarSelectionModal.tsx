@@ -125,7 +125,7 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                 <div className="flex items-center justify-between p-6 border-b border-white/5">
                     <div>
                         <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                            <Icons.UserCircle className="w-5 h-5 text-indigo-400" />
+                            <Icons.UserCircle className="w-5 h-5 text-[color:var(--accent-1)]" />
                             Update Foto Profil
                         </h3>
                         <p className="text-xs text-white/40 mt-1">Gunakan identitas nyata untuk pengalaman lebih profesional</p>
@@ -140,7 +140,7 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                     <button
                         onClick={() => setMode('avatar')}
                         className={`flex-1 py-3 rounded-2xl flex flex-col items-center gap-2 border-2 transition-all ${mode === 'avatar'
-                            ? 'bg-indigo-500/10 border-indigo-500 text-indigo-400'
+                            ? 'bg-[color:var(--accent-1)]/10 border-[color:var(--accent-1)] text-[color:var(--accent-1)]'
                             : 'bg-white/5 border-transparent text-white/40 hover:bg-white/10'
                             }`}
                     >
@@ -150,7 +150,7 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                     <button
                         onClick={() => setMode('photo')}
                         className={`flex-1 py-3 rounded-2xl flex flex-col items-center gap-2 border-2 transition-all ${mode === 'photo'
-                            ? 'bg-indigo-500/10 border-indigo-500 text-indigo-400'
+                            ? 'bg-[color:var(--accent-1)]/10 border-[color:var(--accent-1)] text-[color:var(--accent-1)]'
                             : 'bg-white/5 border-transparent text-white/40 hover:bg-white/10'
                             }`}
                     >
@@ -172,7 +172,7 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                                             key={cat.id}
                                             onClick={() => setActiveCategory(cat.id)}
                                             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all ${isActive
-                                                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
+                                                ? 'bg-[color:var(--accent-1)] text-white shadow-lg shadow-[color:var(--accent-1)]/20'
                                                 : 'bg-white/5 text-white/40 hover:bg-white/10 hover:text-white'
                                                 }`}
                                         >
@@ -192,13 +192,13 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                                         <button
                                             key={seed}
                                             onClick={() => setSelectedSeed(seed)}
-                                            className={`relative group aspect-square rounded-2xl overflow-hidden transition-all duration-300 ${isSelected ? 'ring-4 ring-indigo-500 scale-95' : 'hover:bg-white/5 hover:scale-105'
+                                            className={`relative group aspect-square rounded-2xl overflow-hidden transition-all duration-300 ${isSelected ? 'ring-4 ring-[color:var(--accent-1)] scale-95' : 'hover:bg-white/5 hover:scale-105'
                                                 }`}
                                         >
                                             <img src={url} alt={seed} className="w-full h-full object-cover" />
                                             {isSelected && (
-                                                <div className="absolute inset-0 bg-indigo-500/20 flex items-center justify-center">
-                                                    <div className="bg-indigo-500 text-white rounded-full p-1 shadow-lg">
+                                                <div className="absolute inset-0 bg-[color:var(--accent-1)]/20 flex items-center justify-center">
+                                                    <div className="bg-[color:var(--accent-1)] text-white rounded-full p-1 shadow-lg">
                                                         <Icons.Check className="w-4 h-4 font-black" />
                                                     </div>
                                                 </div>
@@ -211,10 +211,10 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                     ) : (
                         <div className="space-y-6 py-4">
                             <div className="flex flex-col items-center gap-4">
-                                <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white/5 border-4 border-indigo-500/20 flex items-center justify-center shadow-2xl">
+                                <div className="relative w-32 h-32 rounded-full overflow-hidden bg-white/5 border-4 border-[color:var(--accent-1)]/20 flex items-center justify-center shadow-2xl">
                                     {isUploading ? (
                                         <div className="flex flex-col items-center gap-2">
-                                            <Icons.Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+                                            <Icons.Loader2 className="w-8 h-8 text-[color:var(--accent-1)] animate-spin" />
                                             <span className="text-[10px] text-white/40 font-bold uppercase tracking-tighter">Uploading...</span>
                                         </div>
                                     ) : photoUrl ? (
@@ -229,7 +229,7 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                             </div>
 
                             <div className="flex justify-center">
-                                <label className="flex items-center gap-3 px-6 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold transition-all transform active:scale-95 cursor-pointer shadow-lg shadow-indigo-600/20">
+                                <label className="flex items-center gap-3 px-6 py-4 bg-[color:var(--accent-1)] hover:opacity-90 text-white rounded-2xl font-bold transition-all transform active:scale-95 cursor-pointer shadow-lg shadow-[color:var(--accent-1)]/20">
                                     <Icons.Upload className="w-5 h-5" />
                                     <span>Pilih File Foto</span>
                                     <input
@@ -269,7 +269,7 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                     <button
                         onClick={handleSave}
                         disabled={isUploading || (mode === 'avatar' && !selectedSeed) || (mode === 'photo' && !photoUrl)}
-                        className="flex-2 py-4 px-8 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-2xl font-bold shadow-lg shadow-indigo-600/20 transition-all transform active:scale-95 text-sm"
+                        className="flex-2 py-4 px-8 bg-[color:var(--accent-1)] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-2xl font-bold shadow-lg shadow-[color:var(--accent-1)]/20 transition-all transform active:scale-95 text-sm"
                     >
                         {isUploading ? 'Menyimpan...' : 'Simpan Perubahan'}
                     </button>
