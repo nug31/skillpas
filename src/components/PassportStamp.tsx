@@ -45,9 +45,9 @@ export function PassportStamp({ userName, photoUrl, avatarUrl, onComplete }: Pas
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#050505] [.theme-clear_&]:bg-slate-100 overflow-hidden">
             {/* Abstract Background Blobs (Dark Mode Only) */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none [.theme-clear_&]:hidden">
-                <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-purple-600/20 blur-[120px] animate-pulse" style={{ animationDuration: '4s' }} />
-                <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-cyan-600/20 blur-[120px] animate-pulse" style={{ animationDuration: '5s' }} />
-                <div className="absolute top-[40%] left-[40%] w-[300px] h-[300px] rounded-full bg-pink-600/10 blur-[100px]" />
+                <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-amber-600/10 blur-[120px] animate-pulse" style={{ animationDuration: '4s' }} />
+                <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-slate-800/20 blur-[120px] animate-pulse" style={{ animationDuration: '5s' }} />
+                <div className="absolute top-[40%] left-[40%] w-[300px] h-[300px] rounded-full bg-amber-600/5 blur-[100px]" />
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
             </div>
 
@@ -56,19 +56,19 @@ export function PassportStamp({ userName, photoUrl, avatarUrl, onComplete }: Pas
                 <div className="relative w-80 min-h-[480px] rounded-3xl border border-white/10 [.theme-clear_&]:border-white/40 shadow-[0_0_40px_rgba(0,0,0,0.5)] [.theme-clear_&]:shadow-xl backdrop-blur-2xl overflow-hidden bg-white/5 [.theme-clear_&]:bg-white/60 pb-8">
 
                     {/* Inner sheen/gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 [.theme-clear_&]:opacity-50 pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-transparent to-amber-900/10 [.theme-clear_&]:from-emerald-500/10 [.theme-clear_&]:to-cyan-500/10 pointer-events-none" />
 
                     {/* Header */}
-                    <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-white/10 to-transparent flex flex-col items-center justify-center border-b border-white/5">
-                        <div className="text-[10px] tracking-[0.3em] font-medium text-cyan-300 [.theme-clear_&]:text-indigo-600 uppercase mb-1">Official Document</div>
+                    <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-white/5 to-transparent flex flex-col items-center justify-center border-b border-white/5">
+                        <div className="text-[10px] tracking-[0.3em] font-medium text-amber-500 [.theme-clear_&]:text-emerald-600 uppercase mb-1">Official Document</div>
                         <h2 className="text-white [.theme-clear_&]:text-slate-800 font-black text-xl tracking-wider drop-shadow-md">SKILL PASSPORT</h2>
                     </div>
 
                     {/* Content Area */}
                     <div className="pt-24 px-6 flex flex-col items-center relative z-10">
                         <div className="relative mb-6 group">
-                            <div className="absolute inset-[-4px] rounded-full bg-gradient-to-r from-cyan-400 to-purple-500 blur-md opacity-70 group-hover:opacity-100 transition-opacity" />
-                            <div className="relative w-24 h-24 rounded-full bg-[#1a1f3a] [.theme-clear_&]:bg-white overflow-hidden flex items-center justify-center text-white [.theme-clear_&]:text-indigo-600 shadow-2xl ring-2 ring-white/20">
+                            <div className="absolute inset-[-4px] rounded-full bg-gradient-to-r from-amber-400 to-amber-600 blur-md opacity-70 group-hover:opacity-100 transition-opacity [.theme-clear_&]:from-emerald-400 [.theme-clear_&]:to-cyan-600" />
+                            <div className="relative w-24 h-24 rounded-full bg-[#1a1f3a] [.theme-clear_&]:bg-white overflow-hidden flex items-center justify-center text-white [.theme-clear_&]:text-slate-800 shadow-2xl ring-2 ring-white/10">
                                 {photoUrl || avatarUrl ? (
                                     <img src={photoUrl || avatarUrl} alt={userName} className="w-full h-full object-cover" />
                                 ) : (
@@ -80,11 +80,11 @@ export function PassportStamp({ userName, photoUrl, avatarUrl, onComplete }: Pas
                         </div>
 
                         {/* User Name */}
-                        <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-white to-purple-200 [.theme-clear_&]:from-indigo-600 [.theme-clear_&]:to-purple-600 mb-1 text-center">
+                        <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-white to-amber-200 [.theme-clear_&]:from-emerald-600 [.theme-clear_&]:to-cyan-600 mb-1 text-center">
                             {userName}
                         </h3>
 
-                        <p className="text-sm text-cyan-200/60 [.theme-clear_&]:text-slate-500 font-medium tracking-wide uppercase">
+                        <p className="text-sm text-amber-500/60 [.theme-clear_&]:text-slate-500 font-bold tracking-widest uppercase">
                             SMK Mitra Industri
                         </p>
 
@@ -123,7 +123,7 @@ export function PassportStamp({ userName, photoUrl, avatarUrl, onComplete }: Pas
                     </div>
 
                     {/* Decorative lines */}
-                    <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500" />
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-amber-600 via-amber-400 to-amber-600 [.theme-clear_&]:from-emerald-500 [.theme-clear_&]:via-cyan-400 [.theme-clear_&]:to-emerald-500" />
                 </div>
 
                 {/* Welcome Text */}
@@ -132,19 +132,19 @@ export function PassportStamp({ userName, photoUrl, avatarUrl, onComplete }: Pas
                         }`}
                 >
                     <h1 className="text-3xl font-black text-white [.theme-clear_&]:text-slate-800 mb-2 drop-shadow-lg">
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-purple-300 [.theme-clear_&]:from-indigo-600 [.theme-clear_&]:to-purple-600">
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-300 via-white to-amber-300 [.theme-clear_&]:from-emerald-600 [.theme-clear_&]:via-teal-600 [.theme-clear_&]:to-cyan-600">
                             ACCESS GRANTED
                         </span>
                     </h1>
-                    <p className="text-cyan-100/60 [.theme-clear_&]:text-slate-500 font-medium tracking-wide">
+                    <p className="text-white/40 [.theme-clear_&]:text-slate-500 font-bold tracking-[0.2em] text-[10px] uppercase">
                         Redirecting to secure dashboard...
                     </p>
 
                     {/* Loading dots */}
                     <div className="flex justify-center gap-2 mt-6">
-                        <div className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce shadow-[0_0_10px_rgba(34,211,238,0.8)]" style={{ animationDelay: '0ms' }} />
-                        <div className="w-2 h-2 rounded-full bg-purple-400 animate-bounce shadow-[0_0_10px_rgba(192,132,252,0.8)]" style={{ animationDelay: '150ms' }} />
-                        <div className="w-2 h-2 rounded-full bg-pink-400 animate-bounce shadow-[0_0_10px_rgba(244,114,182,0.8)]" style={{ animationDelay: '300ms' }} />
+                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500 [.theme-clear_&]:bg-emerald-500 animate-bounce shadow-lg" style={{ animationDelay: '0ms' }} />
+                        <div className="w-1.5 h-1.5 rounded-full bg-amber-400 [.theme-clear_&]:bg-teal-500 animate-bounce shadow-lg" style={{ animationDelay: '150ms' }} />
+                        <div className="w-1.5 h-1.5 rounded-full bg-amber-300 [.theme-clear_&]:bg-cyan-500 animate-bounce shadow-lg" style={{ animationDelay: '300ms' }} />
                     </div>
                 </div>
             </div>
