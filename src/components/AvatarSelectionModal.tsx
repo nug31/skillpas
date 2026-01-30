@@ -120,17 +120,17 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="relative z-10 w-full max-w-xl bg-slate-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden"
+                className="relative z-10 w-full max-w-xl bg-slate-900 [.theme-clear_&]:bg-white border border-white/10 [.theme-clear_&]:border-slate-200 rounded-3xl shadow-2xl overflow-hidden"
             >
                 <div className="flex items-center justify-between p-6 border-b border-white/5">
                     <div>
-                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                        <h3 className="text-xl font-bold text-white [.theme-clear_&]:text-slate-900 flex items-center gap-2">
                             <Icons.UserCircle className="w-5 h-5 text-[color:var(--accent-1)]" />
                             Update Foto Profil
                         </h3>
-                        <p className="text-xs text-white/40 mt-1">Gunakan identitas nyata untuk pengalaman lebih profesional</p>
+                        <p className="text-xs text-white/40 [.theme-clear_&]:text-slate-500 mt-1">Gunakan identitas nyata untuk pengalaman lebih profesional</p>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full text-white/50 hover:text-white transition-colors">
+                    <button onClick={onClose} className="p-2 hover:bg-white/5 [.theme-clear_&]:hover:bg-slate-100 rounded-full text-white/50 [.theme-clear_&]:text-slate-400 hover:text-white [.theme-clear_&]:hover:text-slate-900 transition-colors">
                         <Icons.X className="w-5 h-5" />
                     </button>
                 </div>
@@ -141,7 +141,7 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                         onClick={() => setMode('avatar')}
                         className={`flex-1 py-3 rounded-2xl flex flex-col items-center gap-2 border-2 transition-all ${mode === 'avatar'
                             ? 'bg-[color:var(--accent-1)]/10 border-[color:var(--accent-1)] text-[color:var(--accent-1)]'
-                            : 'bg-white/5 border-transparent text-white/40 hover:bg-white/10'
+                            : 'bg-white/5 [.theme-clear_&]:bg-slate-100 border-transparent text-white/40 [.theme-clear_&]:text-slate-500 hover:bg-white/10 [.theme-clear_&]:hover:bg-slate-200'
                             }`}
                     >
                         <Icons.User className="w-6 h-6" />
@@ -151,7 +151,7 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                         onClick={() => setMode('photo')}
                         className={`flex-1 py-3 rounded-2xl flex flex-col items-center gap-2 border-2 transition-all ${mode === 'photo'
                             ? 'bg-[color:var(--accent-1)]/10 border-[color:var(--accent-1)] text-[color:var(--accent-1)]'
-                            : 'bg-white/5 border-transparent text-white/40 hover:bg-white/10'
+                            : 'bg-white/5 [.theme-clear_&]:bg-slate-100 border-transparent text-white/40 [.theme-clear_&]:text-slate-500 hover:bg-white/10 [.theme-clear_&]:hover:bg-slate-200'
                             }`}
                     >
                         <Icons.Camera className="w-6 h-6" />
@@ -173,7 +173,7 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                                             onClick={() => setActiveCategory(cat.id)}
                                             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all ${isActive
                                                 ? 'bg-[color:var(--accent-1)] text-white shadow-lg shadow-[color:var(--accent-1)]/20'
-                                                : 'bg-white/5 text-white/40 hover:bg-white/10 hover:text-white'
+                                                : 'bg-white/5 [.theme-clear_&]:bg-slate-100 text-white/40 [.theme-clear_&]:text-slate-600 hover:bg-white/10 [.theme-clear_&]:hover:bg-slate-200 hover:text-white [.theme-clear_&]:hover:text-slate-900'
                                                 }`}
                                         >
                                             <Icon className="w-4 h-4" />
@@ -259,10 +259,10 @@ export const AvatarSelectionModal: React.FC<AvatarSelectionModalProps> = ({
                     )}
                 </div>
 
-                <div className="p-6 border-t border-white/5 bg-slate-900/50 flex gap-3">
+                <div className="p-6 border-t border-white/5 [.theme-clear_&]:border-slate-200 bg-slate-900/50 [.theme-clear_&]:bg-slate-50 flex gap-3">
                     <button
                         onClick={onClose}
-                        className="flex-1 py-4 px-4 rounded-2xl font-bold text-white/70 hover:bg-white/5 transition-all text-sm"
+                        className="flex-1 py-4 px-4 rounded-2xl font-bold text-white/70 [.theme-clear_&]:text-slate-600 hover:bg-white/5 [.theme-clear_&]:hover:bg-slate-100 transition-all text-sm"
                     >
                         Batal
                     </button>
