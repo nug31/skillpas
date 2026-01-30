@@ -591,197 +591,200 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                     )}
                   </div>
                 )}
-
-                {/* Student Exam Notification */}
-                {user?.role === 'student' && scheduledExam && (
-                  <div className="w-full sm:max-w-md animate-bounce-subtle">
-                    <div className="bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 rounded-xl p-4 flex items-start gap-4 shadow-xl backdrop-blur-md">
-                      <div className="p-3 bg-emerald-500 rounded-lg shadow-lg shrink-0">
-                        <CheckCircle className="w-6 h-6 text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-emerald-300 font-bold text-lg mb-1 [.theme-clear_&]:text-emerald-700">Ujian KRS Terjadwal!</h3>
-                        <p className="text-white text-sm [.theme-clear_&]:text-emerald-900">
-                          Selamat, KRS kamu telah disetujui penuh oleh HOD.
-                        </p>
-                        <div className="mt-3 inline-block px-3 py-1 bg-emerald-500/20 rounded border border-emerald-500/30 text-emerald-300 font-mono font-bold text-sm [.theme-clear_&]:text-emerald-700 [.theme-clear_&]:bg-emerald-100/50">
-                          📅 {new Date(scheduledExam.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                        </div>
-                        {scheduledExam.notes && (
-                          <p className="text-xs text-white/50 mt-2 italic [.theme-clear_&]:text-emerald-600/70">"{scheduledExam.notes}"</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
-            <div className="card-glass rounded-xl p-4 shadow-sm border border-white/6 animate-slideInRight stagger-delay-2 flex flex-col [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-none self-center">
-              {user?.role === 'student' ? (
-                <div className="flex items-center gap-6">
-                  <button
-                    onClick={() => setIsAvatarModalOpen(true)}
-                    className="relative group transition-transform hover:scale-105 active:scale-95"
-                    title="Ubah Avatar"
-                  >
-                    <ProfileAvatar
-                      name={user.name}
-                      avatarUrl={(user as any)?.avatar_url}
-                      photoUrl={(user as any)?.photo_url}
-                      level={myStats?.level}
-                      size="md"
-                      jurusanColor="#6366f1"
-                      className="shadow-xl"
-                    />
-                    <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                      <Edit3 className="w-5 h-5 text-white" />
+            <div className="flex flex-col gap-4 self-center w-full max-w-lg">
+              {/* Student Exam Notification - Moved Here */}
+              {user?.role === 'student' && scheduledExam && (
+                <div className="animate-fadeInUp stagger-delay-1">
+                  <div className="bg-emerald-500/10 [.theme-clear_&]:bg-emerald-50 border border-emerald-500/20 rounded-2xl p-4 flex items-center gap-4 shadow-lg backdrop-blur-sm">
+                    <div className="p-2.5 bg-emerald-500 rounded-xl shadow-lg shrink-0">
+                      <CheckCircle className="w-5 h-5 text-white" />
                     </div>
-                    {myStats && (
-                      <div className="absolute -bottom-1 -right-1 bg-yellow-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg border-2 border-[#0f172a] z-20">
-                        #{myStats.rank}
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-0.5">
+                        <h3 className="text-emerald-400 font-black text-sm uppercase tracking-wider [.theme-clear_&]:text-emerald-700">Ujian KRS Terjadwal!</h3>
+                        <span className="text-[10px] font-bold text-emerald-500/60 uppercase">Confirmed</span>
                       </div>
-                    )}
-                  </button>
+                      <p className="text-white/70 text-xs leading-relaxed [.theme-clear_&]:text-slate-600 mb-2">
+                        KRS disetujui penuh & jadwal ujian tersedia.
+                      </p>
+                      <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-emerald-500/20 rounded-lg border border-emerald-500/20 text-emerald-300 font-bold text-[10px] [.theme-clear_&]:text-emerald-700 [.theme-clear_&]:bg-emerald-100/50">
+                        <span className="opacity-60 font-medium tracking-tight">JADWAL:</span>
+                        {new Date(scheduledExam.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
-                  <div className="space-y-1">
-                    <div className="text-sm text-white/60 font-medium tracking-wide">STUDENT PROFILE</div>
-                    <div className="text-2xl font-bold text-white truncate max-w-[200px]">{user.name}</div>
+              <div className="card-glass rounded-xl p-4 shadow-sm border border-white/6 animate-slideInRight stagger-delay-2 flex flex-col [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-none">
+                {user?.role === 'student' ? (
+                  <div className="flex items-center gap-6">
+                    <button
+                      onClick={() => setIsAvatarModalOpen(true)}
+                      className="relative group transition-transform hover:scale-105 active:scale-95"
+                      title="Ubah Avatar"
+                    >
+                      <ProfileAvatar
+                        name={user.name}
+                        avatarUrl={(user as any)?.avatar_url}
+                        photoUrl={(user as any)?.photo_url}
+                        level={myStats?.level}
+                        size="md"
+                        jurusanColor="#6366f1"
+                        className="shadow-xl"
+                      />
+                      <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                        <Edit3 className="w-5 h-5 text-white" />
+                      </div>
+                      {myStats && (
+                        <div className="absolute -bottom-1 -right-1 bg-yellow-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg border-2 border-[#0f172a] z-20">
+                          #{myStats.rank}
+                        </div>
+                      )}
+                    </button>
 
-                    {myStats ? (
-                      <div className="flex flex-col gap-3 mt-2">
-                        <div className="flex items-center gap-2">
-                          <div className="px-2.5 py-0.5 rounded-full text-xs font-bold text-white shadow-sm border border-white/10" style={{ backgroundColor: myStats.levelColor }}>
-                            {myStats.level} Badge
-                          </div>
-                          <div className="text-sm text-white/50 px-2 border-l border-white/10 [.theme-clear_&]:text-slate-600 [.theme-clear_&]:border-slate-200">
-                            {myStats.className}
-                          </div>
-                          {myStats.attendance_pcent !== undefined && (
-                            <div className="flex items-center gap-2 px-2 border-l border-white/10 shrink-0">
-                              <div className="flex flex-col">
-                                <span className="text-[10px] text-white/40 font-bold uppercase tracking-tight [.theme-clear_&]:text-slate-500">PRESENSI</span>
-                                <div className="flex items-center gap-2">
-                                  <span className={`text-sm font-black ${myStats.attendance_pcent >= 90 ? 'text-emerald-400 [.theme-clear_&]:text-emerald-600' : myStats.attendance_pcent >= 75 ? 'text-amber-400 [.theme-clear_&]:text-amber-600' : 'text-red-400 [.theme-clear_&]:text-red-600'}`}>
-                                    {myStats.attendance_pcent}%
-                                  </span>
-                                  <div className="w-12 h-1 bg-white/10 rounded-full overflow-hidden [.theme-clear_&]:bg-slate-200">
-                                    <div
-                                      className={`h-full transition-all duration-1000 ${myStats.attendance_pcent >= 90 ? 'bg-emerald-500' : myStats.attendance_pcent >= 75 ? 'bg-amber-500' : 'bg-red-500'}`}
-                                      style={{ width: `${myStats.attendance_pcent}%` }}
-                                    />
+                    <div className="space-y-1">
+                      <div className="text-sm text-white/60 font-medium tracking-wide">STUDENT PROFILE</div>
+                      <div className="text-2xl font-bold text-white truncate max-w-[200px]">{user.name}</div>
+
+                      {myStats ? (
+                        <div className="flex flex-col gap-3 mt-2">
+                          <div className="flex items-center gap-2">
+                            <div className="px-2.5 py-0.5 rounded-full text-xs font-bold text-white shadow-sm border border-white/10" style={{ backgroundColor: myStats.levelColor }}>
+                              {myStats.level} Badge
+                            </div>
+                            <div className="text-sm text-white/50 px-2 border-l border-white/10 [.theme-clear_&]:text-slate-600 [.theme-clear_&]:border-slate-200">
+                              {myStats.className}
+                            </div>
+                            {myStats.attendance_pcent !== undefined && (
+                              <div className="flex items-center gap-2 px-2 border-l border-white/10 shrink-0">
+                                <div className="flex flex-col">
+                                  <span className="text-[10px] text-white/40 font-bold uppercase tracking-tight [.theme-clear_&]:text-slate-500">PRESENSI</span>
+                                  <div className="flex items-center gap-2">
+                                    <span className={`text-sm font-black ${myStats.attendance_pcent >= 90 ? 'text-emerald-400 [.theme-clear_&]:text-emerald-600' : myStats.attendance_pcent >= 75 ? 'text-amber-400 [.theme-clear_&]:text-amber-600' : 'text-red-400 [.theme-clear_&]:text-red-600'}`}>
+                                      {myStats.attendance_pcent}%
+                                    </span>
+                                    <div className="w-12 h-1 bg-white/10 rounded-full overflow-hidden [.theme-clear_&]:bg-slate-200">
+                                      <div
+                                        className={`h-full transition-all duration-1000 ${myStats.attendance_pcent >= 90 ? 'bg-emerald-500' : myStats.attendance_pcent >= 75 ? 'bg-amber-500' : 'bg-red-500'}`}
+                                        style={{ width: `${myStats.attendance_pcent}%` }}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
+                                  <div className="flex items-center gap-1">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                    <span className="text-[10px] font-bold text-white/60 [.theme-clear_&]:text-slate-700">{myStats.masuk} <span className="font-normal opacity-50 [.theme-clear_&]:text-slate-400">M</span></span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                                    <span className="text-[10px] font-bold text-white/60 [.theme-clear_&]:text-slate-700">{myStats.izin} <span className="font-normal opacity-50 [.theme-clear_&]:text-slate-400">I</span></span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                                    <span className="text-[10px] font-bold text-white/60 [.theme-clear_&]:text-slate-700">{myStats.sakit} <span className="font-normal opacity-50 [.theme-clear_&]:text-slate-400">S</span></span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+                                    <span className="text-[10px] font-bold text-white/60 [.theme-clear_&]:text-slate-700">{myStats.alfa} <span className="font-normal opacity-50 [.theme-clear_&]:text-slate-400">A</span></span>
                                   </div>
                                 </div>
                               </div>
+                            )}
+                          </div>
 
-                              <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
-                                <div className="flex items-center gap-1">
-                                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                                  <span className="text-[10px] font-bold text-white/60 [.theme-clear_&]:text-slate-700">{myStats.masuk} <span className="font-normal opacity-50 [.theme-clear_&]:text-slate-400">M</span></span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                                  <span className="text-[10px] font-bold text-white/60 [.theme-clear_&]:text-slate-700">{myStats.izin} <span className="font-normal opacity-50 [.theme-clear_&]:text-slate-400">I</span></span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-                                  <span className="text-[10px] font-bold text-white/60 [.theme-clear_&]:text-slate-700">{myStats.sakit} <span className="font-normal opacity-50 [.theme-clear_&]:text-slate-400">S</span></span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
-                                  <span className="text-[10px] font-bold text-white/60 [.theme-clear_&]:text-slate-700">{myStats.alfa} <span className="font-normal opacity-50 [.theme-clear_&]:text-slate-400">A</span></span>
-                                </div>
-                              </div>
-                            </div>
-                          )}
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            <button
+                              onClick={() => setShowSkillCard(true)}
+                              className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 hover:from-blue-600/30 hover:to-indigo-600/30 text-blue-300 rounded-lg text-xs font-bold border border-blue-500/20 transition-all group"
+                            >
+                              <Contact className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                              Skill Card
+                            </button>
+
+                            <button
+                              onClick={() => setShowHistoryModal(true)}
+                              className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 text-emerald-300 rounded-lg text-xs font-bold border border-emerald-500/20 transition-all group"
+                            >
+                              <History className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                              Riwayat
+                            </button>
+                          </div>
                         </div>
-
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          <button
-                            onClick={() => setShowSkillCard(true)}
-                            className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 hover:from-blue-600/30 hover:to-indigo-600/30 text-blue-300 rounded-lg text-xs font-bold border border-blue-500/20 transition-all group"
-                          >
-                            <Contact className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                            Skill Card
-                          </button>
-
-                          <button
-                            onClick={() => setShowHistoryModal(true)}
-                            className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 text-emerald-300 rounded-lg text-xs font-bold border border-emerald-500/20 transition-all group"
-                          >
-                            <History className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                            Riwayat
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-sm text-white/40 animate-pulse">Loading stats...</div>
-                    )}
-                  </div>
-                </div>
-
-              ) : (
-                <>
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-4">
-                      {/* Teacher Avatar Trigger */}
-                      <button
-                        onClick={() => setIsAvatarModalOpen(true)}
-                        className="relative group transition-transform hover:scale-105 active:scale-95 shrink-0"
-                        title="Ubah Foto Profil"
-                      >
-                        <ProfileAvatar
-                          name={user?.name || 'User'}
-                          avatarUrl={(user as any)?.avatar_url}
-                          photoUrl={(user as any)?.photo_url}
-                          size="md"
-                          jurusanColor="#6366f1" // Indigo for teachers
-                          className="shadow-lg border-2 border-white/20"
-                        />
-                        <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                          <Edit3 className="w-4 h-4 text-white" />
-                        </div>
-                      </button>
-
-                      <div>
-                        <div className="text-sm text-white/70">Overview</div>
-                        <div className="text-2xl font-bold">
-                          {useMock ? mockData.mockJurusan.length : jurusanList.length} Jurusan • {overallStats.totalStudents} Siswa
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-sm text-white/60 text-right">
-                      <div className="font-semibold">{user?.name}</div>
-                      <div className="text-xs">
-                        {(() => {
-                          let label = 'Pengajar';
-                          if (user?.role === 'admin') label = 'Administrator';
-                          if (user?.role === 'wali_kelas') label = 'Wali Kelas';
-                          if (user?.role === 'teacher_produktif') label = 'Guru Produktif';
-
-                          if (user?.role === 'hod') {
-                            const userJurusanId = (user as any)?.jurusan_id;
-                            const jurusan = jurusanList.find(j => j.id === userJurusanId);
-                            label = jurusan ? `HOD ${jurusan.nama_jurusan}` : 'HOD';
-                          }
-                          return label;
-                        })()}
-                      </div>
+                      ) : (
+                        <div className="text-sm text-white/40 animate-pulse">Loading stats...</div>
+                      )}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 mt-2">
-                    <div className="p-3 bg-gradient-to-r from-white/5 to-transparent rounded-lg border border-white/6">
-                      <div className="text-xs text-white/70">Top Jurusan</div>
-                      <div className="text-sm font-semibold mt-2">{overallStats.topJurusan}</div>
+                ) : (
+                  <>
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        {/* Teacher Avatar Trigger */}
+                        <button
+                          onClick={() => setIsAvatarModalOpen(true)}
+                          className="relative group transition-transform hover:scale-105 active:scale-95 shrink-0"
+                          title="Ubah Foto Profil"
+                        >
+                          <ProfileAvatar
+                            name={user?.name || 'User'}
+                            avatarUrl={(user as any)?.avatar_url}
+                            photoUrl={(user as any)?.photo_url}
+                            size="md"
+                            jurusanColor="#6366f1" // Indigo for teachers
+                            className="shadow-lg border-2 border-white/20"
+                          />
+                          <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <Edit3 className="w-4 h-4 text-white" />
+                          </div>
+                        </button>
+
+                        <div>
+                          <div className="text-sm text-white/70">Overview</div>
+                          <div className="text-2xl font-bold">
+                            {useMock ? mockData.mockJurusan.length : jurusanList.length} Jurusan • {overallStats.totalStudents} Siswa
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-sm text-white/60 text-right">
+                        <div className="font-semibold">{user?.name}</div>
+                        <div className="text-xs">
+                          {(() => {
+                            let label = 'Pengajar';
+                            if (user?.role === 'admin') label = 'Administrator';
+                            if (user?.role === 'wali_kelas') label = 'Wali Kelas';
+                            if (user?.role === 'teacher_produktif') label = 'Guru Produktif';
+
+                            if (user?.role === 'hod') {
+                              const userJurusanId = (user as any)?.jurusan_id;
+                              const jurusan = jurusanList.find(j => j.id === userJurusanId);
+                              label = jurusan ? `HOD ${jurusan.nama_jurusan}` : 'HOD';
+                            }
+                            return label;
+                          })()}
+                        </div>
+                      </div>
                     </div>
-                    <div className="p-3 bg-gradient-to-r from-white/5 to-transparent rounded-lg border border-white/6">
-                      <div className="text-xs text-white/70">Average Skor</div>
-                      <div className="text-sm font-semibold mt-2">{globalAvg}</div>
+
+                    <div className="grid grid-cols-2 gap-3 mt-2">
+                      <div className="p-3 bg-gradient-to-r from-white/5 to-transparent rounded-lg border border-white/6">
+                        <div className="text-xs text-white/70">Top Jurusan</div>
+                        <div className="text-sm font-semibold mt-2">{overallStats.topJurusan}</div>
+                      </div>
+                      <div className="p-3 bg-gradient-to-r from-white/5 to-transparent rounded-lg border border-white/6">
+                        <div className="text-xs text-white/70">Average Skor</div>
+                        <div className="text-sm font-semibold mt-2">{globalAvg}</div>
+                      </div>
                     </div>
-                  </div>
-                </>
-              )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
