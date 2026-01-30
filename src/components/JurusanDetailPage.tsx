@@ -412,15 +412,15 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                       {/* Special "All" Slide */}
                       <button
                         onClick={() => handleTabChange('all')}
-                        className={`flex-shrink-0 snap-start min-w-[140px] p-4 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-2 ${activeTab === 'all'
+                        className={`flex-shrink-0 snap-start min-w-[110px] sm:min-w-[140px] p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 sm:gap-2 ${activeTab === 'all'
                           ? 'bg-indigo-600 border-indigo-400 shadow-lg shadow-indigo-500/30 text-white'
                           : 'bg-[color:var(--card-bg)] border-[color:var(--card-border)] text-[color:var(--text-muted)] hover:border-white/20 hover:bg-white/5'
                           }`}
                       >
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${activeTab === 'all' ? 'bg-white/20' : 'bg-black/20'}`}>
-                          <LayoutGrid className="w-5 h-5" />
+                        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${activeTab === 'all' ? 'bg-white/20' : 'bg-black/20'}`}>
+                          <LayoutGrid className="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
-                        <span className="font-bold text-sm">Semua Kelas</span>
+                        <span className="font-bold text-xs sm:text-sm">Semua Kelas</span>
                       </button>
 
                       {/* Year Level Slides */}
@@ -430,15 +430,15 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                           <button
                             key={year}
                             onClick={() => handleTabChange(year)}
-                            className={`flex-shrink-0 snap-start min-w-[140px] p-4 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-2 ${isYearSelected
+                            className={`flex-shrink-0 snap-start min-w-[110px] sm:min-w-[140px] p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 sm:gap-2 ${isYearSelected
                               ? 'bg-blue-600 border-blue-400 shadow-lg shadow-blue-500/30 text-white'
                               : 'bg-[color:var(--card-bg)] border-[color:var(--card-border)] text-[color:var(--text-muted)] hover:border-white/20 hover:bg-white/5'
                               }`}
                           >
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isYearSelected ? 'bg-white/20' : 'bg-black/20'}`}>
-                              <span className="font-black text-xs">{year}</span>
+                            <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${isYearSelected ? 'bg-white/20' : 'bg-black/20'}`}>
+                              <span className="font-black text-[10px] sm:text-xs">{year}</span>
                             </div>
-                            <span className="font-bold text-sm">Total {year}</span>
+                            <span className="font-bold text-xs sm:text-sm">Total {year}</span>
                           </button>
                         );
                       })}
@@ -452,15 +452,15 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                           <button
                             key={className}
                             onClick={() => handleTabChange(className)}
-                            className={`flex-shrink-0 snap-start min-w-[140px] p-4 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-2 ${isSelected
+                            className={`flex-shrink-0 snap-start min-w-[110px] sm:min-w-[140px] p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center gap-1 sm:gap-2 ${isSelected
                               ? 'bg-emerald-600 border-emerald-400 shadow-lg shadow-emerald-500/30 text-white'
                               : 'bg-[color:var(--card-bg)] border-[color:var(--card-border)] text-[color:var(--text-muted)] hover:border-white/20 hover:bg-white/5'
                               }`}
                           >
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isSelected ? 'bg-white/20' : 'bg-black/20'}`}>
-                              <span className="font-black text-[10px]">{label.split(' ').pop()}</span>
+                            <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${isSelected ? 'bg-white/20' : 'bg-black/20'}`}>
+                              <span className="font-black text-[9px] sm:text-[10px]">{label.split(' ').pop()}</span>
                             </div>
-                            <span className="font-bold text-xs truncate w-full text-center">{label}</span>
+                            <span className="font-bold text-[10px] sm:text-xs truncate w-full text-center">{label}</span>
                           </button>
                         );
                       })}
