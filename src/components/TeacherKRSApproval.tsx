@@ -134,7 +134,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
     };
 
     return (
-        <div className="min-h-screen bg-[#020617] [.theme-clear_&]:bg-slate-50 text-slate-200 [.theme-clear_&]:text-slate-800 p-4 sm:p-8">
+        <div className="min-h-screen bg-[color:var(--bg-from)] text-[color:var(--text-primary)] p-4 sm:p-8">
             <div className="max-w-6xl mx-auto space-y-8">
                 <header className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -149,20 +149,20 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                             <p className="text-slate-400 text-sm [.theme-clear_&]:text-slate-500">Review dan verifikasi pendaftaran sertifikasi competency siswa</p>
                         </div>
                     </div>
-                    <div className="px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full [.theme-clear_&]:bg-indigo-50 [.theme-clear_&]:border-indigo-200">
-                        <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest [.theme-clear_&]:text-indigo-700">
+                    <div className="px-4 py-2 bg-[color:var(--accent-1)]/10 border border-[color:var(--accent-1)]/20 rounded-full [.theme-clear_&]:bg-emerald-50 [.theme-clear_&]:border-emerald-200">
+                        <span className="text-xs font-bold text-[color:var(--accent-1)] uppercase tracking-widest [.theme-clear_&]:text-emerald-700">
                             Role: {userRole.replace('_', ' ')}
                         </span>
                     </div>
                 </header>
 
                 {/* Tab Navigation */}
-                <div className="flex bg-slate-900 border border-slate-800 p-1.5 rounded-2xl w-fit [.theme-clear_&]:bg-slate-200/50 [.theme-clear_&]:border-slate-300">
+                <div className="flex bg-[color:var(--glass)] border border-white/10 p-1.5 rounded-2xl w-fit [.theme-clear_&]:bg-slate-200/50 [.theme-clear_&]:border-slate-300">
                     <button
                         onClick={() => setActiveTab('pending')}
                         className={`px-8 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeTab === 'pending'
-                            ? 'bg-indigo-600 text-white shadow-lg'
-                            : 'text-slate-400 hover:text-white [.theme-clear_&]:text-slate-500 [.theme-clear_&]:hover:text-slate-900'
+                            ? 'bg-[color:var(--accent-1)] text-white shadow-lg'
+                            : 'text-[color:var(--text-muted)] hover:text-[color:var(--text-primary)]'
                             }`}
                     >
                         <Clock className="w-4 h-4" />
@@ -172,8 +172,8 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                         <button
                             onClick={() => setActiveTab('grading')}
                             className={`px-8 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeTab === 'grading'
-                                ? 'bg-indigo-600 text-white shadow-lg'
-                                : 'text-slate-400 hover:text-white [.theme-clear_&]:text-slate-500 [.theme-clear_&]:hover:text-slate-900'
+                                ? 'bg-[color:var(--accent-1)] text-white shadow-lg'
+                                : 'text-[color:var(--text-muted)] hover:text-[color:var(--text-primary)]'
                                 }`}
                         >
                             <Award className="w-4 h-4" />
@@ -187,27 +187,27 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-b-indigo-500 font-bold text-indigo-500"></div>
                     </div>
                 ) : submissions.length === 0 ? (
-                    <div className="text-center py-20 bg-slate-900/50 border border-slate-800 rounded-3xl [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200">
-                        <Check className="w-16 h-16 text-slate-700 mx-auto mb-4 [.theme-clear_&]:text-slate-300" />
-                        <h2 className="text-xl font-bold text-slate-500 [.theme-clear_&]:text-slate-400">
+                    <div className="text-center py-20 card-glass border border-white/10 rounded-3xl [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200">
+                        <Check className="w-16 h-16 text-[color:var(--text-muted)] mx-auto mb-4 opacity-50" />
+                        <h2 className="text-xl font-bold text-[color:var(--text-muted)]">
                             {activeTab === 'pending' ? 'Tidak ada pendaftaran sertifikasi baru' : 'Tidak ada ujian yang perlu dinilai'}
                         </h2>
-                        <p className="text-slate-600 [.theme-clear_&]:text-slate-400">Terima kasih atas dedikasi Anda.</p>
+                        <p className="text-[color:var(--text-muted)]/60">Terima kasih atas dedikasi Anda.</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {submissions.map((sub: KRSSubmission) => (
                             <div
                                 key={sub.id}
-                                className="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-indigo-500/50 transition-all group relative overflow-hidden [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-sm"
+                                className="card-glass border border-white/6 rounded-2xl p-6 hover:border-[color:var(--accent-1)]/50 transition-all group relative overflow-hidden [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-sm"
                             >
-                                <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full -mr-12 -mt-12 group-hover:bg-indigo-500/10 transition-colors"></div>
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-[color:var(--accent-1)]/5 rounded-full -mr-12 -mt-12 group-hover:bg-[color:var(--accent-1)]/10 transition-colors"></div>
 
                                 <div className="flex flex-col h-full space-y-4">
                                     <div className="flex justify-between items-start">
                                         <div>
-                                            <div className="text-xs font-black text-indigo-400 uppercase mb-1 [.theme-clear_&]:text-indigo-600">{sub.kelas}</div>
-                                            <h3 className="text-xl font-bold text-white truncate [.theme-clear_&]:text-slate-900">{sub.siswa_nama}</h3>
+                                            <div className="text-xs font-black text-[color:var(--accent-1)] uppercase mb-1 [.theme-clear_&]:text-emerald-600">{sub.kelas}</div>
+                                            <h3 className="text-xl font-bold text-[color:var(--text-primary)] truncate">{sub.siswa_nama}</h3>
                                         </div>
                                         {sub.status === 'scheduled' && (
                                             <div className="flex flex-col items-end gap-2">
@@ -259,8 +259,8 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                             }
                                         }}
                                         className={`w-full py-3 rounded-xl font-bold transition-all text-sm ${activeTab === 'pending'
-                                            ? 'bg-white/5 border border-white/10 hover:bg-white/10'
-                                            : 'bg-indigo-600 text-white hover:bg-indigo-500'
+                                            ? 'bg-white/5 border border-white/10 text-[color:var(--text-primary)] hover:bg-white/10'
+                                            : 'bg-[color:var(--accent-1)] text-white hover:opacity-90'
                                             }`}
                                     >
                                         {activeTab === 'pending' ? (userRole === 'wali_kelas' ? 'Lihat Detail' : 'Review Pengajuan') : 'Input Nilai Ujian'}
@@ -285,8 +285,8 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
             {/* Review Modal */}
             {selectedSub && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-                    <div className="w-full max-w-lg bg-slate-900 [.theme-clear_&]:bg-slate-50 border border-slate-800 [.theme-clear_&]:border-slate-200 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-                        <div className="p-8 border-b border-slate-800 bg-gradient-to-r from-indigo-600 to-blue-600 text-white">
+                    <div className="w-full max-w-lg bg-[color:var(--bg-from)] border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                        <div className="p-8 border-b border-white/10 bg-gradient-to-r from-[color:var(--accent-1)] to-[color:var(--accent-2)] text-white">
                             <div className="flex justify-between items-start">
                                 <div>
                                     <h2 className="text-2xl font-black uppercase">Verifikasi Sertifikasi</h2>
@@ -316,14 +316,14 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                         if (!trimmed) return null;
                                         const subItem = isSubItem(trimmed);
                                         return (
-                                            <div key={i} className={`p-3 bg-slate-800/50 border border-slate-800 rounded-xl text-sm ${subItem ? 'ml-6' : ''} [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200`}>
+                                            <div key={i} className={`p-3 card-glass border border-white/10 rounded-xl text-sm ${subItem ? 'ml-6' : ''}`}>
                                                 {subItem ? (
                                                     <div className="flex gap-2">
-                                                        <span className="text-indigo-500">└</span>
-                                                        <span className="text-slate-300 [.theme-clear_&]:text-slate-600 font-medium">{cleanSubItemText(trimmed)}</span>
+                                                        <span className="text-[color:var(--accent-1)]">└</span>
+                                                        <span className="text-[color:var(--text-muted)] font-medium">{cleanSubItemText(trimmed)}</span>
                                                     </div>
                                                 ) : (
-                                                    <span className="text-white font-bold [.theme-clear_&]:text-indigo-950">{trimmed.replace(/\*\*/g, '')}</span>
+                                                    <span className="text-[color:var(--text-primary)] font-bold">{trimmed.replace(/\*\*/g, '')}</span>
                                                 )}
                                             </div>
                                         );
@@ -333,33 +333,33 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
 
                             {userRole === 'hod' && (
                                 <div className="space-y-3">
-                                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 [.theme-clear_&]:text-slate-500">
+                                    <label className="text-xs font-black text-[color:var(--text-muted)] uppercase tracking-widest flex items-center gap-2">
                                         <Calendar className="w-4 h-4 text-emerald-400" /> Tentukan Jadwal Ujian (Wajib)
                                     </label>
                                     <input
                                         type="date"
                                         value={examDate}
                                         onChange={(e) => setExamDate(e.target.value)}
-                                        className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:border-indigo-500 transition-all outline-none [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-300 [.theme-clear_&]:text-slate-900"
+                                        className="w-full px-4 py-3 bg-[color:var(--glass)] border border-white/10 rounded-xl text-[color:var(--text-primary)] focus:border-[color:var(--accent-1)] transition-all outline-none"
                                     />
                                 </div>
                             )}
 
                             <div className="space-y-3">
-                                <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 [.theme-clear_&]:text-slate-500">
-                                    <MessageSquare className="w-4 h-4 text-indigo-400" /> Catatan untuk Siswa (Opsional)
+                                <label className="text-xs font-black text-[color:var(--text-muted)] uppercase tracking-widest flex items-center gap-2">
+                                    <MessageSquare className="w-4 h-4 text-[color:var(--accent-1)]" /> Catatan untuk Siswa (Opsional)
                                 </label>
                                 <textarea
                                     value={notes}
                                     onChange={(e) => setNotes(e.target.value)}
                                     placeholder="Beri masukan atau alasan penolakan..."
-                                    className="w-full h-24 px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:border-indigo-500 transition-all outline-none resize-none text-sm [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-300 [.theme-clear_&]:text-slate-900"
+                                    className="w-full h-24 px-4 py-3 bg-[color:var(--glass)] border border-white/10 rounded-xl text-[color:var(--text-primary)] focus:border-[color:var(--accent-1)] transition-all outline-none resize-none text-sm"
                                 />
                             </div>
                         </div>
 
                         {userRole !== 'wali_kelas' && (
-                            <div className="p-8 border-t border-slate-800 bg-slate-950/50 flex gap-4 [.theme-clear_&]:bg-slate-100/50 [.theme-clear_&]:border-slate-200">
+                            <div className="p-8 border-t border-white/5 bg-white/5 flex gap-4">
                                 <button
                                     onClick={() => handleReject(selectedSub.id)}
                                     className="flex-1 py-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl font-bold hover:bg-red-500/20 transition-all"
@@ -368,7 +368,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                 </button>
                                 <button
                                     onClick={() => handleApprove(selectedSub.id)}
-                                    className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-500 active:scale-95 transition-all shadow-lg shadow-indigo-500/20"
+                                    className="flex-1 py-3 bg-[color:var(--accent-1)] text-white rounded-xl font-bold hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-[color:var(--accent-1)]/20"
                                 >
                                     Setujui
                                 </button>
