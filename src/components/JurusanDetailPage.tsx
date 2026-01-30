@@ -272,7 +272,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
     }
   }
 
-  const [activeTab, setActiveTab] = useState<string>('all');
+  const [activeTab, setActiveTab] = useState<string>(classFilter || 'all');
 
   // Memoize unique classes for this jurusan, sorted naturally
   const uniqueClasses = useMemo(() => {
@@ -301,13 +301,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
       const cls = s.kelas.trim();
       const clsNorm = norm(cls);
 
-      // If we have a forced prop filter (Student View), use it.
-      if (classFilter) {
-        const cf = classFilter.trim();
-        const cfNorm = norm(cf);
-        return clsNorm === cfNorm || clsNorm.startsWith(cfNorm);
-      }
-      // Teacher View
+      // General filter based on activeTab (initialized with classFilter if any)
       if (target === 'all') return true;
       if (['X', 'XI', 'XII'].includes(target)) {
         return cls.startsWith(target + ' ');
@@ -393,8 +387,8 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
         ) : (
           <div className="space-y-8">
             {/* Tabs for Teachers */}
-            {/* Class Slider View */}
-            {!classFilter && isTeacher && (
+            {/* Class Slider View (Visible for both teachers and students) */}
+            {true && (
               <div className="mb-8">
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center justify-between px-2">
@@ -481,7 +475,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
             {/* Class Content Carousel */}
             <div className="relative">
               {/* Floating Slide Navigation Arrows */}
-              {!classFilter && isTeacher && (
+              {true && (
                 <>
                   <button
                     onClick={() => {
