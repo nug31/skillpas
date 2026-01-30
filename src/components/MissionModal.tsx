@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { X, Target, Trophy, Users, Award, Plus, Check, Info, ChevronDown, ChevronRight } from 'lucide-react';
+import { X, Target, Plus, Check, Info, ChevronDown, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Jurusan, LevelSkill } from '../types';
 import { supabase, isMockMode } from '../lib/supabase';
@@ -9,44 +9,6 @@ import { KRSSubmission } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { groupCriteria, cleanSubItemText } from '../lib/criteriaHelper';
 
-// Special Missions / Challenges data
-interface SpecialMission {
-    id: string;
-    title: string;
-    description: string;
-    xpReward: number;
-    icon: React.ReactNode;
-    difficulty: 'easy' | 'medium' | 'hard';
-    deadline?: string;
-}
-
-const specialMissions: SpecialMission[] = [
-    {
-        id: 'project-mini',
-        title: 'Selesaikan Proyek Mini',
-        description: 'Buat dan selesaikan proyek mini dalam 1 minggu',
-        xpReward: 20,
-        icon: <Trophy className="w-5 h-5" />,
-        difficulty: 'medium',
-        deadline: '7 hari'
-    },
-    {
-        id: 'peer-mentoring',
-        title: 'Bantu Teman Belajar',
-        description: 'Lakukan peer mentoring dengan minimal 1 teman',
-        xpReward: 10,
-        icon: <Users className="w-5 h-5" />,
-        difficulty: 'easy'
-    },
-    {
-        id: 'competition',
-        title: 'Ikut Lomba Jurusan',
-        description: 'Berpartisipasi dalam lomba atau kompetisi jurusan',
-        xpReward: 30,
-        icon: <Award className="w-5 h-5" />,
-        difficulty: 'hard'
-    }
-];
 
 interface MissionModalProps {
     isOpen: boolean;
@@ -415,37 +377,6 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                     );
                                 })}
 
-                                {/* Extra Missions */}
-                                <div className="mt-8 pt-6 border-t border-white/10">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="p-2 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg shadow-lg">
-                                            <Trophy className="w-5 h-5 text-white" />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-bold text-white [.theme-clear_&]:text-slate-900">🎯 Tantangan Global</h3>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 gap-3">
-                                        {specialMissions.map((mission) => (
-                                            <div
-                                                key={mission.id}
-                                                className="relative p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 hover:border-purple-500/40 transition-all group cursor-pointer [.theme-clear_&]:bg-purple-50 [.theme-clear_&]:border-purple-100"
-                                            >
-                                                <div className="flex items-start gap-4">
-                                                    <div className={`p-2 rounded-xl shadow-lg ${mission.difficulty === 'hard' ? 'bg-red-500' : mission.difficulty === 'medium' ? 'bg-amber-500' : 'bg-emerald-500'} text-white`}>
-                                                        {mission.icon}
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <h4 className="font-bold text-white text-sm [.theme-clear_&]:text-slate-800">{mission.title}</h4>
-                                                        <p className="text-xs text-white/50 [.theme-clear_&]:text-slate-500">{mission.description}</p>
-                                                    </div>
-                                                    <div className="bg-yellow-400/10 text-yellow-400 px-2 py-1 rounded text-[10px] font-black [.theme-clear_&]:bg-amber-100 [.theme-clear_&]:text-amber-700">+{mission.xpReward} XP</div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
                             </>
                         )}
                     </div>
