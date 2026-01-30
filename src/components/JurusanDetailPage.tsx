@@ -276,13 +276,12 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
 
   // Memoize unique classes for this jurusan, sorted naturally
   const uniqueClasses = useMemo(() => {
-    // Filter only Grade 10 classes (starts with 'X ')
-    const classes = new Set(students.map(s => s.kelas.trim()).filter(c => c.startsWith('X ')));
+    const classes = new Set(students.map(s => s.kelas.trim()));
     const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
     return Array.from(classes).sort(collator.compare);
   }, [students]);
 
-  const allNavOptions = useMemo(() => ['all', 'X', ...uniqueClasses], [uniqueClasses]);
+  const allNavOptions = useMemo(() => ['all', 'X', 'XI', 'XII', ...uniqueClasses], [uniqueClasses]);
 
   const handleTabChange = (newTab: string) => {
     const prevIndex = allNavOptions.indexOf(activeTab);
@@ -419,7 +418,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                       </button>
 
                       {/* Year Level Slides */}
-                      {['X'].map((year) => {
+                      {['X', 'XI', 'XII'].map((year) => {
                         const isYearSelected = activeTab === year;
                         return (
                           <button
@@ -438,8 +437,15 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                         );
                       })}
 
-                      {/* Specific Class Slides */}
-                      {uniqueClasses.map((className) => {
+                      {/* Specific Class Slides - Filtered by Year */}
+                      {uniqueClasses.filter(c => {
+                        if (activeTab === 'all') return true;
+                        const year = activeTab.split(' ')[0];
+                        if (['X', 'XI', 'XII'].includes(year)) {
+                          return c.startsWith(year + ' ');
+                        }
+                        return true; // If already in a class, show classes of same year
+                      }).map((className) => {
                         const isSelected = activeTab === className;
                         const label = formatClassLabel(jurusan.nama_jurusan, className);
 
