@@ -19,20 +19,20 @@ Tugas utama Anda adalah memantau kehadiran dan karakter siswa di kelas yang Anda
 - **Dashboard**: Melihat rangkuman progres siswa di kelas Anda.
 - **Update Kehadiran**: Klik Nama Siswa > Tab Kehadiran. Masukkan jumlah Masuk, Izin, Sakit, dan Alfa.
 - **Update Sikap**: Klik Nama Siswa > Tab Skor Sikap. Berikan penilaian pada aspek Disiplin, Tanggung Jawab, Jujur, dll.
-- **Monitoring KRS**: Anda dapat melihat status pengajuan KRS siswa kelas Anda.
+- **Monitoring Sertifikasi**: Anda dapat melihat status pendaftaran sertifikasi competency siswa kelas Anda.
 
 ![Dashboard Guru/Walas](assets/guru_home.png)
 
 ### 2. Guru Produktif
 Tugas utama Anda adalah memverifikasi kompetensi teknis siswa:
 - **Edit Skor & Poin**: Memperbarui nilai kompetensi teknis (0-100) dan memberikan tambahan XP/Poin.
-- **Persetujuan KRS (Tahap 1)**: Meninjau unit kompetensi yang dipilih siswa. Jika sudah layak uji, klik **Setujui**.
-- **Input Nilai Ujian**: Setelah siswa tes, masukkan nilai akhir di menu Persetujuan KRS > Tab Penilaian Ujian.
+- **Verifikasi Sertifikasi (Tahap 1)**: Meninjau unit kompetensi yang dipilih siswa. Jika sudah layak uji, klik **Setujui**.
+- **Input Nilai Ujian**: Setelah siswa tes, masukkan nilai akhir di menu Verifikasi Sertifikasi > Tab Penilaian Ujian.
 
 ### 3. HOD / Kaprog (Kepala Program Keahlian)
 Tugas utama Anda adalah sebagai verifikator akhir dan pengelola standar jurusan:
 - **Kelola Kriteria**: Mengubah kriteria kompetensi di setiap level (Menu Detail Jurusan > Level Skill).
-- **Persetujuan KRS (Tahap Final)**: Memberikan persetujuan akhir dan **wajib menentukan Tanggal Ujian**.
+- **Verifikasi Sertifikasi (Tahap Final)**: Memberikan persetujuan akhir dan **wajib menentukan Tanggal Ujian**.
 - **Import Data**: Mengelola data massal siswa dalam satu jurusan.
 
 ![Edit Kriteria](assets/guru_criteria.png)

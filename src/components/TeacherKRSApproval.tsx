@@ -145,8 +145,8 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                             <ChevronLeft className="w-5 h-5 [.theme-clear_&]:text-slate-700" />
                         </button>
                         <div>
-                            <h1 className="text-3xl font-black tracking-tight text-white uppercase [.theme-clear_&]:text-indigo-950">Persetujuan KRS</h1>
-                            <p className="text-slate-400 text-sm [.theme-clear_&]:text-slate-500">Review dan verifikasi rencana belajar siswa</p>
+                            <h1 className="text-3xl font-black tracking-tight text-white uppercase [.theme-clear_&]:text-indigo-950">Verifikasi Sertifikasi</h1>
+                            <p className="text-slate-400 text-sm [.theme-clear_&]:text-slate-500">Review dan verifikasi pendaftaran sertifikasi competency siswa</p>
                         </div>
                     </div>
                     <div className="px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full [.theme-clear_&]:bg-indigo-50 [.theme-clear_&]:border-indigo-200">
@@ -190,7 +190,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                     <div className="text-center py-20 bg-slate-900/50 border border-slate-800 rounded-3xl [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200">
                         <Check className="w-16 h-16 text-slate-700 mx-auto mb-4 [.theme-clear_&]:text-slate-300" />
                         <h2 className="text-xl font-bold text-slate-500 [.theme-clear_&]:text-slate-400">
-                            {activeTab === 'pending' ? 'Tidak ada pengajuan KRS baru' : 'Tidak ada ujian yang perlu dinilai'}
+                            {activeTab === 'pending' ? 'Tidak ada pendaftaran sertifikasi baru' : 'Tidak ada ujian yang perlu dinilai'}
                         </h2>
                         <p className="text-slate-600 [.theme-clear_&]:text-slate-400">Terima kasih atas dedikasi Anda.</p>
                     </div>
@@ -217,7 +217,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        const msg = `Halo ${sub.siswa_nama}, ujian KRS Anda telah dijadwalkan pada tanggal ${sub.exam_date}. Mohon persiapkan diri dengan baik. Terima kasih!`;
+                                                        const msg = `Halo ${sub.siswa_nama}, ujian sertifikasi competency Anda telah dijadwalkan pada tanggal ${sub.exam_date}. Mohon persiapkan diri dengan baik. Terima kasih!`;
                                                         // Fallback to finding student in mockData or DB if wa_number is missing in sub
                                                         // For now we assume we might need to fetch the number
                                                         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
@@ -289,7 +289,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                         <div className="p-8 border-b border-slate-800 bg-gradient-to-r from-indigo-600 to-blue-600 text-white">
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <h2 className="text-2xl font-black uppercase">Detail KRS</h2>
+                                    <h2 className="text-2xl font-black uppercase">Verifikasi Sertifikasi</h2>
                                     <p className="text-indigo-100 font-medium">{selectedSub.siswa_nama} — {selectedSub.kelas}</p>
                                 </div>
                                 <button

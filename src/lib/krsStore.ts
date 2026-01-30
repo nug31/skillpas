@@ -134,8 +134,8 @@ export const krsStore = {
 
         notificationStore.actions.addNotification({
             type: 'success',
-            title: 'KRS Terkirim',
-            message: `KRS untuk ${submission.siswa_nama} telah berhasil diajukan ke Guru Produktif.`,
+            title: 'Sertifikasi Terdaftar',
+            message: `Pendaftaran Sertifikasi untuk ${submission.siswa_nama} telah berhasil diajukan ke Guru Produktif.`,
         });
 
         return result as KRSSubmission;
@@ -195,12 +195,12 @@ export const krsStore = {
 
         this.notifyUpdate();
 
-        let notifTitle = 'KRS Disetujui';
-        let notifMsg = `KRS ${submission.siswa_nama} telah disetujui di tahap ${role.replace('_', ' ')}.`;
+        let notifTitle = 'Sertifikasi Disetujui';
+        let notifMsg = `Sertifikasi ${submission.siswa_nama} telah disetujui di tahap ${role.replace('_', ' ')}.`;
 
         if (updates.status === 'scheduled') {
             notifTitle = 'Jadwal Ujian Ditetapkan';
-            notifMsg = `Ujian KRS ${submission.siswa_nama} dijadwalkan pada ${updates.exam_date}.`;
+            notifMsg = `Ujian Sertifikasi ${submission.siswa_nama} dijadwalkan pada ${updates.exam_date}.`;
         }
 
         notificationStore.actions.addNotification({
@@ -245,8 +245,8 @@ export const krsStore = {
 
         notificationStore.actions.addNotification({
             type: 'error',
-            title: 'KRS Ditolak',
-            message: `KRS ${name} telah ditolak. Catatan: ${notes}`,
+            title: 'Sertifikasi Ditolak',
+            message: `Pendaftaran Sertifikasi ${name} telah ditolak. Catatan: ${notes}`,
         });
 
         return true;
@@ -314,7 +314,7 @@ export const krsStore = {
                 siswa_id: submission.siswa_id,
                 level_id: levelObj.id,
                 unit_kompetensi: (submission.items || []).join(', '),
-                aktivitas_pembuktian: 'Ujian KRS Terverifikasi',
+                aktivitas_pembuktian: 'Ujian Sertifikasi Terverifikasi',
                 penilai: examinerName || 'Guru Produktif',
                 hasil: result,
                 tanggal: displayDate,
@@ -355,7 +355,7 @@ export const krsStore = {
                 siswa_id: dbSiswaId,
                 level_id: dbLevelId,
                 unit_kompetensi: (submission.items || []).join(', '), // Should be Array validation
-                aktivitas_pembuktian: 'Ujian KRS Terverifikasi',
+                aktivitas_pembuktian: 'Ujian Sertifikasi Terverifikasi',
                 penilai: examinerName || 'Guru Produktif',
                 hasil: result,
                 tanggal: isoDate,

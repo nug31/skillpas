@@ -579,7 +579,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                         className="px-6 py-3 bg-white/5 border border-white/10 text-white rounded-lg font-semibold shadow-lg hover:-translate-y-1 hover:bg-white/10 transition-all w-full sm:w-auto text-sm sm:text-base flex items-center justify-center gap-2 relative group"
                       >
                         <CheckCircle className="w-5 h-5 text-indigo-400" />
-                        Persetujuan KRS
+                        Verifikasi Sertifikasi
                         {pendingKRSCount > 0 && (
                           <div className={`absolute -top-1.5 -right-1.5 w-5 h-5 ${toApproveCount > 0 ? 'bg-red-500' : 'bg-emerald-500'
                             } text-white text-[9px] font-black rounded-full flex items-center justify-center border border-[#0f172a] animate-bounce shadow-lg shadow-emerald-500/20`}>
@@ -604,11 +604,11 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-0.5">
-                        <h3 className="text-emerald-400 font-black text-sm uppercase tracking-wider [.theme-clear_&]:text-emerald-700">Ujian KRS Terjadwal!</h3>
+                        <h3 className="text-emerald-400 font-black text-sm uppercase tracking-wider [.theme-clear_&]:text-emerald-700">Ujian Sertifikasi Terjadwal!</h3>
                         <span className="text-[10px] font-bold text-emerald-500/60 uppercase">Confirmed</span>
                       </div>
                       <p className="text-white/70 text-xs leading-relaxed [.theme-clear_&]:text-slate-600 mb-2">
-                        KRS disetujui penuh & jadwal ujian tersedia.
+                        Sertifikasi disetujui penuh & jadwal ujian tersedia.
                       </p>
                       <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-emerald-500/20 rounded-lg border border-emerald-500/20 text-emerald-300 font-bold text-[10px] [.theme-clear_&]:text-emerald-700 [.theme-clear_&]:bg-emerald-100/50">
                         <span className="opacity-60 font-medium tracking-tight">JADWAL:</span>

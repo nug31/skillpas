@@ -194,7 +194,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
             items: selectedKRS
         });
 
-        alert("KRS berhasil diajukan! Tunggu persetujuan guru.");
+        alert("Pendaftaran Sertifikasi berhasil diajukan! Tunggu verifikasi guru.");
         onClose();
     };
 
@@ -237,9 +237,9 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                             </div>
                             <div>
                                 <div className="text-blue-100 text-sm font-bold tracking-wider uppercase flex items-center gap-2">
-                                    KRS Skill • <span className="text-yellow-300 font-bold">{currentScore} XP</span> • <span className="text-emerald-300 font-bold">{currentPoin} Poin</span>
+                                    Sertifikasi Competency • <span className="text-yellow-300 font-bold">{currentScore} XP</span> • <span className="text-emerald-300 font-bold">{currentPoin} Poin</span>
                                 </div>
-                                <h2 className="text-2xl font-black text-white">Susun Rencana Belajarmu</h2>
+                                <h2 className="text-2xl font-black text-white">Progress Sertifikasi Kamu</h2>
                             </div>
                         </div>
                     </div>
@@ -263,7 +263,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                                     submission.status === 'scheduled' ? 'bg-emerald-500' :
                                                         'bg-blue-500'
                                                     }`} />
-                                                <span className="text-xs font-bold uppercase tracking-wider text-white/70 [.theme-clear_&]:text-slate-500">Status KRS</span>
+                                                <span className="text-xs font-bold uppercase tracking-wider text-white/70 [.theme-clear_&]:text-slate-500">Status Sertifikasi</span>
                                             </div>
                                             <span className="text-xs font-black text-white px-2 py-0.5 bg-white/10 rounded [.theme-clear_&]:bg-slate-200 [.theme-clear_&]:text-slate-800">
                                                 {getStatusLabel(submission.status)}
@@ -466,7 +466,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                 : 'bg-white text-indigo-900 hover:bg-gray-100 active:scale-95 [.theme-clear_&]:bg-indigo-600 [.theme-clear_&]:text-white [.theme-clear_&]:hover:bg-indigo-700'
                                 }`}
                         >
-                            <span>{submission ? 'Update Rencana' : 'Ajukan KRS'}</span>
+                            <span>{submission ? 'Update Pendaftaran' : 'Daftar Sertifikasi'}</span>
                         </button>
                     </div>
                 </motion.div>

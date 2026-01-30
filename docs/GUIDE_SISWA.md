@@ -27,18 +27,18 @@ Setelah login, kamu akan melihat Dashboard utama yang berisi:
    - **Tab Riwayat**: Menampilkan daftar kompetensi yang sudah lulus.
    - **Download Sertifikat**: Untuk kompetensi yang sudah lulus (Lulus), kamu bisa klik tombol **Download Sertifikat** untuk mengunduh bukti kompetensimu dalam bentuk PDF.
 
-## 4. Kartu Rencana Studi (KRS) & Misi
-Fitur ini digunakan untuk pengujian kompetensi mandiri:
-1. Klik tombol **Misi / KRS** (ikon target/trofi).
+## 4. Sertifikasi Competency & Misi
+Fitur ini digunakan untuk pendaftaran sertifikasi competency mandiri:
+1. Klik tombol **Pendaftaran Sertifikasi** (ikon target/trofi).
 2. Lihat **Misi Spesial** yang tersedia untuk menambah XP/Poin.
 3. Di bagian **Daftar Unit Kompetensi**, kamu bisa melihat syarat untuk mencapai level berikutnya.
-4. Pilih unit yang ingin kamu uji, lalu klik **Ajukan Persetujuan KRS**.
+4. Pilih unit yang ingin kamu uji, lalu klik **Daftar Sertifikasi Competency**.
 
 ![Modal KRS](assets/siswa_krs.png)
 
-5. **Persetujuan & Jadwal Ujian**: 
+5. **Verifikasi & Jadwal Ujian**: 
    - Jika guru menyetujui, status akan berubah.
-   - Jika HOD (Kepala Program) menjadwalkan ujian, kamu akan melihat **Notifikasi Berwarna Hijau** di Dashboard bertuliskan **"Ujian KRS Terjadwal!"**.
+   - Jika HOD (Kepala Program) menjadwalkan ujian, kamu akan melihat **Notifikasi Berwarna Hijau** di Dashboard bertuliskan **"Ujian Sertifikasi Terjadwal!"**.
    - Catat tanggal dan jam ujian yang muncul di notifikasi tersebut.
 
 ## 5. Melihat Leaderboard & Student Race (Klik Kelas)
