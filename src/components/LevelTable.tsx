@@ -220,23 +220,38 @@ export function LevelTable({ levels, jurusanId, onUpdateCriteria, isTeacher = fa
       </div>
 
       {/* Mobile: stacked cards */}
-      <div className="md:hidden p-4 space-y-3">
+      <div className="md:hidden p-4 space-y-4">
         {levels.map((level) => (
-          <div key={level.id} className="card-glass rounded-lg p-4 shadow-sm">
-            <div className="flex items-start gap-3">
-              <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: level.badge_color }}>
-                <div className="text-xs font-bold text-black">{level.badge_name.charAt(0)}</div>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="font-semibold text-sm text-[color:var(--text-primary)] truncate">{level.nama_level}</div>
-                  {isTeacher && (
-                    <div className="text-xs text-[color:var(--text-muted)]">{level.min_skor} - {level.max_skor}</div>
-                  )}
-                </div>
+          <div key={level.id} className="card-glass rounded-2xl p-5 shadow-xl border border-white/5 relative overflow-hidden group">
+            <div
+              className="absolute -top-10 -right-10 w-32 h-32 blur-[50px] opacity-20 transition-opacity group-hover:opacity-30"
+              style={{ background: level.badge_color }}
+            />
 
-                <div className="mt-3">
-                  <div className="text-xs font-semibold text-[color:var(--text-muted)] mb-1">Kriteria:</div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-4">
+                <div
+                  className="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg transform rotate-3"
+                  style={{ background: `linear-gradient(135deg, ${level.badge_color}, #00000044)` }}
+                >
+                  <div className="text-lg font-black text-black drop-shadow-sm">{level.badge_name.charAt(0)}</div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-base text-[color:var(--text-primary)] leading-tight">{level.nama_level}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge name={level.badge_name} color={level.badge_color} size="sm" />
+                    {isTeacher && (
+                      <span className="text-[10px] font-bold bg-white/5 px-2 py-0.5 rounded text-[color:var(--text-muted)] border border-white/5">
+                        Score: {level.min_skor}-{level.max_skor}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="bg-black/20 rounded-xl p-3 border border-white/5">
+                  <div className="text-[10px] font-black uppercase tracking-wider text-[color:var(--accent-1)] mb-2">Kompetensi Utama</div>
                   <LevelCriteriaCell
                     level={level}
                     allowEdit={allowEdit && !!jurusanId && !!onUpdateCriteria}
@@ -244,7 +259,14 @@ export function LevelTable({ levels, jurusanId, onUpdateCriteria, isTeacher = fa
                   />
                 </div>
 
-                <div className="text-xs text-[color:var(--text-muted)] mt-2">Soft skills: {level.soft_skill}</div>
+                {level.soft_skill && (
+                  <div className="bg-indigo-500/5 rounded-xl p-3 border border-indigo-500/10">
+                    <div className="text-[10px] font-black uppercase tracking-wider text-indigo-400 mb-1">Soft Skills</div>
+                    <p className="text-xs text-[color:var(--text-muted)] leading-relaxed italic">
+                      "{level.soft_skill}"
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

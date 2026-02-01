@@ -11,6 +11,7 @@ import { LogOut } from 'lucide-react';
 import { ProfileAvatar } from './components/ProfileAvatar';
 import { TeacherKRSApproval } from './components/TeacherKRSApproval';
 import { NotificationToast } from './components/NotificationToast';
+import ReloadPrompt from './components/ReloadPrompt';
 
 function AppContent() {
   const { user, logout, isAuthenticated, isTeacher } = useAuth();
@@ -169,6 +170,7 @@ function AppContent() {
       </main>
       <FooterReflexGame />
       <NotificationToast />
+      <ReloadPrompt />
     </div>
   );
 }

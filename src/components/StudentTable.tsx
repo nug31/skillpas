@@ -133,9 +133,20 @@ export function StudentTable({
       </div>
 
       {/* mobile */}
-      <div className="md:hidden px-4 py-4 space-y-3">
+      <div className="md:hidden px-3 py-4 space-y-3">
         {filteredAndSortedStudents.map((student) => (
-          <div key={student.id} className="card-glass rounded-xl p-4 flex items-center gap-4">
+          <div key={student.id} className="card-glass rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 relative overflow-hidden">
+            {/* Rank Badge for mobile corner */}
+            {topRanks?.[student.id] && (
+              <div className={`absolute top-0 right-0 px-2 py-0.5 rounded-bl-lg text-[10px] font-bold shadow-sm ${topRanks[student.id] === 1 ? 'bg-yellow-400 text-black' :
+                topRanks[student.id] === 2 ? 'bg-gray-300 text-black' :
+                  topRanks[student.id] === 3 ? 'bg-orange-300 text-black' :
+                    'bg-indigo-500 text-white'
+                }`}>
+                #{topRanks[student.id]}
+              </div>
+            )}
+
             <ProfileAvatar
               name={student.nama}
               avatarUrl={student.avatar_url}
@@ -145,38 +156,70 @@ export function StudentTable({
               jurusanColor={student.badge_color}
             />
             <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <button onClick={() => onSelectStudent?.(student)} className="font-semibold text-sm text-[color:var(--text-primary)] truncate hover:underline text-left">{student.nama}</button>
-                {topRanks?.[student.id] && (
-                  <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${topRanks[student.id] === 1 ? 'bg-yellow-400 text-black' :
-                    topRanks[student.id] === 2 ? 'bg-gray-300 text-black' :
-                      topRanks[student.id] === 3 ? 'bg-orange-300 text-black' :
-                        'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                    }`}>
-                    #{topRanks[student.id]}
-                  </div>
-                )}
+              <div className="pr-8">
+                <button
+                  onClick={() => onSelectStudent?.(student)}
+                  className="font-bold text-sm text-[color:var(--text-primary)] truncate hover:underline text-left block w-full"
+                >
+                  {student.nama}
+                </button>
               </div>
-              <div className="text-xs text-[color:var(--text-muted)] mt-1 truncate">
-                {formatClassLabel(jurusanName, student.kelas)} • {student.nisn ? `NISN: ${student.nisn}` : 'No NISN'} • Level {student.level_name} • <span className="text-[color:var(--accent-1)] font-semibold">{student.poin} Poin</span>
+              <div className="text-[11px] text-[color:var(--text-muted)] mt-0.5 flex flex-wrap gap-x-2 gap-y-0.5 items-center">
+                <span className="font-medium">{formatClassLabel(jurusanName, student.kelas)}</span>
+                <span className="opacity-30">•</span>
+                <span>Level {student.level_name}</span>
+                <span className="opacity-30">•</span>
+                <span className="text-[color:var(--accent-1)] font-bold">{student.poin} Poin</span>
               </div>
-              <div className="mt-2 flex items-center gap-2">
-                <div className="text-sm font-semibold text-[color:var(--text-primary)] w-8">{student.skor}</div>
-                <div className="flex-1 bg-white/5 rounded-full h-2"><div className="bg-[color:var(--accent-1)] h-2 rounded-full" style={{ width: `${student.skor}%` }} /></div>
+              <div className="mt-2 group">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="text-[10px] font-bold text-[color:var(--text-primary)]">Progress Score</div>
+                  <div className="text-[10px] font-bold text-[color:var(--accent-1)]">{student.skor}%</div>
+                </div>
+                <div className="w-full bg-white/5 rounded-full h-1.5 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-[color:var(--accent-1)] to-indigo-500 h-full rounded-full transition-all duration-500"
+                    style={{ width: `${student.skor}%` }}
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="ml-3">
+            <div className="flex flex-col gap-2">
               {onEditScore ? (editingId === student.id ? (
-                <div className="flex flex-col gap-2 items-end">
-                  <input type="number" min={0} max={100} value={editValue === '' ? '' : String(editValue)} onClick={(e) => e.stopPropagation()} onChange={(e) => setEditValue(Number(e.target.value))} className="w-16 px-2 py-1 border rounded text-xs text-[color:var(--text-primary)] bg-transparent" />
+                <div className="flex flex-col gap-1.5 items-end animate-in fade-in zoom-in-95 duration-200">
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    autoFocus
+                    value={editValue === '' ? '' : String(editValue)}
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={(e) => setEditValue(Number(e.target.value))}
+                    className="w-14 px-1.5 py-1 border rounded text-[11px] text-[color:var(--text-primary)] bg-slate-900 focus:ring-1 focus:ring-indigo-500"
+                  />
                   <div className="flex gap-1">
-                    <button onClick={async (e) => { e.stopPropagation(); if (!editValue && editValue !== 0) return; try { await onEditScore(student.id, Number(editValue)); cancelEdit(); } catch (err) { console.error('Failed to save score', err); } }} className="px-2 py-1 bg-[color:var(--accent-1)] text-white rounded text-xs">OK</button>
-                    <button onClick={(e) => { e.stopPropagation(); cancelEdit(); }} className="px-2 py-1 border rounded text-xs text-[color:var(--text-muted)]">Batal</button>
+                    <button
+                      onClick={async (e) => { e.stopPropagation(); if (!editValue && editValue !== 0) return; try { await onEditScore(student.id, Number(editValue)); cancelEdit(); } catch (err) { console.error('Failed to save score', err); } }}
+                      className="px-2 py-1 bg-indigo-600 text-white rounded text-[10px] font-bold shadow-lg shadow-indigo-600/20"
+                    >
+                      OK
+                    </button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); cancelEdit(); }}
+                      className="px-2 py-1 border border-white/10 rounded text-[10px] text-[color:var(--text-muted)] hover:bg-white/5"
+                    >
+                      X
+                    </button>
                   </div>
                 </div>
               ) : (
-                <button onClick={(e) => { e.stopPropagation(); startEdit(student.id, student.skor); }} className="px-3 py-1 border rounded text-sm text-[color:var(--text-muted)] hover:bg-white/5">Edit</button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); startEdit(student.id, student.skor); }}
+                  className="p-2 border border-white/5 rounded-lg text-[10px] font-bold text-[color:var(--text-muted)] hover:bg-white/5 transition-all active:scale-95"
+                >
+                  Edit
+                </button>
               )) : null}
             </div>
           </div>
