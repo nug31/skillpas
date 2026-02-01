@@ -80,8 +80,8 @@ export const PassportIdentityPage: React.FC<IdentityPageProps> = ({ siswa, jurus
                     <h2 className="font-bold text-lg uppercase tracking-wider text-slate-800">Identitas Pemilik</h2>
                 </div>
 
-                <div className="flex gap-4 mb-4">
-                    <div className="w-32 h-40 bg-slate-200 border border-slate-300 relative overflow-hidden flex-shrink-0 grayscale contrast-125">
+                <div className="flex flex-col sm:flex-row gap-4 mb-4">
+                    <div className="w-24 h-32 sm:w-32 sm:h-40 bg-slate-200 border border-slate-300 relative overflow-hidden flex-shrink-0 grayscale contrast-125 mx-auto sm:mx-0">
                         {siswa.photo_url || siswa.avatar_url ? (
                             <img
                                 src={siswa.photo_url || siswa.avatar_url}
@@ -94,46 +94,46 @@ export const PassportIdentityPage: React.FC<IdentityPageProps> = ({ siswa, jurus
                             </div>
                         )}
                         {/* Stamp overlay */}
-                        <div className="absolute -bottom-4 -right-4 text-blue-900/40 rotate-[-30deg] border-4 border-double border-blue-900/40 rounded-full p-2 w-20 h-20 flex items-center justify-center">
-                            <span className="font-black text-[8px] uppercase text-center">Resmi Terdaftar</span>
+                        <div className="absolute -bottom-4 -right-4 text-blue-900/40 rotate-[-30deg] border-4 border-double border-blue-900/40 rounded-full p-2 w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
+                            <span className="font-black text-[7px] sm:text-[8px] uppercase text-center">Resmi Terdaftar</span>
                         </div>
                     </div>
 
-                    <div className="flex-1 space-y-3">
+                    <div className="flex-1 space-y-2 sm:space-y-3">
                         <div>
-                            <span className="block text-[10px] text-slate-500 uppercase">Nama Lengkap / Full Name</span>
-                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 font-serif text-lg leading-tight uppercase">
+                            <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase">Nama Lengkap / Full Name</span>
+                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 font-serif text-sm sm:text-lg leading-tight uppercase">
                                 {siswa.nama}
                             </span>
                         </div>
                         <div>
-                            <span className="block text-[10px] text-slate-500 uppercase">Nomor Induk / ID Number</span>
-                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400">
+                            <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase">Nomor Induk / ID Number</span>
+                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 text-xs sm:text-sm">
                                 {siswa.nisn || '---'}
                             </span>
                         </div>
                         <div>
-                            <span className="block text-[10px] text-slate-500 uppercase">Jurusan / Major</span>
-                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 leading-tight mb-1">
+                            <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase">Jurusan / Major</span>
+                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 leading-tight mb-1 text-xs sm:text-sm">
                                 {jurusanName}
                             </span>
                         </div>
                         <div>
-                            <span className="block text-[10px] text-slate-500 uppercase">Wali Kelas / Homeroom Teacher</span>
-                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 leading-tight mb-1">
+                            <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase">Wali Kelas / Homeroom Teacher</span>
+                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 leading-tight mb-1 text-xs sm:text-sm">
                                 {walasName}
                             </span>
                         </div>
                         <div className="flex gap-4">
                             <div className="flex-1">
-                                <span className="block text-[10px] text-slate-500 uppercase">Kelas / Class</span>
-                                <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400">
+                                <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase">Kelas / Class</span>
+                                <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 text-xs sm:text-sm">
                                     {siswa.kelas}
                                 </span>
                             </div>
                             <div className="flex-1">
-                                <span className="block text-[10px] text-slate-500 uppercase">Level</span>
-                                <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400">
+                                <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase">Level</span>
+                                <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 text-xs sm:text-sm">
                                     {siswa.current_level?.nama_level || '-'}
                                 </span>
                             </div>
@@ -176,7 +176,7 @@ export const PassportStampsPage: React.FC<StampsPageProps> = ({ history, startIn
                     {title || "Visa & Validasi Kompetensi"}
                 </h3>
 
-                <div className="grid grid-cols-2 gap-4 h-[350px] content-start">
+                <div className="grid grid-cols-2 gap-2 sm:gap-4 h-[350px] content-start">
                     {pageItems.map((item, idx) => {
                         const level = levels.find(l => l.id === item.level_id);
                         const isLulus = item.hasil.toLowerCase() === 'lulus';

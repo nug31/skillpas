@@ -15,22 +15,26 @@ interface PassportBookProps {
     walasName?: string;
 }
 
-export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, levels, onClose, hodName, walasName }) => {
-    // Current page index (0 = Cover). Always even numbers for "spread" logic if we were doing true 3D
-    // But for simplicity on screen, we'll view one "Spread" (2 pages) or Cover (1 page) at a time?
-    // Actually, a nice flip effect usually shows the right page becoming the left page.
-    // Let's stick to a simpler model: An array of "Page Content" components.
-    // We treat index 0 as Front Cover.
-    // Index 1 = Inside Front (Empty/Intro), Index 2 = Identity (Right side of first spread usually?)
-    // Real passport: 
-    // - Cover (Face)
-    // - Inside Cover (Page 1 - often notes) | Page 2 (Identity)
-    // - Page 3 (Stamps) | Page 4 (Stamps)
+// Hook to detect mobile screen size
+const useIsMobile = () => {
+    const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 1024 : false);
 
-    // We'll generate an array of React Nodes.
+    React.useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 1024);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return isMobile;
+};
+
+export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, levels, onClose, hodName, walasName }) => {
     const history = siswa.riwayat_kompetensi || [];
     const stampsPerPage = 6;
     const [selectedCompetency, setSelectedCompetency] = useState<CompetencyHistory | null>(null);
+
+    const [spreadIndex, setSpreadIndex] = useState(0);
+    const isMobile = useIsMobile();
 
     const handleStampClick = (item: CompetencyHistory) => {
         // Open detail modal instead of directly downloading
@@ -100,16 +104,14 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
 
     pages.push(<div key="back-cover" className={`w-full h-full bg-[#1a472a] shadow-inner flex items-center justify-center text-[#C5A059]/50 font-serif`}>SMK Mitra Industri</div>);
 
-    const [spreadIndex, setSpreadIndex] = useState(0);
     // 0: Cover (Right side is Cover, Left is nothing/hidden)
     // 1: Left=Page1, Right=Page2
-    // 2: Left=Page3, Right=Page4
     // etc.
 
-    const totalSpreads = Math.ceil(pages.length / 2); // roughly
+    const totalSteps = isMobile ? pages.length - 1 : Math.ceil(pages.length / 2);
 
     const nextSpread = () => {
-        if (spreadIndex < totalSpreads) setSpreadIndex(p => p + 1);
+        if (spreadIndex < totalSteps) setSpreadIndex(p => p + 1);
     };
 
     const prevSpread = () => {
@@ -121,11 +123,28 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
     // Spread 1: Left=Page[1], Right=Page[2]
     // Spread 2: Left=Page[3], Right=Page[4]
 
-    const leftPageIndex = spreadIndex === 0 ? -1 : (spreadIndex * 2) - 1;
-    const rightPageIndex = spreadIndex === 0 ? 0 : (spreadIndex * 2);
+    const leftPageIndex = isMobile ? -1 : (spreadIndex === 0 ? -1 : (spreadIndex * 2) - 1);
+    const rightPageIndex = isMobile ? spreadIndex : (spreadIndex === 0 ? 0 : (spreadIndex * 2));
 
     const leftPage = leftPageIndex >= 0 && leftPageIndex < pages.length ? pages[leftPageIndex] : null;
     const rightPage = rightPageIndex < pages.length ? pages[rightPageIndex] : null;
+
+    // Scaling logic for very small mobile screens
+    const [scale, setScale] = useState(1);
+    React.useEffect(() => {
+        const updateScale = () => {
+            const availableWidth = window.innerWidth - 32; // 16px padding each side
+            const bookWidth = (spreadIndex === 0 || isMobile) ? PASSPORT_DIMENSIONS.width : PASSPORT_DIMENSIONS.width * 2;
+            if (availableWidth < bookWidth) {
+                setScale(availableWidth / bookWidth);
+            } else {
+                setScale(1);
+            }
+        };
+        updateScale();
+        window.addEventListener('resize', updateScale);
+        return () => window.removeEventListener('resize', updateScale);
+    }, [spreadIndex, isMobile]);
 
     // Helper for rich text rendering (**bold** and \n)
     const renderRichText = (text: string) => {
@@ -178,7 +197,7 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
                 </button>
                 <button
                     onClick={nextSpread}
-                    disabled={spreadIndex === totalSpreads} // Allow closing to back?
+                    disabled={spreadIndex === totalSteps} // Allow closing to back?
                     className="pointer-events-auto p-3 rounded-full bg-white/10 hover:bg-white/20 text-white disabled:opacity-0 transition-all backdrop-blur-md"
                 >
                     <ChevronRight size={32} />
@@ -189,14 +208,14 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
             <motion.div
                 className="relative flex items-center justify-center shadow-2xl"
                 initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
+                animate={{ scale: scale, opacity: 1 }}
                 style={{
                     height: PASSPORT_DIMENSIONS.height,
-                    width: spreadIndex === 0 ? PASSPORT_DIMENSIONS.width : PASSPORT_DIMENSIONS.width * 2 // Cover is single width, open is double
+                    width: (spreadIndex === 0 || isMobile) ? PASSPORT_DIMENSIONS.width : PASSPORT_DIMENSIONS.width * 2 // Cover is single width, open is double
                 }}
             >
                 {/* Book Spine (Visual only when open) */}
-                {spreadIndex > 0 && spreadIndex < totalSpreads && (
+                {!isMobile && spreadIndex > 0 && spreadIndex < totalSteps && (
                     <div className="absolute left-1/2 top-0 bottom-0 w-4 -ml-2 bg-gradient-to-r from-black/20 via-black/10 to-black/20 z-20 rounded-sm" />
                 )}
 
@@ -230,13 +249,13 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
                             animate={{ rotateY: 0, opacity: 1 }}
                             exit={{ rotateY: 90, opacity: 0 }}
                             transition={{ duration: 0.4, ease: "easeInOut" }}
-                            className={`absolute ${spreadIndex === 0 ? 'left-0' : 'left-1/2'} top-0 bottom-0 origin-left backface-hidden`}
+                            className={`absolute ${(spreadIndex === 0 || isMobile) ? 'left-0' : 'left-1/2'} top-0 bottom-0 origin-left backface-hidden`}
                             style={{ width: PASSPORT_DIMENSIONS.width }}
                         >
-                            <div className={`w-full h-full ${spreadIndex === 0 ? 'rounded-r-xl rounded-l-xl' : 'rounded-r-lg'} overflow-hidden shadow-xl border-y border-r border-white/10 bg-[#fdfaf5]`}>
+                            <div className={`w-full h-full ${(spreadIndex === 0 || isMobile) ? 'rounded-r-xl rounded-l-xl' : 'rounded-r-lg'} overflow-hidden shadow-xl border-y border-r border-white/10 bg-[#fdfaf5]`}>
                                 {rightPage}
                                 {/* Page Curl shadow */}
-                                {spreadIndex > 0 && (
+                                {!isMobile && spreadIndex > 0 && (
                                     <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-black/10 to-transparent pointer-events-none" />
                                 )}
                             </div>
