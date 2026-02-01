@@ -2,11 +2,7 @@ import React from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 
 const ReloadPrompt: React.FC = () => {
-    const {
-        offlineReady: [offlineReady, setOfflineReady],
-        needUpdate: [needUpdate, setNeedUpdate],
-        updateServiceWorker,
-    } = useRegisterSW({
+    const swResult = useRegisterSW({
         onRegistered(r) {
             console.log('SW Registered: ' + r);
         },
@@ -14,6 +10,14 @@ const ReloadPrompt: React.FC = () => {
             console.log('SW registration error', error);
         },
     });
+
+    // Defensive check to prevent destructuring error if result or its properties are undefined
+    const offlineReadyResult = swResult?.offlineReady;
+    const needUpdateResult = swResult?.needUpdate;
+    const updateServiceWorker = swResult?.updateServiceWorker;
+
+    const [offlineReady, setOfflineReady] = Array.isArray(offlineReadyResult) ? offlineReadyResult : [false, (v: boolean) => { }];
+    const [needUpdate, setNeedUpdate] = Array.isArray(needUpdateResult) ? needUpdateResult : [false, (v: boolean) => { }];
 
     const close = () => {
         setOfflineReady(false);
