@@ -122,7 +122,8 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
     const [isSharing, setIsSharing] = useState(false);
 
     useEffect(() => {
-        const url = `https://skillpassmitra.netlify.app/verify/${student.id}`;
+        const origin = window.location.origin;
+        const url = `${origin}?verify=${student.id}`;
         generateQRCode(url).then(setQrCode);
     }, [student.id]);
 

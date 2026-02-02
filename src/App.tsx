@@ -12,6 +12,7 @@ import { ProfileAvatar } from './components/ProfileAvatar';
 import { TeacherKRSApproval } from './components/TeacherKRSApproval';
 import { NotificationToast } from './components/NotificationToast';
 import ReloadPrompt from './components/ReloadPrompt';
+import { PassportPublicView } from './components/Passport/PassportPublicView';
 
 function AppContent() {
   const { user, logout, isAuthenticated, isTeacher } = useAuth();
@@ -66,6 +67,14 @@ function AppContent() {
     window.addEventListener('auth-changed', handleAuthChange);
     return () => window.removeEventListener('auth-changed', handleAuthChange);
   }, []);
+
+  // Detect verification link (public view)
+  const urlParams = new URLSearchParams(window.location.search);
+  const verifyId = urlParams.get('verify');
+
+  if (verifyId) {
+    return <PassportPublicView siswaId={verifyId} />;
+  }
 
   // Show login page if not authenticated
   if (!isAuthenticated) {
