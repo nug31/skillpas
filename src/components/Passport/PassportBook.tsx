@@ -133,17 +133,36 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
     const [scale, setScale] = useState(1);
     React.useEffect(() => {
         const updateScale = () => {
-            const availableWidth = window.innerWidth - 32; // 16px padding each side
+            // Use visualViewport for more accurate measurements on mobile (handles keyboard/bars better)
+            const vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+            const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+            const availableWidth = vw - 32; // 16px padding each side
+            const availableHeight = vh - 120; // Room for close button, nav, and help text
+
             const bookWidth = (spreadIndex === 0 || isMobile) ? PASSPORT_DIMENSIONS.width : PASSPORT_DIMENSIONS.width * 2;
-            if (availableWidth < bookWidth) {
-                setScale(availableWidth / bookWidth);
-            } else {
-                setScale(1);
-            }
+            const bookHeight = PASSPORT_DIMENSIONS.height;
+
+            const scaleX = availableWidth / bookWidth;
+            const scaleY = availableHeight / bookHeight;
+
+            // Use the smaller scale factor to ensure it fits both ways
+            const finalScale = Math.min(1, scaleX, scaleY);
+            setScale(finalScale);
         };
         updateScale();
         window.addEventListener('resize', updateScale);
-        return () => window.removeEventListener('resize', updateScale);
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', updateScale);
+            window.visualViewport.addEventListener('scroll', updateScale);
+        }
+        return () => {
+            window.removeEventListener('resize', updateScale);
+            if (window.visualViewport) {
+                window.visualViewport.removeEventListener('resize', updateScale);
+                window.visualViewport.removeEventListener('scroll', updateScale);
+            }
+        };
     }, [spreadIndex, isMobile]);
 
     // Helper for rich text rendering (**bold** and \n)
