@@ -115,12 +115,6 @@ export const mockSiswa: Siswa[] = [
   // --- New Student for 'siswa' login ---
   { id: 's-raka-new', nama: 'Raka Aditya', kelas: 'XII TKR 1', jurusan_id: JURUSAN_IDS.MESIN, nisn: '0012345678', wa_number: '628123456797', created_at: new Date().toISOString(), avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Raka', photo_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop' },
   { id: 's-bayu-sapta', nama: 'Bayu Sapta', kelas: 'XII TKR 3', jurusan_id: JURUSAN_IDS.TKR, nisn: '0083581133', created_at: new Date().toISOString(), avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bayu', photo_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop' },
-  // Students specifically for the empty dashboard in screenshot (XII TKR 3 03)
-  { id: 's-tkr3-03-1', nama: 'Ahmad Faisal', kelas: 'XII TKR 3 03', jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
-  { id: 's-tkr3-03-2', nama: 'Bambang Subianto', kelas: 'XII TKR 3 03', jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
-  { id: 's-tkr3-03-3', nama: 'Candra Wijaya', kelas: 'XII TKR 3 03', jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
-  { id: 's-tkr3-03-4', nama: 'Dedi Kurniawan', kelas: 'XII TKR 3 03', jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
-  { id: 's-tkr3-03-5', nama: 'Eko Prasetyo', kelas: 'XII TKR 3 03', jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
 ];
 
 export const mockSkillSiswa: SkillSiswa[] = [
