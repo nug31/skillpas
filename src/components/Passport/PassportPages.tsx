@@ -80,8 +80,8 @@ export const PassportIdentityPage: React.FC<IdentityPageProps> = ({ siswa, jurus
                     <h2 className="font-bold text-lg uppercase tracking-wider text-slate-800">Identitas Pemilik</h2>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 mb-4">
-                    <div className="w-24 h-32 sm:w-32 sm:h-40 bg-slate-200 border border-slate-300 relative overflow-hidden flex-shrink-0 grayscale contrast-125 mx-auto sm:mx-0">
+                <div className="flex flex-col sm:flex-row gap-3 mb-2">
+                    <div className="w-22 h-28 sm:w-28 sm:h-36 bg-slate-200 border border-slate-300 relative overflow-hidden flex-shrink-0 grayscale contrast-125 mx-auto sm:mx-0">
                         {siswa.photo_url || siswa.avatar_url ? (
                             <img
                                 src={siswa.photo_url || siswa.avatar_url}
@@ -99,7 +99,7 @@ export const PassportIdentityPage: React.FC<IdentityPageProps> = ({ siswa, jurus
                         </div>
                     </div>
 
-                    <div className="flex-1 space-y-0.5 sm:space-y-1">
+                    <div className="flex-1 space-y-0">
                         <div>
                             <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase">Nama Lengkap / Full Name</span>
                             <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 font-serif text-sm sm:text-lg leading-tight uppercase">
@@ -148,8 +148,8 @@ export const PassportIdentityPage: React.FC<IdentityPageProps> = ({ siswa, jurus
                     </div>
                 </div>
 
-                <div className="text-[9px] text-center text-slate-400 leading-tight">
-                    <p>Paspor ini adalah dokumen resmi riwayat kompetensi siswa.</p>
+                <div className="text-[8px] text-center text-slate-400 mt-1 uppercase tracking-tighter">
+                    Paspor ini adalah dokumen resmi riwayat kompetensi siswa.
                 </div>
             </div>
         </PassportPage>
