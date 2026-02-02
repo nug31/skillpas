@@ -1,6 +1,6 @@
 import React from 'react';
 import { PASSPORT_COLORS, PAGE_TEXTURE } from './PassportStyles';
-import { Fingerprint, Globe, Stamp } from 'lucide-react'; // ShieldCheck, Plane, Cpu removed
+import { Fingerprint, Stamp } from 'lucide-react'; // Globe, ShieldCheck, Plane, Cpu removed
 import type { SiswaWithSkill, CompetencyHistory, LevelSkill } from '../../types';
 import smkLogo from '../../assets/smk-logo.png';
 
@@ -18,8 +18,12 @@ export const PassportPage: React.FC<PageProps> = ({ children, className = '', pa
             style={{ backgroundImage: PAGE_TEXTURE }}
         >
             {/* Watermark Pattern */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none flex items-center justify-center">
-                <Globe size={200} />
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden">
+                <img
+                    src={smkLogo}
+                    alt=""
+                    className="w-48 h-48 sm:w-64 sm:h-64 object-contain grayscale contrast-50 opacity-[0.04] dark:opacity-[0.06] brightness-100 dark:brightness-200"
+                />
             </div>
 
             {/* Page Number */}
