@@ -35,7 +35,7 @@ export const mockJurusan: Jurusan[] = [
   { id: JURUSAN_IDS.TSM, nama_jurusan: 'Teknik Sepeda Motor', icon: 'Bike', deskripsi: 'Perbaikan sepeda motor', created_at: new Date().toISOString() },
   { id: JURUSAN_IDS.ELIND, nama_jurusan: 'Teknik Elektronika Industri', icon: 'Cpu', deskripsi: 'Elektronika & otomasi', created_at: new Date().toISOString() },
   { id: JURUSAN_IDS.LISTRIK, nama_jurusan: 'Teknik Instalasi Tenaga Listrik', icon: 'Zap', deskripsi: 'Instalasi kelistrikan', created_at: new Date().toISOString() },
-  { id: JURUSAN_IDS.KIMIA, nama_jurusan: 'Teknik Kimia Industri', icon: 'FlaskConical', deskripsi: 'Proses produksi kimia', created_at: new Date().toISOString() },
+  { id: JURUSAN_IDS.KIMIA, nama_jurusan: 'Teknik Kimia Industri', icon: 'FlaskConical', deskripsi: 'Teknologi pengecatan', created_at: new Date().toISOString() },
   { id: JURUSAN_IDS.AKUNTANSI, nama_jurusan: 'Akuntansi', icon: 'Calculator', deskripsi: 'Pencatatan keuangan', created_at: new Date().toISOString() },
   { id: JURUSAN_IDS.HOTEL, nama_jurusan: 'Perhotelan', icon: 'Hotel', deskripsi: 'Layanan & manajemen hotel', created_at: new Date().toISOString() },
 ];
