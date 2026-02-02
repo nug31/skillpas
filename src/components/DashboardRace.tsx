@@ -155,7 +155,7 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                                 className="w-full sm:w-auto px-8 py-4 bg-white text-[color:var(--accent-1)] rounded-xl font-bold text-lg shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
                             >
                                 <Icons.PlayCircle className="w-6 h-6 fill-current" />
-                                Lanjut Belajar
+                                Upgrade skill
                             </button>
                         </div>
 
