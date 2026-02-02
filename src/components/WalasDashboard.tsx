@@ -28,6 +28,16 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
     const [jurusanList, setJurusanList] = useState<any[]>([]);
 
     const walasClasses = (user.kelas || '').split(',').map(c => c.trim()).filter(Boolean);
+    // Expand classes to include base names if they end in ' 03' (Kampus 03 support)
+    const expandedClasses = [...walasClasses];
+    walasClasses.forEach(c => {
+        if (c.endsWith(' 03')) {
+            const baseClass = c.replace(' 03', '').trim();
+            if (!expandedClasses.includes(baseClass)) {
+                expandedClasses.push(baseClass);
+            }
+        }
+    });
 
     useEffect(() => {
         loadClassData();
@@ -51,7 +61,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
             if (isMockMode) {
                 // Mock logic: Filter mockSiswa by class
                 const classStudents = mockData.mockSiswa.filter(s =>
-                    walasClasses.some(c => s.kelas.includes(c))
+                    expandedClasses.some(c => s.kelas.includes(c))
                 );
 
                 const enriched = classStudents.map((s: any) => {
@@ -84,7 +94,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                 const { data: siswaData, error: siswaError } = await supabase
                     .from('siswa')
                     .select('*, skill_siswa(*)')
-                    .in('kelas', walasClasses);
+                    .in('kelas', expandedClasses);
 
                 if (siswaError) throw siswaError;
 
