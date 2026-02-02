@@ -27,17 +27,23 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
     const [showHistoryModal, setShowHistoryModal] = useState(false);
     const [jurusanList, setJurusanList] = useState<any[]>([]);
 
+    const normalizeClassName = (name: string) => {
+        if (!name) return '';
+        return name.toUpperCase()
+            .replace(/ELIND/g, 'ELIN')
+            .replace(/TBSM/g, 'TSM')
+            .replace(/AKUNTANSI/g, 'AK')
+            .replace(/PERHOTELAN/g, 'HOTEL')
+            .replace(/TKI/g, 'KIMIA')
+            .replace(/BIKE/g, 'TSM')
+            .replace(/MESIN/g, 'MES')
+            .replace(/\s03$/g, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+    };
+
     const walasClasses = (user.kelas || '').split(',').map(c => c.trim()).filter(Boolean);
-    // Expand classes to include base names if they end in ' 03' (Kampus 03 support)
-    const expandedClasses = [...walasClasses];
-    walasClasses.forEach(c => {
-        if (c.endsWith(' 03')) {
-            const baseClass = c.replace(' 03', '').trim();
-            if (!expandedClasses.includes(baseClass)) {
-                expandedClasses.push(baseClass);
-            }
-        }
-    });
+    const normalizedWalasClasses = walasClasses.map(normalizeClassName);
 
     useEffect(() => {
         loadClassData();
@@ -59,9 +65,9 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
         setLoading(true);
         try {
             if (isMockMode) {
-                // Mock logic: Filter mockSiswa by class
+                // Mock logic: Filter mockSiswa by normalized class
                 const classStudents = mockData.mockSiswa.filter(s =>
-                    expandedClasses.some(c => s.kelas.includes(c))
+                    normalizedWalasClasses.some(wc => normalizeClassName(s.kelas) === wc)
                 );
 
                 const enriched = classStudents.map((s: any) => {
@@ -90,11 +96,11 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
 
                 setStudents(withKrs as any);
             } else {
-                // Supabase logic: Fetch students and skills
+                // Supabase logic: Fetch students by jurusan_id to be inclusive, then filter in frontend
                 const { data: siswaData, error: siswaError } = await supabase
                     .from('siswa')
                     .select('*, skill_siswa(*)')
-                    .in('kelas', expandedClasses);
+                    .eq('jurusan_id', user.jurusan_id);
 
                 if (siswaError) throw siswaError;
 
@@ -109,7 +115,12 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
 
                 const submissions = await krsStore.getSubmissions();
 
-                const enriched = (siswaData || []).map((s: any) => {
+                // Advanced filtering: match based on normalized class names
+                const filteredSiswa = (siswaData || []).filter((s: any) =>
+                    normalizedWalasClasses.some(wc => normalizeClassName(s.kelas) === wc)
+                );
+
+                const enriched = filteredSiswa.map((s: any) => {
                     const mainSkill = s.skill_siswa?.[0];
                     const score = mainSkill?.skor || 0;
                     const krs = submissions.find(k => k.siswa_id === s.id);
