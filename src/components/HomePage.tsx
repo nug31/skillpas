@@ -9,11 +9,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { MissionModal } from './MissionModal';
 import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
-import { Edit3, CheckCircle, Contact } from 'lucide-react';
+import { Edit3, CheckCircle, Contact, BookOpen } from 'lucide-react';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import { SkillCard } from './SkillCard';
 import { StudentHistoryModal } from './StudentHistoryModal';
-import { History } from 'lucide-react';
 
 // Simple helper to get a mock Walas name based on class
 function getWalasForClass(className?: string): string {
@@ -711,8 +710,8 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                               onClick={() => setShowHistoryModal(true)}
                               className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 text-emerald-300 rounded-lg text-xs font-bold border border-emerald-500/20 transition-all group"
                             >
-                              <History className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                              Riwayat
+                              <BookOpen className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                              Passport
                             </button>
                           </div>
                         </div>
