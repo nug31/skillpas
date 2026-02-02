@@ -76,7 +76,7 @@ export const PassportIdentityPage: React.FC<IdentityPageProps> = ({ siswa, jurus
     return (
         <PassportPage pageNumber={1}>
             <div className="p-5 flex flex-col h-full font-mono text-sm">
-                <div className="flex items-center gap-2 mb-4 border-b-2 border-slate-800 pb-2">
+                <div className="flex items-center gap-2 mb-2 border-b-2 border-slate-800 pb-1">
                     <h2 className="font-bold text-lg uppercase tracking-wider text-slate-800">Identitas Pemilik</h2>
                 </div>
 
@@ -99,7 +99,7 @@ export const PassportIdentityPage: React.FC<IdentityPageProps> = ({ siswa, jurus
                         </div>
                     </div>
 
-                    <div className="flex-1 space-y-2 sm:space-y-3">
+                    <div className="flex-1 space-y-1 sm:space-y-1.5">
                         <div>
                             <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase">Nama Lengkap / Full Name</span>
                             <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 font-serif text-sm sm:text-lg leading-tight uppercase">
@@ -141,9 +141,9 @@ export const PassportIdentityPage: React.FC<IdentityPageProps> = ({ siswa, jurus
                     </div>
                 </div>
 
-                <div className="mt-auto mb-1">
-                    <span className="block text-[10px] text-slate-500 uppercase mb-1">Tanda Tangan Pemilik / Signature</span>
-                    <div className="h-14 border-b border-slate-800 flex items-end pb-1 font-handwriting text-2xl text-slate-600 rotate-[-2deg]">
+                <div className="mt-auto mb-0">
+                    <span className="block text-[9px] text-slate-500 uppercase">Tanda Tangan Pemilik / Signature</span>
+                    <div className="h-10 border-b border-slate-800 flex items-end pb-1 font-handwriting text-2xl text-slate-600 rotate-[-2deg]">
                         {siswa.nama}
                     </div>
                 </div>
