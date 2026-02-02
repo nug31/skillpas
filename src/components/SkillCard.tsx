@@ -16,10 +16,10 @@ async function generateQRCode(text: string): Promise<string> {
     try {
         if (!text) return '';
         return await QRCode.toDataURL(text, {
-            width: 120,
+            width: 220,
             margin: 1,
             color: { dark: '#000000', light: '#ffffff' },
-            errorCorrectionLevel: 'H'
+            errorCorrectionLevel: 'M'
         });
     } catch (err) {
         console.error('QR Error:', err);
@@ -128,7 +128,6 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
     }, [student.id]);
 
     const currentYear = 2026;
-    const scoreProgress = Math.min(Math.max((student.skor || 0), 0), 100);
 
     const handleDownload = async () => {
         if (!cardRef.current) return;
@@ -251,39 +250,31 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                             </div>
                         </div>
 
-                        {/* Metrics Section */}
-                        <div className="mt-auto flex flex-col items-center gap-3 pb-0.5">
-                            {/* Score Display */}
-                            <div className="flex flex-col items-center gap-1">
-                                <span className="text-[52px] font-black text-white [.theme-clear_&]:text-slate-900 drop-shadow-2xl leading-none">{student.skor ?? 0}</span>
-                                <span className="text-base font-black text-slate-500 [.theme-clear_&]:text-slate-400 italic">/100</span>
-
-                                {/* Vibrant Progress Bar */}
-                                <div className="w-[160px] h-1.5 bg-black/40 [.theme-clear_&]:bg-slate-200 rounded-full overflow-hidden p-[1px] border border-white/5 [.theme-clear_&]:border-slate-300">
-                                    <div
-                                        className="h-full bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500 rounded-full shadow-[0_0_15px_rgba(34,211,238,0.8)]"
-                                        style={{ width: `${scoreProgress}%` }}
-                                    />
+                        {/* QR Code Section - Now in Center */}
+                        <div className="flex-grow flex flex-col items-center justify-center -mt-4">
+                            {qrCode ? (
+                                <div className="p-2 bg-white rounded-2xl shadow-[0_0_30px_rgba(255,255,255,0.4)] border-4 border-cyan-500/20 overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                                    <img src={qrCode} alt="QR" className="w-40 h-40 block grayscale-0" />
                                 </div>
+                            ) : (
+                                <div className="w-40 h-40 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center">
+                                    <div className="w-8 h-8 border-4 border-white/20 border-t-white/80 rounded-full animate-spin" />
+                                </div>
+                            )}
+                            <p className="mt-4 text-cyan-400 text-[10px] font-black uppercase tracking-[0.3em] opacity-80 animate-pulse">
+                                Scan to Verify
+                            </p>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
+                            <div className="flex flex-col">
+                                <span className="text-slate-500 [.theme-clear_&]:text-slate-400 text-[9px] font-black tracking-[0.2em] uppercase block">TECHNICAL PASSPORT</span>
+                                <span className="text-slate-700 [.theme-clear_&]:text-slate-500 text-[8px] font-mono font-bold opacity-60">ID: {student.id?.slice(0, 10).toUpperCase()}</span>
                             </div>
-
-                            {/* Footer / QR */}
-                            <div className="w-full flex items-center justify-between mt-1">
-                                <div className="flex flex-col">
-                                    {qrCode ? (
-                                        <div className="p-1 px-1.5 bg-white rounded shadow-[0_0_20px_rgba(255,255,255,0.3)] border border-white/20 overflow-hidden">
-                                            <img src={qrCode} alt="QR" className="w-8 h-8 block grayscale-0" />
-                                        </div>
-                                    ) : (
-                                        <div className="w-8 h-8 bg-white/5 rounded border border-white/10 flex items-center justify-center">
-                                            <div className="w-4 h-4 border-2 border-white/20 border-t-white/80 rounded-full animate-spin" />
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="text-right">
-                                    <span className="text-slate-500 [.theme-clear_&]:text-slate-400 text-[8px] font-bold tracking-[0.2em] uppercase block">VERIFIED PASS</span>
-                                    <span className="text-slate-700 [.theme-clear_&]:text-slate-400 text-[7px] font-mono font-bold opacity-50">{student.id?.slice(0, 10).toUpperCase()}</span>
-                                </div>
+                            <div className="text-right">
+                                <span className="text-emerald-500 [.theme-clear_&]:text-emerald-600 text-[10px] font-black tracking-[0.1em] uppercase block">VERIFIED PASS</span>
+                                <span className="text-slate-600 text-[7px] font-bold opacity-40">SMK MI MM2100</span>
                             </div>
                         </div>
                     </div>
