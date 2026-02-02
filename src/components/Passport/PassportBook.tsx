@@ -138,7 +138,7 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
             const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
             const availableWidth = vw - 32; // 16px padding each side
-            const availableHeight = vh - 120; // Room for close button, nav, and help text
+            const availableHeight = vh - 160; // Room for close button, nav, and help text
 
             const bookWidth = (spreadIndex === 0 || isMobile) ? PASSPORT_DIMENSIONS.width : PASSPORT_DIMENSIONS.width * 2;
             const bookHeight = PASSPORT_DIMENSIONS.height;
