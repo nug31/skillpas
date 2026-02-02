@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
-import { SiswaWithSkill, User } from '../types';
+import { SiswaWithSkill, User, Siswa } from '../types';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import {
     Search,
@@ -80,26 +80,36 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
 
                 setStudents(withKrs as any);
             } else {
-                // Supabase logic
+                // Supabase logic: Fetch students and skills
                 const { data: siswaData, error: siswaError } = await supabase
                     .from('siswa')
-                    .select('*, skill_siswa(*), student_discipline(*)')
+                    .select('*, skill_siswa(*)')
                     .in('kelas', walasClasses);
 
                 if (siswaError) throw siswaError;
 
+                // Fetch discipline data separately to avoid relationship cache issues
+                const studentIds = (siswaData || []).map((s: Siswa) => s.id);
+                const { data: disciplineData } = studentIds.length > 0
+                    ? await supabase
+                        .from('student_discipline')
+                        .select('*')
+                        .in('siswa_id', studentIds)
+                    : { data: [] };
+
                 const submissions = await krsStore.getSubmissions();
 
-                const enriched = (siswaData || []).map(s => {
+                const enriched = (siswaData || []).map((s: any) => {
                     const mainSkill = s.skill_siswa?.[0];
                     const score = mainSkill?.skor || 0;
                     const krs = submissions.find(k => k.siswa_id === s.id);
+                    const disc = (disciplineData || []).find((d: any) => d.siswa_id === s.id);
 
                     return {
                         ...s,
                         current_skor: score,
                         current_poin: mainSkill?.poin || 0,
-                        discipline_data: s.student_discipline?.[0],
+                        discipline_data: disc,
                         latest_krs: krs
                     };
                 });
@@ -246,9 +256,9 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                                                 {siswa.latest_krs ? (
                                                     <div className="flex flex-col gap-1">
                                                         <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider self-start ${siswa.latest_krs.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400' :
-                                                                siswa.latest_krs.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
-                                                                    siswa.latest_krs.status === 'scheduled' ? 'bg-blue-500/20 text-blue-400 animate-pulse' :
-                                                                        'bg-amber-500/20 text-amber-400'
+                                                            siswa.latest_krs.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
+                                                                siswa.latest_krs.status === 'scheduled' ? 'bg-blue-500/20 text-blue-400 animate-pulse' :
+                                                                    'bg-amber-500/20 text-amber-400'
                                                             }`}>
                                                             {siswa.latest_krs.status === 'pending_produktif' ? 'Review Guru' :
                                                                 siswa.latest_krs.status === 'pending_hod' ? 'Review HOD' :
