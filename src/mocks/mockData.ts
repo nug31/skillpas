@@ -42,14 +42,14 @@ export const mockJurusan: Jurusan[] = [
 
 // Class pools (by jurusan id) — used for generating random 'kelas' values for mock students
 const classPools: Record<string, string[]> = {
-  [JURUSAN_IDS.MESIN]: [...Array.from({ length: 2 }, (_, i) => `X MESIN ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI MESIN ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII MESIN ${i + 1}`)],
-  [JURUSAN_IDS.TKR]: [...Array.from({ length: 2 }, (_, i) => `X TKR ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI TKR ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII TKR ${i + 1}`)],
-  [JURUSAN_IDS.TSM]: [...Array.from({ length: 2 }, (_, i) => `X TSM ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI TSM ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII TSM ${i + 1}`)],
-  [JURUSAN_IDS.ELIND]: [...Array.from({ length: 4 }, (_, i) => `X ELIND ${i + 1}`), ...Array.from({ length: 4 }, (_, i) => `XI ELIND ${i + 1}`), ...Array.from({ length: 4 }, (_, i) => `XII ELIND ${i + 1}`)],
+  [JURUSAN_IDS.MESIN]: [...Array.from({ length: 2 }, (_, i) => `X MESIN ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI MESIN ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII MESIN ${i + 1}`), 'X MESIN 1 03', 'X MESIN 2 03', 'XI MESIN 5 03', 'XI MESIN 6 03', 'XI MESIN 7 03', 'XII MESIN 4 03', 'XII MESIN 5 03'],
+  [JURUSAN_IDS.TKR]: [...Array.from({ length: 2 }, (_, i) => `X TKR ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI TKR ${i + 1}`), 'XII TKR 1', 'XII TKR 2', 'XII TKR 3', 'X TKR 1 03', 'X TKR 2 03', 'XI TKR 5 03', 'XI TKR 6 03', 'XI TKR 7 03', 'XII TKR 3 03', 'XII TKR 4 03'],
+  [JURUSAN_IDS.TSM]: [...Array.from({ length: 2 }, (_, i) => `X TSM ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI TSM ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII TSM ${i + 1}`), 'X TSM 1 03', 'X TSM 2 03', 'XI TSM 4 03', 'XI TSM 5 03', 'XI TSM 6 03', 'XII TBSM 3 03', 'XII TBSM 4 03'],
+  [JURUSAN_IDS.ELIND]: [...Array.from({ length: 4 }, (_, i) => `X ELIND ${i + 1}`), ...Array.from({ length: 4 }, (_, i) => `XI ELIND ${i + 1}`), ...Array.from({ length: 4 }, (_, i) => `XII ELIND ${i + 1}`), 'X ELIND 1 03', 'X ELIND 2 03', 'X ELIND 3 03', 'XI ELIND 9 03', 'XI ELIND 10 03', 'XI ELIND 11 03', 'XI ELIND 12 03', 'XII ELIN 6 03', 'XII ELIN 7 03', 'XII ELIN 8 03'],
   [JURUSAN_IDS.LISTRIK]: [...Array.from({ length: 2 }, (_, i) => `X LISTRIK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI LISTRIK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII LISTRIK ${i + 1}`)],
   [JURUSAN_IDS.KIMIA]: [...Array.from({ length: 2 }, (_, i) => `X TKI ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI TKI ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII TKI ${i + 1}`)],
-  [JURUSAN_IDS.AKUNTANSI]: [...Array.from({ length: 2 }, (_, i) => `X AK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI AK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII AK ${i + 1}`)],
-  [JURUSAN_IDS.HOTEL]: [...Array.from({ length: 2 }, (_, i) => `X HOTEL ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI HOTEL ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII HOTEL ${i + 1}`)],
+  [JURUSAN_IDS.AKUNTANSI]: [...Array.from({ length: 2 }, (_, i) => `X AK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI AK ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XII AK ${i + 1}`), 'X AKUNTANSI 03', 'XI AKUNTANSI 4 03', 'XII AKUNTANSI 4 03'],
+  [JURUSAN_IDS.HOTEL]: [...Array.from({ length: 2 }, (_, i) => `X HOTEL ${i + 1}`), ...Array.from({ length: 2 }, (_, i) => `XI HOTEL ${i + 1}`), 'XII HOTEL 1'],
 };
 
 function pickRandom<T>(arr: T[]) {
@@ -115,6 +115,12 @@ export const mockSiswa: Siswa[] = [
   // --- New Student for 'siswa' login ---
   { id: 's-raka-new', nama: 'Raka Aditya', kelas: 'XII TKR 1', jurusan_id: JURUSAN_IDS.MESIN, nisn: '0012345678', wa_number: '628123456797', created_at: new Date().toISOString(), avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Raka', photo_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop' },
   { id: 's-bayu-sapta', nama: 'Bayu Sapta', kelas: 'XII TKR 3', jurusan_id: JURUSAN_IDS.TKR, nisn: '0083581133', created_at: new Date().toISOString(), avatar_url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Bayu', photo_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop' },
+  // Students specifically for the empty dashboard in screenshot (XII TKR 3 03)
+  { id: 's-tkr3-03-1', nama: 'Ahmad Faisal', kelas: 'XII TKR 3 03', jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
+  { id: 's-tkr3-03-2', nama: 'Bambang Subianto', kelas: 'XII TKR 3 03', jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
+  { id: 's-tkr3-03-3', nama: 'Candra Wijaya', kelas: 'XII TKR 3 03', jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
+  { id: 's-tkr3-03-4', nama: 'Dedi Kurniawan', kelas: 'XII TKR 3 03', jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
+  { id: 's-tkr3-03-5', nama: 'Eko Prasetyo', kelas: 'XII TKR 3 03', jurusan_id: JURUSAN_IDS.TKR, created_at: new Date().toISOString() },
 ];
 
 export const mockSkillSiswa: SkillSiswa[] = [
