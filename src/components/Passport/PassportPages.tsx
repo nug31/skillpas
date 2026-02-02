@@ -24,7 +24,7 @@ export const PassportPage: React.FC<PageProps> = ({ children, className = '', pa
 
             {/* Page Number */}
             {pageNumber && (
-                <div className="absolute bottom-4 w-full text-center text-xs text-slate-400 font-mono">
+                <div className="absolute bottom-2 w-full text-center text-[10px] text-slate-400 font-mono">
                     - {pageNumber} -
                 </div>
             )}
@@ -77,7 +77,7 @@ export const PassportIdentityPage: React.FC<IdentityPageProps> = ({ siswa, jurus
         <PassportPage pageNumber={1}>
             <div className="px-5 pt-3 pb-2 flex flex-col h-full font-mono text-sm">
                 <div className="flex items-center gap-2 mb-1 border-b-2 border-slate-800 pb-0">
-                    <h2 className="font-bold text-lg uppercase tracking-wider text-slate-800">Identitas Pemilik</h2>
+                    <h2 className="font-bold text-base uppercase tracking-wider text-slate-800 leading-none">Identitas Pemilik</h2>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 mb-2">
@@ -99,41 +99,41 @@ export const PassportIdentityPage: React.FC<IdentityPageProps> = ({ siswa, jurus
                         </div>
                     </div>
 
-                    <div className="flex-1 space-y-0">
+                    <div className="flex-1 space-y-0 text-[11px] sm:text-xs">
                         <div>
-                            <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase">Nama Lengkap / Full Name</span>
-                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 font-serif text-sm sm:text-lg leading-tight uppercase">
+                            <span className="block text-[8px] text-slate-500 uppercase leading-none">Nama Lengkap / Full Name</span>
+                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 font-serif text-xs sm:text-base leading-tight uppercase">
                                 {siswa.nama}
                             </span>
                         </div>
                         <div>
-                            <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase">Nomor Induk / ID Number</span>
-                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 text-xs sm:text-sm">
+                            <span className="block text-[8px] text-slate-500 uppercase leading-none">Nomor Induk / ID Number</span>
+                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 text-[10px] sm:text-sm">
                                 {siswa.nisn || '---'}
                             </span>
                         </div>
                         <div>
-                            <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase">Jurusan / Major</span>
-                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 leading-tight mb-1 text-xs sm:text-sm">
+                            <span className="block text-[8px] text-slate-500 uppercase leading-none">Jurusan / Major</span>
+                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 leading-tight mb-0.5 text-[10px] sm:text-sm">
                                 {jurusanName}
                             </span>
                         </div>
                         <div>
-                            <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase">Wali Kelas / Homeroom Teacher</span>
-                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 leading-tight mb-1 text-xs sm:text-sm">
+                            <span className="block text-[8px] text-slate-500 uppercase leading-none">Wali Kelas / Homeroom Teacher</span>
+                            <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 leading-tight mb-0.5 text-[10px] sm:text-sm">
                                 {walasName}
                             </span>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-2">
                             <div className="flex-1">
-                                <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase">Kelas / Class</span>
-                                <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 text-xs sm:text-sm">
+                                <span className="block text-[8px] text-slate-500 uppercase leading-none">Kelas / Class</span>
+                                <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 text-[10px] sm:text-sm">
                                     {siswa.kelas}
                                 </span>
                             </div>
                             <div className="flex-1">
-                                <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase">Level</span>
-                                <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 text-xs sm:text-sm">
+                                <span className="block text-[8px] text-slate-500 uppercase leading-none">Level</span>
+                                <span className="block font-bold text-slate-900 border-b border-dotted border-slate-400 text-[10px] sm:text-sm">
                                     {siswa.current_level?.nama_level || '-'}
                                 </span>
                             </div>
@@ -142,13 +142,13 @@ export const PassportIdentityPage: React.FC<IdentityPageProps> = ({ siswa, jurus
                 </div>
 
                 <div className="mt-auto">
-                    <span className="block text-[8px] text-slate-500 uppercase">Tanda Tangan Pemilik / Signature</span>
-                    <div className="h-8 border-b border-slate-800 flex items-end pb-0.5 font-handwriting text-2xl text-slate-600 rotate-[-2deg]">
+                    <span className="block text-[8px] text-slate-500 uppercase leading-none">Tanda Tangan Pemilik / Signature</span>
+                    <div className="h-7 border-b border-slate-800 flex items-end pb-0.5 font-handwriting text-xl text-slate-600 rotate-[-2deg]">
                         {siswa.nama}
                     </div>
                 </div>
 
-                <div className="text-[8px] text-center text-slate-400 mt-1 uppercase tracking-tighter">
+                <div className="text-[7px] text-center text-slate-400 mt-0.5 uppercase tracking-tighter leading-none mb-4">
                     Paspor ini adalah dokumen resmi riwayat kompetensi siswa.
                 </div>
             </div>
