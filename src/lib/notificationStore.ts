@@ -1,4 +1,4 @@
-// Simple vanilla implementation with Supabase backup
+// Simple vanilla implementation with Supabase backup and local Notification support
 import { supabase, isMockMode } from './supabase';
 
 export interface Notification {
@@ -18,6 +18,7 @@ interface NotificationStore {
     markAsRead: (id: string) => Promise<void>;
     fetchNotifications: (userId: string) => Promise<void>;
     clearAll: () => void;
+    requestPermission: () => Promise<boolean>;
 }
 
 const listeners = new Set<(state: NotificationStore) => void>();
@@ -42,6 +43,18 @@ let state: NotificationStore = {
                 message: n.message,
                 type: n.type
             });
+        }
+
+        // Browser push notification
+        if ("Notification" in window && Notification.permission === "granted") {
+            try {
+                new window.Notification(n.title, {
+                    body: n.message,
+                    icon: '/icon-192.png'
+                });
+            } catch (e) {
+                console.warn("Could not show browser notification", e);
+            }
         }
     },
     markAsRead: async (id) => {
@@ -82,6 +95,16 @@ let state: NotificationStore = {
         state.notifications = [];
         state.unreadCount = 0;
         notify();
+    },
+    requestPermission: async () => {
+        if (!("Notification" in window)) return false;
+        try {
+            const permission = await Notification.requestPermission();
+            return permission === "granted";
+        } catch (e) {
+            console.error("Error requesting notification permission", e);
+            return false;
+        }
     }
 };
 
@@ -99,6 +122,7 @@ export const notificationStore = {
         addNotification: state.addNotification,
         markAsRead: state.markAsRead,
         fetchNotifications: state.fetchNotifications,
-        clearAll: state.clearAll
+        clearAll: state.clearAll,
+        requestPermission: state.requestPermission
     }
 };

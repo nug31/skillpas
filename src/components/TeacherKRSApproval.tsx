@@ -19,6 +19,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
     const [activeTab, setActiveTab] = useState<'pending' | 'grading'>('pending');
     const [gradingSub, setGradingSub] = useState<KRSSubmission | null>(null);
     const [currentScore, setCurrentScore] = useState<number>(80);
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
     const userRole = user.role;
 
@@ -111,6 +112,30 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
         setNotes('');
     };
 
+    const handleBulkApprove = async () => {
+        if (selectedIds.length === 0) return;
+
+        if (userRole === 'hod' && !examDate) {
+            alert("HOD wajib menentukan satu tanggal ujian untuk batch ini.");
+            return;
+        }
+
+        const confirmMsg = `Setujui ${selectedIds.length} pendaftaran sekaligus?`;
+        if (!confirm(confirmMsg)) return;
+
+        let actingRole = userRole as string;
+        // Simplified: Bulk approval assumes productivity approval if walas does it
+        if (userRole === 'wali_kelas') actingRole = 'teacher_produktif';
+
+        const success = await krsStore.approveBulkKRS(selectedIds, actingRole, notes, examDate);
+        if (success) {
+            setSelectedIds([]);
+            setExamDate('');
+            setNotes('');
+            alert(`${selectedIds.length} pendaftaran berhasil disetujui!`);
+        }
+    };
+
     const handleReject = async (id: string) => {
         if (!notes) {
             alert("Harap berikan catatan alasan penolakan.");
@@ -199,11 +224,27 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                         {submissions.map((sub: KRSSubmission) => (
                             <div
                                 key={sub.id}
-                                className="card-glass border border-white/6 rounded-2xl p-6 hover:border-[color:var(--accent-1)]/50 transition-all group relative overflow-hidden [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-sm"
+                                className={`card-glass border ${selectedIds.includes(sub.id) ? 'border-indigo-500 bg-indigo-500/5' : 'border-white/6'} rounded-2xl p-6 hover:border-[color:var(--accent-1)]/50 transition-all group relative overflow-hidden [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-sm`}
                             >
+                                {activeTab === 'pending' && userRole !== 'wali_kelas' && (
+                                    <div className="absolute top-4 left-4 z-10">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedIds.includes(sub.id)}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setSelectedIds([...selectedIds, sub.id]);
+                                                } else {
+                                                    setSelectedIds(selectedIds.filter(id => id !== sub.id));
+                                                }
+                                            }}
+                                            className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                        />
+                                    </div>
+                                )}
                                 <div className="absolute top-0 right-0 w-24 h-24 bg-[color:var(--accent-1)]/5 rounded-full -mr-12 -mt-12 group-hover:bg-[color:var(--accent-1)]/10 transition-colors"></div>
 
-                                <div className="flex flex-col h-full space-y-4">
+                                <div className={`flex flex-col h-full space-y-4 ${activeTab === 'pending' && userRole !== 'wali_kelas' ? 'pl-8' : ''}`}>
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <div className="text-xs font-black text-[color:var(--accent-1)] uppercase mb-1 [.theme-clear_&]:text-emerald-600">{sub.kelas}</div>
@@ -271,6 +312,47 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                     </div>
                 )}
             </div>
+
+            {/* Bulk Action Bar */}
+            {selectedIds.length > 0 && (
+                <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-fadeInUp">
+                    <div className="bg-[#1e1b4b] border border-indigo-500/30 rounded-2xl p-4 flex items-center gap-6 shadow-2xl backdrop-blur-xl [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-300">
+                        <div className="flex flex-col">
+                            <span className="text-white font-black text-sm [.theme-clear_&]:text-slate-900">{selectedIds.length} Terpilih</span>
+                            <button
+                                onClick={() => setSelectedIds([])}
+                                className="text-[10px] text-indigo-400 font-bold uppercase tracking-wider hover:text-indigo-300"
+                            >
+                                Batalkan semua
+                            </button>
+                        </div>
+
+                        {userRole === 'hod' && (
+                            <div className="h-10 w-px bg-white/10" />
+                        )}
+
+                        {userRole === 'hod' && (
+                            <div className="flex flex-col gap-1">
+                                <span className="text-[10px] text-slate-400 font-bold uppercase">Tanggal Ujian Batch</span>
+                                <input
+                                    type="date"
+                                    value={examDate}
+                                    onChange={(e) => setExamDate(e.target.value)}
+                                    className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-xs text-white outline-none focus:border-indigo-500/50 [.theme-clear_&]:bg-slate-100 [.theme-clear_&]:text-black [.theme-clear_&]:border-slate-200"
+                                />
+                            </div>
+                        )}
+
+                        <button
+                            onClick={handleBulkApprove}
+                            className="bg-emerald-500 hover:bg-emerald-400 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2"
+                        >
+                            <Check className="w-5 h-5" />
+                            Setujui Batch
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Grading Modal */}
             {gradingSub && (

@@ -212,6 +212,60 @@ export const krsStore = {
         return true;
     },
 
+    async approveBulkKRS(submissionIds: string[], role: string, notes?: string, examDate?: string): Promise<boolean> {
+        if (submissionIds.length === 0) return true;
+
+        const now = new Date().toISOString();
+        const updates: any = { updated_at: now };
+
+        if (role === 'teacher_produktif') {
+            updates.status = 'pending_hod';
+            updates.guru_produktif_approved_at = now;
+        } else if (role === 'hod') {
+            updates.status = 'approved';
+            updates.hod_approved_at = now;
+            if (examDate) {
+                updates.status = 'scheduled';
+                updates.exam_date = examDate;
+            }
+        } else {
+            return false;
+        }
+
+        if (notes) updates.notes = notes;
+
+        if (isMockMode) {
+            const subs = await this.getSubmissions();
+            submissionIds.forEach(id => {
+                const idx = subs.findIndex(s => s.id === id);
+                if (idx !== -1) {
+                    subs[idx] = { ...subs[idx], ...updates };
+                }
+            });
+            localStorage.setItem('skillpas_krs_submissions', JSON.stringify(subs));
+        } else {
+            const { error } = await supabase
+                .from('krs')
+                .update(updates)
+                .in('id', submissionIds);
+
+            if (error) {
+                console.error("Error bulk approving KRS", error);
+                return false;
+            }
+        }
+
+        this.notifyUpdate();
+
+        notificationStore.actions.addNotification({
+            type: 'success',
+            title: 'Sertifikasi Massal Disetujui',
+            message: `${submissionIds.length} pendaftaran telah disetujui sekaligus.`,
+        });
+
+        return true;
+    },
+
     async rejectKRS(submissionId: string, notes: string): Promise<boolean> {
         if (isMockMode) {
             const subs = await this.getSubmissions();

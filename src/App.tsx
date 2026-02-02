@@ -13,12 +13,15 @@ import { TeacherKRSApproval } from './components/TeacherKRSApproval';
 import { NotificationToast } from './components/NotificationToast';
 import ReloadPrompt from './components/ReloadPrompt';
 import { PassportPublicView } from './components/Passport/PassportPublicView';
+import { WalasDashboard } from './components/WalasDashboard';
+import { ConnectionStatus } from './components/ConnectionStatus';
 
 function AppContent() {
   const { user, logout, isAuthenticated, isTeacher } = useAuth();
   const [selectedJurusan, setSelectedJurusan] = useState<Jurusan | null>(null);
   const [selectedClassFilter, setSelectedClassFilter] = useState<string | undefined>(undefined);
   const [showKRSApproval, setShowKRSApproval] = useState(false);
+  const [showWalasDashboard, setShowWalasDashboard] = useState(false);
   const [showStampAnimation, setShowStampAnimation] = useState(false);
   const prevAuthRef = useRef(isAuthenticated);
   const [themeClear, setThemeClear] = useState<boolean>(() => {
@@ -61,6 +64,7 @@ function AppContent() {
         setSelectedJurusan(null);
         setSelectedClassFilter(undefined);
         setShowKRSApproval(false);
+        setShowWalasDashboard(false);
       }
     };
 
@@ -156,7 +160,12 @@ function AppContent() {
       </header>
 
       <main className="flex-1">
-        {showKRSApproval ? (
+        {showWalasDashboard ? (
+          <WalasDashboard
+            user={user!}
+            onBack={() => setShowWalasDashboard(false)}
+          />
+        ) : showKRSApproval ? (
           <TeacherKRSApproval
             onBack={() => setShowKRSApproval(false)}
             user={user!}
@@ -174,11 +183,13 @@ function AppContent() {
               setSelectedClassFilter(classFilter);
             }}
             onOpenKRSApproval={() => setShowKRSApproval(true)}
+            onOpenWalasDashboard={() => setShowWalasDashboard(true)}
           />
         )}
       </main>
       <FooterReflexGame />
       <NotificationToast />
+      <ConnectionStatus />
       <ReloadPrompt />
     </div>
   );

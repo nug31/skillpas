@@ -9,7 +9,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { MissionModal } from './MissionModal';
 import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
-import { Edit3, CheckCircle, Contact, BookOpen } from 'lucide-react';
+import { Edit3, CheckCircle, Contact, BookOpen, LayoutDashboard } from 'lucide-react';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import { SkillCard } from './SkillCard';
 import { StudentHistoryModal } from './StudentHistoryModal';
@@ -46,9 +46,10 @@ function getWalasForClass(className?: string): string {
 interface HomePageProps {
   onSelectJurusan: (jurusan: Jurusan, classFilter?: string) => void;
   onOpenKRSApproval?: () => void;
+  onOpenWalasDashboard?: () => void;
 }
 
-export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) {
+export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashboard }: HomePageProps) {
   const { user } = useAuth();
   const [jurusanList, setJurusanList] = useState<Jurusan[]>([]);
   const [topStudentsMap, setTopStudentsMap] = useState<Record<string, { id: string; nama: string; skor: number; kelas?: string }[]>>({});
@@ -586,6 +587,17 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval }: HomePageProps) 
                           </div>
                         )}
                         <div className="absolute inset-0 rounded-lg bg-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      </button>
+                    )}
+
+                    {user?.role === 'wali_kelas' && onOpenWalasDashboard && (
+                      <button
+                        onClick={onOpenWalasDashboard}
+                        className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-500 text-white rounded-lg font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all w-full sm:w-auto text-sm sm:text-base flex items-center justify-center gap-2 group"
+                      >
+                        <LayoutDashboard className="w-5 h-5 text-emerald-200" />
+                        Walas Insight
+                        <div className="absolute inset-0 rounded-lg bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       </button>
                     )}
                   </div>
