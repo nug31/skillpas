@@ -244,7 +244,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                             <TrendingUp className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider [.theme-clear_&]:text-slate-500">Rerata Skor Kelas</div>
+                            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider [.theme-clear_&]:text-slate-500">Rata-rata Skor Kelas</div>
                             <div className="text-2xl font-black text-white [.theme-clear_&]:text-slate-900">{stats.avgScore} <span className="text-xs font-normal opacity-50">XP</span></div>
                         </div>
                     </div>
