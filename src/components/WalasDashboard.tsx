@@ -187,7 +187,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
     const filteredStudents = students.filter(s =>
         s.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.kelas.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    ).sort((a, b) => a.nama.localeCompare(b.nama));
 
     const stats = {
         total: students.length,
