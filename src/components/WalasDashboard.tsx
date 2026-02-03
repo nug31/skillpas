@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { ProfileAvatar } from './ProfileAvatar';
 import { StudentHistoryModal } from './StudentHistoryModal';
+import { StudentDetailModal } from './StudentDetailModal';
 
 interface WalasDashboardProps {
     user: User;
@@ -25,6 +26,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedStudent, setSelectedStudent] = useState<SiswaWithSkill | null>(null);
     const [showHistoryModal, setShowHistoryModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [jurusanList, setJurusanList] = useState<any[]>([]);
     const [levels, setLevels] = useState<LevelSkill[]>([]);
 
@@ -184,6 +186,33 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
         }
     }
 
+    async function handleUpdateStudent(id: string, nama: string, kelas: string, poin: number) {
+        if (isMockMode) {
+            const index = mockData.mockSiswa.findIndex(s => s.id === id);
+            if (index >= 0) {
+                mockData.mockSiswa[index] = { ...mockData.mockSiswa[index], nama, kelas };
+            }
+            const sIndex = mockData.mockSkillSiswa.findIndex(s => s.siswa_id === id);
+            if (sIndex >= 0) {
+                mockData.mockSkillSiswa[sIndex] = { ...mockData.mockSkillSiswa[sIndex], poin };
+            }
+        } else {
+            const { error: sError } = await supabase
+                .from('siswa')
+                .update({ nama, kelas })
+                .eq('id', id);
+            if (sError) throw sError;
+
+            // Update points in skill_siswa
+            const { error: skError } = await supabase
+                .from('skill_siswa')
+                .update({ poin })
+                .eq('siswa_id', id);
+            if (skError) throw skError;
+        }
+        loadClassData();
+    }
+
     const filteredStudents = students.filter(s =>
         s.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.kelas.toLowerCase().includes(searchTerm.toLowerCase())
@@ -334,16 +363,27 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                                                 )}
                                             </td>
                                             <td className="px-6 py-4">
-                                                <button
-                                                    onClick={() => {
-                                                        setSelectedStudent(siswa);
-                                                        setShowHistoryModal(true);
-                                                    }}
-                                                    className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border border-white/10 group-hover:border-indigo-500/50 [.theme-clear_&]:bg-slate-100 [.theme-clear_&]:text-slate-700 [.theme-clear_&]:border-slate-200"
-                                                >
-                                                    Lihat Passport
-                                                    <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                                                </button>
+                                                <div className="flex flex-col gap-2">
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedStudent(siswa);
+                                                            setShowHistoryModal(true);
+                                                        }}
+                                                        className="flex items-center justify-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border border-white/10 group-hover:border-indigo-500/50 [.theme-clear_&]:bg-slate-100 [.theme-clear_&]:text-slate-700 [.theme-clear_&]:border-slate-200"
+                                                    >
+                                                        Lihat Passport
+                                                        <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedStudent(siswa);
+                                                            setShowEditModal(true);
+                                                        }}
+                                                        className="flex items-center justify-center gap-2 px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border border-indigo-500/20 hover:border-indigo-500/40 [.theme-clear_&]:bg-indigo-50 [.theme-clear_&]:text-indigo-700"
+                                                    >
+                                                        Kelola & Hadir
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))
@@ -368,6 +408,23 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                     levels={levels.length > 0 ? levels : mockData.getLevelsForJurusan(selectedStudent.jurusan_id)}
                     hodName={undefined}
                     walasName={user.name}
+                />
+            )}
+
+            {selectedStudent && showEditModal && (
+                <StudentDetailModal
+                    student={{
+                        ...selectedStudent,
+                        skor: selectedStudent.current_skor || 0,
+                        poin: selectedStudent.current_poin || 0,
+                        level_name: selectedStudent.current_level?.nama_level || 'Level 1',
+                        badge_color: selectedStudent.current_level?.badge_color || '#94a3b8',
+                        badge_name: selectedStudent.current_level?.badge_name || 'Basic'
+                    } as any}
+                    levels={levels}
+                    jurusanName={jurusanList.find(j => j.id === selectedStudent.jurusan_id)?.nama_jurusan}
+                    onClose={() => setShowEditModal(false)}
+                    onUpdate={handleUpdateStudent}
                 />
             )}
         </div>

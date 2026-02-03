@@ -26,6 +26,7 @@ export function StudentDetailModal({
   const [editName, setEditName] = useState(student.nama);
   const [editKelas, setEditKelas] = useState(student.kelas);
   const [editPoin, setEditPoin] = useState(student.poin);
+  const [editPhotoUrl, setEditPhotoUrl] = useState((student as any).photo_url || '');
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'history'>('overview');
   const [showSkillCard, setShowSkillCard] = useState(false);
@@ -120,7 +121,7 @@ export function StudentDetailModal({
     }
   }, [student.id]);
 
-  const handleSaveDiscipline = () => {
+  const handleSaveDiscipline = async () => {
     if (discipline) {
       const updated = {
         ...discipline,
@@ -132,22 +133,32 @@ export function StudentDetailModal({
         attitude_scores: editAttitude,
         updated_at: new Date().toISOString()
       };
-      setDiscipline(updated);
-      // In a real app we would update the store/backend here
-      const index = mockDiscipline.findIndex(d => d.siswa_id === student.id);
-      if (index >= 0) {
-        mockDiscipline[index] = updated;
+
+      if (isMockMode) {
+        setDiscipline(updated);
+        const index = mockDiscipline.findIndex(d => d.siswa_id === student.id);
+        if (index >= 0) {
+          mockDiscipline[index] = updated;
+        } else {
+          mockDiscipline.push(updated);
+        }
       } else {
-        mockDiscipline.push(updated);
+        const { error } = await supabase
+          .from('student_discipline')
+          .upsert({
+            siswa_id: student.id,
+            attendance_pcent: editAttendance,
+            masuk: editMasuk,
+            izin: editIzin,
+            sakit: editSakit,
+            alfa: editAlfa,
+            attitude_scores: editAttitude,
+            updated_at: new Date().toISOString()
+          });
+
+        if (error) throw error;
+        setDiscipline(updated);
       }
-      setIsEditing(false); // Reuse editing state or create separate? 
-      // Let's use the main isEditing state for simplicity if acceptable, 
-      // but the code uses isEditing for name/class currently. 
-      // Let's assume isEditing is global for the modal content?
-      // Actually, line 61 uses isEditing for Name/Class. 
-      // Let's create a separate isEditingDiscipline state if needed or reuse isEditing for all.
-      // Current code for Save button (line 100) calls handleSave. 
-      // Let's piggyback or add a saving logic.
     }
   };
 
@@ -156,17 +167,30 @@ export function StudentDetailModal({
   const notAchieved = levels.filter((l) => student.skor < l.min_skor);
 
   const handleSave = async () => {
-    // Save discipline data if valid
-    handleSaveDiscipline();
-
-    if (!onUpdate) return;
+    setSaving(true);
     try {
-      setSaving(true);
-      await onUpdate(student.id, editName, editKelas, editPoin);
+      // Save discipline data
+      await handleSaveDiscipline();
+
+      // Save student basic data
+      if (onUpdate) {
+        await onUpdate(student.id, editName, editKelas, editPoin);
+      }
+
+      // Save photo_url separately if changed
+      if (!isMockMode && editPhotoUrl !== (student as any).photo_url) {
+        const { error } = await supabase
+          .from('siswa')
+          .update({ photo_url: editPhotoUrl })
+          .eq('id', student.id);
+
+        if (error) throw error;
+      }
+
       setIsEditing(false);
     } catch (err) {
       console.error(err);
-      alert('Gagal menyimpan perubahan');
+      alert('Gagal menyimpan perubahan: ' + (err as any).message);
     } finally {
       setSaving(false);
     }
@@ -220,6 +244,15 @@ export function StudentDetailModal({
             <div className="flex-1">
               {isEditing ? (
                 <div className="flex flex-wrap gap-2">
+                  <div className="flex-1 min-w-[200px]">
+                    <label className="text-xs text-[color:var(--text-muted)] block mb-1">URL Foto Profil</label>
+                    <input
+                      value={editPhotoUrl}
+                      onChange={(e) => setEditPhotoUrl(e.target.value)}
+                      placeholder="https://example.com/foto.jpg"
+                      className="w-full px-3 py-2 bg-black/20 border border-white/10 rounded-lg text-[color:var(--text-primary)] text-xs"
+                    />
+                  </div>
                   <div className="flex-1 min-w-[200px]">
                     <label className="text-xs text-[color:var(--text-muted)] block mb-1">Nama Siswa</label>
                     <input
