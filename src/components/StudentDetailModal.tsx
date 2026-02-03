@@ -42,9 +42,10 @@ export function StudentDetailModal({
   const [editAttitude, setEditAttitude] = useState<{ aspect: string, score: number }[]>([]);
 
   // Check if current user can edit this student
+  const walasClasses = (user?.kelas || '').split(',').map(c => c.trim()).filter(Boolean);
   const canEdit = user?.role === 'admin' ||
     user?.role === 'hod' ||
-    (user?.role === 'wali_kelas' && user.kelas === student.kelas) ||
+    (user?.role === 'wali_kelas' && walasClasses.includes(student.kelas)) ||
     (user?.role === 'teacher_produktif');
 
   // HOD Name state
@@ -54,10 +55,6 @@ export function StudentDetailModal({
     // Fetch HOD name based on student.jurusan_id
     const fetchHOD = async () => {
       if (!student.jurusan_id) return;
-
-      // Mock Mode: check if we have mock HOD data (hardcoded fallback or extends mockData logic)
-      // For simplicity in mock, we might just leave undefined or use a mock name if needed.
-      // But the user specific asked to "ambil dari database saja" which implies real DB usage.
 
       if (!isMockMode) {
         try {
@@ -82,43 +79,63 @@ export function StudentDetailModal({
   }, [student.jurusan_id]);
 
   useEffect(() => {
-    // Load discipline data
-    const data = mockDiscipline.find(d => d.siswa_id === student.id);
-    if (data) {
-      setDiscipline(data);
-      setEditAttendance(data.attendance_pcent);
-      setEditMasuk(data.masuk || 0);
-      setEditIzin(data.izin || 0);
-      setEditSakit(data.sakit || 0);
-      setEditAlfa(data.alfa || 0);
-      setEditAttitude(JSON.parse(JSON.stringify(data.attitude_scores)));
-    } else {
-      // Default template
-      const defaultData = {
-        id: `new-${student.id}`,
-        siswa_id: student.id,
-        attendance_pcent: 80,
-        masuk: 0,
-        izin: 0,
-        sakit: 0,
-        alfa: 0,
-        attitude_scores: [
-          { aspect: 'Disiplin', score: 75 },
-          { aspect: 'Tanggung Jawab', score: 75 },
-          { aspect: 'Jujur', score: 75 },
-          { aspect: 'Kerjasama', score: 75 },
-          { aspect: 'Peduli', score: 75 }
-        ],
-        updated_at: new Date().toISOString()
-      };
-      setDiscipline(defaultData as any);
-      setEditAttendance(80);
-      setEditMasuk(0);
-      setEditIzin(0);
-      setEditSakit(0);
-      setEditAlfa(0);
-      setEditAttitude(defaultData.attitude_scores);
-    }
+    const loadDiscipline = async () => {
+      let data;
+      if (isMockMode) {
+        data = mockDiscipline.find(d => d.siswa_id === student.id);
+      } else {
+        const { data: dbData, error } = await supabase
+          .from('student_discipline')
+          .select('*')
+          .eq('siswa_id', student.id)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error("Error fetching discipline data:", error);
+        }
+        data = dbData;
+      }
+
+      if (data) {
+        setDiscipline(data);
+        setEditAttendance(data.attendance_pcent);
+        setEditMasuk(data.masuk || 0);
+        setEditIzin(data.izin || 0);
+        setEditSakit(data.sakit || 0);
+        setEditAlfa(data.alfa || 0);
+        const attitude = typeof data.attitude_scores === 'string'
+          ? JSON.parse(data.attitude_scores)
+          : data.attitude_scores;
+        setEditAttitude(JSON.parse(JSON.stringify(attitude)));
+      } else {
+        // Default template
+        const defaultData = {
+          id: `new-${student.id}`,
+          siswa_id: student.id,
+          attendance_pcent: 80,
+          masuk: 0,
+          izin: 0,
+          sakit: 0,
+          alfa: 0,
+          attitude_scores: [
+            { aspect: 'Disiplin', score: 75 },
+            { aspect: 'Tanggung Jawab', score: 75 },
+            { aspect: 'Jujur', score: 75 },
+            { aspect: 'Kerjasama', score: 75 },
+            { aspect: 'Peduli', score: 75 }
+          ],
+          updated_at: new Date().toISOString()
+        };
+        setDiscipline(defaultData as any);
+        setEditAttendance(80);
+        setEditMasuk(0);
+        setEditIzin(0);
+        setEditSakit(0);
+        setEditAlfa(0);
+        setEditAttitude(defaultData.attitude_scores);
+      }
+    };
+    loadDiscipline();
   }, [student.id]);
 
   const handleSaveDiscipline = async () => {
