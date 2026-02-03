@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
-import { SiswaWithSkill, User, Siswa } from '../types';
+import { SiswaWithSkill, User, Siswa, LevelSkill } from '../types';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import {
     Search,
@@ -26,6 +26,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
     const [selectedStudent, setSelectedStudent] = useState<SiswaWithSkill | null>(null);
     const [showHistoryModal, setShowHistoryModal] = useState(false);
     const [jurusanList, setJurusanList] = useState<any[]>([]);
+    const [levels, setLevels] = useState<LevelSkill[]>([]);
 
     const normalizeClassName = (name: string) => {
         if (!name) return '';
@@ -55,9 +56,44 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
     async function loadSupportData() {
         if (isMockMode) {
             setJurusanList(mockData.mockJurusan);
+            setLevels(mockData.mockLevels);
         } else {
             const { data: jData } = await supabase.from('jurusan').select('*');
             if (jData) setJurusanList(jData);
+
+            // Fetch levels and overrides for this jurusan
+            const { data: lData } = await supabase.from('level_skill').select('*').order('urutan');
+            const { data: lsjData } = await supabase.from('level_skill_jurusan').select('*').eq('jurusan_id', user.jurusan_id);
+
+            if (lData) {
+                const enriched = (lData as any[]).map((l: any) => {
+                    const ov = lsjData?.find((o: any) => o.level_id === l.id);
+                    let criteria = l.criteria;
+                    const hasilBelajar = ov?.hasil_belajar || l.hasil_belajar;
+
+                    if (hasilBelajar) {
+                        try {
+                            if (typeof hasilBelajar === 'string' && hasilBelajar.trim().startsWith('[')) {
+                                criteria = JSON.parse(hasilBelajar);
+                            } else if (Array.isArray(hasilBelajar)) {
+                                criteria = hasilBelajar;
+                            } else if (typeof hasilBelajar === 'string') {
+                                criteria = [hasilBelajar];
+                            }
+                        } catch (e) {
+                            criteria = [hasilBelajar];
+                        }
+                    }
+
+                    return {
+                        ...l,
+                        hasil_belajar: hasilBelajar,
+                        criteria: criteria,
+                        soft_skill: ov?.soft_skill || l.soft_skill
+                    } as LevelSkill;
+                });
+                setLevels(enriched);
+            }
         }
     }
 
@@ -99,7 +135,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                 // Supabase logic: Fetch students by jurusan_id to be inclusive, then filter in frontend
                 const { data: siswaData, error: siswaError } = await supabase
                     .from('siswa')
-                    .select('*, skill_siswa(*)')
+                    .select('*, skill_siswa(*), competency_history(*)')
                     .eq('jurusan_id', user.jurusan_id);
 
                 if (siswaError) throw siswaError;
@@ -125,13 +161,17 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                     const score = mainSkill?.skor || 0;
                     const krs = submissions.find(k => k.siswa_id === s.id);
                     const disc = (disciplineData || []).find((d: any) => d.siswa_id === s.id);
+                    const history = s.competency_history || [];
+                    const currentLevel = levels.find(l => score >= l.min_skor && score <= l.max_skor);
 
                     return {
                         ...s,
                         current_skor: score,
                         current_poin: mainSkill?.poin || 0,
+                        current_level: currentLevel,
                         discipline_data: disc,
-                        latest_krs: krs
+                        latest_krs: krs,
+                        riwayat_kompetensi: history
                     };
                 });
 
@@ -325,7 +365,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                     photoUrl={selectedStudent.photo_url}
                     jurusanName={jurusanList.find(j => j.id === selectedStudent.jurusan_id)?.nama_jurusan || 'Jurusan'}
                     history={selectedStudent.riwayat_kompetensi || []}
-                    levels={mockData.getLevelsForJurusan(selectedStudent.jurusan_id)}
+                    levels={levels.length > 0 ? levels : mockData.getLevelsForJurusan(selectedStudent.jurusan_id)}
                     hodName={undefined}
                     walasName={user.name}
                 />
