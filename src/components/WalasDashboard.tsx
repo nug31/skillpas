@@ -289,8 +289,8 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                     </div>
                 </div>
 
-                {/* Students Table */}
-                <div className="card-glass border border-white/10 rounded-3xl overflow-hidden shadow-2xl [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200">
+                {/* Students Table - Desktop */}
+                <div className="hidden md:block card-glass border border-white/10 rounded-3xl overflow-hidden shadow-2xl [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
@@ -391,6 +391,94 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                             </tbody>
                         </table>
                     </div>
+                </div>
+
+                {/* Students Cards - Mobile */}
+                <div className="md:hidden space-y-4">
+                    {loading ? (
+                        <div className="card-glass p-8 rounded-2xl text-center text-slate-500 animate-pulse [.theme-clear_&]:bg-white">
+                            Loading class data...
+                        </div>
+                    ) : filteredStudents.length === 0 ? (
+                        <div className="card-glass p-8 rounded-2xl text-center text-slate-500 [.theme-clear_&]:bg-white">
+                            Tidak ada siswa ditemukan
+                        </div>
+                    ) : (
+                        filteredStudents.map((siswa: any) => (
+                            <div key={siswa.id} className="card-glass border border-white/10 rounded-2xl p-4 space-y-4 shadow-xl [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200">
+                                {/* Student Info */}
+                                <div className="flex items-center gap-3">
+                                    <ProfileAvatar
+                                        name={siswa.nama}
+                                        avatarUrl={siswa.avatar_url}
+                                        photoUrl={siswa.photo_url}
+                                        size="md"
+                                        className="shadow-md"
+                                    />
+                                    <div className="flex-1">
+                                        <div className="text-sm font-bold text-white [.theme-clear_&]:text-slate-900">{siswa.nama}</div>
+                                        <div className="text-[10px] text-slate-500 font-bold uppercase">{siswa.nisn || 'No NISN'}</div>
+                                        <div className="text-[10px] text-slate-400 font-medium">{siswa.kelas}</div>
+                                    </div>
+                                </div>
+
+                                {/* Level & Progress */}
+                                <div className="space-y-2">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs font-bold text-indigo-400 [.theme-clear_&]:text-indigo-700">Level {siswa.current_level?.urutan || 1}</span>
+                                        <span className="text-xs font-black text-white/60 [.theme-clear_&]:text-slate-500">{siswa.current_skor} <span className="text-[10px]">XP</span></span>
+                                    </div>
+                                    <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden [.theme-clear_&]:bg-slate-100">
+                                        <div
+                                            className="h-full bg-gradient-to-r from-indigo-500 to-blue-500 shadow-sm transition-all duration-1000"
+                                            style={{ width: `${siswa.current_skor}%` }}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* KRS Status */}
+                                {siswa.latest_krs && (
+                                    <div className="flex items-center justify-between py-2 px-3 bg-white/5 rounded-lg [.theme-clear_&]:bg-slate-50">
+                                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Status KRS</span>
+                                        <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${siswa.latest_krs.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400' :
+                                            siswa.latest_krs.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
+                                                siswa.latest_krs.status === 'scheduled' ? 'bg-blue-500/20 text-blue-400 animate-pulse' :
+                                                    'bg-amber-500/20 text-amber-400'
+                                            }`}>
+                                            {siswa.latest_krs.status === 'pending_produktif' ? 'Review Guru' :
+                                                siswa.latest_krs.status === 'pending_hod' ? 'Review HOD' :
+                                                    siswa.latest_krs.status === 'scheduled' ? 'Tunggu Ujian' :
+                                                        siswa.latest_krs.status === 'completed' ? 'Selesai' :
+                                                            'Ditolak'}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Actions */}
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => {
+                                            setSelectedStudent(siswa);
+                                            setShowHistoryModal(true);
+                                        }}
+                                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-white/5 hover:bg-white/10 text-white rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border border-white/10 [.theme-clear_&]:bg-slate-100 [.theme-clear_&]:text-slate-700 [.theme-clear_&]:border-slate-200"
+                                    >
+                                        Passport
+                                        <ChevronRight className="w-3 h-3" />
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setSelectedStudent(siswa);
+                                            setShowEditModal(true);
+                                        }}
+                                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border border-indigo-500/20 hover:border-indigo-500/40 [.theme-clear_&]:bg-indigo-50 [.theme-clear_&]:text-indigo-700"
+                                    >
+                                        Kelola
+                                    </button>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
 
