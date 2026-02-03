@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Clock, Pencil, Save, Check, CreditCard, Download } from 'lucide-react';
+import { X, Clock, Pencil, Save, Check, CreditCard, Download, Upload } from 'lucide-react';
 import type { StudentListItem, LevelSkill, StudentDiscipline } from '../types';
 import { generateCertificate } from '../lib/certificateGenerator';
 import { supabase, isMockMode } from '../lib/supabase';
@@ -55,6 +55,8 @@ export function StudentDetailModal({
   const [editSakit, setEditSakit] = useState(0);
   const [editAlfa, setEditAlfa] = useState(0);
   const [editAttitude, setEditAttitude] = useState<{ aspect: string, score: number }[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   // Check if current user can edit this student
   const walasClasses = (user?.kelas || '').split(',').map(c => normalizeClassName(c.trim())).filter(Boolean);
@@ -165,6 +167,27 @@ export function StudentDetailModal({
     loadDiscipline();
   }, [student.id]);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 200 * 1024) {
+      alert('Ukuran file terlalu besar! Maksimal 200KB.');
+      e.target.value = '';
+      return;
+    }
+
+    setSelectedFile(file);
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
   const handleSaveDiscipline = async () => {
     if (discipline) {
       const updated = {
@@ -221,14 +244,37 @@ export function StudentDetailModal({
         await onUpdate(student.id, editName, editKelas, editPoin);
       }
 
-      // Save photo_url separately if changed
-      if (!isMockMode && editPhotoUrl !== (student as any).photo_url) {
-        const { error } = await supabase
-          .from('siswa')
-          .update({ photo_url: editPhotoUrl })
-          .eq('id', student.id);
+      // Save photo_url separately if changed or new file uploaded
+      if (!isMockMode) {
+        let finalPhotoUrl = editPhotoUrl;
 
-        if (error) throw error;
+        if (selectedFile) {
+          // Upload to Supabase Storage
+          const fileExt = selectedFile.name.split('.').pop();
+          const fileName = `${student.id}_${Date.now()}.${fileExt}`;
+          const filePath = `${fileName}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from('student-photos')
+            .upload(filePath, selectedFile);
+
+          if (uploadError) throw uploadError;
+
+          const { data: { publicUrl } } = supabase.storage
+            .from('student-photos')
+            .getPublicUrl(filePath);
+
+          finalPhotoUrl = publicUrl;
+        }
+
+        if (finalPhotoUrl !== (student as any).photo_url) {
+          const { error } = await supabase
+            .from('siswa')
+            .update({ photo_url: finalPhotoUrl })
+            .eq('id', student.id);
+
+          if (error) throw error;
+        }
       }
 
       setIsEditing(false);
@@ -288,14 +334,34 @@ export function StudentDetailModal({
             <div className="flex-1">
               {isEditing ? (
                 <div className="flex flex-wrap gap-2">
-                  <div className="flex-1 min-w-[200px]">
-                    <label className="text-xs text-[color:var(--text-muted)] block mb-1">URL Foto Profil</label>
-                    <input
-                      value={editPhotoUrl}
-                      onChange={(e) => setEditPhotoUrl(e.target.value)}
-                      placeholder="https://example.com/foto.jpg"
-                      className="w-full px-3 py-2 bg-black/20 border border-white/10 rounded-lg text-[color:var(--text-primary)] text-xs"
-                    />
+                  <div className="w-48">
+                    <label className="text-xs text-[color:var(--text-muted)] block mb-1">Foto Siswa (Maks 200KB)</label>
+                    <div className="relative">
+                      <div className="w-full h-10 bg-black/20 border border-white/10 rounded-lg flex items-center justify-center overflow-hidden cursor-pointer hover:border-indigo-500/50 transition-all">
+                        {previewUrl || editPhotoUrl ? (
+                          <img src={previewUrl || editPhotoUrl} alt="Preview" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="flex items-center gap-2 text-slate-500 text-[10px] font-bold uppercase">
+                            <Upload className="w-3 h-3" />
+                            Upload
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="absolute inset-0 opacity-0 cursor-pointer"
+                        />
+                      </div>
+                      {previewUrl && (
+                        <button
+                          onClick={() => { setSelectedFile(null); setPreviewUrl(null); }}
+                          className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 hover:bg-red-600 shadow-lg z-10"
+                        >
+                          <X className="w-2 h-2" />
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <div className="flex-1 min-w-[200px]">
                     <label className="text-xs text-[color:var(--text-muted)] block mb-1">Nama Siswa</label>
