@@ -9,11 +9,17 @@ import {
     TrendingUp,
     Clock,
     LayoutDashboard,
-    Users
+    Users,
+    Download,
+    FileSpreadsheet,
+    Printer
 } from 'lucide-react';
 import { ProfileAvatar } from './ProfileAvatar';
 import { StudentHistoryModal } from './StudentHistoryModal';
 import { StudentDetailModal } from './StudentDetailModal';
+import { AnalyticsPanel } from './AnalyticsPanel';
+import { ReportView } from './ReportView';
+import { exportToExcel, exportToCSV, generateReportFilename } from '../lib/exportUtils';
 
 interface WalasDashboardProps {
     user: User;
@@ -29,6 +35,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
     const [showEditModal, setShowEditModal] = useState(false);
     const [jurusanList, setJurusanList] = useState<any[]>([]);
     const [levels, setLevels] = useState<LevelSkill[]>([]);
+    const [showReportView, setShowReportView] = useState(false);
 
     const normalizeClassName = (name: string) => {
         if (!name) return '';
@@ -226,6 +233,20 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
         activeKrs: students.filter((s: any) => s.latest_krs && s.latest_krs.status !== 'completed' && s.latest_krs.status !== 'rejected').length
     };
 
+    const handleExportExcel = () => {
+        const filename = generateReportFilename(user.kelas || 'Kelas', 'xlsx');
+        exportToExcel(students, filename);
+    };
+
+    const handleExportCSV = () => {
+        const filename = generateReportFilename(user.kelas || 'Kelas', 'csv');
+        exportToCSV(students, filename);
+    };
+
+    const handlePrintReport = () => {
+        setShowReportView(true);
+    };
+
     return (
         <div className="min-h-screen bg-[color:var(--bg-from)] p-4 sm:p-8">
             <div className="max-w-7xl mx-auto space-y-8">
@@ -244,15 +265,38 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                         </div>
                     </div>
 
-                    <div className="relative group w-full sm:w-64">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
-                        <input
-                            type="text"
-                            placeholder="Cari siswa..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-indigo-500/50 transition-all text-sm [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200 [.theme-clear_&]:text-slate-900"
-                        />
+                    <div className="flex flex-wrap gap-2">
+                        <div className="relative group w-full sm:w-auto">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-indigo-400 transition-colors sm:block hidden" />
+                            <input
+                                type="text"
+                                placeholder="Cari siswa..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full sm:w-64 pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-indigo-500/50 transition-all text-sm [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200 [.theme-clear_&]:text-slate-900"
+                            />
+                        </div>
+                        <button
+                            onClick={handleExportExcel}
+                            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-xl text-sm font-bold transition-all border border-emerald-500/20 hover:border-emerald-500/40 [.theme-clear_&]:bg-emerald-50 [.theme-clear_&]:text-emerald-700 [.theme-clear_&]:border-emerald-200"
+                        >
+                            <FileSpreadsheet className="w-4 h-4" />
+                            <span className="hidden sm:inline">Excel</span>
+                        </button>
+                        <button
+                            onClick={handleExportCSV}
+                            className="flex items-center gap-2 px-4 py-2.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-xl text-sm font-bold transition-all border border-blue-500/20 hover:border-blue-500/40 [.theme-clear_&]:bg-blue-50 [.theme-clear_&]:text-blue-700 [.theme-clear_&]:border-blue-200"
+                        >
+                            <Download className="w-4 h-4" />
+                            <span className="hidden sm:inline">CSV</span>
+                        </button>
+                        <button
+                            onClick={handlePrintReport}
+                            className="flex items-center gap-2 px-4 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 rounded-xl text-sm font-bold transition-all border border-amber-500/20 hover:border-amber-500/40 [.theme-clear_&]:bg-amber-50 [.theme-clear_&]:text-amber-700 [.theme-clear_&]:border-amber-200"
+                        >
+                            <Printer className="w-4 h-4" />
+                            <span className="hidden sm:inline">Cetak</span>
+                        </button>
                     </div>
                 </header>
 
@@ -480,6 +524,9 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                         ))
                     )}
                 </div>
+
+                {/* Analytics Panel */}
+                <AnalyticsPanel students={filteredStudents} />
             </div>
 
             {selectedStudent && (
@@ -513,6 +560,15 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                     jurusanName={jurusanList.find(j => j.id === selectedStudent.jurusan_id)?.nama_jurusan}
                     onClose={() => setShowEditModal(false)}
                     onUpdate={handleUpdateStudent}
+                />
+            )}
+
+            {showReportView && (
+                <ReportView
+                    students={filteredStudents}
+                    kelas={user.kelas || ''}
+                    walasName={user.name}
+                    onClose={() => setShowReportView(false)}
                 />
             )}
         </div>
