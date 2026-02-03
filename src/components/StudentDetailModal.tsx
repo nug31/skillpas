@@ -9,6 +9,21 @@ import formatClassLabel from '../lib/formatJurusan';
 import { ProfileAvatar } from './ProfileAvatar';
 import { SkillCard } from './SkillCard';
 
+const normalizeClassName = (name: string) => {
+  if (!name) return '';
+  return name.toUpperCase()
+    .replace(/ELIND/g, 'ELIN')
+    .replace(/TBSM/g, 'TSM')
+    .replace(/AKUNTANSI/g, 'AK')
+    .replace(/PERHOTELAN/g, 'HOTEL')
+    .replace(/TKI/g, 'KIMIA')
+    .replace(/BIKE/g, 'TSM')
+    .replace(/MESIN/g, 'MES')
+    .replace(/\s03$/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+};
+
 export function StudentDetailModal({
   student,
   levels,
@@ -42,11 +57,23 @@ export function StudentDetailModal({
   const [editAttitude, setEditAttitude] = useState<{ aspect: string, score: number }[]>([]);
 
   // Check if current user can edit this student
-  const walasClasses = (user?.kelas || '').split(',').map(c => c.trim()).filter(Boolean);
+  const walasClasses = (user?.kelas || '').split(',').map(c => normalizeClassName(c.trim())).filter(Boolean);
+  const studentClass = normalizeClassName(student.kelas);
   const canEdit = user?.role === 'admin' ||
     user?.role === 'hod' ||
-    (user?.role === 'wali_kelas' && walasClasses.includes(student.kelas)) ||
+    (user?.role === 'wali_kelas' && walasClasses.includes(studentClass)) ||
     (user?.role === 'teacher_produktif');
+
+  useEffect(() => {
+    if (user) {
+      console.log('Permission Check:', {
+        role: user.role,
+        userClasses: walasClasses,
+        studentClass: studentClass,
+        canEdit: canEdit
+      });
+    }
+  }, [user, student.kelas]);
 
   // HOD Name state
   const [hodName, setHodName] = useState<string | undefined>(undefined);
@@ -300,11 +327,16 @@ export function StudentDetailModal({
                 </div>
               ) : (
                 <>
-                  <div className="text-lg font-semibold text-[color:var(--text-primary)] flex items-center gap-2">
+                  <div className="text-lg font-semibold text-[color:var(--text-primary)] flex items-center gap-3">
                     {student.nama}
                     {onUpdate && !isEditing && canEdit && (
-                      <button onClick={() => setIsEditing(true)} className="p-1 text-[color:var(--text-muted)] hover:text-[color:var(--accent-1)] transition-colors" title="Edit Data">
-                        <Pencil className="w-4 h-4" />
+                      <button
+                        onClick={() => setIsEditing(true)}
+                        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 transition-all border border-indigo-500/20 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-indigo-500/5 group/edit"
+                        title="Edit Data Siswa"
+                      >
+                        <Pencil className="w-3.5 h-3.5 group-hover/edit:scale-110 transition-transform" />
+                        Edit Data & Hadir
                       </button>
                     )}
                   </div>
