@@ -80,12 +80,12 @@ export function ReportView({ students, kelas, walasName, onClose }: ReportViewPr
                 {/* Header */}
                 <div className="text-center mb-8 border-b-2 border-slate-900 pb-4">
                     <h1 className="text-2xl font-black uppercase tracking-tight text-slate-900 mb-1">
-                        SMK Negeri 3 Bekasi
+                        SMK MITRA INDUSTRI MM2100
                     </h1>
                     <p className="text-sm text-slate-600">
-                        Jl. Raya Narogong KM. 14, Limus Nunggal, Cileungsi, Bogor 16820
+                        Jl. Kalimantan Blok DD 1-1, Kawasan Industri MM2100, Cikarang Barat, Bekasi 17530
                     </p>
-                    <p className="text-xs text-slate-500">Telp: (021) 82436464 | Email: info@smkn3bekasi.sch.id</p>
+                    <p className="text-xs text-slate-500">Telp: (021) 89983961 | Email: info@smkmitraindustrimm2100.sch.id</p>
                 </div>
 
                 {/* Report Title */}
@@ -175,14 +175,14 @@ export function ReportView({ students, kelas, walasName, onClose }: ReportViewPr
                     </div>
                     <div className="text-center">
                         <p className="mb-16 text-slate-600">Kepala Sekolah,</p>
-                        <div className="border-b-2 border-slate-900 pb-1 mb-1 font-bold text-slate-900">Drs. H. Aan Hasanudin, M.M.</div>
-                        <p className="text-xs text-slate-500">NIP: 196402121989031007</p>
+                        <div className="border-b-2 border-slate-900 pb-1 mb-1 font-bold text-slate-900">Lispiyatmini, M.Pd</div>
+                        <p className="text-xs text-slate-500">NIP: -</p>
                     </div>
                 </div>
 
                 {/* Footer */}
                 <div className="mt-8 pt-4 border-t border-slate-200 text-center text-xs text-slate-400">
-                    <p>Dokumen ini dicetak dari Sistem Skill Pass - SMK Negeri 3 Bekasi</p>
+                    <p>Dokumen ini dicetak dari Sistem Skill Pass - SMK MITRA INDUSTRI MM2100</p>
                     <p>Tanggal: {today}</p>
                 </div>
             </div>
