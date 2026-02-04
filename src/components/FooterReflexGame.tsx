@@ -72,44 +72,44 @@ export function FooterReflexGame() {
     return (
         <div className="w-full relative z-40">
             {/* Decorative Top Shape */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[1px] w-32 h-4 bg-[#0f172a] rounded-t-xl z-20 [.theme-clear_&]:bg-white [.theme-clear_&]:border-t [.theme-clear_&]:border-x [.theme-clear_&]:border-slate-200" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[1px] w-32 h-4 bg-[color:var(--bg-from)] rounded-t-xl z-20 [.theme-clear_&]:border-t [.theme-clear_&]:border-x [.theme-clear_&]:border-slate-200" />
 
             {/* Main Container */}
-            <div className="bg-[#0f172a]/95 backdrop-blur-md border-t-2 border-indigo-500/20 rounded-t-2xl shadow-[0_-5px_30px_rgba(0,0,0,0.6)] flex flex-col items-center py-6 relative overflow-hidden [.theme-clear_&]:bg-white/95 [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-slate-200/50">
+            <div className="bg-[color:var(--bg-from)]/95 backdrop-blur-md border-t-2 border-[color:var(--accent-1)]/20 rounded-t-2xl shadow-[0_-5px_30px_rgba(0,0,0,0.4)] flex flex-col items-center py-6 relative overflow-hidden [.theme-clear_&]:bg-white/95 [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-slate-200/50">
 
                 {/* Background Grid FX */}
                 <div className="absolute inset-0 opacity-10 pointer-events-none"
-                    style={{ backgroundImage: 'radial-gradient(#6366f1 1px, transparent 1px)', backgroundSize: '20px 20px' }}
+                    style={{ backgroundImage: 'radial-gradient(var(--accent-1) 1px, transparent 1px)', backgroundSize: '20px 20px' }}
                 />
 
                 {/* Score & Title */}
                 <div className="w-full max-w-lg flex justify-between px-8 mb-6">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-indigo-500/10 rounded-lg">
-                            <Target className="w-5 h-5 text-indigo-400 [.theme-clear_&]:text-indigo-600" />
+                        <div className="p-2 bg-[color:var(--accent-1)]/10 rounded-lg">
+                            <Target className="w-5 h-5 text-[color:var(--accent-1)]" />
                         </div>
                         <div>
-                            <h3 className="text-sm font-bold text-white tracking-wider [.theme-clear_&]:text-slate-900">REFLEX TEST</h3>
-                            <p className="text-[10px] text-indigo-300/60 uppercase [.theme-clear_&]:text-slate-500">Stop at center</p>
+                            <h3 className="text-sm font-bold text-[color:var(--text-primary)] tracking-wider">REFLEX TEST</h3>
+                            <p className="text-[10px] text-[color:var(--text-muted)] uppercase">Stop at center</p>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <Trophy className={`w-4 h-4 ${score > 0 ? 'text-yellow-400' : 'text-slate-600 [.theme-clear_&]:text-slate-400'}`} />
-                        <span className="font-mono text-xl font-bold text-white [.theme-clear_&]:text-slate-900">{score}</span>
+                        <Trophy className={`w-4 h-4 ${score > 0 ? 'text-yellow-400' : 'text-[color:var(--text-muted)]'}`} />
+                        <span className="font-mono text-xl font-bold text-[color:var(--text-primary)]">{score}</span>
                     </div>
                 </div>
 
                 {/* Game Track */}
                 <div className="w-full max-w-lg px-8 relative mb-8">
                     {/* Track Line */}
-                    <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden relative [.theme-clear_&]:bg-slate-200">
+                    <div className="h-2 w-full bg-[color:var(--glass)] rounded-full overflow-hidden relative border border-white/5 [.theme-clear_&]:border-slate-200">
                         {/* Center Zone Details */}
-                        <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[16%] bg-gradient-to-r from-emerald-500/20 via-emerald-500/50 to-emerald-500/20 border-x border-emerald-500/50" />
+                        <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[16%] bg-gradient-to-r from-[color:var(--accent-1)]/20 via-[color:var(--accent-1)]/50 to-[color:var(--accent-1)]/20 border-x border-[color:var(--accent-1)]/50" />
                     </div>
 
                     {/* Tick Marks */}
-                    <div className="absolute top-3 left-0 right-0 flex justify-between px-8 text-[10px] font-mono text-slate-600 select-none [.theme-clear_&]:text-slate-400">
+                    <div className="absolute top-3 left-0 right-0 flex justify-between px-8 text-[10px] font-mono text-[color:var(--text-muted)] select-none">
                         <span>0</span>
                         <span>50</span>
                         <span>100</span>
@@ -118,10 +118,10 @@ export function FooterReflexGame() {
                     {/* Moving Pointer */}
                     <div className="absolute top-[-10px] left-8 right-8 h-8 pointer-events-none">
                         <motion.div
-                            className="absolute -ml-[2px] w-[4px] h-7 bg-indigo-400 rounded-full shadow-[0_0_10px_#818cf8] z-10"
+                            className="absolute -ml-[2px] w-[4px] h-7 bg-[color:var(--accent-1)] rounded-full shadow-[0_0_10px_var(--accent-1)] z-10"
                             style={{ left: xPercent }}
                         >
-                            <div className="absolute -top-1 -left-[3px] w-3 h-3 bg-white rounded-full" />
+                            <div className="absolute -top-1 -left-[3px] w-3 h-3 bg-white rounded-full border border-[color:var(--accent-1)]/30" />
                         </motion.div>
                     </div>
                 </div>
@@ -136,7 +136,7 @@ export function FooterReflexGame() {
                                 animate={{ scale: 1, opacity: 1 }}
                                 exit={{ scale: 0.8, opacity: 0 }}
                                 onClick={startGame}
-                                className="px-8 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-full shadow-lg shadow-indigo-500/20 flex items-center gap-2"
+                                className="px-8 py-2 bg-[color:var(--accent-1)] hover:bg-[color:var(--accent-2)] text-white font-bold rounded-full shadow-lg shadow-[color:var(--accent-1)]/20 flex items-center gap-2 transition-all active:scale-95"
                             >
                                 <Play className="w-4 h-4 fill-current" />
                                 START
@@ -151,7 +151,7 @@ export function FooterReflexGame() {
                                 exit={{ scale: 0.9, opacity: 0 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={stopGame}
-                                className="px-10 py-3 bg-white text-indigo-900 font-black text-lg tracking-widest rounded-full shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:bg-gray-100 [.theme-clear_&]:bg-indigo-600 [.theme-clear_&]:text-white [.theme-clear_&]:shadow-indigo-500/20"
+                                className="px-10 py-3 bg-[color:var(--text-primary)] text-[color:var(--bg-from)] font-black text-lg tracking-widest rounded-full shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:opacity-90 [.theme-clear_&]:bg-[color:var(--accent-1)] [.theme-clear_&]:text-white [.theme-clear_&]:shadow-[color:var(--accent-1)]/20"
                             >
                                 STOP
                             </motion.button>
@@ -170,7 +170,7 @@ export function FooterReflexGame() {
                                 </div>
                                 <button
                                     onClick={startGame}
-                                    className="text-white/50 hover:text-white text-xs underline decoration-dotted transition-colors [.theme-clear_&]:text-slate-500 [.theme-clear_&]:hover:text-slate-800"
+                                    className="text-[color:var(--text-muted)] hover:text-[color:var(--text-primary)] text-xs underline decoration-dotted transition-colors"
                                 >
                                     Try Again
                                 </button>
@@ -180,14 +180,14 @@ export function FooterReflexGame() {
                 </div>
 
                 {/* Developer Credits - Always visible below controls */}
-                <div className="flex flex-col items-center gap-1 mt-auto pt-2 border-t border-white/5 [.theme-clear_&]:border-slate-200 w-full max-w-xs">
-                    <span className="text-[10px] text-white/30 uppercase tracking-widest [.theme-clear_&]:text-slate-400">Developed by jsnugroho</span>
-                    <div className="flex items-center gap-4 text-[10px] text-white/50 [.theme-clear_&]:text-slate-500 relative z-50">
+                <div className="flex flex-col items-center gap-1 mt-auto pt-2 border-t border-[color:var(--card-border)] w-full max-w-xs">
+                    <span className="text-[10px] text-[color:var(--text-muted)]/50 uppercase tracking-widest">Developed by jsnugroho</span>
+                    <div className="flex items-center gap-4 text-[10px] text-[color:var(--text-muted)] relative z-50">
                         <a
                             href="https://www.instagram.com/j.s_nugroho/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 hover:text-indigo-400 transition-colors cursor-pointer pointer-events-auto"
+                            className="flex items-center gap-1 hover:text-[color:var(--accent-1)] transition-colors cursor-pointer pointer-events-auto"
                         >
                             <Instagram className="w-3 h-3" /> j.s_nugroho
                         </a>
@@ -195,7 +195,7 @@ export function FooterReflexGame() {
                             href="https://wa.me/6281316052316"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 hover:text-green-400 transition-colors cursor-pointer pointer-events-auto"
+                            className="flex items-center gap-1 hover:opacity-80 transition-colors cursor-pointer pointer-events-auto text-green-500"
                         >
                             <Phone className="w-3 h-3" /> 081316052316
                         </a>
