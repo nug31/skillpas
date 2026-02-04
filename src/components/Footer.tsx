@@ -1,9 +1,8 @@
-import { Instagram, Phone } from 'lucide-react';
+import { Instagram, Phone, Globe } from 'lucide-react';
 
 export function Footer() {
     return (
         <footer className="w-full relative z-40 mt-auto">
-
             {/* Main Container */}
             <div className="bg-[color:var(--bg-from)]/95 backdrop-blur-md border-t border-[color:var(--card-border)] rounded-t-2xl shadow-[0_-5px_30px_rgba(0,0,0,0.2)] flex flex-col items-center py-8 relative overflow-hidden [.theme-clear_&]:shadow-slate-200/50">
 
@@ -19,6 +18,18 @@ export function Footer() {
                     </p>
 
                     <div className="flex flex-wrap justify-center items-center gap-6 sm:gap-10">
+                        <a
+                            href="https://jsnportofolio.netlify.app/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group flex items-center gap-2.5 text-[color:var(--text-muted)] hover:text-blue-500 transition-all duration-300"
+                        >
+                            <div className="p-2 rounded-full bg-white/5 border border-white/5 group-hover:border-blue-500/30 group-hover:bg-blue-500/5 transition-all">
+                                <Globe size={16} />
+                            </div>
+                            <span className="text-xs font-medium tracking-wide">Portfolio</span>
+                        </a>
+
                         <a
                             href="https://instagram.com/j.s_nugroho"
                             target="_blank"
