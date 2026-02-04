@@ -3,8 +3,6 @@ import { Instagram, Phone } from 'lucide-react';
 export function Footer() {
     return (
         <footer className="w-full relative z-40 mt-auto">
-            {/* Decorative Top Shape */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[1px] w-32 h-4 bg-[color:var(--bg-from)] rounded-t-xl z-20 border-t border-x border-[color:var(--card-border)]" />
 
             {/* Main Container */}
             <div className="bg-[color:var(--bg-from)]/95 backdrop-blur-md border-t border-[color:var(--card-border)] rounded-t-2xl shadow-[0_-5px_30px_rgba(0,0,0,0.2)] flex flex-col items-center py-8 relative overflow-hidden [.theme-clear_&]:shadow-slate-200/50">
