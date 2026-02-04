@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 import { HomePage } from './components/HomePage';
 import { JurusanDetailPage } from './components/JurusanDetailPage';
 import { LoginPage } from './components/LoginPage';
-import { FooterReflexGame } from './components/FooterReflexGame';
 import { PassportStamp } from './components/PassportStamp';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import type { Jurusan } from './types';
@@ -187,7 +186,6 @@ function AppContent() {
           />
         )}
       </main>
-      <FooterReflexGame />
       <NotificationToast />
       <ConnectionStatus />
       <ReloadPrompt />
