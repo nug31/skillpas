@@ -103,10 +103,6 @@ export function FooterReflexGame() {
                 {/* Game Track */}
                 <div className="w-full max-w-lg px-8 relative mb-8">
                     {/* Track Line */}
-                    <div className="h-2 w-full bg-[color:var(--glass)] rounded-full overflow-hidden relative border border-white/5 [.theme-clear_&]:border-slate-200">
-                        {/* Center Zone Details */}
-                        <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-[16%] bg-gradient-to-r from-[color:var(--accent-1)]/20 via-[color:var(--accent-1)]/50 to-[color:var(--accent-1)]/20 border-x border-[color:var(--accent-1)]/50" />
-                    </div>
 
                     {/* Tick Marks */}
                     <div className="absolute top-3 left-0 right-0 flex justify-between px-8 text-[10px] font-mono text-[color:var(--text-muted)] select-none">
