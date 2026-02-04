@@ -1,4 +1,4 @@
-import { Instagram, Phone, Globe } from 'lucide-react';
+import { Instagram, MessageCircle, Globe } from 'lucide-react';
 
 export function Footer() {
     return (
@@ -17,41 +17,41 @@ export function Footer() {
                         Developed by JSNUGROHO
                     </p>
 
-                    <div className="flex flex-wrap justify-center items-center gap-6 sm:gap-10">
+                    <div className="flex justify-center items-center gap-6 sm:gap-8">
                         <a
                             href="https://jsnportofolio.netlify.app/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group flex items-center gap-2.5 text-[color:var(--text-muted)] hover:text-blue-500 transition-all duration-300"
+                            className="group flex items-center justify-center text-[color:var(--text-muted)] hover:text-blue-500 transition-all duration-300"
+                            title="Portfolio"
                         >
-                            <div className="p-2 rounded-full bg-white/5 border border-white/5 group-hover:border-blue-500/30 group-hover:bg-blue-500/5 transition-all">
-                                <Globe size={16} />
+                            <div className="p-3 rounded-full bg-white/5 border border-white/5 group-hover:border-blue-500/30 group-hover:bg-blue-500/5 transition-all">
+                                <Globe size={20} />
                             </div>
-                            <span className="text-xs font-medium tracking-wide">Portfolio</span>
                         </a>
 
                         <a
                             href="https://instagram.com/j.s_nugroho"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group flex items-center gap-2.5 text-[color:var(--text-muted)] hover:text-[color:var(--accent-1)] transition-all duration-300"
+                            className="group flex items-center justify-center text-[color:var(--text-muted)] hover:text-[color:var(--accent-1)] transition-all duration-300"
+                            title="Instagram"
                         >
-                            <div className="p-2 rounded-full bg-white/5 border border-white/5 group-hover:border-[color:var(--accent-1)]/30 group-hover:bg-[color:var(--accent-1)]/5 transition-all">
-                                <Instagram size={16} />
+                            <div className="p-3 rounded-full bg-white/5 border border-white/5 group-hover:border-[color:var(--accent-1)]/30 group-hover:bg-[color:var(--accent-1)]/5 transition-all">
+                                <Instagram size={20} />
                             </div>
-                            <span className="text-xs font-medium tracking-wide">j.s_nugroho</span>
                         </a>
 
                         <a
                             href="https://wa.me/6281316052316"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group flex items-center gap-2.5 text-[color:var(--text-muted)] hover:text-emerald-500 transition-all duration-300"
+                            className="group flex items-center justify-center text-[color:var(--text-muted)] hover:text-emerald-500 transition-all duration-300"
+                            title="WhatsApp"
                         >
-                            <div className="p-2 rounded-full bg-white/5 border border-white/5 group-hover:border-emerald-500/30 group-hover:bg-emerald-500/5 transition-all">
-                                <Phone size={16} />
+                            <div className="p-3 rounded-full bg-white/5 border border-white/5 group-hover:border-emerald-500/30 group-hover:bg-emerald-500/5 transition-all">
+                                <MessageCircle size={20} />
                             </div>
-                            <span className="text-xs font-medium tracking-wide">081316052316</span>
                         </a>
                     </div>
 
