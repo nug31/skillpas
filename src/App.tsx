@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { HomePage } from './components/HomePage';
 import { JurusanDetailPage } from './components/JurusanDetailPage';
 import { LoginPage } from './components/LoginPage';
+import { Footer } from './components/Footer';
 import { PassportStamp } from './components/PassportStamp';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import type { Jurusan } from './types';
@@ -186,6 +187,7 @@ function AppContent() {
           />
         )}
       </main>
+      <Footer />
       <NotificationToast />
       <ConnectionStatus />
       <ReloadPrompt />
