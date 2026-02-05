@@ -121,6 +121,9 @@ export function SnakeLaddersGame({ participants }: SnakeLaddersGameProps) {
                     {tiles.map((num) => {
                         const playersHere = participantsByTile.get(num) || [];
                         const isSpecial = num === 1 || num === 100;
+                        const row = Math.floor((num - 1) / 10);
+                        const colRaw = (num - 1) % 10;
+                        const col = row % 2 === 0 ? colRaw : 9 - colRaw;
 
                         return (
                             <div
@@ -160,7 +163,9 @@ export function SnakeLaddersGame({ participants }: SnakeLaddersGameProps) {
                                                 </div>
 
                                                 {/* Tooltip */}
-                                                <div className={`absolute ${num > 90 ? 'top-full mt-2' : 'bottom-full mb-2'} left-1/2 -translate-x-1/2 hidden group-hover:block z-[100] pointer-events-none`}>
+                                                <div className={`absolute ${num > 90 ? 'top-full mt-2' : 'bottom-full mb-2'} 
+                                                    ${col === 0 ? 'left-0 translate-x-0' : col === 9 ? 'right-0 translate-x-0' : 'left-1/2 -translate-x-1/2'} 
+                                                    hidden group-hover:block z-[100] pointer-events-none`}>
                                                     <div className="bg-slate-800 text-white text-[10px] py-1 px-2 rounded shadow-2xl border border-white/10 whitespace-nowrap [.theme-clear_&]:bg-white [.theme-clear_&]:text-slate-900 [.theme-clear_&]:border-slate-200">
                                                         {p.name} ({p.score} XP)
                                                     </div>
