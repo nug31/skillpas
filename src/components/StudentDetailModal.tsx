@@ -221,6 +221,8 @@ export function StudentDetailModal({
             alfa: editAlfa,
             attitude_scores: editAttitude,
             updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'siswa_id'
           });
 
         if (error) throw error;
