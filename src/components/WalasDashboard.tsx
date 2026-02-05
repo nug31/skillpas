@@ -47,7 +47,6 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
             .replace(/TKI/g, 'KIMIA')
             .replace(/BIKE/g, 'TSM')
             .replace(/MESIN/g, 'MES')
-            .replace(/\s03$/g, '')
             .replace(/\s+/g, ' ')
             .trim();
     };
