@@ -246,128 +246,17 @@ export function F1RaceTrack({
                         const isLeader = index === 0;
                         const progress = (p.score / maxScore) * 85; // Max 85% to stay below finish line
 
-                        const getMajorAbbreviation = (name: string) => {
-                            const majorMap: { [key: string]: string } = {
-                                'TEKNIK INFORMATIKA': 'TI',
-                                'TEKNIK ELEKTRO': 'TE',
-                                'TEKNIK MESIN': 'TM',
-                                'TEKNIK SIPIL': 'TS',
-                                'ARSITEKTUR': 'AR',
-                                'MATEMATIKA': 'MTK',
-                                'FISIKA': 'FSK',
-                                'KIMIA': 'KIM',
-                                'BIOLOGI': 'BIO',
-                                'STATISTIKA': 'STK',
-                                'AKUNTANSI': 'AKT',
-                                'MANAJEMEN': 'MNJ',
-                                'ILMU HUKUM': 'HKM',
-                                'ILMU KOMUNIKASI': 'IKOM',
-                                'PSIKOLOGI': 'PSI',
-                                'KEDOKTERAN': 'KED',
-                                'FARMASI': 'FAR',
-                                'ILMU KOMPUTER': 'ILKOM',
-                                'SISTEM INFORMASI': 'SI',
-                                'DESAIN KOMUNIKASI VISUAL': 'DKV',
-                                'SENI RUPA': 'SR',
-                                'PENDIDIKAN': 'PDD',
-                                'SASTRA INGGRIS': 'SI',
-                                'SASTRA INDONESIA': 'SIND',
-                                'HUBUNGAN INTERNASIONAL': 'HI',
-                                'ADMINISTRASI PUBLIK': 'AP',
-                                'AGRIBISNIS': 'AGB',
-                                'TEKNOLOGI PANGAN': 'TP',
-                                'GIZI': 'GZI',
-                                'KEPERAWATAN': 'KPR',
-                                'KESEHATAN MASYARAKAT': 'KESMAS',
-                                'GEOGRAFI': 'GEO',
-                                'GEOLOGI': 'GLG',
-                                'PERENCANAAN WILAYAH DAN KOTA': 'PWK',
-                                'ILMU PEMERINTAHAN': 'IP',
-                                'SOSIOLOGI': 'SOS',
-                                'ANTROPOLOGI': 'ANT',
-                                'EKONOMI PEMBANGUNAN': 'EP',
-                                'EKONOMI SYARIAH': 'ESY',
-                                'PERHOTELAN': 'HTL',
-                                'PARIWISATA': 'PAR',
-                                'ILMU PERPUSTAKAAN': 'IPUS',
-                                'FILSAFAT': 'FLS',
-                                'SEJARAH': 'SJR',
-                                'BAHASA DAN SASTRA': 'BDS',
-                                'PENDIDIKAN GURU SEKOLAH DASAR': 'PGSD',
-                                'PENDIDIKAN ANAK USIA DINI': 'PAUD',
-                                'PENDIDIKAN JASMANI': 'PJAS',
-                                'PENDIDIKAN MATEMATIKA': 'PMTK',
-                                'PENDIDIKAN FISIKA': 'PFSK',
-                                'PENDIDIKAN KIMIA': 'PKIM',
-                                'PENDIDIKAN BIOLOGI': 'PBIO',
-                                'PENDIDIKAN BAHASA INGGRIS': 'PBI',
-                                'PENDIDIKAN BAHASA INDONESIA': 'PBIND',
-                                'PENDIDIKAN SEJARAH': 'PSJR',
-                                'PENDIDIKAN GEOGRAFI': 'PGEO',
-                                'PENDIDIKAN EKONOMI': 'PEKO',
-                                'PENDIDIKAN AKUNTANSI': 'PAKT',
-                                'PENDIDIKAN SOSIOLOGI': 'PSOS',
-                                'PENDIDIKAN PANCASILA DAN KEWARGANEGARAAN': 'PPKN',
-                                'PENDIDIKAN TEKNIK INFORMATIKA': 'PTI',
-                                'PENDIDIKAN TEKNIK ELEKTRO': 'PTE',
-                                'PENDIDIKAN TEKNIK MESIN': 'PTM',
-                                'PENDIDIKAN TEKNIK SIPIL': 'PTS',
-                                'PENDIDIKAN KESEHATAN': 'PKES',
-                                'PENDIDIKAN OLAHRAGA': 'POR',
-                                'PENDIDIKAN SENI': 'PSENI',
-                                'PENDIDIKAN MUSIK': 'PMUS',
-                                'PENDIDIKAN TARI': 'PTARI',
-                                'PENDIDIKAN DRAMA': 'PDRA',
-                                'PENDIDIKAN BAHASA ARAB': 'PBA',
-                                'PENDIDIKAN BAHASA JEPANG': 'PBJ',
-                                'PENDIDIKAN BAHASA MANDARIN': 'PBM',
-                                'PENDIDIKAN BAHASA JERMAN': 'PBJRM',
-                                'PENDIDIKAN BAHASA PRANCIS': 'PBP',
-                                'PENDIDIKAN BAHASA KOREA': 'PBK',
-                                'PENDIDIKAN BAHASA RUSIA': 'PBR',
-                                'PENDIDIKAN BAHASA SPANYOL': 'PBS',
-                                'PENDIDIKAN BAHASA BELANDA': 'PBB',
-                                'PENDIDIKAN BAHASA PORTUGIS': 'PBPG',
-                                'PENDIDIKAN BAHASA THAI': 'PBT',
-                                'PENDIDIKAN BAHASA VIETNAM': 'PBV',
-                                'PENDIDIKAN BAHASA FILIPINA': 'PBF',
-                                'PENDIDIKAN BAHASA MALAYSIA': 'PBMY',
-                                'PENDIDIKAN BAHASA ARAB': 'PBA',
-                                'PENDIDIKAN BAHASA JEPANG': 'PBJ',
-                                'PENDIDIKAN BAHASA MANDARIN': 'PBM',
-                                'PENDIDIKAN BAHASA JERMAN': 'PBJRM',
-                                'PENDIDIKAN BAHASA PRANCIS': 'PBP',
-                                'PENDIDIKAN BAHASA KOREA': 'PBK',
-                                'PENDIDIKAN BAHASA RUSIA': 'PBR',
-                                'PENDIDIKAN BAHASA SPANYOL': 'PBS',
-                                'PENDIDIKAN BAHASA BELANDA': 'PBB',
-                                'PENDIDIKAN BAHASA PORTUGIS': 'PBPG',
-                                'PENDIDIKAN BAHASA THAI': 'PBT',
-                                'PENDIDIKAN BAHASA VIETNAM': 'PBV',
-                                'PENDIDIKAN BAHASA FILIPINA': 'PBF',
-                                'PENDIDIKAN BAHASA MALAYSIA': 'PBMY',
-                                'PENDIDIKAN BAHASA ARAB': 'PBA',
-                                'PENDIDIKAN BAHASA JEPANG': 'PBJ',
-                                'PENDIDIKAN BAHASA MANDARIN': 'PBM',
-                                'PENDIDIKAN BAHASA JERMAN': 'PBJRM',
-                                'PENDIDIKAN BAHASA PRANCIS': 'PBP',
-                                'PENDIDIKAN BAHASA KOREA': 'PBK',
-                                'PENDIDIKAN BAHASA RUSIA': 'PBR',
-                                'PENDIDIKAN BAHASA SPANYOL': 'PBS',
-                                'PENDIDIKAN BAHASA BELANDA': 'PBB',
-                                'PENDIDIKAN BAHASA PORTUGIS': 'PBPG',
-                                'PENDIDIKAN BAHASA THAI': 'PBT',
-                                'PENDIDIKAN BAHASA VIETNAM': 'PBV',
-                                'PENDIDIKAN BAHASA FILIPINA': 'PBF',
-                                'PENDIDIKAN BAHASA MALAYSIA': 'PBMY',
-                            };
-                            const normalizedName = name.toUpperCase().trim();
-                            for (const major in majorMap) {
-                                if (normalizedName.includes(major)) {
-                                    return majorMap[major];
-                                }
-                            }
-                            return name.substring(0, 3).toUpperCase(); // Default to first 3 letters if no match
+                        const getAbbreviation = (fullName: string) => {
+                            const name = fullName.toUpperCase();
+                            if (name.includes('MESIN')) return 'MESIN';
+                            if (name.includes('INSTALASI') || name.includes('LISTRIK')) return 'LISTRIK';
+                            if (name.includes('KENDARAAN') || name.includes('TKR')) return 'TKR';
+                            if (name.includes('AKUNTANSI')) return 'AKUNTANSI';
+                            if (name.includes('KIMIA') || name.includes('TKI')) return 'TKI';
+                            if (name.includes('HOTEL') || name.includes('PERHOTELAN')) return 'HOTEL';
+                            if (name.includes('TSM')) return 'TSM';
+                            if (name.includes('TEI') || name.includes('ELIND')) return 'ELIND';
+                            return fullName.split(' ')[0].toUpperCase();
                         };
 
                         return (
@@ -375,7 +264,7 @@ export function F1RaceTrack({
                                 {/* Participant Info (Top) */}
                                 <div className="text-center mb-2 px-1">
                                     <div className="text-[9px] font-black text-slate-800 dark:text-white/90 truncate uppercase tracking-tighter">
-                                        {p.name.split(' ')[0].replace(/TEKNIK/i, 'T.')}
+                                        {getAbbreviation(p.name)}
                                     </div>
                                     <div className="text-[10px] sm:text-xs font-mono font-black shadow-sm" style={{ color: color.primary }}>
                                         {p.score.toFixed(1)}
@@ -426,11 +315,6 @@ export function F1RaceTrack({
                                             } : {}}
                                             transition={{ duration: 0.1, repeat: Infinity }}
                                         >
-                                            <F1CarTopDown
-                                                color={color}
-                                                isLeader={isLeader && startRace}
-                                                label={p.alias || p.name.substring(0, 3).toUpperCase()}
-                                            />
 
                                             {/* Speed Exhaust Bubbles/Lines */}
                                             {startRace && (
