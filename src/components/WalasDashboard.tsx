@@ -193,30 +193,46 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
     }
 
     async function handleUpdateStudent(id: string, nama: string, kelas: string, poin: number) {
-        if (isMockMode) {
-            const index = mockData.mockSiswa.findIndex(s => s.id === id);
-            if (index >= 0) {
-                mockData.mockSiswa[index] = { ...mockData.mockSiswa[index], nama, kelas };
-            }
-            const sIndex = mockData.mockSkillSiswa.findIndex(s => s.siswa_id === id);
-            if (sIndex >= 0) {
-                mockData.mockSkillSiswa[sIndex] = { ...mockData.mockSkillSiswa[sIndex], poin };
-            }
-        } else {
-            const { error: sError } = await supabase
-                .from('siswa')
-                .update({ nama, kelas })
-                .eq('id', id);
-            if (sError) throw sError;
+        try {
+            if (isMockMode) {
+                const index = mockData.mockSiswa.findIndex(s => s.id === id);
+                if (index >= 0) {
+                    mockData.mockSiswa[index] = { ...mockData.mockSiswa[index], nama, kelas };
+                }
+                const sIndex = mockData.mockSkillSiswa.findIndex(s => s.siswa_id === id);
+                if (sIndex >= 0) {
+                    mockData.mockSkillSiswa[sIndex] = { ...mockData.mockSkillSiswa[sIndex], poin };
+                }
+            } else {
+                const { error: sError } = await supabase
+                    .from('siswa')
+                    .update({ nama, kelas })
+                    .eq('id', id);
+                if (sError) throw sError;
 
-            // Update points in skill_siswa
-            const { error: skError } = await supabase
-                .from('skill_siswa')
-                .update({ poin })
-                .eq('siswa_id', id);
-            if (skError) throw skError;
+                // Update points in skill_siswa
+                const { error: skError } = await supabase
+                    .from('skill_siswa')
+                    .update({ poin })
+                    .eq('siswa_id', id);
+                if (skError) throw skError;
+            }
+
+            // Update local state for the modal immediately
+            if (selectedStudent && selectedStudent.id === id) {
+                setSelectedStudent(prev => prev ? {
+                    ...prev,
+                    nama,
+                    kelas,
+                    current_poin: poin
+                } : null);
+            }
+
+            await loadClassData();
+        } catch (e: any) {
+            console.error('Error updating student:', e);
+            alert('Gagal memperbarui data: ' + (e.message || 'Unknown error'));
         }
-        loadClassData();
     }
 
     const filteredStudents = students.filter(s =>
