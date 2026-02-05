@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS student_discipline (
   izin integer NOT NULL DEFAULT 0,
   sakit integer NOT NULL DEFAULT 0,
   alfa integer NOT NULL DEFAULT 0,
+  attitude_scores jsonb DEFAULT '[]'::jsonb,
   updated_at timestamptz DEFAULT now(),
   UNIQUE(siswa_id)
 );
@@ -34,15 +35,15 @@ CREATE POLICY "Anyone can view student_discipline"
   ON student_discipline FOR SELECT
   USING (true);
 
-CREATE POLICY "Authenticated users can update student_discipline"
+CREATE POLICY "Public can update student_discipline"
   ON student_discipline FOR UPDATE
-  TO authenticated
+  TO public
   USING (true)
   WITH CHECK (true);
 
-CREATE POLICY "Authenticated users can insert student_discipline"
+CREATE POLICY "Public can insert student_discipline"
   ON student_discipline FOR INSERT
-  TO authenticated
+  TO public
   WITH CHECK (true);
 
 -- Seed initial data for existing students (defaulting to random-ish high attendance)

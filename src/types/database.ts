@@ -204,6 +204,41 @@ export interface Database {
           created_at?: string
         }
       }
+      student_discipline: {
+        Row: {
+          id: string
+          siswa_id: string
+          attendance_pcent: number
+          masuk: number
+          izin: number
+          sakit: number
+          alfa: number
+          attitude_scores: Json
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          siswa_id: string
+          attendance_pcent?: number
+          masuk?: number
+          izin?: number
+          sakit?: number
+          alfa?: number
+          attitude_scores?: Json
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          siswa_id?: string
+          attendance_pcent?: number
+          masuk?: number
+          izin?: number
+          sakit?: number
+          alfa?: number
+          attitude_scores?: Json
+          updated_at?: string
+        }
+      }
     }
   }
 }
