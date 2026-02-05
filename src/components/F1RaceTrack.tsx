@@ -251,7 +251,7 @@ export function F1RaceTrack({
                                 {/* Participant Info (Top) */}
                                 <div className="text-center mb-2 px-1">
                                     <div className="text-[9px] font-black text-slate-800 dark:text-white/90 truncate uppercase tracking-tighter">
-                                        {p.name.split(' ')[0]}
+                                        {p.name.split(' ')[0].replace(/TEKNIK/i, 'T.')}
                                     </div>
                                     <div className="text-[10px] sm:text-xs font-mono font-black shadow-sm" style={{ color: color.primary }}>
                                         {p.score.toFixed(1)}
