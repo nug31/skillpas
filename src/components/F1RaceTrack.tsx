@@ -88,7 +88,6 @@ export function F1RaceTrack({
         }
     }, [startRace, winner, playVictory]);
 
-    // F1 Start Lights Component
     const F1Lights = ({ count }: { count: number }) => (
         <div className="flex gap-4 p-6 bg-zinc-900 rounded-xl border-4 border-zinc-800 shadow-2xl">
             {[1, 2, 3, 4, 5].map((i) => (
@@ -100,67 +99,59 @@ export function F1RaceTrack({
         </div>
     );
 
-    // F1 Car Component
-    const F1Car = ({ color, isLeader, label }: { color: typeof f1Colors[0], isLeader: boolean, label: string }) => (
-        <div className="relative">
-            {/* Car Label */}
-            <div
-                className="absolute -top-7 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded text-[8px] font-bold text-white shadow-sm whitespace-nowrap bg-black/40 backdrop-blur-[2px] border border-white/20 z-10"
-                style={{ borderBottomColor: color.primary }}
-            >
-                {label}
-            </div>
-
-            {/* F1 Car SVG - Side View */}
-            <svg width="50" height="24" viewBox="0 0 50 24" className="drop-shadow-md">
-                {/* Rear Wing */}
-                <rect x="0" y="4" width="8" height="4" fill={color.secondary} rx="1" />
-                <rect x="2" y="8" width="4" height="6" fill={color.secondary} opacity="0.8" />
-
-                {/* Wheels (Back Layer) */}
-                <g fill="#1f2937">
-                    <circle cx="12" cy="16" r="5" />
-                    <circle cx="40" cy="16" r="5" />
-                </g>
-
-                {/* Body */}
-                <path
-                    d="M10 14 L10 10 L18 8 L32 8 L44 12 L48 15 L48 17 L10 17 Z"
-                    fill={color.primary}
-                />
-
-                {/* Cockpit & Driver */}
-                <circle cx="28" cy="7" r="3.5" fill="#fbbf24" stroke="#000" strokeWidth="0.5" />
-
-                {/* Sidepod Accent */}
-                <path d="M20 12 L34 12 L32 15 L20 15 Z" fill={color.accent} />
-
-                {/* Front Wing */}
-                <path d="M44 15 L50 15 L50 17 L42 17 Z" fill={color.secondary} />
-
-                {/* Wheels (Rims) */}
-                <g fill="#e5e7eb" opacity="0.6">
-                    <circle cx="12" cy="16" r="2.5" />
-                    <circle cx="40" cy="16" r="2.5" />
-                </g>
-            </svg>
-
-            {/* Leader Crown */}
+    const F1CarTopDown = ({ color, isLeader, label }: { color: typeof f1Colors[0], isLeader: boolean, label: string }) => (
+        <div className="relative flex flex-col items-center">
+            {/* Leader Crown/Trophy */}
             {isLeader && (
                 <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 2.5, type: "spring" }}
-                    className="absolute -top-10 left-1/2 -translate-x-1/2 z-20"
+                    className="absolute -top-6 z-20"
                 >
-                    <Trophy className="w-4 h-4 text-yellow-400 drop-shadow-lg" />
+                    <Trophy className="w-5 h-5 text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]" />
                 </motion.div>
             )}
+
+            {/* Top-down F1 Car SVG */}
+            <svg width="32" height="60" viewBox="0 0 24 50" className="drop-shadow-lg">
+                {/* Rear Wing */}
+                <rect x="4" y="46" width="16" height="4" fill={color.secondary} rx="0.5" />
+
+                {/* Rear Wheels */}
+                <rect x="0" y="36" width="6" height="10" fill="#111827" rx="1" />
+                <rect x="18" y="36" width="6" height="10" fill="#111827" rx="1" />
+
+                {/* Main Body (Tapered) */}
+                <path d="M6 40 L18 40 L15 10 L9 10 Z" fill={color.primary} />
+
+                {/* Sidepods */}
+                <path d="M6 18 L4 32 L7 32 L8 18 Z" fill={color.accent} />
+                <path d="M18 18 L20 32 L17 32 L16 18 Z" fill={color.accent} />
+
+                {/* Cockpit */}
+                <ellipse cx="12" cy="28" rx="3" ry="5" fill="#fbbf24" stroke="#000" strokeWidth="0.5" />
+
+                {/* Front Wing */}
+                <rect x="2" y="6" width="20" height="3" fill={color.secondary} rx="1" />
+
+                {/* Front Wheels */}
+                <rect x="0" y="8" width="5" height="8" fill="#111827" rx="1" />
+                <rect x="19" y="8" width="5" height="8" fill="#111827" rx="1" />
+            </svg>
+
+            {/* Car Label (Side) */}
+            <div
+                className="absolute -right-12 top-1/2 -translate-y-1/2 px-1 py-0.5 rounded text-[8px] font-black text-white bg-black/40 backdrop-blur-[1px] border-l-2 z-10 whitespace-nowrap"
+                style={{ borderLeftColor: color.primary }}
+            >
+                {label}
+            </div>
         </div>
     );
 
     return (
-        <div className={`relative min-h-[500px] sm:min-h-[700px] card-glass backdrop-blur-xl rounded-2xl border border-slate-300 dark:border-white/10 p-4 sm:p-8 overflow-hidden shadow-2xl transition-all ${shouldShake ? 'animate-[shake_0.2s_infinite]' : ''}`}>
+        <div className={`relative h-[650px] sm:h-[750px] card-glass backdrop-blur-xl rounded-3xl border border-slate-300 dark:border-white/10 p-4 sm:p-8 flex flex-col shadow-2xl transition-all ${shouldShake ? 'animate-[shake_0.2s_infinite]' : ''}`}>
             <style>
                 {`
                     @keyframes shake {
@@ -180,44 +171,44 @@ export function F1RaceTrack({
             </style>
 
             {/* Track Background */}
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-800 via-slate-700 to-slate-900 [.theme-clear_&]:from-slate-200 [.theme-clear_&]:via-slate-100 [.theme-clear_&]:to-slate-200 opacity-50 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-800 to-slate-900 [.theme-clear_&]:from-slate-200 [.theme-clear_&]:via-slate-100 [.theme-clear_&]:to-slate-200 opacity-80 rounded-3xl overflow-hidden" />
 
-            {/* Grid Pattern */}
-            <div className="absolute inset-0 pointer-events-none opacity-10"
+            {/* Vertical Road Markings */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-3xl opacity-20"
                 style={{
-                    backgroundImage: `linear-gradient(90deg, white 1px, transparent 1px), linear-gradient(white 1px, transparent 1px)`,
-                    backgroundSize: '20px 20px',
+                    backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)`,
+                    backgroundSize: '40px 40px',
                 }}
             />
 
-            {showConfetti && <Confetti width={windowSize.width} height={windowSize.height} recycle={false} numberOfPieces={500} />}
+            {showConfetti && <Confetti width={windowSize.width} height={windowSize.height} recycle={false} numberOfPieces={500} style={{ zIndex: 60 }} />}
 
             {/* Header */}
-            <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+            <div className="relative z-20 flex flex-col sm:flex-row items-center justify-between mb-8 gap-4 px-2">
                 <div className="flex items-center gap-4">
                     <div className="p-3 bg-gradient-to-br from-red-600 to-red-800 rounded-xl shadow-lg shadow-red-500/30">
                         <Flag className="w-6 h-6 text-white" />
                     </div>
-                    <div>
-                        <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white tracking-tight uppercase">
+                    <div className="text-center sm:text-left">
+                        <h2 className="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-widest uppercase italic">
                             {title}
                         </h2>
-                        <div className="text-xs sm:text-sm text-red-600 dark:text-red-400 font-medium flex items-center gap-2 mt-1">
-                            <Timer className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <div className="text-[10px] sm:text-xs text-red-600 dark:text-red-400 font-bold flex items-center justify-center sm:justify-start gap-2 mt-1 uppercase tracking-widest">
+                            <Timer className="w-3 h-3" />
                             <span>{subtitle}</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Legend */}
-                <div className="flex items-center gap-4 text-xs font-semibold text-slate-700 dark:text-white/70 bg-white/80 dark:bg-black/30 px-4 py-2 rounded-full border border-red-200 dark:border-red-500/20 backdrop-blur-sm">
+                <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-white/60 bg-white/40 dark:bg-black/40 px-5 py-2.5 rounded-2xl border border-white/20 backdrop-blur-md">
                     <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse shadow-[0_0_8px_rgba(250,204,21,0.6)]" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-400 animate-pulse shadow-[0_0_10px_rgba(250,204,21,1)]" />
                         <span>Leader</span>
                     </div>
+                    <div className="w-px h-4 bg-white/10" />
                     <div className="flex items-center gap-2">
-                        <span className="text-lg">🏎️</span>
-                        <span>Racing</span>
+                        <span className="text-base">🏎️</span>
+                        <span>Track Mode</span>
                     </div>
                 </div>
             </div>
@@ -229,144 +220,138 @@ export function F1RaceTrack({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0, scale: 2 }}
-                        className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+                        className="absolute inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md rounded-3xl"
                     >
                         <motion.div
                             key={countdown}
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 1.2, opacity: 0 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                            className="flex flex-col items-center gap-8"
+                            className="flex flex-col items-center gap-10"
                         >
                             <F1Lights count={countdown} />
-                            <div className="text-5xl sm:text-7xl font-black italic text-transparent bg-clip-text bg-gradient-to-tr from-red-500 via-orange-500 to-yellow-500 drop-shadow-[0_0_30px_rgba(239,68,68,0.5)] text-center tracking-tighter">
-                                {countdown === 0 ? "LIGHTS OUT!" : "COCKPIT READY..."}
+                            <div className="text-4xl sm:text-6xl font-black italic text-transparent bg-clip-text bg-gradient-to-tr from-red-500 via-orange-500 to-yellow-500 text-center tracking-tighter uppercase drop-shadow-2xl">
+                                {countdown === 0 ? "LIGHTS OUT!" : "WARMING TIRES..."}
                             </div>
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
 
+            {/* Race Arena */}
+            <div className="flex-1 relative mb-4 z-10 px-2 sm:px-6">
+                <div className="absolute inset-0 flex justify-between gap-2 sm:gap-4 overflow-hidden">
+                    {sortedParticipants.map((p, index) => {
+                        const color = f1Colors[index % f1Colors.length];
+                        const isLeader = index === 0;
+                        const progress = (p.score / maxScore) * 85; // Max 85% to stay below finish line
 
-
-            {/* Race Tracks */}
-            <div className="relative z-10 space-y-3 mt-8">
-                {sortedParticipants.map((p, index) => {
-                    const color = f1Colors[index % f1Colors.length];
-                    const isLeader = index === 0;
-                    const progress = (p.score / maxScore) * 100;
-
-                    return (
-                        <div key={p.id} className="flex items-center gap-2 sm:gap-4">
-                            {/* Position Number */}
-                            <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-xs sm:text-sm font-black border-2 flex-shrink-0 ${isLeader
-                                ? 'bg-yellow-400 text-yellow-900 border-yellow-500 shadow-[0_0_15px_rgba(250,204,21,0.5)]'
-                                : index === 1
-                                    ? 'bg-slate-300 text-slate-700 border-slate-400'
-                                    : index === 2
-                                        ? 'bg-orange-400 text-orange-900 border-orange-500'
-                                        : 'bg-white/80 [.theme-clear_&]:bg-white text-slate-600 border-slate-300'
-                                }`}>
-                                P{index + 1}
-                            </div>
-
-                            {/* Track Lane */}
-                            <div className="flex-1 relative h-10 sm:h-14 bg-slate-700/30 [.theme-clear_&]:bg-slate-200 rounded-lg overflow-hidden border border-white/10 [.theme-clear_&]:border-slate-300">
-                                {/* Track Markings */}
-                                <div className="absolute inset-y-0 left-0 right-0 flex items-center">
-                                    {[...Array(15)].map((_, i) => (
-                                        <div key={i} className="h-0.5 w-4 sm:w-6 bg-white/20 [.theme-clear_&]:bg-slate-400/30 ml-4 sm:ml-8" />
-                                    ))}
+                        return (
+                            <div key={p.id} className="flex-1 flex flex-col h-full group">
+                                {/* Participant Info (Top) */}
+                                <div className="text-center mb-2 px-1">
+                                    <div className="text-[9px] font-black text-slate-800 dark:text-white/90 truncate uppercase tracking-tighter">
+                                        {p.name.split(' ')[0]}
+                                    </div>
+                                    <div className="text-[10px] sm:text-xs font-mono font-black shadow-sm" style={{ color: color.primary }}>
+                                        {p.score.toFixed(1)}
+                                    </div>
                                 </div>
 
-                                {/* Track edge */}
-                                <div className="absolute top-0 left-0 right-0 h-0.5 sm:h-1 bg-red-500/50" />
-                                <div className="absolute bottom-0 left-0 right-0 h-0.5 sm:h-1 bg-red-500/50" />
+                                {/* Vertical Track Lane */}
+                                <div className="flex-1 relative bg-slate-800/60 [.theme-clear_&]:bg-slate-300 shadow-inner overflow-hidden border-x border-white/5 [.theme-clear_&]:border-slate-400/30">
+                                    {/* Lane Markings (Dashed Line) */}
+                                    <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 sm:w-1 border-l border-dashed border-white/10 [.theme-clear_&]:border-slate-900/10 h-full" />
 
-                                {/* Finish Line */}
-                                <div className="absolute right-0 top-0 bottom-0 w-3 z-10 opacity-80"
-                                    style={{
-                                        backgroundImage: `repeating-conic-gradient(#000 0deg 90deg, #fff 90deg 180deg)`,
-                                        backgroundSize: '4px 4px',
-                                    }}
-                                />
+                                    {/* Finish Line (Top) */}
+                                    <div className="absolute top-0 left-0 right-0 h-4 z-10 opacity-60"
+                                        style={{
+                                            backgroundImage: `repeating-conic-gradient(#000 0deg 90deg, #fff 90deg 180deg)`,
+                                            backgroundSize: '8px 8px',
+                                        }}
+                                    />
 
-                                {/* F1 Car */}
-                                <motion.div
-                                    initial={{ left: '2%' }}
-                                    animate={startRace ? { left: `${Math.min(progress - 12, 85)}%` } : { left: '2%' }}
-                                    transition={{ duration: 2.5, ease: "easeOut", delay: index * 0.1 }}
-                                    className="absolute top-1/2 -translate-y-1/2 scale-75 sm:scale-100 origin-left"
-                                >
-                                    <motion.div
-                                        animate={startRace ? {
-                                            x: [0, 1, 0, -1, 0],
-                                        } : {}}
-                                        transition={{ duration: 0.1, repeat: Infinity }}
-                                    >
-                                        <F1Car
-                                            color={color}
-                                            isLeader={isLeader && startRace}
-                                            label={p.alias || p.name.substring(0, 3).toUpperCase()}
+                                    {/* Position Flag (Bottom-Left) */}
+                                    <div className={`absolute bottom-2 left-1 z-20 w-5 h-5 sm:w-6 sm:h-6 rounded-md flex items-center justify-center text-[10px] font-black border ${isLeader
+                                        ? 'bg-yellow-400 text-yellow-900 border-yellow-500'
+                                        : 'bg-white/10 text-white/40 border-white/10'
+                                        }`}>
+                                        P{index + 1}
+                                    </div>
+
+                                    {/* top heat/smoke effect at bottom */}
+                                    {startRace && (
+                                        <motion.div
+                                            animate={{ opacity: [0.1, 0.3, 0.1] }}
+                                            transition={{ duration: 1, repeat: Infinity }}
+                                            className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white/10 to-transparent pointer-events-none"
                                         />
+                                    )}
 
-                                        {/* Speed Lines */}
-                                        {startRace && (
-                                            <motion.div
-                                                animate={{ opacity: [0.3, 0.6, 0.3] }}
-                                                transition={{ duration: 0.15, repeat: Infinity }}
-                                                className="absolute -left-8 top-1/2 -translate-y-1/2 flex flex-col gap-1"
-                                            >
-                                                <div className="w-6 h-0.5 bg-white/40 rounded" />
-                                                <div className="w-4 h-0.5 bg-white/30 rounded" />
-                                                <div className="w-5 h-0.5 bg-white/40 rounded" />
-                                            </motion.div>
-                                        )}
+                                    {/* F1 Car (Animated Bottom-to-Top) */}
+                                    <motion.div
+                                        initial={{ bottom: '2%' }}
+                                        animate={startRace ? { bottom: `${Math.min(2 + progress, 88)}%` } : { bottom: '2%' }}
+                                        transition={{ duration: 2.5, ease: "easeOut", delay: index * 0.1 }}
+                                        className="absolute left-1/2 -translate-x-1/2 scale-[0.6] sm:scale-100 origin-bottom"
+                                    >
+                                        <motion.div
+                                            animate={startRace ? {
+                                                y: [0, -1, 0, 1, 0],
+                                                x: [-0.5, 0.5, -0.5],
+                                            } : {}}
+                                            transition={{ duration: 0.1, repeat: Infinity }}
+                                        >
+                                            <F1CarTopDown
+                                                color={color}
+                                                isLeader={isLeader && startRace}
+                                                label={p.alias || p.name.substring(0, 3).toUpperCase()}
+                                            />
+
+                                            {/* Speed Exhaust Bubbles/Lines */}
+                                            {startRace && (
+                                                <motion.div
+                                                    animate={{ opacity: [0, 0.4, 0], y: [0, 10, 20] }}
+                                                    transition={{ duration: 0.2, repeat: Infinity }}
+                                                    className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
+                                                >
+                                                    <div className="w-1.5 h-1.5 bg-blue-300/40 rounded-full blur-[1px]" />
+                                                    <div className="w-1 h-3 bg-white/20 rounded-full blur-[2px]" />
+                                                </motion.div>
+                                            )}
+                                        </motion.div>
                                     </motion.div>
-                                </motion.div>
-                            </div>
-
-                            {/* Score & Name */}
-                            <div className="w-20 sm:w-28 text-right flex-shrink-0">
-                                <div className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white truncate">
-                                    {p.name}
-                                </div>
-                                <div className="text-[10px] sm:text-xs text-slate-500 dark:text-white/60 truncate font-medium">
-                                    {p.label}
-                                </div>
-                                <div className="text-sm sm:text-lg font-bold font-mono" style={{ color: color.primary }}>
-                                    {p.score.toFixed(1)} <span className="text-[10px] sm:text-xs opacity-70">XP</span>
                                 </div>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
+                </div>
             </div>
 
-            {/* Race Results Panel */}
-            <div className="relative z-10 mt-8 pt-6 border-t border-slate-200/30 dark:border-white/10">
-                <div className="flex items-center gap-2 mb-4">
-                    <Zap className="w-4 h-4 text-yellow-500" />
-                    <span className="text-sm font-bold text-slate-700 dark:text-white/70">Race Standings</span>
+            {/* Quick Stats Panel (Bottom) */}
+            <div className="relative z-20 mt-4 pt-6 border-t border-white/10 bg-black/20 rounded-b-3xl -mx-4 -mb-4 sm:-mx-8 sm:-mb-8 p-6 px-8">
+                <div className="flex items-center gap-3 mb-4">
+                    <div className="p-1.5 bg-yellow-500/20 rounded-lg">
+                        <Zap className="w-4 h-4 text-yellow-500" />
+                    </div>
+                    <span className="text-xs font-black uppercase tracking-widest text-white/50">Race Standings</span>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     {sortedParticipants.slice(0, 4).map((p, index) => {
                         const color = f1Colors[index % f1Colors.length];
-                        const positions = ['🥇', '🥈', '🥉', 'P4'];
+                        const trophies = ['🏆', '🥈', '🥉', '💠'];
                         return (
                             <motion.div
                                 key={p.id}
-                                initial={{ opacity: 0, y: 20 }}
+                                initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: startRace ? 2.5 + index * 0.1 : 0 }}
-                                className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl bg-white/50 dark:bg-white/5 border"
-                                style={{ borderColor: color.primary + '40' }}
+                                className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm group hover:bg-white/10 transition-all"
                             >
-                                <div className="text-lg sm:text-xl">{positions[index]}</div>
+                                <div className="text-sm border-r border-white/10 pr-3">{trophies[index]}</div>
                                 <div className="flex-1 min-w-0">
-                                    <div className="text-sm font-bold truncate text-slate-800 dark:text-white">{p.name}</div>
-                                    <div className="text-xs font-mono" style={{ color: color.primary }}>{p.score.toFixed(1)} XP</div>
+                                    <div className="text-[10px] font-black truncate text-white uppercase tracking-tight">{p.name}</div>
+                                    <div className="text-[11px] font-black font-mono shadow-sm" style={{ color: color.primary }}>{p.score.toFixed(1)} <span className="text-[8px] opacity-40">XP</span></div>
                                 </div>
                             </motion.div>
                         );
