@@ -18,7 +18,7 @@ export function formatStudentData(students: SiswaWithSkill[]) {
         'Izin': siswa.discipline_data?.izin || 0,
         'Sakit': siswa.discipline_data?.sakit || 0,
         'Alfa': siswa.discipline_data?.alfa || 0,
-        'Nilai Sikap (Rata-rata)': siswa.discipline_data?.attitude_scores
+        'Nilai Sikap (Rata-rata)': (siswa.discipline_data?.attitude_scores && siswa.discipline_data.attitude_scores.length > 0)
             ? (siswa.discipline_data.attitude_scores.reduce((sum: number, item: any) => sum + item.score, 0) / siswa.discipline_data.attitude_scores.length).toFixed(1)
             : '-',
         'Status KRS': siswa.latest_krs?.status === 'completed' ? 'Selesai' :
@@ -43,15 +43,14 @@ export function calculateClassStatistics(students: SiswaWithSkill[]) {
         ? (students.reduce((acc: number, s: any) => acc + (s.discipline_data?.attendance_pcent || 0), 0) / total).toFixed(1)
         : 0;
 
-    const avgAttitude = total > 0
-        ? (students.reduce((acc: number, s: any) => {
-            if (s.discipline_data?.attitude_scores) {
-                const avg = s.discipline_data.attitude_scores.reduce((sum: number, item: any) => sum + item.score, 0) / s.discipline_data.attitude_scores.length;
-                return acc + avg;
-            }
-            return acc;
-        }, 0) / total).toFixed(1)
-        : 0;
+    const studentsWithAttitude = students.filter(s => s.discipline_data?.attitude_scores && s.discipline_data.attitude_scores.length > 0);
+    const avgAttitude = studentsWithAttitude.length > 0
+        ? (studentsWithAttitude.reduce((acc: number, s: any) => {
+            const scores = s.discipline_data.attitude_scores;
+            const avg = scores.reduce((sum: number, item: any) => sum + item.score, 0) / scores.length;
+            return acc + avg;
+        }, 0) / studentsWithAttitude.length).toFixed(1)
+        : '-';
 
     const levelDistribution = students.reduce((acc: any, s: any) => {
         const levelName = s.current_level?.nama_level || 'Level 1';
