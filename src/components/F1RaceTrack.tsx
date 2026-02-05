@@ -315,6 +315,11 @@ export function F1RaceTrack({
                                             } : {}}
                                             transition={{ duration: 0.1, repeat: Infinity }}
                                         >
+                                            <F1CarTopDown
+                                                color={color}
+                                                isLeader={isLeader && startRace}
+                                                label={getAbbreviation(p.name)}
+                                            />
 
                                             {/* Speed Exhaust Bubbles/Lines */}
                                             {startRace && (
@@ -366,6 +371,6 @@ export function F1RaceTrack({
                     })}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
