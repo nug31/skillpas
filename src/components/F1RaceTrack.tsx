@@ -242,22 +242,6 @@ export function F1RaceTrack({
             <div className="flex-1 relative mb-4 z-10 px-2 sm:px-6">
                 <div className="absolute inset-0 flex justify-between gap-2 sm:gap-4 overflow-hidden">
                     {sortedParticipants.map((p, index) => {
-                        const color = f1Colors[index % f1Colors.length];
-                        const isLeader = index === 0;
-                        const progress = (p.score / maxScore) * 85; // Max 85% to stay below finish line
-
-                        const getAbbreviation = (fullName: string) => {
-                            const name = fullName.toUpperCase();
-                            if (name.includes('MESIN')) return 'MESIN';
-                            if (name.includes('INSTALASI') || name.includes('LISTRIK')) return 'LISTRIK';
-                            if (name.includes('KENDARAAN') || name.includes('TKR')) return 'TKR';
-                            if (name.includes('AKUNTANSI')) return 'AKUNTANSI';
-                            if (name.includes('KIMIA') || name.includes('TKI')) return 'TKI';
-                            if (name.includes('HOTEL') || name.includes('PERHOTELAN')) return 'HOTEL';
-                            if (name.includes('TSM')) return 'TSM';
-                            if (name.includes('TEI') || name.includes('ELIND')) return 'ELIND';
-                            return fullName.split(' ')[0].toUpperCase();
-                        };
 
                         return (
                             <div key={p.id} className="flex-1 flex flex-col h-full group">
