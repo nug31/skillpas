@@ -141,7 +141,7 @@ export function StudentDetailModal({
         const defaultData = {
           id: `new-${student.id}`,
           siswa_id: student.id,
-          attendance_pcent: 80,
+          attendance_pcent: 100,
           masuk: 0,
           izin: 0,
           sakit: 0,
@@ -156,7 +156,7 @@ export function StudentDetailModal({
           updated_at: new Date().toISOString()
         };
         setDiscipline(defaultData as any);
-        setEditAttendance(80);
+        setEditAttendance(100);
         setEditMasuk(0);
         setEditIzin(0);
         setEditSakit(0);
@@ -166,6 +166,18 @@ export function StudentDetailModal({
     };
     loadDiscipline();
   }, [student.id]);
+
+  // Auto-calculate attendance percentage
+  useEffect(() => {
+    const total = editMasuk + editIzin + editSakit + editAlfa;
+    if (total > 0) {
+      const percentage = Math.round((editMasuk / total) * 100);
+      setEditAttendance(percentage);
+    } else if (discipline) {
+      // If no data yet but discipline loaded, keep 100
+      setEditAttendance(100);
+    }
+  }, [editMasuk, editIzin, editSakit, editAlfa]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -545,7 +557,13 @@ export function StudentDetailModal({
                         <span className="text-[10px] uppercase font-bold text-[color:var(--text-muted)]">Persentase Kehadiran</span>
                         {isEditing && canEdit ? (
                           <div className="flex items-center gap-1">
-                            <input type="number" max="100" value={editAttendance} onChange={(e) => setEditAttendance(Number(e.target.value))} className="w-12 px-1 bg-black/20 border border-white/10 rounded text-xs text-right text-[color:var(--accent-1)] font-bold" />
+                            <input
+                              type="number"
+                              max="100"
+                              value={editAttendance}
+                              readOnly
+                              className="w-12 px-1 bg-black/5 border border-white/5 rounded text-xs text-right text-[color:var(--text-muted)] font-bold cursor-not-allowed"
+                            />
                             <span className="text-xs text-[color:var(--text-muted)]">%</span>
                           </div>
                         ) : (
