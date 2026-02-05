@@ -159,17 +159,19 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
 
                 const submissions = await krsStore.getSubmissions();
 
+                const availableClasses = Array.from(new Set((siswaData || []).map((s: any) => s.kelas))).sort();
+
                 console.log('Class Data Loading Debug:', {
                     userJurusanId: user.jurusan_id,
                     userKelas: user.kelas,
                     normalizedWalasClasses,
                     totalSiswaAtJurusan: siswaData?.length || 0,
-                    firstSiswaSample: siswaData?.[0] ? {
-                        nama: siswaData[0].nama,
-                        kelas: siswaData[0].kelas,
-                        jurusan_id: siswaData[0].jurusan_id,
-                        normalizedKelas: normalizeClassName(siswaData[0].kelas)
-                    } : 'no data'
+                    availableClasses,
+                    matchAttempt: {
+                        target: normalizedWalasClasses[0],
+                        foundRaw: (siswaData || []).some((s: any) => s.kelas === user.kelas),
+                        foundNormalized: (siswaData || []).some((s: any) => normalizeClassName(s.kelas) === normalizedWalasClasses[0])
+                    }
                 });
 
                 // Advanced filtering: match based on normalized class names
