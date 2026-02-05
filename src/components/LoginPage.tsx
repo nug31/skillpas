@@ -59,15 +59,21 @@ export function LoginPage() {
 
             {/* Background Image / Pattern */}
             <div
-                className={`absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 ${themeClear ? 'opacity-10 scale-105 saturate-[0.8]' : 'opacity-40 mix-blend-screen scale-110 animate-pulse-slow'}`}
+                className={`absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 ${themeClear ? 'opacity-[0.15] scale-105 saturate-[0.8]' : 'opacity-40 mix-blend-screen scale-110 animate-pulse-slow'}`}
                 style={{
                     backgroundImage: `url(${themeClear ? loginLightBg : loginBg})`,
                     animationDuration: themeClear ? '0s' : '10s'
                 }}
             />
 
-            {/* Abstract Background Blobs (Dark Mode Only) */}
-            {!themeClear && (
+            {/* Abstract Background Blobs */}
+            {themeClear ? (
+                <>
+                    <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-emerald-100/40 blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: '7s' }} />
+                    <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-teal-100/40 blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: '8s' }} />
+                    <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-[1]" />
+                </>
+            ) : (
                 <>
                     <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-yellow-600/10 blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: '4s' }} />
                     <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-amber-600/10 blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: '5s' }} />
@@ -93,11 +99,13 @@ export function LoginPage() {
                 {/* Logo & Title */}
                 <div className="text-center mb-8">
                     <div className="relative inline-block mb-4 group">
-                        <div className={`absolute inset-0 rounded-full blur-xl transition-all duration-500 ${!themeClear ? 'bg-yellow-500/30 group-hover:bg-yellow-400/50' : 'bg-transparent'}`} />
+                        <div className={`absolute inset-0 rounded-full blur-xl transition-all duration-500 ${!themeClear ? 'bg-yellow-500/30 group-hover:bg-yellow-400/50' : 'bg-emerald-500/10 group-hover:bg-emerald-500/20'}`} />
                         <img
                             src={smkLogo}
                             alt="SMK Logo"
-                            className="relative w-24 h-24 rounded-full object-cover bg-white p-2 shadow-2xl ring-2 ring-white/10"
+                            className={`relative w-24 h-24 rounded-full object-cover p-2 shadow-2xl transition-all duration-500 ${themeClear
+                                ? 'bg-white border-white ring-4 ring-emerald-50'
+                                : 'bg-white ring-2 ring-white/10'}`}
                         />
                     </div>
                     <h1 className="text-4xl font-black tracking-tight bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent mb-2 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] [.theme-clear_&]:from-emerald-600 [.theme-clear_&]:via-teal-600 [.theme-clear_&]:to-cyan-600">
@@ -108,7 +116,7 @@ export function LoginPage() {
 
                 {/* Login Card */}
                 <div className={`backdrop-blur-3xl rounded-[2.5rem] p-8 lg:p-10 shadow-2xl border transition-all duration-500 ${themeClear
-                    ? 'bg-white/80 border-slate-200 shadow-xl'
+                    ? 'bg-white/90 border-slate-200/60 shadow-[0_20px_50px_rgba(15,118,110,0.15)]'
                     : 'bg-black/40 border-white/10 shadow-[0_0_80px_rgba(0,0,0,0.6)] ring-1 ring-white/5'
                     }`}>
 
@@ -119,7 +127,7 @@ export function LoginPage() {
                             onClick={() => setSelectedRole('student')}
                             className={`p-4 rounded-2xl border transition-all duration-300 relative overflow-hidden group ${selectedRole === 'student'
                                 ? themeClear
-                                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-md'
+                                    ? 'border-emerald-500 bg-emerald-100/50 text-emerald-700 shadow-sm'
                                     : 'border-yellow-500/50 bg-yellow-950/30 text-yellow-400 shadow-[0_0_20px_rgba(234,179,8,0.2)]'
                                 : themeClear
                                     ? 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100'
@@ -136,7 +144,7 @@ export function LoginPage() {
                             onClick={() => setSelectedRole('teacher')}
                             className={`p-4 rounded-2xl border transition-all duration-300 relative overflow-hidden group ${selectedRole === 'teacher'
                                 ? themeClear
-                                    ? 'border-teal-500 bg-teal-50 text-teal-700 shadow-md'
+                                    ? 'border-teal-500 bg-teal-100/50 text-teal-700 shadow-sm'
                                     : 'border-amber-500/50 bg-amber-950/30 text-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.2)]'
                                 : themeClear
                                     ? 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100'
