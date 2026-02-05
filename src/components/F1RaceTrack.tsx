@@ -241,86 +241,83 @@ export function F1RaceTrack({
             {/* Race Arena */}
             <div className="flex-1 relative mb-4 z-10 px-2 sm:px-6">
                 <div className="absolute inset-0 flex justify-between gap-2 sm:gap-4 overflow-hidden">
-                    {sortedParticipants.map((p, index) => {
+                    <div key={p.id} className="flex-1 flex flex-col h-full group">
+                        {/* Participant Info (Top) */}
+                        <div className="text-center mb-2 px-1">
+                            <div className="text-[9px] font-black text-slate-800 dark:text-white/90 truncate uppercase tracking-tighter">
+                                {getAbbreviation(p.name)}
+                            </div>
+                            <div className="text-[10px] sm:text-xs font-mono font-black shadow-sm" style={{ color: color.primary }}>
+                                {p.score.toFixed(1)}
+                            </div>
+                        </div>
 
-                        return (
-                            <div key={p.id} className="flex-1 flex flex-col h-full group">
-                                {/* Participant Info (Top) */}
-                                <div className="text-center mb-2 px-1">
-                                    <div className="text-[9px] font-black text-slate-800 dark:text-white/90 truncate uppercase tracking-tighter">
-                                        {getAbbreviation(p.name)}
-                                    </div>
-                                    <div className="text-[10px] sm:text-xs font-mono font-black shadow-sm" style={{ color: color.primary }}>
-                                        {p.score.toFixed(1)}
-                                    </div>
-                                </div>
+                        {/* Vertical Track Lane */}
+                        <div className="flex-1 relative bg-slate-800/60 [.theme-clear_&]:bg-slate-300 shadow-inner overflow-hidden border-x border-white/5 [.theme-clear_&]:border-slate-400/30">
+                            {/* Lane Markings (Dashed Line) */}
+                            <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 sm:w-1 border-l border-dashed border-white/10 [.theme-clear_&]:border-slate-900/10 h-full" />
 
-                                {/* Vertical Track Lane */}
-                                <div className="flex-1 relative bg-slate-800/60 [.theme-clear_&]:bg-slate-300 shadow-inner overflow-hidden border-x border-white/5 [.theme-clear_&]:border-slate-400/30">
-                                    {/* Lane Markings (Dashed Line) */}
-                                    <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-0.5 sm:w-1 border-l border-dashed border-white/10 [.theme-clear_&]:border-slate-900/10 h-full" />
+                            {/* Finish Line (Top) */}
+                            <div className="absolute top-0 left-0 right-0 h-4 z-10 opacity-60"
+                                style={{
+                                    backgroundImage: `repeating-conic-gradient(#000 0deg 90deg, #fff 90deg 180deg)`,
+                                    backgroundSize: '8px 8px',
+                                }}
+                            />
 
-                                    {/* Finish Line (Top) */}
-                                    <div className="absolute top-0 left-0 right-0 h-4 z-10 opacity-60"
-                                        style={{
-                                            backgroundImage: `repeating-conic-gradient(#000 0deg 90deg, #fff 90deg 180deg)`,
-                                            backgroundSize: '8px 8px',
-                                        }}
+                            {/* Position Flag (Bottom-Left) */}
+                            <div className={`absolute bottom-2 left-1 z-20 w-5 h-5 sm:w-6 sm:h-6 rounded-md flex items-center justify-center text-[10px] font-black border ${isLeader
+                                ? 'bg-yellow-400 text-yellow-900 border-yellow-500'
+                                : 'bg-white/10 text-white/40 border-white/10'
+                                }`}>
+                                P{index + 1}
+                            </div>
+
+                            {/* top heat/smoke effect at bottom */}
+                            {startRace && (
+                                <motion.div
+                                    animate={{ opacity: [0.1, 0.3, 0.1] }}
+                                    transition={{ duration: 1, repeat: Infinity }}
+                                    className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white/10 to-transparent pointer-events-none"
+                                />
+                            )}
+
+                            {/* F1 Car (Animated Bottom-to-Top) */}
+                            <motion.div
+                                initial={{ bottom: '2%' }}
+                                animate={startRace ? { bottom: `${Math.min(2 + progress, 88)}%` } : { bottom: '2%' }}
+                                transition={{ duration: 2.5, ease: "easeOut", delay: index * 0.1 }}
+                                className="absolute left-1/2 -translate-x-1/2 scale-[0.6] sm:scale-100 origin-bottom"
+                            >
+                                <motion.div
+                                    animate={startRace ? {
+                                        y: [0, -1, 0, 1, 0],
+                                        x: [-0.5, 0.5, -0.5],
+                                    } : {}}
+                                    transition={{ duration: 0.1, repeat: Infinity }}
+                                >
+                                    <F1CarTopDown
+                                        color={color}
+                                        isLeader={isLeader && startRace}
+                                        label={getAbbreviation(p.name)}
                                     />
 
-                                    {/* Position Flag (Bottom-Left) */}
-                                    <div className={`absolute bottom-2 left-1 z-20 w-5 h-5 sm:w-6 sm:h-6 rounded-md flex items-center justify-center text-[10px] font-black border ${isLeader
-                                        ? 'bg-yellow-400 text-yellow-900 border-yellow-500'
-                                        : 'bg-white/10 text-white/40 border-white/10'
-                                        }`}>
-                                        P{index + 1}
-                                    </div>
-
-                                    {/* top heat/smoke effect at bottom */}
+                                    {/* Speed Exhaust Bubbles/Lines */}
                                     {startRace && (
                                         <motion.div
-                                            animate={{ opacity: [0.1, 0.3, 0.1] }}
-                                            transition={{ duration: 1, repeat: Infinity }}
-                                            className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white/10 to-transparent pointer-events-none"
-                                        />
-                                    )}
-
-                                    {/* F1 Car (Animated Bottom-to-Top) */}
-                                    <motion.div
-                                        initial={{ bottom: '2%' }}
-                                        animate={startRace ? { bottom: `${Math.min(2 + progress, 88)}%` } : { bottom: '2%' }}
-                                        transition={{ duration: 2.5, ease: "easeOut", delay: index * 0.1 }}
-                                        className="absolute left-1/2 -translate-x-1/2 scale-[0.6] sm:scale-100 origin-bottom"
-                                    >
-                                        <motion.div
-                                            animate={startRace ? {
-                                                y: [0, -1, 0, 1, 0],
-                                                x: [-0.5, 0.5, -0.5],
-                                            } : {}}
-                                            transition={{ duration: 0.1, repeat: Infinity }}
+                                            animate={{ opacity: [0, 0.4, 0], y: [0, 10, 20] }}
+                                            transition={{ duration: 0.2, repeat: Infinity }}
+                                            className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
                                         >
-                                            <F1CarTopDown
-                                                color={color}
-                                                isLeader={isLeader && startRace}
-                                                label={getAbbreviation(p.name)}
-                                            />
-
-                                            {/* Speed Exhaust Bubbles/Lines */}
-                                            {startRace && (
-                                                <motion.div
-                                                    animate={{ opacity: [0, 0.4, 0], y: [0, 10, 20] }}
-                                                    transition={{ duration: 0.2, repeat: Infinity }}
-                                                    className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
-                                                >
-                                                    <div className="w-1.5 h-1.5 bg-blue-300/40 rounded-full blur-[1px]" />
-                                                    <div className="w-1 h-3 bg-white/20 rounded-full blur-[2px]" />
-                                                </motion.div>
-                                            )}
+                                            <div className="w-1.5 h-1.5 bg-blue-300/40 rounded-full blur-[1px]" />
+                                            <div className="w-1 h-3 bg-white/20 rounded-full blur-[2px]" />
                                         </motion.div>
-                                    </motion.div>
-                                </div>
-                            </div>
-                        );
+                                    )}
+                                </motion.div>
+                            </motion.div>
+                        </div>
+                    </div>
+                    );
                     })}
                 </div>
             </div>
