@@ -47,6 +47,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
             .replace(/TKI/g, 'KIMIA')
             .replace(/BIKE/g, 'TSM')
             .replace(/MESIN/g, 'MES')
+            .replace(/\s0[123]$/, '') // Strip trailing campus suffixes (01, 02, 03)
             .replace(/\s+/g, ' ')
             .trim();
     };
@@ -158,25 +159,6 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                     : { data: [] };
 
                 const submissions = await krsStore.getSubmissions();
-
-                const availableClasses = Array.from(new Set((siswaData || []).map((s: any) => s.kelas))).sort();
-
-                // Debug details for first 10 students
-                const comparisonSamples = (siswaData || []).slice(0, 10).map((s: any) => ({
-                    raw: s.kelas,
-                    normalized: normalizeClassName(s.kelas),
-                    target: normalizedWalasClasses[0],
-                    match: normalizeClassName(s.kelas) === normalizedWalasClasses[0]
-                }));
-
-                console.log('Class Data Loading Debug:', {
-                    userJurusanId: user.jurusan_id,
-                    userKelas: user.kelas,
-                    normalizedWalasClassesStr: JSON.stringify(normalizedWalasClasses),
-                    totalSiswaAtJurusan: siswaData?.length || 0,
-                    availableClassesJoined: availableClasses.join(', '),
-                    comparisonSamples
-                });
 
                 // Advanced filtering: match based on normalized class names
                 const filteredSiswa = (siswaData || []).filter((s: any) => {
