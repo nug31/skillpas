@@ -159,10 +159,30 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
 
                 const submissions = await krsStore.getSubmissions();
 
+                console.log('Class Data Loading Debug:', {
+                    userJurusanId: user.jurusan_id,
+                    userKelas: user.kelas,
+                    normalizedWalasClasses,
+                    totalSiswaAtJurusan: siswaData?.length || 0,
+                    firstSiswaSample: siswaData?.[0] ? {
+                        nama: siswaData[0].nama,
+                        kelas: siswaData[0].kelas,
+                        jurusan_id: siswaData[0].jurusan_id,
+                        normalizedKelas: normalizeClassName(siswaData[0].kelas)
+                    } : 'no data'
+                });
+
                 // Advanced filtering: match based on normalized class names
-                const filteredSiswa = (siswaData || []).filter((s: any) =>
-                    normalizedWalasClasses.some(wc => normalizeClassName(s.kelas) === wc)
-                );
+                const filteredSiswa = (siswaData || []).filter((s: any) => {
+                    const normalizedSiswaKelas = normalizeClassName(s.kelas);
+                    const isMatch = normalizedWalasClasses.some(wc => normalizedSiswaKelas === wc);
+                    return isMatch;
+                });
+
+                console.log('Filter Result:', {
+                    filteredCount: filteredSiswa.length,
+                    filteredNames: filteredSiswa.map(s => s.nama)
+                });
 
                 const enriched = filteredSiswa.map((s: any) => {
                     const mainSkill = s.skill_siswa?.[0];
