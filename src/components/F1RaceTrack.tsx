@@ -32,11 +32,6 @@ export function F1RaceTrack({
     autoStart = true,
     trigger = false
 }: F1RaceTrackProps) {
-    const { playBeep, playStart, playVictory } = useRaceSound();
-    const [startRace, setStartRace] = useState(false);
-    const [countdown, setCountdown] = useState<number | null>(null);
-    const [showConfetti, setShowConfetti] = useState(false);
-    const [shouldShake, setShouldShake] = useState(false);
 
     useEffect(() => {
         if (autoStart) {
