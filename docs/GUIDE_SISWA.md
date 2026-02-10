@@ -35,17 +35,188 @@ Jika kamu mengklik kartu profilmu, kamu akan masuk ke detail passport yang beris
 - **Tab Riwayat**: Daftar semua unit kompetensi yang sudah kamu selesaikan.
 - **Skill Card**: Kartu digital eksklusif dengan **QR Code**. Tunjukkan ini ke guru atau HRD industri agar mereka bisa melihat portofolio digitalmu secara instan.
 
-## 5. Langkah-langkah Sertifikasi
-Sertifikasi adalah proses penting untuk menaikkan Level Skill-mu. Berikut adalah alurnya:
-1. **Pendaftaran (Self-Enroll)**: 
-   - Klik tombol **Pendaftaran Sertifikasi** (ikon target).
-   - Pilih unit kompetensi yang ingin kamu uji (sesuaikan dengan levelmu).
-   - Klik **Daftar Sertifikasi Competency**.
-2. **Review Guru**: Guru produktif akan memeriksa apakah kamu sudah memiliki pengetahuan dasar yang cukup untuk unit tersebut.
-3. **Penjadwalan (HOD)**: Jika disetujui, Ketua Program (HOD) akan menentukan tanggal ujian. Kamu akan mendapat **Notifikasi Hijau** di Dashboard jika jadwal sudah keluar.
-4. **Ujian Kompetensi**: Ikuti ujian sesuai jadwal. Pastikan kamu membawa peralatan praktikum yang diperlukan.
-5. **Penilaian**: Guru akan menginput nilai hasil ujianmu ke dalam sistem.
-6. **Download Sertifikat**: Jika dinyatakan "Lulus", tombol **Download Sertifikat** akan muncul di Tab Riwayat Detail Passport-mu.
+## 5. Detail Pengisian KRS / Pendaftaran Sertifikasi Kompetensi
+
+Berikut adalah panduan lengkap proses pendaftaran sertifikasi kompetensi, mulai dari menekan tombol **Upgrade Skill** hingga selesai ujian dan mendapatkan sertifikat.
+
+---
+
+### TAHAP 1: Membuka Form Pendaftaran
+
+Ada **3 cara** untuk membuka form pendaftaran sertifikasi (KRS):
+
+| No | Cara | Lokasi |
+|----|------|--------|
+| 1 | Klik tombol **🎯 Upgrade Skill** | Di kartu hero utama Dashboard (area besar dengan XP dan Poin kamu) |
+| 2 | Klik **Susun KRS Sekarang** | Di widget "Rencana Belajar Saya" jika belum ada kompetensi yang dipilih |
+| 3 | Klik **Ubah Rencana →** | Di pojok kanan atas widget "Rencana Belajar Saya" jika sudah punya KRS |
+
+Setelah diklik, akan muncul **Modal Sertifikasi Competency** (pop-up besar).
+
+---
+
+### TAHAP 2: Memahami Tampilan Modal Sertifikasi
+
+Di bagian atas modal, kamu akan melihat informasi:
+- **XP** kamu saat ini (misal: 35 XP)
+- **Poin** kamu saat ini (misal: 5 Poin)
+- Judul **"Progress Sertifikasi Kamu"**
+
+Di bawahnya terdapat **info box** bertuliskan:
+> *"Pilih kriteria kompetensi di **Level Kamu** untuk melanjutkan rencana belajar. (0/10)"*
+
+Angka **(0/10)** menunjukkan jumlah kompetensi yang sudah kamu pilih dari maksimal **10 kompetensi** per pendaftaran.
+
+---
+
+### TAHAP 3: Memilih Kriteria Kompetensi
+
+#### Memahami Daftar Level
+Modal menampilkan **seluruh level** kompetensi secara berurutan (Basic 1, Basic 2, Specialist, Advance, Master). Namun, **hanya level kamu saat ini yang bisa dipilih**, ditandai dengan label hijau:
+
+> **LEVEL KAMU 📍**
+
+Level lain akan tampil **abu-abu (terkunci/grayscale)** dan tidak bisa diklik.
+
+#### Cara Memilih Kompetensi
+
+1. **Scroll** ke level yang bertanda "LEVEL KAMU 📍".
+2. Di bawah nama level, terdapat daftar **kriteria kompetensi** yang dikelompokkan:
+   - **Kriteria Utama (Header Grup)**: Klik untuk membuka/menutup detail sub-kriteria di dalamnya.
+   - **Sub-Kriteria (Detail)**: Item spesifik yang bisa kamu centang satu per satu.
+3. **Klik pada kriteria** yang ingin kamu ambil:
+   - Ikon berubah dari (**+**) menjadi (**✓**) dan baris menjadi **berwarna ungu/hijau**.
+   - Klik lagi untuk **membatalkan pilihan**.
+4. **Maksimal 10 kriteria** bisa dipilih dalam satu kali pendaftaran.
+
+> **💡 Tips:** Baca setiap kriteria dengan teliti. Kriteria ini adalah **checklist yang akan digunakan guru untuk menilai kamu** saat ujian nanti.
+
+---
+
+### TAHAP 4: Mengirim Pendaftaran Sertifikasi
+
+Setelah memilih kriteria kompetensi (minimal 1, maksimal 10):
+
+1. Klik tombol **"Daftar Sertifikasi"** (tombol besar berwarna hijau/biru di bagian bawah modal).
+2. Akan muncul pesan konfirmasi: *"Pendaftaran Sertifikasi berhasil diajukan! Tunggu verifikasi guru."*
+3. Modal akan tertutup otomatis.
+
+Pilihan kompetensi yang kamu ambil akan muncul di widget **"Rencana Belajar Saya"** di Dashboard sebagai daftar target belajarmu.
+
+> **Catatan:** Jika kamu sudah pernah mendaftar dan ingin mengubah pilihan, tombol akan berubah menjadi **"Update Pendaftaran"**.
+
+---
+
+### TAHAP 5: Proses Verifikasi (Menunggu Persetujuan)
+
+Setelah pendaftaran dikirim, sertifikasimu akan melewati tahapan verifikasi. Kamu bisa memantau statusnya di modal sertifikasi:
+
+| Status | Keterangan | Warna Indikator |
+|--------|-----------|-----------------|
+| **Menunggu Guru Produktif** | Guru produktif sedang mereview pendaftaranmu | 🔵 Biru |
+| **Menunggu Kaprodi (HOD)** | Sudah disetujui guru, menunggu persetujuan HOD | 🔵 Biru |
+| **Ujian Terjadwal** | Disetujui penuh! Jadwal ujian sudah ditentukan | 🟢 Hijau |
+| **Ditolak** | Pendaftaran ditolak (bisa daftar ulang) | 🔴 Merah |
+
+---
+
+### TAHAP 6: Mendapat Notifikasi Jadwal Ujian
+
+Ketika pendaftaranmu disetujui dan ujian dijadwalkan oleh HOD:
+
+1. Di **Dashboard utama**, akan muncul **kotak notifikasi hijau** bertuliskan:
+   > **"Ujian Sertifikasi Terjadwal!"**
+   > Sertifikasi disetujui penuh & jadwal ujian tersedia.
+   > **JADWAL:** Senin, 15 Maret 2026 (contoh)
+
+2. Di dalam **Modal Sertifikasi**, status berubah menjadi **"📅 Jadwal Ujian: [tanggal]"** berwarna hijau.
+
+> **⚠️ Penting:** Catat tanggal ujianmu dan persiapkan diri sebaik mungkin!
+
+---
+
+### TAHAP 7: Mengikuti Ujian Kompetensi
+
+Pada hari ujian yang telah dijadwalkan:
+
+1. Datang tepat waktu ke lokasi ujian yang ditentukan.
+2. **Bawa peralatan praktikum** yang diperlukan sesuai kriteria kompetensi yang kamu daftarkan.
+3. Guru Produktif (Asesor) akan menilai kamu berdasarkan **checklist kriteria** yang sama dengan yang kamu pilih saat mendaftar.
+4. Ujian bisa berupa **praktik langsung**, **demonstrasi**, atau **tes tertulis** tergantung unit kompetensi.
+
+---
+
+### TAHAP 8: Penilaian & Hasil
+
+Setelah ujian selesai:
+
+1. **Guru/Asesor** akan menginput hasil penilaian ke dalam sistem melalui tab "Penilaian Ujian".
+2. Jika dinyatakan **LULUS**:
+   - Skor XP-mu akan **bertambah** sesuai bobot kompetensi.
+   - Level Badge-mu bisa **naik** jika XP mencapai threshold level berikutnya.
+   - Riwayat kompetensi akan tercatat di **Tab Riwayat** pada Passport-mu.
+3. Jika dinyatakan **TIDAK LULUS**:
+   - Kamu bisa **mendaftar ulang** untuk ujian yang sama di periode berikutnya.
+
+---
+
+### TAHAP 9: Download Sertifikat
+
+Jika dinyatakan lulus:
+
+1. Buka **Dashboard** → Klik tombol **"Passport"** (ikon buku).
+2. Masuk ke **Tab Riwayat**.
+3. Pada kompetensi yang sudah lulus, akan muncul tombol **"Download Sertifikat"**.
+4. Klik untuk mengunduh sertifikat dalam format digital.
+
+---
+
+### Ringkasan Alur (Flowchart)
+
+```
+┌─────────────────────────┐
+│  Klik "Upgrade Skill"   │
+└────────┬────────────────┘
+         ▼
+┌─────────────────────────┐
+│  Pilih Kriteria (1-10)  │
+│  di Level Kamu 📍       │
+└────────┬────────────────┘
+         ▼
+┌─────────────────────────┐
+│  Klik "Daftar           │
+│  Sertifikasi"           │
+└────────┬────────────────┘
+         ▼
+┌─────────────────────────┐
+│  Review Guru Produktif  │
+│  (Menunggu Persetujuan) │
+└────────┬────────────────┘
+         ▼
+┌─────────────────────────┐
+│  Review HOD / Kaprodi   │
+│  + Jadwal Ujian         │
+└────────┬────────────────┘
+         ▼
+┌─────────────────────────┐
+│  Notifikasi Hijau       │
+│  di Dashboard           │
+└────────┬────────────────┘
+         ▼
+┌─────────────────────────┐
+│  Ujian Kompetensi       │
+│  (Praktik/Tes)          │
+└────────┬────────────────┘
+         ▼
+┌─────────────────────────┐
+│  Penilaian oleh Guru    │
+│  → XP Naik / Level Up!  │
+└────────┬────────────────┘
+         ▼
+┌─────────────────────────┐
+│  Download Sertifikat 📄 │
+└─────────────────────────┘
+```
 
 ![Modal KRS](assets/siswa_krs.png)
 

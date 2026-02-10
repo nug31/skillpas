@@ -9,7 +9,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { MissionModal } from './MissionModal';
 import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
-import { Edit3, CheckCircle, Contact, BookOpen, LayoutDashboard } from 'lucide-react';
+import { Edit3, CheckCircle, Contact, BookOpen, LayoutDashboard, Clock, AlertTriangle, XCircle, FileCheck } from 'lucide-react';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import { SkillCard } from './SkillCard';
 import { StudentHistoryModal } from './StudentHistoryModal';
@@ -423,24 +423,28 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
   }
 
   const [scheduledExam, setScheduledExam] = useState<{ date: string, notes?: string } | null>(null);
+  const [krsSubmission, setKrsSubmission] = useState<KRSSubmission | null>(null);
 
   useEffect(() => {
     if (user?.role === 'student') {
-      const checkExamSchedule = async () => {
-        const userId = user.name === 'Siswa Mesin' ? 'siswa_mesin' : user.id; // handle specific mock mapping
+      const checkKRSStatus = async () => {
+        const userId = user.name === 'Siswa Mesin' ? 'siswa_mesin' : user.id;
         const sub = await krsStore.getStudentSubmission(userId);
-        if (sub && sub.status === 'scheduled' && sub.exam_date) {
-          setScheduledExam({
-            date: sub.exam_date,
-            notes: sub.notes
-          });
+        if (sub) {
+          setKrsSubmission(sub);
+          if (sub.status === 'scheduled' && sub.exam_date) {
+            setScheduledExam({ date: sub.exam_date, notes: sub.notes });
+          } else {
+            setScheduledExam(null);
+          }
         } else {
+          setKrsSubmission(null);
           setScheduledExam(null);
         }
       };
-      checkExamSchedule();
-      window.addEventListener(KRS_UPDATED_EVENT, checkExamSchedule);
-      return () => window.removeEventListener(KRS_UPDATED_EVENT, checkExamSchedule);
+      checkKRSStatus();
+      window.addEventListener(KRS_UPDATED_EVENT, checkKRSStatus);
+      return () => window.removeEventListener(KRS_UPDATED_EVENT, checkKRSStatus);
     }
   }, [user]);
 
@@ -606,29 +610,104 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
             </div>
 
             <div className="flex flex-col gap-4 self-center w-full max-w-lg">
-              {/* Student Exam Notification - Moved Here */}
-              {user?.role === 'student' && scheduledExam && (
-                <div className="animate-fadeInUp stagger-delay-1">
-                  <div className="bg-emerald-500/10 [.theme-clear_&]:bg-emerald-50 border border-emerald-500/20 rounded-2xl p-4 flex items-center gap-4 shadow-lg backdrop-blur-sm">
-                    <div className="p-2.5 bg-emerald-500 rounded-xl shadow-lg shrink-0">
-                      <CheckCircle className="w-5 h-5 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-0.5">
-                        <h3 className="text-emerald-400 font-black text-sm uppercase tracking-wider [.theme-clear_&]:text-emerald-700">Ujian Sertifikasi Terjadwal!</h3>
-                        <span className="text-[10px] font-bold text-emerald-500/60 uppercase">Confirmed</span>
+              {/* Student KRS Status Notification */}
+              {user?.role === 'student' && krsSubmission && !['completed'].includes(krsSubmission.status) && (() => {
+                const statusConfig: Record<string, { bg: string, border: string, iconBg: string, titleColor: string, tagColor: string, tagBg: string, descColor: string, Icon: typeof CheckCircle, title: string, tag: string, desc: string, detailBg?: string, detailBorder?: string, detailColor?: string }> = {
+                  pending_produktif: {
+                    bg: 'bg-amber-500/10 [.theme-clear_&]:bg-amber-50',
+                    border: 'border-amber-500/20 [.theme-clear_&]:border-amber-200',
+                    iconBg: 'bg-amber-500',
+                    titleColor: 'text-amber-400 [.theme-clear_&]:text-amber-700',
+                    tagColor: 'text-amber-500/60',
+                    tagBg: '',
+                    descColor: 'text-white/70 [.theme-clear_&]:text-slate-600',
+                    Icon: Clock,
+                    title: 'Menunggu Verifikasi Guru Produktif',
+                    tag: 'Pending',
+                    desc: 'Pendaftaran sertifikasimu sedang direview oleh Guru Produktif. Harap bersabar menunggu persetujuan.',
+                  },
+                  pending_hod: {
+                    bg: 'bg-blue-500/10 [.theme-clear_&]:bg-blue-50',
+                    border: 'border-blue-500/20 [.theme-clear_&]:border-blue-200',
+                    iconBg: 'bg-blue-500',
+                    titleColor: 'text-blue-400 [.theme-clear_&]:text-blue-700',
+                    tagColor: 'text-blue-500/60',
+                    tagBg: '',
+                    descColor: 'text-white/70 [.theme-clear_&]:text-slate-600',
+                    Icon: FileCheck,
+                    title: 'Menunggu Persetujuan Kaprodi (HOD)',
+                    tag: 'Disetujui Guru',
+                    desc: 'Guru Produktif sudah menyetujui. Sekarang menunggu persetujuan & penjadwalan dari Ketua Program.',
+                  },
+                  scheduled: {
+                    bg: 'bg-emerald-500/10 [.theme-clear_&]:bg-emerald-50',
+                    border: 'border-emerald-500/20 [.theme-clear_&]:border-emerald-200',
+                    iconBg: 'bg-emerald-500',
+                    titleColor: 'text-emerald-400 [.theme-clear_&]:text-emerald-700',
+                    tagColor: 'text-emerald-500/60',
+                    tagBg: '',
+                    descColor: 'text-white/70 [.theme-clear_&]:text-slate-600',
+                    Icon: CheckCircle,
+                    title: 'Ujian Sertifikasi Terjadwal!',
+                    tag: 'Confirmed',
+                    desc: 'Sertifikasi disetujui penuh & jadwal ujian tersedia.',
+                    detailBg: 'bg-emerald-500/20 [.theme-clear_&]:bg-emerald-100/50',
+                    detailBorder: 'border-emerald-500/20',
+                    detailColor: 'text-emerald-300 [.theme-clear_&]:text-emerald-700',
+                  },
+                  rejected: {
+                    bg: 'bg-red-500/10 [.theme-clear_&]:bg-red-50',
+                    border: 'border-red-500/20 [.theme-clear_&]:border-red-200',
+                    iconBg: 'bg-red-500',
+                    titleColor: 'text-red-400 [.theme-clear_&]:text-red-700',
+                    tagColor: 'text-red-500/60',
+                    tagBg: '',
+                    descColor: 'text-white/70 [.theme-clear_&]:text-slate-600',
+                    Icon: XCircle,
+                    title: 'Pendaftaran Ditolak',
+                    tag: 'Rejected',
+                    desc: krsSubmission.notes ? `Catatan: ${krsSubmission.notes}` : 'Pendaftaran sertifikasimu ditolak. Kamu bisa mendaftar ulang setelah perbaikan.',
+                  },
+                };
+                const config = statusConfig[krsSubmission.status];
+                if (!config) return null;
+                const { bg, border, iconBg, titleColor, tagColor, descColor, Icon, title, tag, desc } = config;
+
+                return (
+                  <div className="animate-fadeInUp stagger-delay-1">
+                    <div className={`${bg} border ${border} rounded-2xl p-4 flex items-center gap-4 shadow-lg backdrop-blur-sm`}>
+                      <div className={`p-2.5 ${iconBg} rounded-xl shadow-lg shrink-0`}>
+                        <Icon className="w-5 h-5 text-white" />
                       </div>
-                      <p className="text-white/70 text-xs leading-relaxed [.theme-clear_&]:text-slate-600 mb-2">
-                        Sertifikasi disetujui penuh & jadwal ujian tersedia.
-                      </p>
-                      <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-emerald-500/20 rounded-lg border border-emerald-500/20 text-emerald-300 font-bold text-[10px] [.theme-clear_&]:text-emerald-700 [.theme-clear_&]:bg-emerald-100/50">
-                        <span className="opacity-60 font-medium tracking-tight">JADWAL:</span>
-                        {new Date(scheduledExam.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-0.5">
+                          <h3 className={`${titleColor} font-black text-sm uppercase tracking-wider`}>{title}</h3>
+                          <span className={`text-[10px] font-bold ${tagColor} uppercase`}>{tag}</span>
+                        </div>
+                        <p className={`${descColor} text-xs leading-relaxed mb-2`}>{desc}</p>
+                        {krsSubmission.status === 'scheduled' && scheduledExam && (
+                          <div className={`inline-flex items-center gap-2 px-2.5 py-1 ${config.detailBg} rounded-lg border ${config.detailBorder} ${config.detailColor} font-bold text-[10px]`}>
+                            <span className="opacity-60 font-medium tracking-tight">JADWAL:</span>
+                            {new Date(scheduledExam.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                          </div>
+                        )}
+                        {krsSubmission.status === 'rejected' && (
+                          <button
+                            onClick={() => setShowMissionModal(true)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-500/20 hover:bg-red-500/30 rounded-lg border border-red-500/20 text-red-300 [.theme-clear_&]:text-red-700 font-bold text-[10px] transition-all"
+                          >
+                            <AlertTriangle className="w-3 h-3" />
+                            Daftar Ulang
+                          </button>
+                        )}
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className="text-[9px] font-medium text-white/30 [.theme-clear_&]:text-slate-400">{krsSubmission.items.length} kompetensi terdaftar</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               <div className="card-glass rounded-xl p-4 shadow-sm border border-white/6 animate-slideInRight stagger-delay-2 flex flex-col [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-none">
                 {user?.role === 'student' ? (
