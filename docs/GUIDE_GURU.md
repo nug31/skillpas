@@ -18,8 +18,11 @@ Sistem ini membagi akses berdasarkan peran masing-masing pengajar untuk menjaga 
 Tugas utama Anda adalah memantau kehadiran dan karakter siswa di kelas yang Anda ampu:
 - **Dashboard**: Melihat rangkuman progres siswa di kelas Anda.
 - **Update Kehadiran**: Klik Nama Siswa > Tab Kehadiran. Masukkan jumlah Masuk, Izin, Sakit, dan Alfa.
-- **Update Sikap**: Klik Nama Siswa > Tab Skor Sikap. Berikan penilaian pada aspek Disiplin, Tanggung Jawab, Jujur, dll.
 - **Monitoring Sertifikasi**: Anda dapat melihat status pendaftaran sertifikasi competency siswa kelas Anda.
+- **Eksport & Laporan**: Gunakan tombol **Excel**, **CSV**, atau **Cetak** di Dashboard Walas untuk mengunduh rekapitulasi nilai dan kehadiran siswa dalam satu kelas.
+
+> [!TIP]
+> **[Baca Panduan Lengkap Wali Kelas (GUIDE_WALAS.md)](GUIDE_WALAS.md)** untuk detail pengelolaan kehadiran dan sikap.
 
 ![Dashboard Guru/Walas](assets/guru_home.png)
 
@@ -32,8 +35,11 @@ Tugas utama Anda adalah memverifikasi kompetensi teknis siswa:
 ### 3. HOD / Kaprog (Kepala Program Keahlian)
 Tugas utama Anda adalah sebagai verifikator akhir dan pengelola standar jurusan:
 - **Kelola Kriteria**: Mengubah kriteria kompetensi di setiap level (Menu Detail Jurusan > Level Skill).
-- **Verifikasi Sertifikasi (Tahap Final)**: Memberikan persetujuan akhir dan **wajib menentukan Tanggal Ujian**.
-- **Import Data**: Mengelola data massal siswa dalam satu jurusan.
+- **Batch Approval**: HOD dapat menyetujui banyak pendaftaran sekaligus menggunakan checkbox dan tombol **Setujui Batch** untuk menjadwalkan ujian di tanggal yang sama.
+- **Import Data**: Mengelola data massal siswa dalam satu jurusan (unggah file Excel/CSV).
+
+> [!TIP]
+> **[Baca Panduan Lengkap HOD (GUIDE_HOD.md)](GUIDE_HOD.md)** untuk detail manajemen standar kriteria dan validasi massal.
 
 ![Edit Kriteria](assets/guru_criteria.png)
 

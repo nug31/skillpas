@@ -175,19 +175,19 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-2xl">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-2xl [.theme-clear_&]:bg-white/90">
             <div className="fixed inset-0" onClick={onClose} />
 
             <div className="relative z-10 flex flex-col items-center gap-6 w-full max-w-[360px]">
                 {/* Actions */}
                 <div className="flex items-center gap-3 w-full justify-center no-canvas-hide">
-                    <button onClick={handleDownload} disabled={isDownloading} className="flex-1 h-12 bg-white/10 text-white rounded-xl font-bold text-sm border border-white/10 hover:bg-white/20 transition-all flex items-center justify-center gap-2">
+                    <button onClick={handleDownload} disabled={isDownloading} className="flex-1 h-12 bg-white/10 text-white rounded-xl font-bold text-sm border border-white/10 hover:bg-white/20 transition-all flex items-center justify-center gap-2 [.theme-clear_&]:bg-slate-800 [.theme-clear_&]:text-white [.theme-clear_&]:border-slate-700 [.theme-clear_&]:hover:bg-slate-700">
                         <Download className="w-4 h-4" /> {isDownloading ? '...' : 'Download'}
                     </button>
-                    <button onClick={handleShare} disabled={isSharing} className="flex-1 h-12 bg-cyan-500/10 text-cyan-400 rounded-xl font-bold text-sm border border-cyan-500/20 hover:bg-cyan-500/20 transition-all flex items-center justify-center gap-2">
+                    <button onClick={handleShare} disabled={isSharing} className="flex-1 h-12 bg-cyan-500/10 text-cyan-400 rounded-xl font-bold text-sm border border-cyan-500/20 hover:bg-cyan-500/20 transition-all flex items-center justify-center gap-2 [.theme-clear_&]:bg-cyan-600 [.theme-clear_&]:text-white [.theme-clear_&]:border-cyan-500 [.theme-clear_&]:hover:bg-cyan-700">
                         <Share2 className="w-4 h-4" /> Share
                     </button>
-                    <button onClick={onClose} className="w-12 h-12 bg-white/5 text-white/50 rounded-xl border border-white/5 hover:text-white transition-all flex items-center justify-center">
+                    <button onClick={onClose} className="w-12 h-12 bg-white/5 text-white/50 rounded-xl border border-white/5 hover:text-white transition-all flex items-center justify-center [.theme-clear_&]:bg-slate-200 [.theme-clear_&]:text-slate-700 [.theme-clear_&]:border-slate-300 [.theme-clear_&]:hover:bg-slate-300 [.theme-clear_&]:hover:text-slate-900">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
