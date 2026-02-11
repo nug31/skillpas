@@ -202,7 +202,7 @@ export function LoginPage() {
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className={`absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors ${themeClear ? 'text-slate-400 hover:text-slate-600' : 'text-white/40 hover:text-white/70'}`}
+                                    className={`absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors ${themeClear ? 'text-slate-400 hover:text-slate-600' : 'text-white/70 hover:text-white'}`}
                                 >
                                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                 </button>
