@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { LogIn, User, GraduationCap, Sun, Moon, Instagram, Phone } from 'lucide-react';
+import { LogIn, User, GraduationCap, Sun, Moon, Instagram, Phone, Eye, EyeOff } from 'lucide-react';
 import smkLogo from '../assets/smk-logo.png';
 import loginBg from '../assets/login-bg.png';
 import loginLightBg from '../assets/login-light-bg.png';
@@ -9,6 +9,7 @@ export function LoginPage() {
     const { login } = useAuth();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [selectedRole, setSelectedRole] = useState<'student' | 'teacher'>('student');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -185,18 +186,27 @@ export function LoginPage() {
                             <label htmlFor="password" className={`block text-xs font-bold uppercase tracking-wider mb-2 ${themeClear ? 'text-emerald-700' : 'text-slate-400 group-focus-within:text-amber-400 transition-colors'}`}>
                                 Password
                             </label>
-                            <input
-                                id="password"
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className={`w-full px-5 py-4 rounded-xl transition-all outline-none border focus:ring-0 ${themeClear
-                                    ? 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:border-emerald-500'
-                                    : 'bg-black/20 border-white/10 text-white placeholder-white/20 focus:border-amber-500/50 focus:bg-amber-950/10 focus:shadow-[0_0_15px_rgba(234,179,8,0.1)]'
-                                    }`}
-                                placeholder="••••••••"
-                                required
-                            />
+                            <div className="relative">
+                                <input
+                                    id="password"
+                                    type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className={`w-full px-5 py-4 rounded-xl transition-all outline-none border focus:ring-0 ${themeClear
+                                        ? 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:border-emerald-500'
+                                        : 'bg-black/20 border-white/10 text-white placeholder-white/20 focus:border-amber-500/50 focus:bg-amber-950/10 focus:shadow-[0_0_15px_rgba(234,179,8,0.1)]'
+                                        }`}
+                                    placeholder="••••••••"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className={`absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors ${themeClear ? 'text-slate-400 hover:text-slate-600' : 'text-white/40 hover:text-white/70'}`}
+                                >
+                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                </button>
+                            </div>
                         </div>
 
                         {/* Error Message */}
