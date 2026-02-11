@@ -22,6 +22,7 @@ interface DashboardRaceProps {
     myStats?: StudentStats | null;
     showCompetition?: boolean;
     onContinue?: () => void;
+    krsStatus?: 'pending_produktif' | 'pending_wali' | 'pending_hod' | 'approved' | 'scheduled' | 'rejected' | 'completed';
 }
 
 type ViewMode = 'list' | 'race' | 'podium';
@@ -38,7 +39,7 @@ const colorPalette = [
     'from-teal-400 to-teal-600',     // 8. TEI (Teal)
 ];
 
-export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetition = true, onContinue }: DashboardRaceProps) {
+export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetition = true, onContinue, krsStatus }: DashboardRaceProps) {
     const { user, updateUser } = useAuth();
     const [viewMode, setViewMode] = useState<ViewMode>('race');
     const [selectedKRS, setSelectedKRS] = useState<string[]>([]);
@@ -152,7 +153,13 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                             </p>
                             <button
                                 onClick={onContinue}
-                                className="w-full sm:w-auto px-8 py-4 bg-white text-[color:var(--accent-1)] rounded-xl font-bold text-lg shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
+                                disabled={krsStatus && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled', 'completed'].includes(krsStatus)}
+                                className={`w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-lg shadow-xl transition-all flex items-center justify-center gap-2
+                                    ${krsStatus && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled', 'completed'].includes(krsStatus)
+                                        ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                                        : 'bg-white text-[color:var(--accent-1)] hover:scale-105 active:scale-95'
+                                    }`}
+                                title={krsStatus && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled', 'completed'].includes(krsStatus) ? "Tidak bisa upgrade saat ada pengajuan berjalan" : ""}
                             >
                                 <Icons.PlayCircle className="w-6 h-6 fill-current" />
                                 Upgrade skill
@@ -201,12 +208,14 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                                         </div>
                                         <h3 className="text-lg font-bold text-white">Rencana Belajar Saya</h3>
                                     </div>
-                                    <button
-                                        onClick={onContinue}
-                                        className="text-xs font-bold text-[color:var(--accent-1)] hover:opacity-80 transition-opacity flex items-center gap-1"
-                                    >
-                                        Ubah Rencana <Icons.ChevronRight className="w-3 h-3" />
-                                    </button>
+                                    {(!krsStatus || krsStatus === 'rejected') && (
+                                        <button
+                                            onClick={onContinue}
+                                            className="text-xs font-bold text-[color:var(--accent-1)] hover:opacity-80 transition-opacity flex items-center gap-1"
+                                        >
+                                            Ubah Rencana <Icons.ChevronRight className="w-3 h-3" />
+                                        </button>
+                                    )}
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

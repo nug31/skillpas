@@ -32,6 +32,9 @@ Tugas utama Anda adalah memverifikasi kompetensi teknis siswa:
 - **Verifikasi Sertifikasi (Tahap 1)**: Meninjau unit kompetensi yang dipilih siswa. Jika sudah layak uji, klik **Setujui**.
 - **Input Nilai Ujian**: Setelah siswa tes, masukkan nilai akhir di menu Verifikasi Sertifikasi > Tab Penilaian Ujian.
 
+> [!TIP]
+> **[Baca Panduan Lengkap Guru Produktif (GUIDE_PRODUKTIF.md)](GUIDE_PRODUKTIF.md)** untuk detail verifikasi sertifikasi, penilaian ujian, dan daftar akun default.
+
 ### 3. HOD / Kaprog (Kepala Program Keahlian)
 Tugas utama Anda adalah sebagai verifikator akhir dan pengelola standar jurusan:
 - **Kelola Kriteria**: Mengubah kriteria kompetensi di setiap level (Menu Detail Jurusan > Level Skill).

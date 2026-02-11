@@ -892,6 +892,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                   setShowMissionModal(true);
                 }
               }}
+              krsStatus={krsSubmission?.status}
             />
           </div>
         )}
