@@ -206,11 +206,11 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                     {/* Reflection / Shine Sweep */}
                     <div className="absolute top-0 left-0 right-0 h-[250px] bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none skew-y-[-15deg] transform -translate-y-[50px]" />
 
-                    <div className="relative z-10 h-full flex flex-col p-7">
+                    <div className="relative z-10 h-full flex flex-col p-5">
                         {/* Header */}
-                        <div className="flex justify-between items-start mb-4">
-                            <img src={smkLogo} alt="Logo" className="w-14 h-14 object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" />
-                            <div className="text-[16px] font-black text-white/90 [.theme-clear_&]:text-slate-800 tracking-tighter leading-none pt-2 opacity-80">
+                        <div className="flex justify-between items-start mb-2">
+                            <img src={smkLogo} alt="Logo" className="w-12 h-12 object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]" />
+                            <div className="text-[14px] font-black text-white/90 [.theme-clear_&]:text-slate-800 tracking-tighter leading-none pt-2 opacity-80">
                                 {currentYear}
                             </div>
                         </div>
@@ -223,7 +223,7 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                                 <div className="absolute inset-[-12px] rounded-full border border-cyan-400/10 blur-[4px]" />
                                 <div className="absolute inset-[-6px] rounded-full border-[6px] border-cyan-400 shadow-[0_0_50px_rgba(34,211,238,0.6)]" />
 
-                                <div className="w-32 h-32 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center overflow-hidden relative">
+                                <div className="w-28 h-28 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center overflow-hidden relative">
                                     {student.photo_url || student.avatar_url ? (
                                         <img src={student.photo_url || student.avatar_url} alt={student.nama} className="w-full h-full object-cover" />
                                     ) : (
@@ -235,33 +235,34 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                             </div>
 
                             {/* Name & Major */}
-                            <div className="text-center space-y-1 z-20">
-                                <h2 className="text-[28px] font-black text-white [.theme-clear_&]:text-slate-900 leading-none tracking-tight drop-shadow-lg uppercase">
+                            <div className="text-center space-y-1 z-20 px-2 w-full">
+                                <h2 className={`font-black text-white [.theme-clear_&]:text-slate-900 leading-none tracking-tight drop-shadow-lg uppercase ${student.nama.length > 20 ? 'text-[20px]' : 'text-[24px]'
+                                    }`}>
                                     {student.nama}
                                 </h2>
-                                <p className="text-[11px] font-bold text-slate-400 [.theme-clear_&]:text-slate-500 uppercase tracking-[0.25em] opacity-80">
+                                <p className="text-[10px] font-bold text-slate-400 [.theme-clear_&]:text-slate-500 uppercase tracking-[0.25em] opacity-80">
                                     {jurusanName || 'Teknik'}
                                 </p>
                             </div>
 
                             {/* Medal */}
-                            <div className="mt-0 transform scale-75">
+                            <div className="mt-1 transform scale-75">
                                 <GoldMedal level={student.level_name} />
                             </div>
                         </div>
 
                         {/* QR Code Section - Now in Center */}
-                        <div className="flex-grow flex flex-col items-center justify-center -mt-4">
+                        <div className="flex-grow flex flex-col items-center justify-center -mt-6 mb-2">
                             {qrCode ? (
                                 <div className="p-2 bg-white rounded-2xl shadow-[0_0_30px_rgba(255,255,255,0.4)] border-4 border-cyan-500/20 overflow-hidden transform hover:scale-105 transition-transform duration-300">
-                                    <img src={qrCode} alt="QR" className="w-40 h-40 block grayscale-0" />
+                                    <img src={qrCode} alt="QR" className="w-32 h-32 block grayscale-0" />
                                 </div>
                             ) : (
-                                <div className="w-40 h-40 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center">
+                                <div className="w-32 h-32 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center">
                                     <div className="w-8 h-8 border-4 border-white/20 border-t-white/80 rounded-full animate-spin" />
                                 </div>
                             )}
-                            <p className="mt-4 text-cyan-400 text-[10px] font-black uppercase tracking-[0.3em] opacity-80 animate-pulse">
+                            <p className="mt-2 text-cyan-400 text-[9px] font-black uppercase tracking-[0.3em] opacity-80 animate-pulse">
                                 Scan to Verify
                             </p>
                         </div>
