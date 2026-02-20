@@ -6,18 +6,28 @@ import { notificationStore } from './notificationStore';
 export const KRS_UPDATED_EVENT = 'krs-updated';
 
 export const krsStore = {
-    async getSubmissions(): Promise<KRSSubmission[]> {
+    async getSubmissions(siswaIds?: string[]): Promise<KRSSubmission[]> {
         if (isMockMode) {
             const saved = localStorage.getItem('skillpas_krs_submissions');
-            return saved ? JSON.parse(saved) : [];
+            let data: KRSSubmission[] = saved ? JSON.parse(saved) : [];
+            if (siswaIds && siswaIds.length > 0) {
+                data = data.filter(s => siswaIds.includes(s.siswa_id));
+            }
+            return data;
         }
 
-        const { data, error } = await supabase
+        let query = supabase
             .from('krs')
             .select('*')
             .order('created_at', { ascending: false })
             .setHeader('pragma', 'no-cache')
             .setHeader('cache-control', 'no-cache');
+
+        if (siswaIds && siswaIds.length > 0) {
+            query = query.in('siswa_id', siswaIds);
+        }
+
+        const { data, error } = await query;
 
         if (error) {
             console.error('Failed to fetch KRS submissions', error);

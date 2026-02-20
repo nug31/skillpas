@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
-import { SiswaWithSkill, User, Siswa, LevelSkill } from '../types';
+import { SiswaWithSkill, User, LevelSkill } from '../types';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import {
     Search,
@@ -141,43 +141,51 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
 
                 setStudents(withKrs as any);
             } else {
-                // Supabase logic: Fetch students by jurusan_id to be inclusive, then filter in frontend
-                const { data: siswaData, error: siswaError } = await supabase
+                // Optimized Supabase logic: 
+                // 1. Fetch ALL students for the department first (basic info only)
+                const { data: rawSiswaData, error: siswaError } = await supabase
                     .from('siswa')
-                    .select('*, skill_siswa(*), competency_history(*)')
+                    .select('id, nama, kelas, nisn, avatar_url, photo_url, jurusan_id, skill_siswa(skor, poin)')
                     .eq('jurusan_id', user.jurusan_id);
 
                 if (siswaError) throw siswaError;
 
-                // Fetch discipline data separately to avoid relationship cache issues
-                const studentIds = (siswaData || []).map((s: Siswa) => s.id);
-                const { data: disciplineData } = studentIds.length > 0
-                    ? await supabase
+                // 2. Filter students in frontend based on walas classes
+                const filteredSiswa = (rawSiswaData || []).filter((s: any) => {
+                    const normalizedSiswaKelas = normalizeClassName(s.kelas);
+                    return normalizedWalasClasses.some(wc => normalizedSiswaKelas === wc);
+                });
+
+                if (filteredSiswa.length === 0) {
+                    setStudents([]);
+                    return;
+                }
+
+                const filteredIds = filteredSiswa.map((s: any) => s.id);
+
+                // 3. Fetch related data ONLY for the filtered students in parallel
+                const [historyRes, disciplineRes, submissions] = await Promise.all([
+                    supabase
+                        .from('competency_history')
+                        .select('*')
+                        .in('siswa_id', filteredIds),
+                    supabase
                         .from('student_discipline')
                         .select('*')
-                        .in('siswa_id', studentIds)
-                    : { data: [] };
+                        .in('siswa_id', filteredIds),
+                    krsStore.getSubmissions(filteredIds)
+                ]);
 
-                const submissions = await krsStore.getSubmissions();
+                const historyData = historyRes.data || [];
+                const disciplineData = disciplineRes.data || [];
 
-                // Advanced filtering: match based on normalized class names
-                const filteredSiswa = (siswaData || []).filter((s: any) => {
-                    const normalizedSiswaKelas = normalizeClassName(s.kelas);
-                    const isMatch = normalizedWalasClasses.some(wc => normalizedSiswaKelas === wc);
-                    return isMatch;
-                });
-
-                console.log('Filter Result:', {
-                    filteredCount: filteredSiswa.length,
-                    filteredNames: filteredSiswa.map(s => s.nama)
-                });
-
+                // 4. Enrich students with the fetched data
                 const enriched = filteredSiswa.map((s: any) => {
                     const mainSkill = s.skill_siswa?.[0];
                     const score = mainSkill?.skor || 0;
                     const krs = submissions.find(k => k.siswa_id === s.id);
                     const disc = (disciplineData || []).find((d: any) => d.siswa_id === s.id);
-                    const history = s.competency_history || [];
+                    const history = historyData.filter((h: any) => h.siswa_id === s.id);
                     const currentLevel = levels.find(l => score >= l.min_skor && score <= l.max_skor);
 
                     return {
