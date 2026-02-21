@@ -31,115 +31,87 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
     const storageKey = `skillpas_krs_${siswaId}`;
 
     useEffect(() => {
-        const loadKRS = async () => {
-            const sub = await krsStore.getStudentSubmission(siswaId);
-            setSubmission(sub || null);
-            if (sub) {
-                setSelectedKRS(sub.items);
-            } else {
-                const saved = localStorage.getItem(storageKey);
-                if (saved) {
-                    try {
-                        setSelectedKRS(JSON.parse(saved));
-                    } catch (e) {
-                        console.error("Failed to parse KRS", e);
+        const loadInitialData = async () => {
+            setLoading(true);
+            try {
+                // 1. Load Levels
+                let levels: LevelSkill[] = [];
+                if (isMockMode) {
+                    levels = mockData.getLevelsForJurusan(jurusan.id);
+                } else {
+                    const [levelsResult, overridesResult] = await Promise.all([
+                        supabase.from('level_skill').select('*').order('urutan', { ascending: true }),
+                        supabase.from('level_skill_jurusan').select('*').eq('jurusan_id', jurusan.id)
+                    ]);
+                    if (levelsResult.error) throw levelsResult.error;
+                    const levelsData = levelsResult.data || [];
+                    const overrides = overridesResult.data || [];
+                    levels = levelsData.map((l: any) => {
+                        const ov = overrides.find((o: any) => o.level_id === l.id);
+                        return { ...l, hasil_belajar: ov?.hasil_belajar || l.hasil_belajar, soft_skill: ov?.soft_skill || l.soft_skill };
+                    }) as LevelSkill[];
+                }
+                setAllLevels(levels);
+
+                let currentLevel = levels.find(l => currentScore >= l.min_skor && currentScore <= l.max_skor);
+                if (!currentLevel && levels.length > 0) currentLevel = levels[levels.length - 1];
+                setNextLevel(currentLevel || null);
+
+                // 2. Load History to know what is passed
+                const historyItems = new Set<string>();
+                if (isMockMode) {
+                    const history = mockData.mockCompetencyHistory.filter(h => h.siswa_id === siswaId && h.hasil === 'Lulus');
+                    history.forEach((h: any) => {
+                        h.unit_kompetensi.split(',').forEach((item: string) => historyItems.add(item.trim()));
+                    });
+                } else {
+                    const { data } = await supabase.from('competency_history').select('unit_kompetensi').eq('siswa_id', siswaId).eq('hasil', 'Lulus');
+                    if (data) {
+                        data.forEach((h: any) => {
+                            h.unit_kompetensi.split(',').forEach((item: string) => historyItems.add(item.trim()));
+                        });
                     }
                 }
-            }
-        };
+                setPassedItems(historyItems);
 
-        const loadHistory = async () => {
-            if (isMockMode) {
-                const history = mockData.mockCompetencyHistory.filter(h => h.siswa_id === siswaId && h.hasil === 'Lulus');
-                const items = new Set<string>();
-                history.forEach((h: any) => {
-                    h.unit_kompetensi.split(',').forEach((item: string) => items.add(item.trim()));
-                });
-                setPassedItems(items);
-            } else {
-                const { data } = await supabase
-                    .from('competency_history')
-                    .select('unit_kompetensi')
-                    .eq('siswa_id', siswaId)
-                    .eq('hasil', 'Lulus');
+                // 3. Load KRS and filter passed items
+                const sub = await krsStore.getStudentSubmission(siswaId);
+                setSubmission(sub || null);
 
-                if (data) {
-                    const items = new Set<string>();
-                    data.forEach((h: any) => {
-                        h.unit_kompetensi.split(',').forEach((item: string) => items.add(item.trim()));
-                    });
-                    setPassedItems(items);
+                if (sub) {
+                    if (sub.status === 'completed') {
+                        // If upgrading from completed, start with empty selection or filter out old items
+                        setSelectedKRS([]);
+                    } else {
+                        // Filter out already passed items from current (pending/scheduled) submission
+                        setSelectedKRS(sub.items.filter(item => !historyItems.has(item)));
+                    }
+                } else {
+                    const saved = localStorage.getItem(storageKey);
+                    if (saved) {
+                        try {
+                            const parsed = JSON.parse(saved);
+                            if (Array.isArray(parsed)) {
+                                setSelectedKRS(parsed.filter(item => !historyItems.has(item)));
+                            }
+                        } catch (e) { console.error(e); }
+                    }
                 }
+            } catch (error) {
+                console.error("Failed to load Mission data", error);
+            } finally {
+                setLoading(false);
             }
         };
 
         if (isOpen) {
-            loadAllLevels();
-            loadKRS();
-            loadHistory();
+            loadInitialData();
         }
 
-        window.addEventListener(KRS_UPDATED_EVENT, loadKRS);
-        return () => window.removeEventListener(KRS_UPDATED_EVENT, loadKRS);
+        const handleUpdate = () => { if (isOpen) loadInitialData(); };
+        window.addEventListener(KRS_UPDATED_EVENT, handleUpdate);
+        return () => window.removeEventListener(KRS_UPDATED_EVENT, handleUpdate);
     }, [isOpen, jurusan.id, currentScore, storageKey, siswaId]);
-
-    async function loadAllLevels() {
-        try {
-            setLoading(true);
-            let levels: LevelSkill[] = [];
-
-            if (isMockMode) {
-                levels = mockData.getLevelsForJurusan(jurusan.id);
-            } else {
-                const [levelsResult, overridesResult] = await Promise.all([
-                    supabase.from('level_skill')
-                        .select('*')
-                        .order('urutan', { ascending: true })
-                        .setHeader('pragma', 'no-cache')
-                        .setHeader('cache-control', 'no-cache'),
-                    supabase.from('level_skill_jurusan')
-                        .select('*')
-                        .eq('jurusan_id', jurusan.id)
-                        .setHeader('pragma', 'no-cache')
-                        .setHeader('cache-control', 'no-cache')
-                ]);
-
-                if (levelsResult.error) throw levelsResult.error;
-                if (overridesResult.error) throw overridesResult.error;
-
-                const levelsData = levelsResult.data || [];
-                const overrides = overridesResult.data || [];
-
-                levels = levelsData.map((l: any) => {
-                    const ov = overrides.find((o: any) => o.level_id === l.id);
-                    const finalHasilBelajar = ov?.hasil_belajar || l.hasil_belajar;
-                    const finalSoftSkill = ov?.soft_skill || l.soft_skill;
-
-                    let criteria: string[] = [];
-                    try {
-                        if (finalHasilBelajar && finalHasilBelajar.trim().startsWith('[')) {
-                            criteria = JSON.parse(finalHasilBelajar);
-                        } else if (finalHasilBelajar) {
-                            criteria = [finalHasilBelajar];
-                        }
-                    } catch (e) {
-                        criteria = [finalHasilBelajar];
-                    }
-                    return { ...l, hasil_belajar: finalHasilBelajar, soft_skill: finalSoftSkill, criteria };
-                }) as LevelSkill[];
-            }
-            setAllLevels(levels);
-
-            let currentLevel = levels.find(l => currentScore >= l.min_skor && currentScore <= l.max_skor);
-            if (!currentLevel && levels.length > 0) currentLevel = levels[levels.length - 1];
-            setNextLevel(currentLevel || null);
-
-        } catch (error) {
-            console.error("Failed to load levels", error);
-        } finally {
-            setLoading(false);
-        }
-    }
 
     const toggleGroup = (groupId: string) => {
         const next = new Set(expandedGroups);
@@ -174,8 +146,11 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
     };
 
     const handleSubmit = async () => {
-        if (selectedKRS.length === 0) {
-            alert("Pilih minimal satu kriteria kompetensi.");
+        // Final filter to ensure no passed items are submitted
+        const validItems = selectedKRS.filter(item => !passedItems.has(item));
+
+        if (validItems.length === 0) {
+            alert("Pilih minimal satu kriteria kompetensi baru.");
             return;
         }
 
@@ -185,7 +160,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
             siswa_nama: user?.name || 'Siswa',
             kelas: user?.kelas || 'XII TKR 1',
             jurusan_id: jurusan.id,
-            items: selectedKRS
+            items: validItems
         });
 
         alert("Pendaftaran Sertifikasi berhasil diajukan! Tunggu verifikasi guru.");

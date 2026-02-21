@@ -4,6 +4,8 @@ import { KRSSubmission, User } from '../types';
 import { Check, X, Calendar, MessageSquare, ChevronLeft, Award, Clock } from 'lucide-react';
 import { GradingModal } from './GradingModal';
 import { cleanSubItemText, isSubItem } from '../lib/criteriaHelper';
+import { supabase, isMockMode } from '../lib/supabase';
+import mockData from '../mocks/mockData';
 
 interface TeacherKRSApprovalProps {
     onBack: () => void;
@@ -20,6 +22,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
     const [gradingSub, setGradingSub] = useState<KRSSubmission | null>(null);
     const [currentScore, setCurrentScore] = useState<number>(80);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [passedItems, setPassedItems] = useState<Set<string>>(new Set());
 
     const userRole = user.role;
 
@@ -39,6 +42,40 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
         window.addEventListener(KRS_UPDATED_EVENT, loadSubmissions);
         return () => window.removeEventListener(KRS_UPDATED_EVENT, loadSubmissions);
     }, [user.id, userRole, activeTab]);
+
+    useEffect(() => {
+        const fetchMasteryHistory = async () => {
+            if (!selectedSub) {
+                setPassedItems(new Set());
+                return;
+            }
+
+            const studentId = selectedSub.siswa_id;
+            const items = new Set<string>();
+
+            if (isMockMode) {
+                const history = mockData.mockCompetencyHistory.filter(h => h.siswa_id === studentId && h.hasil === 'Lulus');
+                history.forEach((h: any) => {
+                    h.unit_kompetensi.split(',').forEach((item: string) => items.add(item.trim()));
+                });
+            } else {
+                const { data } = await supabase
+                    .from('competency_history')
+                    .select('unit_kompetensi')
+                    .eq('siswa_id', studentId)
+                    .eq('hasil', 'Lulus');
+
+                if (data) {
+                    data.forEach((h: any) => {
+                        h.unit_kompetensi.split(',').forEach((item: string) => items.add(item.trim()));
+                    });
+                }
+            }
+            setPassedItems(items);
+        };
+
+        fetchMasteryHistory();
+    }, [selectedSub]);
 
     const loadSubmissions = async () => {
         setLoading(true);
@@ -398,14 +435,22 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                         if (!trimmed) return null;
                                         const subItem = isSubItem(trimmed);
                                         return (
-                                            <div key={i} className={`p-3 card-glass border border-white/10 rounded-xl text-sm ${subItem ? 'ml-6' : ''}`}>
+                                            <div key={i} className={`p-3 card-glass border border-white/10 rounded-xl text-sm ${subItem ? 'ml-6' : ''} ${passedItems.has(trimmed) ? 'border-emerald-500/30 opacity-80' : ''}`}>
                                                 {subItem ? (
-                                                    <div className="flex gap-2">
+                                                    <div className="flex gap-2 items-center">
                                                         <span className="text-[color:var(--accent-1)]">└</span>
-                                                        <span className="text-[color:var(--text-muted)] font-medium">{cleanSubItemText(trimmed)}</span>
+                                                        <span className="text-[color:var(--text-muted)] font-medium flex-1">{cleanSubItemText(trimmed)}</span>
+                                                        {passedItems.has(trimmed) && (
+                                                            <span className="text-[10px] font-black text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded uppercase">Lulus</span>
+                                                        )}
                                                     </div>
                                                 ) : (
-                                                    <span className="text-[color:var(--text-primary)] font-bold">{trimmed.replace(/\*\*/g, '')}</span>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[color:var(--text-primary)] font-bold flex-1">{trimmed.replace(/\*\*/g, '')}</span>
+                                                        {passedItems.has(trimmed) && (
+                                                            <span className="text-[10px] font-black text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded uppercase">Lulus</span>
+                                                        )}
+                                                    </div>
                                                 )}
                                             </div>
                                         );
