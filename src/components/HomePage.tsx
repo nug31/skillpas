@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { GraduationCap } from 'lucide-react';
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
-import type { Jurusan, KRSSubmission, CompetencyHistory, StudentStats } from '../types';
+import type { Jurusan, KRSSubmission, CompetencyHistory, StudentStats, LevelSkill } from '../types';
 import { JurusanCard } from './JurusanCard';
 import { DashboardRace } from './DashboardRace';
 import { useAuth } from '../contexts/AuthContext';
@@ -57,6 +57,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
   const [loading, setLoading] = useState(true);
   const [triggerRace, setTriggerRace] = useState(0);
   const [myStats, setMyStats] = useState<StudentStats | null>(null);
+  const [allLevels, setAllLevels] = useState<LevelSkill[]>([]);
 
   const [showMissionModal, setShowMissionModal] = useState(false);
   const [showSkillCard, setShowSkillCard] = useState(false);
@@ -95,7 +96,41 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
       setJurusanList(filteredData);
       loadPendingKRS();
 
+      // Fetch Levels
+      if (useMock) {
+        setAllLevels(mockData.mockLevels);
+      } else {
+        const { data: levelsData, error: levelsError } = await supabase
+          .from('level_skill')
+          .select('*')
+          .order('urutan', { ascending: true });
 
+        if (levelsError) throw levelsError;
+
+        // Apply jurusan overrides if any (like in MissionModal)
+        if (filteredData.length > 0) {
+          const { data: overrides } = await supabase
+            .from('level_skill_jurusan')
+            .select('*')
+            .eq('jurusan_id', filteredData[0].id);
+
+          if (overrides) {
+            const merged = (levelsData || []).map((l: any) => {
+              const ov = overrides.find((o: any) => o.level_id === l.id);
+              return {
+                ...l,
+                hasil_belajar: ov?.hasil_belajar || l.hasil_belajar,
+                soft_skill: ov?.soft_skill || l.soft_skill
+              };
+            });
+            setAllLevels(merged);
+          } else {
+            setAllLevels(levelsData || []);
+          }
+        } else {
+          setAllLevels(levelsData || []);
+        }
+      }
       // fetch top student for each jurusan (best skor)
       try {
         const map: Record<string, { id: string; nama: string; skor: number; kelas?: string }[]> = {};
@@ -1020,7 +1055,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
             studentKelas={myStats.className}
             jurusanName={jurusanList.find(j => j.id === user.jurusan_id)?.nama_jurusan || 'Teknik'}
             history={myHistory}
-            levels={mockData.mockLevels} // Use mock levels or real levels depending on context, keeping as is for now
+            levels={allLevels.length > 0 ? allLevels : mockData.mockLevels}
             hodName={hodName}
             walasName={walasName}
             avatarUrl={(user as any)?.avatar_url}
