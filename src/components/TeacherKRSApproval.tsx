@@ -280,7 +280,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                         </>
                                     ) : (
                                         <>
-                                            {lastActionResult.name} dinyatakan <span className="text-emerald-500 font-bold">{lastActionResult.result?.toUpperCase()}</span> dengan skor {lastActionResult.score}.
+                                            {lastActionResult.name} dinyatakan <span className="text-emerald-500 font-bold">{lastActionResult.result?.toUpperCase()}</span>.
                                         </>
                                     )}
                                 </p>
@@ -302,7 +302,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                             {lastActionResult.type === 'graded' && (
                                 <button
                                     onClick={() => {
-                                        const msg = `Halo ${lastActionResult.name}! Selamat, Anda telah dinyatakan ${lastActionResult.result?.toUpperCase()} dalam ujian sertifikasi competency dengan Skor Akhir: ${lastActionResult.score}. Tetap semangat dan terus tingkatkan kompetensi Anda! - Tim SkillPas`;
+                                        const msg = `Halo ${lastActionResult.name}! Selamat, Anda telah dinyatakan ${lastActionResult.result?.toUpperCase()} dalam ujian sertifikasi competency. Tetap semangat dan terus tingkatkan kompetensi Anda! - Tim SkillPas`;
                                         const url = `https://wa.me/${lastActionResult.wa_number?.replace(/\D/g, '') || ''}?text=${encodeURIComponent(msg)}`;
                                         window.open(url, '_blank');
                                     }}
