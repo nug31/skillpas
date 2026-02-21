@@ -245,13 +245,13 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                 <div className="absolute top-0 right-0 w-24 h-24 bg-[color:var(--accent-1)]/5 rounded-full -mr-12 -mt-12 group-hover:bg-[color:var(--accent-1)]/10 transition-colors"></div>
 
                                 <div className={`flex flex-col h-full space-y-4 ${activeTab === 'pending' && userRole !== 'wali_kelas' ? 'pl-8' : ''}`}>
-                                    <div className="flex justify-between items-start">
-                                        <div>
-                                            <div className="text-xs font-black text-[color:var(--accent-1)] uppercase mb-1 [.theme-clear_&]:text-emerald-600">{sub.kelas}</div>
-                                            <h3 className="text-xl font-bold text-[color:var(--text-primary)] truncate">{sub.siswa_nama}</h3>
+                                    <div className="flex justify-between items-start gap-4">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="text-xs font-black text-[color:var(--accent-1)] uppercase mb-1 [.theme-clear_&]:text-emerald-600 truncate">{sub.kelas}</div>
+                                            <h3 className="text-xl font-bold text-[color:var(--text-primary)] truncate" title={sub.siswa_nama}>{sub.siswa_nama}</h3>
                                         </div>
                                         {sub.status === 'scheduled' && (
-                                            <div className="flex flex-col items-end gap-2">
+                                            <div className="flex flex-col items-end gap-2 shrink-0">
                                                 <div className="px-2 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded text-[10px] text-emerald-500 font-black uppercase">
                                                     Jadwal: {sub.exam_date}
                                                 </div>
