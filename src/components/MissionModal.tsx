@@ -48,7 +48,21 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                     const overrides = overridesResult.data || [];
                     levels = levelsData.map((l: any) => {
                         const ov = overrides.find((o: any) => o.level_id === l.id);
-                        return { ...l, hasil_belajar: ov?.hasil_belajar || l.hasil_belajar, soft_skill: ov?.soft_skill || l.soft_skill };
+                        const finalHasilBelajar = ov?.hasil_belajar || l.hasil_belajar;
+                        const finalSoftSkill = ov?.soft_skill || l.soft_skill;
+
+                        let criteria: string[] = [];
+                        try {
+                            if (finalHasilBelajar && finalHasilBelajar.trim().startsWith('[')) {
+                                criteria = JSON.parse(finalHasilBelajar);
+                            } else if (finalHasilBelajar) {
+                                criteria = [finalHasilBelajar];
+                            }
+                        } catch (e) {
+                            criteria = [finalHasilBelajar];
+                        }
+
+                        return { ...l, hasil_belajar: finalHasilBelajar, soft_skill: finalSoftSkill, criteria };
                     }) as LevelSkill[];
                 }
                 setAllLevels(levels);

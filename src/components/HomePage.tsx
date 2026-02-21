@@ -9,7 +9,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { MissionModal } from './MissionModal';
 import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
-import { Edit3, CheckCircle, Contact, BookOpen, LayoutDashboard, Clock, AlertTriangle, XCircle, FileCheck } from 'lucide-react';
+import { Edit3, CheckCircle, Contact, BookOpen, LayoutDashboard, Clock, AlertTriangle, XCircle, FileCheck, Plus } from 'lucide-react';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import { SkillCard } from './SkillCard';
 import { StudentHistoryModal } from './StudentHistoryModal';
@@ -611,8 +611,30 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
 
             <div className="flex flex-col gap-4 self-center w-full max-w-lg">
               {/* Student KRS Status Notification */}
-              {user?.role === 'student' && krsSubmission && !['completed'].includes(krsSubmission.status) && (() => {
-                const statusConfig: Record<string, { bg: string, border: string, iconBg: string, titleColor: string, tagColor: string, tagBg: string, descColor: string, Icon: typeof CheckCircle, title: string, tag: string, desc: string, detailBg?: string, detailBorder?: string, detailColor?: string }> = {
+              {user?.role === 'student' && krsSubmission && (() => {
+                const statusConfig: Record<string, { bg: string, border: string, iconBg: string, titleColor: string, tagColor: string, tagBg: string, descColor: string, Icon: typeof CheckCircle, title: string, tag: string, desc: string, detailBg?: string, detailBorder?: string, detailColor?: string, action?: any }> = {
+                  completed: {
+                    bg: 'bg-emerald-500/10 [.theme-clear_&]:bg-emerald-50',
+                    border: 'border-emerald-500/20 [.theme-clear_&]:border-emerald-200',
+                    iconBg: 'bg-emerald-500',
+                    titleColor: 'text-emerald-400 [.theme-clear_&]:text-emerald-700',
+                    tagColor: 'text-emerald-500/60',
+                    tagBg: '',
+                    descColor: 'text-white/70 [.theme-clear_&]:text-slate-600',
+                    Icon: CheckCircle,
+                    title: 'Selamat! Anda Telah Lulus',
+                    tag: 'Completed',
+                    desc: 'Ujian sertifikasi Anda telah selesai dan diverifikasi. Terus tingkatkan skor Anda untuk mencapai level berikutnya!',
+                    action: (
+                      <button
+                        onClick={() => setShowMissionModal(true)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 rounded-lg border border-emerald-500/20 text-emerald-300 [.theme-clear_&]:text-emerald-700 font-bold text-[10px] transition-all"
+                      >
+                        <Plus className="w-3 h-3" />
+                        Upgrade Skill Lagi
+                      </button>
+                    )
+                  },
                   pending_produktif: {
                     bg: 'bg-amber-500/10 [.theme-clear_&]:bg-amber-50',
                     border: 'border-amber-500/20 [.theme-clear_&]:border-amber-200',
@@ -671,7 +693,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                 };
                 const config = statusConfig[krsSubmission.status];
                 if (!config) return null;
-                const { bg, border, iconBg, titleColor, tagColor, descColor, Icon, title, tag, desc } = config;
+                const { bg, border, iconBg, titleColor, tagColor, descColor, Icon, title, tag, desc, action } = config;
 
                 return (
                   <div className="animate-fadeInUp stagger-delay-1">
@@ -685,6 +707,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                           <span className={`text-[10px] font-bold ${tagColor} uppercase`}>{tag}</span>
                         </div>
                         <p className={`${descColor} text-xs leading-relaxed mb-2`}>{desc}</p>
+                        {action}
                         {krsSubmission.status === 'scheduled' && scheduledExam && (
                           <div className={`inline-flex items-center gap-2 px-2.5 py-1 ${config.detailBg} rounded-lg border ${config.detailBorder} ${config.detailColor} font-bold text-[10px]`}>
                             <span className="opacity-60 font-medium tracking-tight">JADWAL:</span>
