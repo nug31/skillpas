@@ -431,10 +431,28 @@ export const krsStore = {
 
         this.notifyUpdate();
 
+        // 3. Send Notification to Student
+        try {
+            let studentUserId = submission.siswa_id; // Default assumption
+            if (!isMockMode) {
+                const { data: userData } = await supabase.from('users').select('id').eq('nisn', submission.siswa_id).maybeSingle();
+                if (userData) studentUserId = userData.id;
+            }
+
+            notificationStore.actions.addNotification({
+                user_id: studentUserId,
+                type: result === 'Lulus' ? 'success' : 'warning',
+                title: 'Hasil Ujian Sertifikasi',
+                message: `Halo ${submission.siswa_nama}, ujian Anda telah selesai dengan hasil: ${result.toUpperCase()}. Skor Akhir: ${score}.`,
+            });
+        } catch (e) {
+            console.warn("Failed to send student notification", e);
+        }
+
         notificationStore.actions.addNotification({
             type: 'success',
-            title: 'Ujian Selesai',
-            message: `Penilaian untuk ${submission.siswa_nama} telah disimpan. Hasil: ${result}.`,
+            title: 'Penilaian Disimpan',
+            message: `Hasil ujian ${submission.siswa_nama} telah berhasil diverifikasi.`,
         });
 
         return true;
