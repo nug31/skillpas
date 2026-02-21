@@ -172,11 +172,19 @@ export const generateCertificate = async (data: CertificateData) => {
 
     y += baseRowHeight;
 
-    // Parse Items
+    // Parse Items - Improved to handle comma-separated lists and JSON
     let competencies: string[] = [];
     try {
-        if (data.unitKompetensi.startsWith('[') && data.unitKompetensi.endsWith(']')) {
+        if (data.unitKompetensi.trim().startsWith('[') && data.unitKompetensi.trim().endsWith(']')) {
             competencies = JSON.parse(data.unitKompetensi);
+        } else if (data.unitKompetensi.includes(',') && !data.unitKompetensi.includes('\n')) {
+            // Split by comma if it looks like a list (e.g., "1. Unit A, 2. Unit B")
+            // but only if it's not already multiline
+            competencies = data.unitKompetensi.split(/,\s*\d+\.\s*|,\s*/).filter(Boolean);
+            // Re-add numbers if original had them but split removed them
+            if (data.unitKompetensi.trim().match(/^\d+\./)) {
+                competencies = competencies.map((c) => c.trim());
+            }
         } else {
             competencies = [data.unitKompetensi];
         }
@@ -184,63 +192,54 @@ export const generateCertificate = async (data: CertificateData) => {
 
     doc.setFontSize(9);
     competencies.forEach((item, index) => {
-        // Prepare segments for bold text support (split by **)
-        const segments = item.split(/(\*\*.*?\*\*)/g);
+        // Prepare segments for line wrapping
+        // We stop supporting **bold** inside table for better wrapping reliability
+        const cleanItem = item.replace(/\*\*/g, '').trim();
+        const textLines = doc.splitTextToSize(cleanItem, colWidths[1] - 10);
 
-        // Calculate total lines needed to determine row height
-        const textLines = doc.splitTextToSize(item.replace(/\*\*/g, ''), colWidths[1] - 10);
-        const itemHeight = Math.max(baseRowHeight, textLines.length * 5 + 2);
+        // Row height calculation with padding
+        const lineHeight = 5;
+        const padding = 4;
+        const itemHeight = Math.max(baseRowHeight, (textLines.length * lineHeight) + padding);
 
-        if (y + itemHeight > pageHeight - 75) return;
+        if (y + itemHeight > pageHeight - 65) return; // Prevent overflow to bottom pattern
 
+        // Draw Row Border
+        doc.setDrawColor(200, 200, 200);
         doc.rect(tableX, y, colWidths[0], itemHeight);
         doc.rect(tableX + colWidths[0], y, colWidths[1], itemHeight);
 
-        // Render Number
+        // Render Number (Centered)
         doc.setFont('helvetica', 'normal');
-        doc.text((index + 1).toString(), tableX + 10, y + (itemHeight / 2) + 1.5, { align: 'center' });
+        doc.setTextColor(40, 40, 40);
+        doc.text((index + 1).toString(), tableX + colWidths[0] / 2, y + (itemHeight / 2) + 1.5, { align: 'center' });
 
-        // Render Rich Text (supporting **bold**)
-        let currentX = tableX + 20 + 5;
-        let currentY = y + 5;
-
-        // Simplified multi-line rich text rendering
-        // For simplicity with jsPDF and multi-line, we iterate segments
-        // Note: For very complex cases, a more robust layout engine would be needed.
-        segments.forEach(segment => {
-            const isBold = segment.startsWith('**') && segment.endsWith('**');
-            const cleanText = isBold ? segment.slice(2, -2) : segment;
-
-            doc.setFont('helvetica', isBold ? 'bold' : 'normal');
-
-            // Handle newlines if present in the segment
-            const lines = cleanText.split('\n');
-            lines.forEach((line, lineIdx) => {
-                if (lineIdx > 0) {
-                    currentY += 5;
-                    currentX = tableX + 20 + 5;
-                }
-
-                // If line is too long, we'd need to wrap it. 
-                // Using splitTextToSize here is tricky with mixed fonts.
-                // We'll use a simplified wrap for the whole item or render lines as-is if short.
-                doc.text(line, currentX, currentY);
-                currentX += doc.getTextWidth(line);
-            });
+        // Render Wrapped Text
+        let currentY = y + (itemHeight - (textLines.length * lineHeight)) / 2 + 3.5;
+        textLines.forEach((line: string) => {
+            doc.text(line, tableX + colWidths[0] + 5, currentY);
+            currentY += lineHeight;
         });
 
         y += itemHeight;
     });
 
-    // Score & Sign - Moved further down (bottomY adjusted)
-    const bottomY = pageHeight - 68;
+    // Score & Sign - Improved Alignment
+    const bottomY = pageHeight - 60;
     doc.setFont('helvetica', 'bold');
-    doc.text(`Bekasi, ${dateStr}`, pageWidth - 60, bottomY + 10, { align: 'center' });
-    doc.text(data.jurusan, pageWidth - 60, bottomY + 18, { align: 'center' });
+    doc.setFontSize(10);
+    doc.setTextColor(20, 30, 70);
 
-    doc.text(data.hodName || '( ........................... )', pageWidth - 60, bottomY + 38, { align: 'center' });
+    const rightAlignX = pageWidth - 60;
+    doc.text(`Bekasi, ${dateStr}`, rightAlignX, bottomY, { align: 'center' });
+    doc.text(data.jurusan, rightAlignX, bottomY + 6, { align: 'center' });
+
+    // Spacer for signature
+    const sigNameY = bottomY + 30;
+    doc.text(data.hodName || '( ........................... )', rightAlignX, sigNameY, { align: 'center' });
+    doc.setFontSize(9);
     doc.setFont('helvetica', 'normal');
-    doc.text('Head of Department', pageWidth - 60, bottomY + 42, { align: 'center' });
+    doc.text('Head of Department', rightAlignX, sigNameY + 4, { align: 'center' });
 
     // Save PDF
     doc.save(`Sertifikat_${data.studentName.replace(/\s+/g, '_')}.pdf`);
