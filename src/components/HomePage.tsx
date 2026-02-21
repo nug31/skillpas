@@ -221,7 +221,8 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
             masuk: discipline?.masuk ?? 0,
             izin: discipline?.izin ?? 0,
             sakit: discipline?.sakit ?? 0,
-            alfa: discipline?.alfa ?? 0
+            alfa: discipline?.alfa ?? 0,
+            siswa_id: student.id
           });
 
           // Mock history
@@ -291,7 +292,8 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
             masuk: discData?.masuk ?? 0,
             izin: discData?.izin ?? 0,
             sakit: discData?.sakit ?? 0,
-            alfa: discData?.alfa ?? 0
+            alfa: discData?.alfa ?? 0,
+            siswa_id: student.id
           });
 
           // Fetch History
@@ -428,7 +430,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
   useEffect(() => {
     if (user?.role === 'student') {
       const checkKRSStatus = async () => {
-        const userId = user.name === 'Siswa Mesin' ? 'siswa_mesin' : user.id;
+        const userId = myStats?.siswa_id || (user.name === 'Siswa Mesin' ? 's-j1-user' : user.id);
         const sub = await krsStore.getStudentSubmission(userId);
         if (sub) {
           setKrsSubmission(sub);
@@ -442,11 +444,17 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
           setScheduledExam(null);
         }
       };
-      checkKRSStatus();
-      window.addEventListener(KRS_UPDATED_EVENT, checkKRSStatus);
-      return () => window.removeEventListener(KRS_UPDATED_EVENT, checkKRSStatus);
+
+      const refreshAll = () => {
+        checkKRSStatus();
+        loadMyStats();
+      };
+
+      refreshAll();
+      window.addEventListener(KRS_UPDATED_EVENT, refreshAll);
+      return () => window.removeEventListener(KRS_UPDATED_EVENT, refreshAll);
     }
-  }, [user]);
+  }, [user, myStats?.siswa_id]);
 
   useEffect(() => {
     loadPendingKRS();
@@ -929,7 +937,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
             jurusan={jurusanList[0]}
             currentScore={myStats.score}
             currentPoin={myStats.poin}
-            siswaId={user.name === 'Siswa Mesin' ? 'siswa_mesin' : user.id}
+            siswaId={myStats?.siswa_id || (user.name === 'Siswa Mesin' ? 's-j1-user' : user.id)}
           />
         )}
 

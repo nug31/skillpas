@@ -102,6 +102,7 @@ export interface StudentStats {
   izin?: number;
   sakit?: number;
   alfa?: number;
+  siswa_id?: string;
 }
 
 export type ViewMode = 'list' | 'race' | 'podium';
