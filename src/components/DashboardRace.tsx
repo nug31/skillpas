@@ -153,13 +153,13 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                             </p>
                             <button
                                 onClick={onContinue}
-                                disabled={krsStatus && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled', 'completed'].includes(krsStatus)}
+                                disabled={krsStatus && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled'].includes(krsStatus)}
                                 className={`w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-lg shadow-xl transition-all flex items-center justify-center gap-2
-                                    ${krsStatus && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled', 'completed'].includes(krsStatus)
+                                    ${krsStatus && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled'].includes(krsStatus)
                                         ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
                                         : 'bg-white text-[color:var(--accent-1)] hover:scale-105 active:scale-95'
                                     }`}
-                                title={krsStatus && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled', 'completed'].includes(krsStatus) ? "Tidak bisa upgrade saat ada pengajuan berjalan" : ""}
+                                title={krsStatus && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled'].includes(krsStatus) ? "Tidak bisa upgrade saat ada pengajuan berjalan" : ""}
                             >
                                 <Icons.PlayCircle className="w-6 h-6 fill-current" />
                                 Upgrade skill
