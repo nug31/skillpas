@@ -239,6 +239,68 @@ export interface Database {
           updated_at?: string
         }
       }
+      krs: {
+        Row: {
+          id: string
+          siswa_id: string
+          siswa_nama: string
+          kelas: string
+          jurusan_id: string
+          items: string[]
+          status: string
+          exam_date: string | null
+          notes: string | null
+          final_score: number | null
+          evidence_photos: string[]
+          evidence_videos: string[]
+          created_at: string
+          updated_at: string
+          submitted_at: string
+          guru_produktif_approved_at: string | null
+          wali_kelas_approved_at: string | null
+          hod_approved_at: string | null
+        }
+        Insert: {
+          id?: string
+          siswa_id: string
+          siswa_nama: string
+          kelas: string
+          jurusan_id: string
+          items?: string[]
+          status?: string
+          exam_date?: string | null
+          notes?: string | null
+          final_score?: number | null
+          evidence_photos?: string[]
+          evidence_videos?: string[]
+          created_at?: string
+          updated_at?: string
+          submitted_at?: string
+          guru_produktif_approved_at?: string | null
+          wali_kelas_approved_at?: string | null
+          hod_approved_at?: string | null
+        }
+        Update: {
+          id?: string
+          siswa_id?: string
+          siswa_nama?: string
+          kelas?: string
+          jurusan_id?: string
+          items?: string[]
+          status?: string
+          exam_date?: string | null
+          notes?: string | null
+          final_score?: number | null
+          evidence_photos?: string[]
+          evidence_videos?: string[]
+          created_at?: string
+          updated_at?: string
+          submitted_at?: string
+          guru_produktif_approved_at?: string | null
+          wali_kelas_approved_at?: string | null
+          hod_approved_at?: string | null
+        }
+      }
     }
   }
 }

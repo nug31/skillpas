@@ -3,6 +3,7 @@ import { X, Upload, Image as ImageIcon, Video, Trash2, CheckCircle, Loader2 } fr
 import { supabase, isMockMode } from '../lib/supabase';
 import { krsStore } from '../lib/krsStore';
 import { motion } from 'framer-motion';
+import { compressImage } from '../lib/imageUtils';
 
 interface EvidenceUploadModalProps {
     submissionId: string;
@@ -17,6 +18,7 @@ export function EvidenceUploadModal({ submissionId, siswaNama, onClose, onSucces
     const [photos, setPhotos] = useState<string[]>(initialPhotos);
     const [videos, setVideos] = useState<string[]>(initialVideos);
     const [uploading, setUploading] = useState(false);
+    const [compressing, setCompressing] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const photoInputRef = useRef<HTMLInputElement>(null);
@@ -31,29 +33,45 @@ export function EvidenceUploadModal({ submissionId, siswaNama, onClose, onSucces
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
 
-            // Limit size: 5MB for photos, 20MB for videos
-            const maxSize = type === 'photo' ? 5 * 1024 * 1024 : 20 * 1024 * 1024;
+            // Limit size: 10MB for photos (before compression), 20MB for videos
+            const maxSize = type === 'photo' ? 10 * 1024 * 1024 : 20 * 1024 * 1024;
             if (file.size > maxSize) {
-                setError(`File ${file.name} terlalu besar. Maksimal ${type === 'photo' ? '5MB' : '20MB'}.`);
+                setError(`File ${file.name} terlalu besar. Maksimal ${type === 'photo' ? '10MB' : '20MB'}.`);
                 continue;
+            }
+
+            // Compress if it's a photo
+            let uploadData: File | Blob = file;
+            if (type === 'photo') {
+                setCompressing(true);
+                try {
+                    uploadData = await compressImage(file);
+                } catch (err) {
+                    console.error("Compression failed:", err);
+                    // Fallback to original file if compression fails
+                } finally {
+                    setCompressing(false);
+                }
             }
 
             if (isMockMode) {
                 // In mock mode, we use Object URLs for preview and "persistence" in this session
-                const url = URL.createObjectURL(file);
+                const url = URL.createObjectURL(uploadData);
                 if (type === 'photo') setPhotos(prev => [...prev, url]);
                 else setVideos(prev => [...prev, url]);
             } else {
                 // Real Supabase upload
                 setUploading(true);
                 try {
-                    const fileExt = file.name.split('.').pop();
+                    const fileExt = type === 'photo' ? 'jpg' : file.name.split('.').pop();
                     const fileName = `${submissionId}-${Date.now()}-${i}.${fileExt}`;
                     const filePath = `evidence/${fileName}`;
 
                     const { error: uploadError } = await supabase.storage
                         .from('student-photos') // Using existing bucket or we might need a new one
-                        .upload(filePath, file);
+                        .upload(filePath, uploadData, {
+                            contentType: type === 'photo' ? 'image/jpeg' : undefined
+                        });
 
                     if (uploadError) throw uploadError;
 
@@ -237,15 +255,15 @@ export function EvidenceUploadModal({ submissionId, siswaNama, onClose, onSucces
                     </button>
                     <button
                         onClick={handleSave}
-                        disabled={uploading || (photos.length === 0 && videos.length === 0)}
+                        disabled={uploading || compressing || (photos.length === 0 && videos.length === 0)}
                         className="px-6 py-2 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-500/20 hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-2 disabled:opacity-50 disabled:grayscale disabled:pointer-events-none"
                     >
-                        {uploading ? (
+                        {uploading || compressing ? (
                             <Loader2 className="w-4 h-4 animate-spin" />
                         ) : (
                             <CheckCircle className="w-4 h-4" />
                         )}
-                        Simpan Perubahan
+                        {compressing ? 'Mengompres...' : 'Simpan Perubahan'}
                     </button>
                 </div>
             </motion.div>
