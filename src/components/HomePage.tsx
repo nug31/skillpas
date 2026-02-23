@@ -48,9 +48,10 @@ interface HomePageProps {
   onSelectJurusan: (jurusan: Jurusan, classFilter?: string) => void;
   onOpenKRSApproval?: () => void;
   onOpenWalasDashboard?: () => void;
+  onOpenEvidenceDashboard?: () => void;
 }
 
-export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashboard }: HomePageProps) {
+export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashboard, onOpenEvidenceDashboard }: HomePageProps) {
   const { user } = useAuth();
   const [jurusanList, setJurusanList] = useState<Jurusan[]>([]);
   const [topStudentsMap, setTopStudentsMap] = useState<Record<string, { id: string; nama: string; skor: number; kelas?: string }[]>>({});
@@ -752,13 +753,22 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                           <div className="flex items-center gap-2">
                             <span className={`text-[10px] font-bold ${tagColor} uppercase`}>{tag}</span>
                             {(krsSubmission.status === 'scheduled' || krsSubmission.status === 'completed') && (
-                              <button
-                                onClick={() => setShowEvidenceModal(true)}
-                                className="p-1.5 bg-white/10 hover:bg-indigo-500/20 text-white hover:text-indigo-400 rounded-lg transition-all"
-                                title="Upload Bukti Ujian"
-                              >
-                                <Upload size={14} />
-                              </button>
+                              <>
+                                <button
+                                  onClick={() => setShowEvidenceModal(true)}
+                                  className="p-1.5 bg-white/10 hover:bg-indigo-500/20 text-white hover:text-indigo-400 rounded-lg transition-all"
+                                  title="Upload Bukti Ujian"
+                                >
+                                  <Upload size={14} />
+                                </button>
+                                <button
+                                  onClick={() => onOpenEvidenceDashboard?.()}
+                                  className="px-2 py-1 bg-white/10 hover:bg-indigo-500/20 text-white hover:text-indigo-400 rounded-lg transition-all text-[10px] font-bold flex items-center gap-1"
+                                  title="Dashboard Dokumentasi"
+                                >
+                                  📊 Dokumentasi
+                                </button>
+                              </>
                             )}
                           </div>
                         </div>

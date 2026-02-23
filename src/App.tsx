@@ -15,6 +15,7 @@ import ReloadPrompt from './components/ReloadPrompt';
 import { PassportPublicView } from './components/Passport/PassportPublicView';
 import { WalasDashboard } from './components/WalasDashboard';
 import { ConnectionStatus } from './components/ConnectionStatus';
+import { EvidenceDashboard } from './components/EvidenceDashboard';
 
 function AppContent() {
   const { user, logout, isAuthenticated, isTeacher } = useAuth();
@@ -22,6 +23,7 @@ function AppContent() {
   const [selectedClassFilter, setSelectedClassFilter] = useState<string | undefined>(undefined);
   const [showKRSApproval, setShowKRSApproval] = useState(false);
   const [showWalasDashboard, setShowWalasDashboard] = useState(false);
+  const [showEvidenceDashboard, setShowEvidenceDashboard] = useState(false);
   const [showStampAnimation, setShowStampAnimation] = useState(false);
   const prevAuthRef = useRef(isAuthenticated);
   const [themeClear, setThemeClear] = useState<boolean>(() => {
@@ -65,6 +67,7 @@ function AppContent() {
         setSelectedClassFilter(undefined);
         setShowKRSApproval(false);
         setShowWalasDashboard(false);
+        setShowEvidenceDashboard(false);
       }
     };
 
@@ -170,6 +173,11 @@ function AppContent() {
             onBack={() => setShowKRSApproval(false)}
             user={user!}
           />
+        ) : showEvidenceDashboard ? (
+          <EvidenceDashboard
+            user={user!}
+            onBack={() => setShowEvidenceDashboard(false)}
+          />
         ) : selectedJurusan ? (
           <JurusanDetailPage
             jurusan={selectedJurusan}
@@ -184,6 +192,7 @@ function AppContent() {
             }}
             onOpenKRSApproval={() => setShowKRSApproval(true)}
             onOpenWalasDashboard={() => setShowWalasDashboard(true)}
+            onOpenEvidenceDashboard={() => setShowEvidenceDashboard(true)}
           />
         )}
       </main>
