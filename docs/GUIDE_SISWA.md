@@ -29,11 +29,14 @@ Setelah login, kamu akan melihat Dashboard utama yang berisi identitas digitalmu
 - **Badge Level**: Level kompetensi saat ini (misal: Basic 1, Master).
 - **Customization**: Klik foto profilmu untuk **mengubah Avatar** sesuai keinginan agar profilmu tampil beda!
 
-### Isi Detail Passport (Klik Profil)
-Jika kamu mengklik kartu profilmu, kamu akan masuk ke detail passport yang berisi:
-- **Tab Ikhtisar**: Rangkuman kehadiran (Masuk, Izin, Sakit, Alfa) dan nilai sikap.
-- **Tab Riwayat**: Daftar semua unit kompetensi yang sudah kamu selesaikan.
-- **Skill Card**: Kartu digital eksklusif dengan **QR Code**. Tunjukkan ini ke guru atau HRD industri agar mereka bisa melihat portofolio digitalmu secara instan.
+### Tombol Aksi Cepat di Profil
+Di bawah informasi profilemu terdapat baris tombol aksi:
+
+| Tombol | Fungsi |
+|--------|--------|
+| 🪪 **Skill Card** | Membuka kartu digital dengan QR Code portofoliomu |
+| 📖 **Passport** | Membuka Paspor digital lengkap (riwayat, stempel, bukti ujian) |
+| 📋 **Dokumentasi Ujian** | Membuka dashboard bukti foto/video ujianmu *(muncul setelah ujian dijadwalkan)* |
 
 ## 5. Detail Pengisian KRS / Pendaftaran Sertifikasi Kompetensi
 
@@ -160,7 +163,25 @@ Setelah ujian selesai:
 
 ---
 
-### TAHAP 9: Download Sertifikat
+### TAHAP 9: Upload Bukti Dokumentasi Ujian 📸
+
+Setelah ujian selesai atau saat ujian dijadwalkan, kamu **wajib mengunggah bukti dokumentasi** (foto/video kegiatan ujian) agar tercatat di Paspor digitalmu.
+
+**Cara Upload lewat tombol di notifikasi status KRS:**
+1. Di Dashboard utama, lihat kartu status KRS (warna hijau/biru).
+2. Klik ikon **Upload** (⬆️) di sudut kanan atas kartu tersebut.
+3. Di jendela yang muncul, klik **"+ Tambah Foto"** atau **"+ Tambah Video"**.
+4. Pilih file dari perangkatmu. **Foto otomatis dikompres** sehingga tidak perlu khawatir soal ukuran file besar.
+5. Klik **"Simpan Bukti"** setelah selesai.
+
+> **💡 Tips:**
+> - Format foto yang diterima: JPG, PNG, HEIC (maks. 10 MB sebelum kompresi)
+> - Format video yang diterima: MP4, MOV (maks. 20 MB)
+> - Foto secara otomatis dikompres sebelum diunggah untuk menghemat ruang penyimpanan.
+
+---
+
+### TAHAP 10: Download Sertifikat
 
 Jika dinyatakan lulus:
 
@@ -209,6 +230,11 @@ Jika dinyatakan lulus:
 └────────┬────────────────┘
          ▼
 ┌─────────────────────────┐
+│  Upload Bukti Foto/     │
+│  Video Ujian 📸         │  ← BARU
+└────────┬────────────────┘
+         ▼
+┌─────────────────────────┐
 │  Penilaian oleh Guru    │
 │  → XP Naik / Level Up!  │
 └────────┬────────────────┘
@@ -220,7 +246,32 @@ Jika dinyatakan lulus:
 
 ![Modal KRS](assets/siswa_krs.png)
 
-## 6. Referensi Kompetensi
+## 6. Dashboard Dokumentasi Ujian 📊
+
+Fitur **Dashboard Dokumentasi Ujian** memudahkan kamu memantau status semua bukti ujian yang sudah diunggah.
+
+### Cara Membuka Dashboard Dokumentasi
+1. Di **Dashboard utama**, lihat baris tombol aksi di bawah profilmu.
+2. Klik tombol **📋 Dokumentasi Ujian** (tombol berwarna ungu).
+   - Tombol ini hanya muncul jika status KRS kamu sudah **Terjadwal**, **Disetujui**, atau **Selesai**.
+
+### Yang Bisa Kamu Lihat di Dashboard
+
+| Bagian | Keterangan |
+|--------|------------|
+| **Status KRS** | Menampilkan status terkini pengajuan KRS kamu |
+| **Ringkasan** | Jumlah foto dan video yang sudah terupload |
+| **Status Upload** | ✅ "Upload berhasil" ditampilkan per file |
+| **Galeri Foto** | Grid foto — klik untuk memperbesar (lightbox) |
+| **Player Video** | Video bisa langsung diputar di halaman ini |
+| **Tombol Upload** | Untuk menambah atau memperbarui bukti kapan saja |
+
+### Kenapa Dokumentasi Penting?
+Bukti foto dan video yang kamu unggah akan **terlihat oleh industri** saat mereka memindai QR Code di Paspor digitalmu. Pastikan foto/video menunjukkan kegiatan ujian praktik secara nyata dan jelas.
+
+---
+
+## 7. Referensi Kompetensi
 Referensi kompetensi adalah standar keahlian yang harus kamu kuasai untuk dinyatakan kompeten. Kamu bisa menemukannya di:
 
 - **Menu Pendaftaran Sertifikasi**: Di sini terdapat **Daftar Unit** yang berisi detail kriteria penilaian (checklist). 
