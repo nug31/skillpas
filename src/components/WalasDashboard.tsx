@@ -574,6 +574,8 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                     levels={levels.length > 0 ? levels : mockData.getLevelsForJurusan(selectedStudent.jurusan_id)}
                     hodName={undefined}
                     walasName={user.name}
+                    evidencePhotos={(selectedStudent as any).latest_krs?.evidence_photos}
+                    evidenceVideos={(selectedStudent as any).latest_krs?.evidence_videos}
                 />
             )}
 
