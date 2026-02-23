@@ -8,13 +8,15 @@ interface StudentHistoryModalProps {
     studentName: string;
     studentNisn?: string;
     studentKelas: string;
-    avatarUrl?: string; // New prop
-    photoUrl?: string; // New prop
+    avatarUrl?: string;
+    photoUrl?: string;
     jurusanName: string;
     history: CompetencyHistory[];
     levels: LevelSkill[];
     hodName?: string;
-    walasName?: string; // New prop
+    walasName?: string;
+    evidencePhotos?: string[];
+    evidenceVideos?: string[];
 }
 
 export const StudentHistoryModal: React.FC<StudentHistoryModalProps> = ({
@@ -29,7 +31,9 @@ export const StudentHistoryModal: React.FC<StudentHistoryModalProps> = ({
     history,
     levels,
     hodName,
-    walasName
+    walasName,
+    evidencePhotos = [],
+    evidenceVideos = [],
 }) => {
     if (!isOpen) return null;
 
@@ -44,7 +48,9 @@ export const StudentHistoryModal: React.FC<StudentHistoryModalProps> = ({
         riwayat_kompetensi: history,
         avatar_url: avatarUrl,
         photo_url: photoUrl,
-        skill_siswa: [] // Not needed for passport display currently
+        skill_siswa: [], // Not needed for passport display currently
+        evidence_photos: evidencePhotos,
+        evidence_videos: evidenceVideos,
     };
 
     return (

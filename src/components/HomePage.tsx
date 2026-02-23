@@ -1085,6 +1085,8 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
             walasName={walasName}
             avatarUrl={(user as any)?.avatar_url}
             photoUrl={(user as any)?.photo_url}
+            evidencePhotos={krsSubmission?.evidence_photos}
+            evidenceVideos={krsSubmission?.evidence_videos}
           />
         )}
       </div>
