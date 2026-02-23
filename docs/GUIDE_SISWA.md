@@ -286,7 +286,40 @@ Kamu bisa melihat posisimu dibandingkan teman sekelas atau seangkatan:
 
 ![Student Race & Leaderboard](assets/siswa_leaderboard.png)
 
-## 8. Keluar (Logout)
+## 8. Install Skill Passport di HP 📱
+
+Skill Passport bisa diinstal langsung di HP kamu **seperti aplikasi biasa** — tanpa perlu ke Play Store atau App Store. Fitur ini disebut **PWA (Progressive Web App)**.
+
+**Keuntungan install PWA:**
+- Bisa dibuka dari layar utama HP tanpa buka browser dulu
+- Tampilan lebih rapi (fullscreen, tanpa bar browser)
+- Lebih cepat & bisa diakses walau sinyal lemah
+
+---
+
+### 📱 Android (Chrome/Samsung Internet)
+
+1. Buka **Skill Passport** di browser Chrome HP-mu.
+2. Tunggu beberapa detik — akan muncul banner di bawah layar: **"Tambahkan ke Layar Utama"** → klik **Tambahkan**.
+3. Jika banner tidak muncul, ketuk ikon **⋮ (tiga titik)** di sudut kanan atas browser.
+4. Pilih **"Tambahkan ke Layar Utama"** atau **"Install App"**.
+5. Klik **Instal** / **Tambah** → Ikon Skill Passport akan muncul di layar utama HP-mu!
+
+---
+
+### 🍎 iPhone / iPad (Safari)
+
+1. Buka **Skill Passport** di browser **Safari** (wajib Safari, bukan Chrome).
+2. Ketuk ikon **Bagikan** (kotak dengan panah ke atas ↑) di bagian bawah layar.
+3. Scroll ke bawah dan pilih **"Tambahkan ke Layar Utama"** (*Add to Home Screen*).
+4. Ubah nama jika mau, lalu ketuk **Tambahkan** di pojok kanan atas.
+5. Ikon Skill Passport akan muncul di layar utama iPhone-mu!
+
+---
+
+> **⚠️ Catatan:** Pastikan kamu sudah login minimal sekali melalui browser sebelum menginstal, agar data akun tersimpan.
+
+## 9. Keluar (Logout)
 Klik ikon **Logout** (pintu keluar) di pojok kanan atas untuk keluar dari sistem demi keamanan akunmu.
 
 ---
