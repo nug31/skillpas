@@ -753,22 +753,13 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                           <div className="flex items-center gap-2">
                             <span className={`text-[10px] font-bold ${tagColor} uppercase`}>{tag}</span>
                             {(krsSubmission.status === 'scheduled' || krsSubmission.status === 'completed') && (
-                              <>
-                                <button
-                                  onClick={() => setShowEvidenceModal(true)}
-                                  className="p-1.5 bg-white/10 hover:bg-indigo-500/20 text-white hover:text-indigo-400 rounded-lg transition-all"
-                                  title="Upload Bukti Ujian"
-                                >
-                                  <Upload size={14} />
-                                </button>
-                                <button
-                                  onClick={() => onOpenEvidenceDashboard?.()}
-                                  className="px-2 py-1 bg-white/10 hover:bg-indigo-500/20 text-white hover:text-indigo-400 rounded-lg transition-all text-[10px] font-bold flex items-center gap-1"
-                                  title="Dashboard Dokumentasi"
-                                >
-                                  📊 Dokumentasi
-                                </button>
-                              </>
+                              <button
+                                onClick={() => setShowEvidenceModal(true)}
+                                className="p-1.5 bg-white/10 hover:bg-indigo-500/20 text-white hover:text-indigo-400 rounded-lg transition-all"
+                                title="Upload Bukti Ujian"
+                              >
+                                <Upload size={14} />
+                              </button>
                             )}
                           </div>
                         </div>
@@ -895,6 +886,16 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                               <BookOpen className="w-4 h-4 group-hover:scale-110 transition-transform" />
                               Passport
                             </button>
+
+                            {krsSubmission && (krsSubmission.status === 'scheduled' || krsSubmission.status === 'completed' || krsSubmission.status === 'approved') && (
+                              <button
+                                onClick={() => onOpenEvidenceDashboard?.()}
+                                className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-violet-600/20 to-purple-600/20 hover:from-violet-600/30 hover:to-purple-600/30 text-violet-300 rounded-lg text-xs font-bold border border-violet-500/20 transition-all group"
+                              >
+                                <FileCheck className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                                Dokumentasi Ujian
+                              </button>
+                            )}
                           </div>
                         </div>
                       ) : (
