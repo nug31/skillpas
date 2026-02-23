@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { PassportCover, PassportIdentityPage, PassportStampsPage, PassportPage } from './PassportPages';
+import { PassportCover, PassportIdentityPage, PassportStampsPage, PassportPage, PassportEvidencePage } from './PassportPages';
 import { PASSPORT_DIMENSIONS } from './PassportStyles';
 import type { SiswaWithSkill, LevelSkill, CompetencyHistory } from '../../types';
 import { generateCertificate } from '../../lib/certificateGenerator';
@@ -64,8 +64,14 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
     // Construct pages array
     const pages: React.ReactNode[] = [
         <PassportCover key="cover" schoolName="SMK Mitra Industri" />, // 0
-        <PassportPage key="inside-cover" pageNumber={0}><div className="flex items-center justify-center h-full text-xs text-slate-300 italic p-8 text-center">Dokumen resmi sekolah. Harap dijaga dengan baik.</div></PassportPage>, // 1 (Left)
+        <PassportPage key="inside-cover" pageNumber={0}><div className="flex items-center justify-center h-full text-xs text-slate-300 italic p-8 text-center" > Dokumen resmi sekolah. Harap dijaga dengan baik.</div></PassportPage >, // 1 (Left)
         <PassportIdentityPage key="identity" siswa={siswa} jurusanName={jurusanName} walasName={walasName} />, // 2 (Right)
+        <PassportEvidencePage
+            key="evidence"
+            photos={(siswa as any).evidence_photos || []}
+            videos={(siswa as any).evidence_videos || []}
+            pageNumber={3}
+        />, // 3 (Left)
     ];
 
     // Add Stamp Pages

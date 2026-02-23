@@ -14,6 +14,8 @@ export interface SiswaWithSkill extends Siswa {
   avatar_url?: string;
   photo_url?: string;
   discipline_data?: StudentDiscipline;
+  evidence_photos?: string[];
+  evidence_videos?: string[];
 }
 
 export interface JurusanWithStats extends Jurusan {
@@ -137,4 +139,6 @@ export interface KRSSubmission {
   exam_date?: string;
   notes?: string;
   final_score?: number;
+  evidence_photos?: string[];
+  evidence_videos?: string[];
 }

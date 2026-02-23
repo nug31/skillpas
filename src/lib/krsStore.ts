@@ -525,6 +525,39 @@ export const krsStore = {
         }
     },
 
+    async updateEvidence(submissionId: string, photos: string[], videos: string[]): Promise<boolean> {
+        if (isMockMode) {
+            const subs = await this.getSubmissions();
+            const idx = subs.findIndex(s => s.id === submissionId);
+            if (idx !== -1) {
+                subs[idx].evidence_photos = photos;
+                subs[idx].evidence_videos = videos;
+                subs[idx].updated_at = new Date().toISOString();
+                localStorage.setItem('skillpas_krs_submissions', JSON.stringify(subs));
+                this.notifyUpdate();
+                return true;
+            }
+            return false;
+        }
+
+        const { error } = await supabase
+            .from('krs')
+            .update({
+                evidence_photos: photos,
+                evidence_videos: videos,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', submissionId);
+
+        if (error) {
+            console.error("Error updating evidence", error);
+            return false;
+        }
+
+        this.notifyUpdate();
+        return true;
+    },
+
     notifyUpdate() {
         window.dispatchEvent(new CustomEvent(KRS_UPDATED_EVENT));
     },

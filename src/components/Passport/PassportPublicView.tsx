@@ -51,7 +51,12 @@ export const PassportPublicView: React.FC<PassportPublicViewProps> = ({ siswaId 
                     skill_siswa: skill ? [skill] : [],
                     riwayat_kompetensi: history,
                     current_level: currentLevel,
-                    current_skor: score
+                    current_skor: score,
+                    evidence_photos: [
+                        'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80',
+                        'https://images.unsplash.com/photo-1454165833767-027eeef1531e?auto=format&fit=crop&q=80'
+                    ],
+                    evidence_videos: []
                 });
 
                 setWalasName('Sri Wahyuni, S.Pd'); // Mock fallback
@@ -85,9 +90,22 @@ export const PassportPublicView: React.FC<PassportPublicViewProps> = ({ siswaId 
                     .eq('siswa_id', siswaId)
                     .order('tanggal', { ascending: false });
 
+
+                const { data: krsData } = await supabase
+                    .from('krs')
+                    .select('evidence_photos, evidence_videos')
+                    .eq('siswa_id', siswaId)
+                    .eq('status', 'completed');
+
+                // Aggregate all evidence from completed exams
+                const allPhotos = krsData?.flatMap((k: any) => k.evidence_photos || []) || [];
+                const allVideos = krsData?.flatMap((k: any) => k.evidence_videos || []) || [];
+
                 setStudentData({
                     ...student,
-                    riwayat_kompetensi: historyData || []
+                    riwayat_kompetensi: historyData || [],
+                    evidence_photos: allPhotos,
+                    evidence_videos: allVideos
                 } as any);
 
                 // Fetch HOD

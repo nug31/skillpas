@@ -9,7 +9,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { MissionModal } from './MissionModal';
 import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
-import { Edit3, CheckCircle, Contact, BookOpen, LayoutDashboard, Clock, AlertTriangle, XCircle, FileCheck, Plus } from 'lucide-react';
+import { Edit3, CheckCircle, Contact, BookOpen, LayoutDashboard, Clock, AlertTriangle, XCircle, FileCheck, Plus, Upload } from 'lucide-react';
+import { EvidenceUploadModal } from './EvidenceUploadModal';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import { SkillCard } from './SkillCard';
 import { StudentHistoryModal } from './StudentHistoryModal';
@@ -68,6 +69,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [pendingKRSCount, setPendingKRSCount] = useState(0);
   const [toApproveCount, setToApproveCount] = useState(0);
+  const [showEvidenceModal, setShowEvidenceModal] = useState(false);
   const { updateUser } = useAuth();
 
   const useMock = isMockMode;
@@ -747,12 +749,25 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-0.5">
                           <h3 className={`${titleColor} font-black text-sm uppercase tracking-wider`}>{title}</h3>
-                          <span className={`text-[10px] font-bold ${tagColor} uppercase`}>{tag}</span>
+                          <div className="flex items-center gap-2">
+                            <span className={`text-[10px] font-bold ${tagColor} uppercase`}>{tag}</span>
+                            {(krsSubmission.status === 'scheduled' || krsSubmission.status === 'completed') && (
+                              <button
+                                onClick={() => setShowEvidenceModal(true)}
+                                className="p-1.5 bg-white/10 hover:bg-indigo-500/20 text-white hover:text-indigo-400 rounded-lg transition-all"
+                                title="Upload Bukti Ujian"
+                              >
+                                <Upload size={14} />
+                              </button>
+                            )}
+                          </div>
                         </div>
                         <p className={`${descColor} text-xs leading-relaxed mb-2`}>{desc}</p>
-                        {action}
+                        <div className="flex items-center gap-3">
+                          {action}
+                        </div>
                         {krsSubmission.status === 'scheduled' && scheduledExam && (
-                          <div className={`inline-flex items-center gap-2 px-2.5 py-1 ${config.detailBg} rounded-lg border ${config.detailBorder} ${config.detailColor} font-bold text-[10px]`}>
+                          <div className={`mt-2 inline-flex items-center gap-2 px-2.5 py-1 ${config.detailBg} rounded-lg border ${config.detailBorder} ${config.detailColor} font-bold text-[10px]`}>
                             <span className="opacity-60 font-medium tracking-tight">JADWAL:</span>
                             {new Date(scheduledExam.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                           </div>
@@ -1064,6 +1079,16 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
         )}
       </div>
 
+      {showEvidenceModal && krsSubmission && (
+        <EvidenceUploadModal
+          submissionId={krsSubmission.id}
+          siswaNama={user?.name || ''}
+          onClose={() => setShowEvidenceModal(false)}
+          onSuccess={() => loadMyStats()}
+          initialPhotos={krsSubmission.evidence_photos}
+          initialVideos={krsSubmission.evidence_videos}
+        />
+      )}
     </div>
   );
 }
