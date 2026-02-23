@@ -8,21 +8,45 @@
 - **Validasi**: Bukti bahwa kamu telah menguasai unit kompetensi tertentu yang diakui oleh sekolah dan industri.
 - **Kesiapan Kerja**: Menjadi modal utama saat melamar kerja, karena perusahaan bisa melihat detail keahlianmu melalui scan QR Code.
 
-## 2. Peran dan Tanggung Jawab
+## 2. Install Skill Passport di HP 📱
+
+Skill Passport bisa diinstal langsung di HP kamu **seperti aplikasi biasa** — tanpa perlu ke Play Store atau App Store. Fitur ini disebut **PWA (Progressive Web App)**.
+
+**Keuntungan install PWA:**
+- Bisa dibuka dari layar utama HP tanpa buka browser dulu
+- Tampilan lebih rapi (fullscreen, tanpa bar browser)
+- Lebih cepat & bisa diakses walau sinyal lemah
+
+### 📱 Android (Chrome/Samsung Internet)
+1. Buka alamat **Skill Passport** di browser **Chrome** HP-mu.
+2. Tunggu beberapa detik — akan muncul banner di bawah: **"Tambahkan ke Layar Utama"** → klik **Tambahkan**.
+3. Jika banner tidak muncul, ketuk ikon **⋮ (tiga titik)** di sudut kanan atas browser.
+4. Pilih **"Tambahkan ke Layar Utama"** atau **"Install App"**.
+5. Klik **Instal** → ikon Skill Passport muncul di layar utama HP-mu! ✅
+
+### 🍎 iPhone / iPad (Safari)
+1. Buka alamat **Skill Passport** di browser **Safari** (wajib Safari, bukan Chrome).
+2. Ketuk ikon **Bagikan** (kotak ↑) di bagian bawah layar.
+3. Pilih **"Tambahkan ke Layar Utama"** (*Add to Home Screen*).
+4. Ketuk **Tambahkan** di pojok kanan atas → ikon muncul di layar utama! ✅
+
+> **💡 Tips:** Install dulu sebelum login, agar langsung bisa masuk lewat ikon aplikasi dari layar utama.
+
+## 3. Peran dan Tanggung Jawab
 Dalam ekosistem Skill Passport, terdapat beberapa peran penting:
 - **Sekolah**: Menyediakan standar kriteria kompetensi (Level Skill) dan memfasilitasi ujian sertifikasi.
 - **Asesi (Kamu/Siswa)**: Orang yang dinilai atau diuji kompetensinya. Kamu bertanggung jawab untuk aktif belajar, mengumpulkan poin/XP, dan mendaftarkan diri untuk sertifikasi.
 - **Penguji/Asesor (Guru)**: Tenaga ahli yang menilai penguasaan kompetensimu dan memberikan keputusan apakah kamu dinyatakan "Lulus" atau "Tidak Lulus" pada suatu unit kompetensi.
 
-## 3. Cara Login
-1. Buka halaman website **Skill Passport**.
+## 4. Cara Login
+1. Buka ikon **Skill Passport** di layar utama HP (jika sudah install) atau buka website-nya.
 2. Masukkan **Username** dan **Password** yang diberikan oleh admin sekolah.
 3. Klik tombol **Masuk Sistem**.
 
 ![Login Page](assets/login.png)
 4. Setelah berhasil login, kamu akan melihat animasi **Passport Stamp** sebagai tanda kamu telah masuk ke sistem.
 
-## 4. Dashboard & Detail Passport
+## 5. Dashboard & Detail Passport
 Setelah login, kamu akan melihat Dashboard utama yang berisi identitas digitalmu:
 - **Profil Siswa**: Foto/Avatar, Nama, dan Kelas.
 - **Statistik Skor**: Total Skor Kompetensi yang telah dicapai.
@@ -38,7 +62,7 @@ Di bawah informasi profilemu terdapat baris tombol aksi:
 | 📖 **Passport** | Membuka Paspor digital lengkap (riwayat, stempel, bukti ujian) |
 | 📋 **Dokumentasi Ujian** | Membuka dashboard bukti foto/video ujianmu *(muncul setelah ujian dijadwalkan)* |
 
-## 5. Detail Pengisian KRS / Pendaftaran Sertifikasi Kompetensi
+## 6. Detail Pengisian KRS / Pendaftaran Sertifikasi Kompetensi
 
 Berikut adalah panduan lengkap proses pendaftaran sertifikasi kompetensi, mulai dari menekan tombol **Upgrade Skill** hingga selesai ujian dan mendapatkan sertifikat.
 
@@ -246,7 +270,7 @@ Jika dinyatakan lulus:
 
 ![Modal KRS](assets/siswa_krs.png)
 
-## 6. Dashboard Dokumentasi Ujian 📊
+## 8. Dashboard Dokumentasi Ujian 📊
 
 Fitur **Dashboard Dokumentasi Ujian** memudahkan kamu memantau status semua bukti ujian yang sudah diunggah.
 
@@ -271,14 +295,14 @@ Bukti foto dan video yang kamu unggah akan **terlihat oleh industri** saat merek
 
 ---
 
-## 7. Referensi Kompetensi
+## 9. Referensi Kompetensi
 Referensi kompetensi adalah standar keahlian yang harus kamu kuasai untuk dinyatakan kompeten. Kamu bisa menemukannya di:
 
 - **Menu Pendaftaran Sertifikasi**: Di sini terdapat **Daftar Unit** yang berisi detail kriteria penilaian (checklist). 
 - **Misi & Target**: Setiap unit kompetensi yang kamu ambil akan muncul sebagai "Misi" yang harus diselesaikan.
 - **Kriteria Level**: Setiap level (Basic, Intermediate, dsb) memiliki referensi kompetensi yang berbeda-beda. Pastikan kamu membaca checklist tersebut agar tahu apa saja yang akan diuji oleh Guru/Asesor.
 
-## 7. Leaderboard & Student Race (Klik Kelas)
+## 10. Leaderboard & Student Race (Klik Kelas)
 Kamu bisa melihat posisimu dibandingkan teman sekelas atau seangkatan:
 1. Di halaman Utama, scroll ke bawah ke bagian kartu jurusan.
 2. **Klik pada kartu kelasmu** (misal: "Teknik Mesin X").
@@ -286,40 +310,7 @@ Kamu bisa melihat posisimu dibandingkan teman sekelas atau seangkatan:
 
 ![Student Race & Leaderboard](assets/siswa_leaderboard.png)
 
-## 8. Install Skill Passport di HP 📱
-
-Skill Passport bisa diinstal langsung di HP kamu **seperti aplikasi biasa** — tanpa perlu ke Play Store atau App Store. Fitur ini disebut **PWA (Progressive Web App)**.
-
-**Keuntungan install PWA:**
-- Bisa dibuka dari layar utama HP tanpa buka browser dulu
-- Tampilan lebih rapi (fullscreen, tanpa bar browser)
-- Lebih cepat & bisa diakses walau sinyal lemah
-
----
-
-### 📱 Android (Chrome/Samsung Internet)
-
-1. Buka **Skill Passport** di browser Chrome HP-mu.
-2. Tunggu beberapa detik — akan muncul banner di bawah layar: **"Tambahkan ke Layar Utama"** → klik **Tambahkan**.
-3. Jika banner tidak muncul, ketuk ikon **⋮ (tiga titik)** di sudut kanan atas browser.
-4. Pilih **"Tambahkan ke Layar Utama"** atau **"Install App"**.
-5. Klik **Instal** / **Tambah** → Ikon Skill Passport akan muncul di layar utama HP-mu!
-
----
-
-### 🍎 iPhone / iPad (Safari)
-
-1. Buka **Skill Passport** di browser **Safari** (wajib Safari, bukan Chrome).
-2. Ketuk ikon **Bagikan** (kotak dengan panah ke atas ↑) di bagian bawah layar.
-3. Scroll ke bawah dan pilih **"Tambahkan ke Layar Utama"** (*Add to Home Screen*).
-4. Ubah nama jika mau, lalu ketuk **Tambahkan** di pojok kanan atas.
-5. Ikon Skill Passport akan muncul di layar utama iPhone-mu!
-
----
-
-> **⚠️ Catatan:** Pastikan kamu sudah login minimal sekali melalui browser sebelum menginstal, agar data akun tersimpan.
-
-## 9. Keluar (Logout)
+## 11. Keluar (Logout)
 Klik ikon **Logout** (pintu keluar) di pojok kanan atas untuk keluar dari sistem demi keamanan akunmu.
 
 ---
