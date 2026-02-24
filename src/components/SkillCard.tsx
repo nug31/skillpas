@@ -3,7 +3,6 @@ import { Download, Share2, X } from 'lucide-react';
 import QRCode from 'qrcode';
 import html2canvas from 'html2canvas';
 import type { StudentListItem, LevelSkill } from '../types';
-import smkLogo from '../assets/smk-logo.png';
 
 interface SkillCardProps {
     student: StudentListItem;
@@ -209,7 +208,7 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                     <div className="relative z-10 h-full flex flex-col p-5">
                         {/* Header */}
                         <div className="flex justify-between items-start mb-2">
-                            <img src={smkLogo} alt="Logo" className="w-12 h-12 object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] logo-gold" />
+                            <img src="/logo.png" alt="Logo" className="w-12 h-12 object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.2)] logo-gold" />
                             <div className="text-[14px] font-black text-white/90 [.theme-clear_&]:text-slate-800 tracking-tighter leading-none pt-2 opacity-80">
                                 {currentYear}
                             </div>

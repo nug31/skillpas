@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf';
-import smkLogo from '../assets/smk-logo.png';
+
 
 export interface CertificateData {
     studentName: string;
@@ -61,7 +61,7 @@ export const generateCertificate = async (data: CertificateData) => {
 
     // Logos
     try {
-        const logoImg = await loadImage(smkLogo);
+        const logoImg = await loadImage('/logo.png');
         doc.addImage(logoImg, 'PNG', 15, 12, 18, 18);
     } catch (e) { console.error("Logo error", e); }
 

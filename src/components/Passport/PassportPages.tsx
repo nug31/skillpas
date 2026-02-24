@@ -2,7 +2,7 @@ import React from 'react';
 import { PASSPORT_COLORS, PAGE_TEXTURE } from './PassportStyles';
 import { Fingerprint, Stamp, Image as ImageIcon, Video, CheckCircle } from 'lucide-react'; // Globe, ShieldCheck, Plane, Cpu removed
 import type { SiswaWithSkill, CompetencyHistory, LevelSkill } from '../../types';
-import smkLogo from '../../assets/smk-logo.png';
+
 
 interface PageProps {
     children?: React.ReactNode;
@@ -19,10 +19,9 @@ export const PassportPage: React.FC<PageProps> = ({ children, className = '', pa
         >
             {/* Watermark Pattern */}
             <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden">
-                <img
-                    src={smkLogo}
-                    alt=""
-                    className="w-48 h-48 sm:w-64 sm:h-64 object-contain grayscale contrast-50 opacity-[0.04] dark:opacity-[0.06] brightness-100 dark:brightness-200"
+                src="/logo.png"
+                alt=""
+                className="w-48 h-48 sm:w-64 sm:h-64 object-contain grayscale contrast-50 opacity-[0.04] dark:opacity-[0.06] brightness-100 dark:brightness-200"
                 />
             </div>
 
@@ -50,7 +49,7 @@ export const PassportCover: React.FC<{ schoolName?: string }> = ({ schoolName = 
             <div className={`text-[#C5A059] flex flex-col items-center gap-6`}>
                 <div className="w-32 h-32 border-4 border-[#C5A059] rounded-full flex items-center justify-center p-4 opacity-90">
                     <img
-                        src={smkLogo}
+                        src="/logo.png"
                         alt="Logo SMK"
                         className="w-full h-full object-contain drop-shadow-lg opacity-90"
                     />

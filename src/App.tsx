@@ -6,7 +6,6 @@ import { Footer } from './components/Footer';
 import { PassportStamp } from './components/PassportStamp';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import type { Jurusan } from './types';
-import smkLogo from './assets/smk-logo.png';
 import { LogOut } from 'lucide-react';
 import { ProfileAvatar } from './components/ProfileAvatar';
 import { TeacherKRSApproval } from './components/TeacherKRSApproval';
@@ -106,7 +105,7 @@ function AppContent() {
       <header className="sticky top-0 z-50 w-full py-3 px-4 sm:py-4 sm:px-6 border-b border-white/6 bg-gradient-to-r from-[rgba(255,255,255,0.02)] to-transparent backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <img src={smkLogo} alt="SMK Logo" className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover bg-white p-1 shadow-md flex-shrink-0 ${!themeClear ? 'logo-gold' : ''}`} />
+            <img src="/logo.png" alt="SMK Logo" className={`w-10 h-10 sm:w-12 sm:h-12 object-cover flex-shrink-0 ${!themeClear ? 'logo-gold' : ''}`} />
             <div>
               <div className="min-w-0">
                 <div className="text-sm font-semibold truncate">Skill Passport</div>

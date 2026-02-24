@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { LogIn, User, GraduationCap, Sun, Moon, Instagram, Eye, EyeOff, MessageCircle } from 'lucide-react';
-import smkLogo from '../assets/smk-logo.png';
 import loginBg from '../assets/login-bg.png';
 import loginLightBg from '../assets/login-light-bg.png';
 
@@ -102,11 +101,11 @@ export function LoginPage() {
                     <div className="relative inline-block mb-4 group">
                         <div className={`absolute inset-0 rounded-full blur-xl transition-all duration-500 ${!themeClear ? 'bg-yellow-500/30 group-hover:bg-yellow-400/50' : 'bg-emerald-500/10 group-hover:bg-emerald-500/20'}`} />
                         <img
-                            src={smkLogo}
+                            src="/logo.png"
                             alt="SMK Logo"
-                            className={`relative w-24 h-24 rounded-full object-cover p-2 shadow-2xl transition-all duration-500 ${themeClear
-                                ? 'bg-white border-white ring-4 ring-emerald-50'
-                                : 'bg-white ring-2 ring-white/10 logo-gold'}`}
+                            className={`relative w-24 h-24 object-cover transition-all duration-500 ${themeClear
+                                ? 'ring-4 ring-emerald-50'
+                                : 'ring-2 ring-white/10 logo-gold'}`}
                         />
                     </div>
                     <h1 className="text-4xl font-black tracking-tight bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent mb-2 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] [.theme-clear_&]:from-emerald-600 [.theme-clear_&]:via-teal-600 [.theme-clear_&]:to-cyan-600">
