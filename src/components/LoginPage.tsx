@@ -106,7 +106,7 @@ export function LoginPage() {
                             alt="SMK Logo"
                             className={`relative w-24 h-24 rounded-full object-cover p-2 shadow-2xl transition-all duration-500 ${themeClear
                                 ? 'bg-white border-white ring-4 ring-emerald-50'
-                                : 'bg-white ring-2 ring-white/10'}`}
+                                : 'bg-white ring-2 ring-white/10 logo-gold'}`}
                         />
                     </div>
                     <h1 className="text-4xl font-black tracking-tight bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent mb-2 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] [.theme-clear_&]:from-emerald-600 [.theme-clear_&]:via-teal-600 [.theme-clear_&]:to-cyan-600">
