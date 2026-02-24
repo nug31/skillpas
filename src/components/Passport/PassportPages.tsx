@@ -19,9 +19,10 @@ export const PassportPage: React.FC<PageProps> = ({ children, className = '', pa
         >
             {/* Watermark Pattern */}
             <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden">
-                src="/logo.png"
-                alt=""
-                className="w-48 h-48 sm:w-64 sm:h-64 object-contain grayscale contrast-50 opacity-[0.04] dark:opacity-[0.06] brightness-100 dark:brightness-200"
+                <img
+                    src="/logo.png"
+                    alt=""
+                    className="w-48 h-48 sm:w-64 sm:h-64 object-contain grayscale contrast-50 opacity-[0.04] dark:opacity-[0.06] brightness-100 dark:brightness-200"
                 />
             </div>
 
