@@ -104,7 +104,7 @@ export function LoginPage() {
                             src="/logo.png"
                             alt="SMK Logo"
                             className={`relative w-24 h-24 object-cover transition-all duration-500 ${themeClear
-                                ? 'ring-4 ring-emerald-50'
+                                ? 'ring-4 ring-emerald-50 logo-light'
                                 : 'ring-2 ring-white/10 logo-gold'}`}
                         />
                     </div>

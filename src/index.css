@@ -34,6 +34,10 @@ html.theme-clear {
   filter: sepia(1) saturate(7) hue-rotate(-15deg) brightness(1.1) contrast(1.1) drop-shadow(0 0 5px rgba(234, 179, 8, 0.4));
 }
 
+.logo-light {
+  filter: saturate(1.2) contrast(1.1) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
 html,
 body,
 #root {
