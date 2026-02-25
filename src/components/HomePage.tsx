@@ -978,6 +978,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
               jurusanData={raceData}
               trigger={triggerRace}
               myStats={myStats}
+              allLevels={allLevels}
               showCompetition={user?.role !== 'student'}
               onContinue={() => {
                 if (user?.role === 'student' && jurusanList.length > 0) {

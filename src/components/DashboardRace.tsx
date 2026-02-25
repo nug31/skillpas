@@ -9,6 +9,8 @@ import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
 import { useAuth } from '../contexts/AuthContext';
 import * as Icons from 'lucide-react';
+import { LevelJourney } from './LevelJourney';
+import mockData from '../mocks/mockData';
 
 
 
@@ -23,6 +25,7 @@ interface DashboardRaceProps {
     showCompetition?: boolean;
     onContinue?: () => void;
     krsStatus?: 'pending_produktif' | 'pending_wali' | 'pending_hod' | 'approved' | 'scheduled' | 'rejected' | 'completed';
+    allLevels?: any[];
 }
 
 type ViewMode = 'list' | 'race' | 'podium';
@@ -39,7 +42,7 @@ const colorPalette = [
     'from-teal-400 to-teal-600',     // 8. TEI (Teal)
 ];
 
-export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetition = true, onContinue, krsStatus }: DashboardRaceProps) {
+export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetition = true, onContinue, krsStatus, allLevels = [] }: DashboardRaceProps) {
     const { user, updateUser } = useAuth();
     const [viewMode, setViewMode] = useState<ViewMode>('race');
     const [selectedKRS, setSelectedKRS] = useState<string[]>([]);
@@ -166,17 +169,9 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                             </button>
                         </div>
 
-                        {/* Relocated Competency Radar */}
-                        <div className="lg:col-span-2 card-glass p-0 rounded-3xl flex flex-col justify-center items-center relative min-h-[300px] bg-slate-900/40 border-white/5 overflow-hidden">
-                            <div className="absolute top-6 left-6 flex items-center gap-2 z-10">
-                                <div className="p-1.5 bg-emerald-500/10 rounded-lg text-emerald-400">
-                                    <Icons.Target className="w-4 h-4" />
-                                </div>
-                                <span className="text-xs font-bold uppercase tracking-widest text-white/40">Matrix Radar</span>
-                            </div>
-                            <div className="w-full h-full flex items-center justify-center p-4 transform scale-110">
-                                <CompetencyRadar score={myStats.score} />
-                            </div>
+                        {/* Mountain Climb Journey */}
+                        <div className="lg:col-span-2">
+                            <LevelJourney currentScore={myStats.score} allLevels={allLevels.length > 0 ? allLevels : mockData.mockLevels} />
                         </div>
                     </div>
 
