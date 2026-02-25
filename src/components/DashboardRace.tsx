@@ -8,8 +8,6 @@ import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
 import { useAuth } from '../contexts/AuthContext';
 import * as Icons from 'lucide-react';
-import { LevelJourney } from './LevelJourney';
-import mockData from '../mocks/mockData';
 
 
 
@@ -24,7 +22,6 @@ interface DashboardRaceProps {
     showCompetition?: boolean;
     onContinue?: () => void;
     krsStatus?: 'pending_produktif' | 'pending_wali' | 'pending_hod' | 'approved' | 'scheduled' | 'rejected' | 'completed';
-    allLevels?: any[];
 }
 
 type ViewMode = 'list' | 'race' | 'podium';
@@ -41,7 +38,7 @@ const colorPalette = [
     'from-teal-400 to-teal-600',     // 8. TEI (Teal)
 ];
 
-export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetition = true, onContinue, krsStatus, allLevels = [] }: DashboardRaceProps) {
+export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetition = true, onContinue, krsStatus }: DashboardRaceProps) {
     const { user, updateUser } = useAuth();
     const [viewMode, setViewMode] = useState<ViewMode>('race');
     const [selectedKRS, setSelectedKRS] = useState<string[]>([]);
@@ -168,10 +165,6 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
                             </button>
                         </div>
 
-                        {/* Mountain Climb Journey */}
-                        <div className="lg:col-span-2">
-                            <LevelJourney currentScore={myStats.score} allLevels={allLevels.length > 0 ? allLevels : mockData.mockLevels} />
-                        </div>
                     </div>
 
                     {/* SECTION 3: GAMIFICATION & SKILLS (Hybrid) */}

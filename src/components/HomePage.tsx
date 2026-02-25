@@ -14,6 +14,7 @@ import { EvidenceUploadModal } from './EvidenceUploadModal';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import { SkillCard } from './SkillCard';
 import { StudentHistoryModal } from './StudentHistoryModal';
+import { LevelJourney } from './LevelJourney';
 
 // Simple helper to get a mock Walas name based on class
 function getWalasForClass(className?: string): string {
@@ -655,7 +656,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
               </div>
             </div>
 
-            <div className="flex flex-col gap-4 self-center w-full max-w-lg">
+            <div className="flex flex-col gap-4 w-full">
               {/* Student KRS Status Notification */}
               {user?.role === 'student' && krsSubmission && (() => {
                 const statusConfig: Record<string, { bg: string, border: string, iconBg: string, titleColor: string, tagColor: string, tagBg: string, descColor: string, Icon: typeof CheckCircle, title: string, tag: string, desc: string, detailBg?: string, detailBorder?: string, detailColor?: string, action?: any }> = {
@@ -791,7 +792,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                 );
               })()}
 
-              <div className="card-glass rounded-xl p-4 shadow-sm border border-white/6 animate-slideInRight stagger-delay-2 flex flex-col [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-none">
+              <div className="card-glass rounded-2xl p-4 shadow-sm border border-white/6 animate-slideInRight stagger-delay-2 flex flex-col [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-none">
                 {user?.role === 'student' ? (
                   <div className="flex items-center gap-6">
                     <button
@@ -967,6 +968,13 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                   </>
                 )}
               </div>
+
+              {/* Added Level Journey here for alignment */}
+              {user?.role === 'student' && myStats && (
+                <div className="animate-fadeInUp stagger-delay-3">
+                  <LevelJourney currentScore={myStats.score} allLevels={allLevels} />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -978,7 +986,6 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
               jurusanData={raceData}
               trigger={triggerRace}
               myStats={myStats}
-              allLevels={allLevels}
               showCompetition={user?.role !== 'student'}
               onContinue={() => {
                 if (user?.role === 'student' && jurusanList.length > 0) {

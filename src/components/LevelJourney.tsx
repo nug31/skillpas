@@ -38,7 +38,7 @@ export function LevelJourney({ currentScore, allLevels }: LevelJourneyProps) {
     const pathD = `M ${stations.map(s => `${s.x} ${s.y}`).join(' L ')}`;
 
     return (
-        <div className="relative w-full aspect-[2/1] bg-slate-900/40 rounded-3xl p-6 border border-white/5 overflow-hidden group">
+        <div className="relative w-full aspect-[2/1] card-glass rounded-2xl p-6 border border-white/5 overflow-hidden group">
             {/* Background Mountain Peaks (Distant) - More subtle */}
             <div className="absolute inset-0 opacity-5 pointer-events-none">
                 <Mountain className="absolute bottom-4 left-10 w-24 h-24 text-white" />
