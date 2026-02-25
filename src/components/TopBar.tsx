@@ -1,4 +1,4 @@
-import { LogOut, Zap, Medal, Sun, Moon } from 'lucide-react';
+import { LogOut, Zap, Medal, Sun, Moon, CheckCircle, LayoutDashboard, FileCheck } from 'lucide-react';
 import { ProfileAvatar } from './ProfileAvatar';
 
 interface TopBarProps {
@@ -10,6 +10,9 @@ interface TopBarProps {
     onBackToHome: () => void;
     onOpenSkillCard?: () => void;
     onOpenPassport?: () => void;
+    onOpenKRSApproval?: () => void;
+    onOpenWalasDashboard?: () => void;
+    onOpenEvidenceDashboard?: () => void;
 }
 
 export function TopBar({
@@ -20,8 +23,12 @@ export function TopBar({
     onLogout,
     onBackToHome,
     onOpenSkillCard,
-    onOpenPassport
+    onOpenPassport,
+    onOpenKRSApproval,
+    onOpenWalasDashboard,
+    onOpenEvidenceDashboard
 }: TopBarProps) {
+    const userRole = user?.role;
     return (
         <header className="sticky top-0 z-50 w-full py-3 px-4 sm:py-4 sm:px-6 border-b border-white/6 bg-slate-900/50 backdrop-blur-md">
             <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
@@ -39,7 +46,37 @@ export function TopBar({
                 </div>
 
                 <div className="flex items-center gap-3">
-                    {!isTeacher && (
+                    {isTeacher ? (
+                        <div className="hidden sm:flex items-center gap-2 mr-2 pr-4 border-r border-white/10">
+                            {userRole === 'wali_kelas' && (
+                                <button
+                                    onClick={onOpenWalasDashboard}
+                                    className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all"
+                                    title="Walas Insight"
+                                >
+                                    <LayoutDashboard className="w-4 h-4" />
+                                </button>
+                            )}
+                            {(userRole === 'wali_kelas' || userRole === 'teacher_produktif' || userRole === 'hod') && (
+                                <button
+                                    onClick={onOpenKRSApproval}
+                                    className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 transition-all"
+                                    title="Verifikasi Sertifikasi"
+                                >
+                                    <CheckCircle className="w-4 h-4" />
+                                </button>
+                            )}
+                            {userRole === 'teacher_produktif' && (
+                                <button
+                                    onClick={onOpenEvidenceDashboard}
+                                    className="p-2 rounded-xl bg-violet-500/10 text-violet-400 border border-violet-500/20 hover:bg-violet-500/20 transition-all"
+                                    title="Dokumentasi Ujian"
+                                >
+                                    <FileCheck className="w-4 h-4" />
+                                </button>
+                            )}
+                        </div>
+                    ) : (
                         <div className="hidden sm:flex items-center gap-2 mr-2 pr-4 border-r border-white/10">
                             <button
                                 onClick={onOpenSkillCard}

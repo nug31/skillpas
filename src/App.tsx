@@ -258,6 +258,9 @@ function AppContent() {
         onBackToHome={handleBackToHome}
         onOpenSkillCard={() => setShowSkillCard(true)}
         onOpenPassport={() => setShowHistoryModal(true)}
+        onOpenKRSApproval={() => setShowKRSApproval(true)}
+        onOpenWalasDashboard={() => setShowWalasDashboard(true)}
+        onOpenEvidenceDashboard={() => setShowEvidenceDashboard(true)}
       />
 
       <main className="flex-1">
@@ -308,7 +311,10 @@ function AppContent() {
         onTabChange={handleTabChange}
         onOpenGuide={() => setIsGuideModalOpen(true)}
         onLogout={logout}
-        isStudent={user?.role === 'student'}
+        userRole={user?.role}
+        onOpenKRSApproval={() => setShowKRSApproval(true)}
+        onOpenWalasDashboard={() => setShowWalasDashboard(true)}
+        onOpenEvidenceDashboard={() => setShowEvidenceDashboard(true)}
       />
 
       <GuideModal
