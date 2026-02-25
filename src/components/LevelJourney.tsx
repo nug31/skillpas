@@ -40,15 +40,15 @@ export function LevelJourney({ currentScore, allLevels }: LevelJourneyProps) {
     return (
         <div className="relative w-full aspect-[2/1] card-glass rounded-2xl p-6 border border-white/5 overflow-hidden group">
             {/* Background Mountain Peaks (Distant) - More subtle */}
-            <div className="absolute inset-0 opacity-5 pointer-events-none">
-                <Mountain className="absolute bottom-4 left-10 w-24 h-24 text-white" />
-                <Mountain className="absolute bottom-8 left-40 w-32 h-32 text-white" />
-                <Mountain className="absolute bottom-4 right-20 w-28 h-28 text-white" />
+            <div className="absolute inset-0 opacity-5 [.theme-clear_&]:opacity-[0.03] pointer-events-none">
+                <Mountain className="absolute bottom-4 left-10 w-24 h-24 text-white [.theme-clear_&]:text-slate-900" />
+                <Mountain className="absolute bottom-8 left-40 w-32 h-32 text-white [.theme-clear_&]:text-slate-900" />
+                <Mountain className="absolute bottom-4 right-20 w-28 h-28 text-white [.theme-clear_&]:text-slate-900" />
             </div>
 
             <div className="relative z-10 flex flex-col h-full">
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 flex items-center gap-2">
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 [.theme-clear_&]:text-slate-500 flex items-center gap-2">
                         <Mountain className="w-3 h-3" />
                         Level Progression
                     </h3>
@@ -73,7 +73,8 @@ export function LevelJourney({ currentScore, allLevels }: LevelJourneyProps) {
                         <path
                             d={pathD}
                             fill="none"
-                            stroke="rgba(255,255,255,0.05)"
+                            stroke="currentColor"
+                            className="text-white/5 [.theme-clear_&]:text-slate-200"
                             strokeWidth="10"
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -105,7 +106,7 @@ export function LevelJourney({ currentScore, allLevels }: LevelJourneyProps) {
                                             cx={pos.x}
                                             cy={pos.y}
                                             r="4"
-                                            className={`${isReached ? 'fill-white' : 'fill-white/10'}`}
+                                            className={`${isReached ? 'fill-white [.theme-clear_&]:fill-slate-400' : 'fill-white/10 [.theme-clear_&]:fill-slate-200'}`}
                                         />
                                     )}
                                     {isMaster && (
@@ -127,7 +128,7 @@ export function LevelJourney({ currentScore, allLevels }: LevelJourneyProps) {
                                         x={pos.x}
                                         y={pos.y - 18}
                                         textAnchor="middle"
-                                        className={`text-[9px] font-black uppercase tracking-tighter ${isReached ? 'fill-white' : 'fill-white/30'}`}
+                                        className={`text-[9px] font-black uppercase tracking-tighter ${isReached ? 'fill-white [.theme-clear_&]:fill-slate-700' : 'fill-white/30 [.theme-clear_&]:fill-slate-300'}`}
                                     >
                                         {lvl.badge_name || lvl.nama_level?.split(' ')[0]}
                                     </text>
@@ -141,7 +142,7 @@ export function LevelJourney({ currentScore, allLevels }: LevelJourneyProps) {
                             animate={{ x: climberPos.x, y: climberPos.y }}
                             transition={{ duration: 1.5, ease: "easeOut" }}
                         >
-                            <circle r="12" className="fill-white shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
+                            <circle r="12" className="fill-white [.theme-clear_&]:fill-slate-100 shadow-[0_0_15px_rgba(255,255,255,0.5)] [.theme-clear_&]:shadow-[0_0_15px_rgba(0,0,0,0.1)]" />
                             <Flag
                                 x={-5}
                                 y={-5}
