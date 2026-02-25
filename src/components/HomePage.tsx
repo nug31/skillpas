@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { GraduationCap } from 'lucide-react';
+
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
 import type { Jurusan, KRSSubmission, CompetencyHistory, StudentStats, LevelSkill } from '../types';
@@ -9,7 +9,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { MissionModal } from './MissionModal';
 import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
-import { Edit3, CheckCircle, Contact, BookOpen, LayoutDashboard, Clock, AlertTriangle, XCircle, FileCheck, Plus, Upload } from 'lucide-react';
+import { Edit3, CheckCircle, Contact, BookOpen, LayoutDashboard, Clock, AlertTriangle, XCircle, FileCheck, Plus, Upload, GraduationCap, Zap, Medal, PlayCircle } from 'lucide-react';
 import { EvidenceUploadModal } from './EvidenceUploadModal';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import { SkillCard } from './SkillCard';
@@ -584,20 +584,20 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8">
           {/* Header section remains same */}
-          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-6 items-center">
+          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-6 items-start">
             <div className="space-y-4 animate-fadeInUp">
               <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-gradient-to-r from-yellow-500 to-amber-600 shadow-md-2 [.theme-clear_&]:from-emerald-500 [.theme-clear_&]:to-cyan-500">
                 <GraduationCap className="w-5 h-5 text-white" />
                 <span className="text-white text-xs font-semibold">DASHBOARD</span>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
                   <span className="bg-gradient-to-r from-white via-yellow-100 to-amber-200 bg-clip-text text-transparent drop-shadow-2xl [text-shadow:_0_4px_20px_rgba(234,179,8,0.3)] [.theme-clear_&]:from-emerald-900 [.theme-clear_&]:via-teal-800 [.theme-clear_&]:to-emerald-900 [.theme-clear_&]:[text-shadow:_0_2px_10px_rgba(5,150,105,0.2)]">
                     SKILL PASSPORT
                   </span>
                 </h1>
-                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-widest">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-widest -mt-1">
                   <span className="bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent [.theme-clear_&]:from-emerald-700 [.theme-clear_&]:via-teal-600 [.theme-clear_&]:to-emerald-700">
                     SMK Mitra Industri
                   </span>
@@ -609,6 +609,64 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                   </span>
                 </p>
               </div>
+
+              {/* Compact Focus Hero Card - Smaller and neat under header */}
+              {user?.role === 'student' && myStats && (
+                <div className="animate-fadeInUp pt-2 max-w-md">
+                  <div className="card-glass p-5 rounded-2xl flex flex-col relative overflow-hidden bg-gradient-to-br from-indigo-600/20 to-blue-600/20 border border-white/10 shadow-lg group">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-2xl -mr-6 -mt-6 pointer-events-none"></div>
+                    <div className="relative z-10">
+                      <div className="flex items-center gap-3 mb-3">
+                        <button
+                          onClick={() => setIsAvatarModalOpen(true)}
+                          className="relative group transition-transform hover:scale-105 active:scale-95 shrink-0"
+                          title="Ubah Foto Profil"
+                        >
+                          <ProfileAvatar
+                            name={user.name}
+                            avatarUrl={(user as any)?.avatar_url}
+                            photoUrl={(user as any)?.photo_url}
+                            level={myStats.level}
+                            size="sm"
+                            jurusanColor="#6366f1"
+                            className="shadow-md border-2 border-white/20"
+                          />
+                        </button>
+                        <div className="flex-1">
+                          <div className="flex gap-1.5 mb-1 text-[9px] font-bold">
+                            <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/10 text-white backdrop-blur-sm border border-white/10">
+                              <Zap className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
+                              <span>{myStats.score} XP</span>
+                            </div>
+                            <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/10 text-white backdrop-blur-sm border border-white/10">
+                              <Medal className="w-2.5 h-2.5 fill-emerald-400 text-emerald-400" />
+                              <span>{myStats.poin} PN</span>
+                            </div>
+                          </div>
+                          <h3 className="text-lg font-black text-white tracking-tight leading-none">
+                            Hi, {user.name.split(' ')[0]}!
+                          </h3>
+                        </div>
+                      </div>
+                      <p className="text-white/70 mb-4 text-xs leading-relaxed font-medium">
+                        Dikit lagi naik <span className="text-white font-bold">Level {myStats.level + 1}</span>. Gas kejar <span className="text-white font-bold">{100 - myStats.score} XP</span> lagi!
+                      </p>
+                      <button
+                        onClick={() => setShowMissionModal(true)}
+                        disabled={krsSubmission?.status && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled'].includes(krsSubmission.status)}
+                        className={`w-full px-4 py-2.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2
+                          ${krsSubmission?.status && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled'].includes(krsSubmission.status)
+                            ? 'bg-white/10 text-white/40 cursor-not-allowed border border-white/5'
+                            : 'bg-white text-indigo-600 hover:scale-[1.02] active:scale-95'
+                          }`}
+                      >
+                        <PlayCircle className="w-4 h-4 fill-current" />
+                        Upgrade skill
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mt-6">
                 {user?.role !== 'student' && (
