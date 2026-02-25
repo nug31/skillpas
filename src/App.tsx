@@ -6,8 +6,6 @@ import { Footer } from './components/Footer';
 import { PassportStamp } from './components/PassportStamp';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import type { Jurusan } from './types';
-import { LogOut } from 'lucide-react';
-import { ProfileAvatar } from './components/ProfileAvatar';
 import { TeacherKRSApproval } from './components/TeacherKRSApproval';
 import { NotificationToast } from './components/NotificationToast';
 import ReloadPrompt from './components/ReloadPrompt';
@@ -15,6 +13,15 @@ import { PassportPublicView } from './components/Passport/PassportPublicView';
 import { WalasDashboard } from './components/WalasDashboard';
 import { ConnectionStatus } from './components/ConnectionStatus';
 import { EvidenceDashboard } from './components/EvidenceDashboard';
+import { TopBar } from './components/TopBar';
+import { BottomBar } from './components/BottomBar';
+import { GuideModal } from './components/GuideModal';
+import { SkillCard } from './components/SkillCard';
+import { StudentHistoryModal } from './components/StudentHistoryModal';
+import { MissionModal } from './components/MissionModal';
+import { supabase, isMockMode } from './lib/supabase';
+import mockData from './mocks/mockData';
+import type { StudentStats, CompetencyHistory, LevelSkill } from './types';
 
 function AppContent() {
   const { user, logout, isAuthenticated, isTeacher } = useAuth();
@@ -24,6 +31,19 @@ function AppContent() {
   const [showWalasDashboard, setShowWalasDashboard] = useState(false);
   const [showEvidenceDashboard, setShowEvidenceDashboard] = useState(false);
   const [showStampAnimation, setShowStampAnimation] = useState(false);
+  const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
+  const [showSkillCard, setShowSkillCard] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [showMissionModal, setShowMissionModal] = useState(false);
+  const [activeTab, setActiveTab] = useState('home');
+
+  // Student Data States
+  const [myStats, setMyStats] = useState<StudentStats | null>(null);
+  const [myHistory, setMyHistory] = useState<CompetencyHistory[]>([]);
+  const [allLevels, setAllLevels] = useState<LevelSkill[]>([]);
+  const [hodName, setHodName] = useState<string | undefined>(undefined);
+  const [walasName, setWalasName] = useState<string>('Sri Wahyuni, S.Pd');
+  const [jurusanList, setJurusanList] = useState<any[]>([]);
   const prevAuthRef = useRef(isAuthenticated);
   const [themeClear, setThemeClear] = useState<boolean>(() => {
     try {
@@ -67,12 +87,111 @@ function AppContent() {
         setShowKRSApproval(false);
         setShowWalasDashboard(false);
         setShowEvidenceDashboard(false);
+        setActiveTab('home');
+        setMyStats(null);
+        setMyHistory([]);
       }
     };
 
     window.addEventListener('auth-changed', handleAuthChange);
     return () => window.removeEventListener('auth-changed', handleAuthChange);
   }, []);
+
+  // Fetch student specific data
+  useEffect(() => {
+    if (isAuthenticated && user?.role === 'student') {
+      loadStudentData();
+    }
+  }, [isAuthenticated, user]);
+
+  const loadStudentData = async () => {
+    if (!user) return;
+    try {
+      // 1. Load Levels & Jurusan first (needed for stats)
+      if (isMockMode) {
+        mockData.mockJurusan.find((j: any) => j.id === user.jurusan_id) || mockData.mockJurusan[0];
+      } else {
+        const { data: levelsData } = await supabase.from('level_skill').select('*').order('urutan');
+        const { data: jurData } = await supabase.from('jurusan').select('*');
+        setAllLevels(levelsData || []);
+        setJurusanList(jurData || []);
+      }
+
+      // 2. Load Stats
+      if (isMockMode) {
+        const student = mockData.mockSiswa.find(s => s.nama === user.name);
+        if (student) {
+          const allStudents = mockData.getStudentListForJurusan(student.jurusan_id);
+          const classStudents = allStudents.filter(s => s.kelas === student.kelas);
+          classStudents.sort((a, b) => b.skor - a.skor);
+          const rank = classStudents.findIndex(s => s.id === student.id) + 1;
+          const skill = mockData.mockSkillSiswa.find(ss => ss.siswa_id === student.id);
+          const score = skill?.skor || 0;
+          const levelObj = mockData.mockLevels.find(l => score >= l.min_skor && score <= l.max_skor);
+          const discipline = mockData.mockDiscipline.find(d => d.siswa_id === student.id);
+
+          setMyStats({
+            rank: rank > 0 ? rank : 0,
+            totalStudents: classStudents.length,
+            score: score,
+            poin: skill?.poin || 0,
+            level: levelObj?.badge_name || 'Basic',
+            levelColor: levelObj?.badge_color || '#94a3b8',
+            className: student.kelas,
+            attendance_pcent: discipline?.attendance_pcent ?? 100,
+            masuk: discipline?.masuk ?? 0,
+            izin: discipline?.izin ?? 0,
+            sakit: discipline?.sakit ?? 0,
+            alfa: discipline?.alfa ?? 0,
+            siswa_id: student.id
+          });
+          setMyHistory((mockData as any).mockCompetencyHistory?.filter((r: any) => r.siswa_id === student.id) || []);
+        }
+      } else {
+        const { data: student } = await supabase.from('siswa').select('*, skill_siswa(skor, poin)').eq('id', user.id).maybeSingle();
+        if (student) {
+          const score = (student as any).skill_siswa?.[0]?.skor || 0;
+          const { count: rankCount } = await supabase.from('siswa').select('id, skill_siswa!inner(skor)', { count: 'exact', head: true }).eq('kelas', student.kelas).gt('skill_siswa.skor', score);
+          const { count: totalClass } = await supabase.from('siswa').select('id', { count: 'exact', head: true }).eq('kelas', student.kelas);
+          const { data: discData } = await supabase.from('student_discipline').select('*').eq('siswa_id', student.id).maybeSingle();
+
+          let badge = 'Basic 1';
+          let color = '#94a3b8';
+          if (score >= 90) { badge = 'Master'; color = '#10b981'; }
+          else if (score >= 76) { badge = 'Advance'; color = '#f59e0b'; }
+          else if (score >= 51) { badge = 'Specialist'; color = '#3b82f6'; }
+          else if (score >= 26) { badge = 'Basic 2'; color = '#64748b'; }
+
+          setMyStats({
+            rank: (rankCount || 0) + 1,
+            totalStudents: totalClass || 0,
+            score,
+            poin: (student as any).skill_siswa?.[0]?.poin || 0,
+            level: badge,
+            levelColor: color,
+            className: student.kelas,
+            attendance_pcent: discData?.attendance_pcent ?? 100,
+            masuk: discData?.masuk ?? 0,
+            izin: discData?.izin ?? 0,
+            sakit: discData?.sakit ?? 0,
+            alfa: discData?.alfa ?? 0,
+            siswa_id: student.id
+          });
+
+          const { data: historyData } = await supabase.from('competency_history').select('*').eq('siswa_id', student.id).order('tanggal', { ascending: false });
+          setMyHistory(historyData || []);
+
+          // HOD & Walas
+          const { data: hodData } = await supabase.from('users').select('name').eq('role', 'hod').eq('jurusan_id', student.jurusan_id).maybeSingle();
+          if (hodData) setHodName(hodData.name);
+          const { data: walasData } = await supabase.from('users').select('name').in('role', ['wali_kelas', 'teacher_produktif', 'teacher']).eq('kelas', student.kelas).maybeSingle();
+          if (walasData) setWalasName(walasData.name);
+        }
+      }
+    } catch (e) {
+      console.error("Error loading global student data:", e);
+    }
+  };
 
   // Detect verification link (public view)
   const urlParams = new URLSearchParams(window.location.search);
@@ -99,67 +218,47 @@ function AppContent() {
     );
   }
 
-  return (
-    <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full py-3 px-4 sm:py-4 sm:px-6 border-b border-white/6 bg-gradient-to-r from-[rgba(255,255,255,0.02)] to-transparent backdrop-blur-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="SMK Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-cover flex-shrink-0 logo-adaptive" />
-            <div>
-              <div className="min-w-0">
-                <div className="text-sm font-semibold truncate">Skill Passport</div>
-                <div className="text-xs text-white/60 truncate hidden sm:block">Menuju vokasi berstandar industri & Terverifikasi</div>
-              </div>
-            </div>
+  const handleBackToHome = () => {
+    setSelectedJurusan(null);
+    setSelectedClassFilter(undefined);
+    setShowKRSApproval(false);
+    setShowWalasDashboard(false);
+    setShowEvidenceDashboard(false);
+    setActiveTab('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-3">
-              <div className="hidden sm:block text-sm text-white/70">
-                Welcome, <span className="font-medium text-white">{user?.name}</span>
-              </div>
-              <div className={`hidden sm:flex px-2 py-1 rounded-md text-xs font-medium ${isTeacher
-                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 [.theme-clear_&]:bg-emerald-500/10 [.theme-clear_&]:text-emerald-700 [.theme-clear_&]:border-emerald-500/20'
-                : 'bg-slate-500/20 text-slate-300 border border-slate-500/30 [.theme-clear_&]:bg-teal-500/10 [.theme-clear_&]:text-teal-700 [.theme-clear_&]:border-teal-500/20'
-                }`}>
-                {isTeacher ? 'Guru' : 'Siswa'}
-              </div>
-            </div>
-            {/* theme toggle (only one rendered below next to avatar) */}
-            <div className="flex items-center gap-2">
-              <button
-                aria-label="Toggle theme"
-                onClick={() => setThemeClear((s) => !s)}
-                title={themeClear ? 'Switch to dark' : 'Switch to clear'}
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/6 flex items-center justify-center bg-transparent hover:bg-white/5 transition-all text-white"
-              >
-                {themeClear ? (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                ) : (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                )}
-              </button>
-              <button
-                onClick={logout}
-                aria-label="Logout"
-                title="Logout"
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/6 flex items-center justify-center bg-transparent hover:bg-red-500/10 hover:border-red-500/30 transition-all text-white hover:text-red-400"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-              <ProfileAvatar
-                name={user?.name || ''}
-                avatarUrl={(user as any)?.avatar_url}
-                photoUrl={(user as any)?.photo_url}
-                size="sm"
-                variant={user?.role === 'teacher' ? 'professional' : 'gamified'}
-                className="border border-white/6"
-              />
-            </div>
-          </div>
-        </div>
-      </header>
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    if (tab === 'home') {
+      handleBackToHome();
+    } else if (tab === 'race') {
+      handleBackToHome();
+      setTimeout(() => {
+        const raceSection = document.getElementById('dashboard-race');
+        if (raceSection) raceSection.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else if (tab === 'misi') {
+      setShowMissionModal(true);
+    } else if (tab === 'passport') {
+      setShowHistoryModal(true);
+    } else if (tab === 'skillcard') {
+      setShowSkillCard(true);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col pb-20 sm:pb-0 transition-colors duration-300">
+      <TopBar
+        user={user}
+        isTeacher={isTeacher}
+        themeClear={themeClear}
+        onToggleTheme={() => setThemeClear(!themeClear)}
+        onLogout={logout}
+        onBackToHome={handleBackToHome}
+        onOpenSkillCard={() => setShowSkillCard(true)}
+        onOpenPassport={() => setShowHistoryModal(true)}
+      />
 
       <main className="flex-1">
         {showWalasDashboard ? (
@@ -192,10 +291,80 @@ function AppContent() {
             onOpenKRSApproval={() => setShowKRSApproval(true)}
             onOpenWalasDashboard={() => setShowWalasDashboard(true)}
             onOpenEvidenceDashboard={() => setShowEvidenceDashboard(true)}
+            onOpenGuide={() => setIsGuideModalOpen(true)}
+            onOpenSkillCard={() => setShowSkillCard(true)}
+            onOpenPassport={() => setShowHistoryModal(true)}
+            onOpenMissionModal={() => setShowMissionModal(true)}
+            myStats={myStats}
+            allLevels={allLevels}
+            onUpdateStats={loadStudentData}
           />
         )}
       </main>
       <Footer />
+
+      <BottomBar
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        onOpenGuide={() => setIsGuideModalOpen(true)}
+        onLogout={logout}
+        isStudent={user?.role === 'student'}
+      />
+
+      <GuideModal
+        isOpen={isGuideModalOpen}
+        onClose={() => setIsGuideModalOpen(false)}
+        userRole={user?.role}
+      />
+
+      {/* Global Student Modals */}
+      {showSkillCard && user && myStats && (
+        <SkillCard
+          student={{
+            id: user.id || '',
+            nama: user.name,
+            kelas: myStats.className,
+            skor: myStats.score,
+            poin: myStats.poin,
+            badge_name: myStats.level as any,
+            badge_color: myStats.levelColor,
+            level_name: myStats.level,
+            avatar_url: (user as any).avatar_url,
+            photo_url: (user as any).photo_url,
+          }}
+          jurusanName={jurusanList.find(j => j.id === user.jurusan_id)?.nama_jurusan || 'Teknik'}
+          onClose={() => setShowSkillCard(false)}
+        />
+      )}
+
+      {showHistoryModal && user && myStats && (
+        <StudentHistoryModal
+          isOpen={showHistoryModal}
+          onClose={() => setShowHistoryModal(false)}
+          studentName={user.name}
+          studentNisn={(user as any).nisn}
+          studentKelas={myStats.className}
+          jurusanName={jurusanList.find(j => j.id === user.jurusan_id)?.nama_jurusan || 'Teknik'}
+          history={myHistory}
+          levels={allLevels}
+          hodName={hodName}
+          walasName={walasName}
+          avatarUrl={(user as any)?.avatar_url}
+          photoUrl={(user as any)?.photo_url}
+        />
+      )}
+
+      {showMissionModal && user && myStats && jurusanList.length > 0 && (
+        <MissionModal
+          isOpen={showMissionModal}
+          onClose={() => setShowMissionModal(false)}
+          jurusan={jurusanList.find(j => j.id === user.jurusan_id) || jurusanList[0]}
+          currentScore={myStats.score}
+          currentPoin={myStats.poin}
+          siswaId={myStats?.siswa_id || user.id}
+        />
+      )}
+
       <NotificationToast />
       <ConnectionStatus />
       <ReloadPrompt />

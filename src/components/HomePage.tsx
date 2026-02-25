@@ -2,78 +2,56 @@ import { useEffect, useState } from 'react';
 
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
-import type { Jurusan, KRSSubmission, CompetencyHistory, StudentStats, LevelSkill } from '../types';
+import type { Jurusan, KRSSubmission, StudentStats, LevelSkill } from '../types';
 import { JurusanCard } from './JurusanCard';
 import { DashboardRace } from './DashboardRace';
 import { useAuth } from '../contexts/AuthContext';
-import { MissionModal } from './MissionModal';
 import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
 import { Edit3, CheckCircle, Contact, BookOpen, LayoutDashboard, Clock, AlertTriangle, XCircle, FileCheck, Plus, Upload, GraduationCap, Zap, Medal, PlayCircle, ChevronRight } from 'lucide-react';
 import { EvidenceUploadModal } from './EvidenceUploadModal';
-import { GuideModal } from './GuideModal';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
-import { SkillCard } from './SkillCard';
-import { StudentHistoryModal } from './StudentHistoryModal';
 import { LevelJourney } from './LevelJourney';
 
-// Simple helper to get a mock Walas name based on class
-function getWalasForClass(className?: string): string {
-  if (!className) return "Sri Wahyuni, S.Pd";
-  const cls = className.toUpperCase();
-  if (cls.includes('MESIN')) {
-    if (cls.includes('XII')) return "Dwi Nugroho, S.T";
-    if (cls.includes('XI')) return "Nia Desnata Hati, S.Pd";
-    return "Gesti Khoriunnisa";
-  }
-  if (cls.includes('TKR')) {
-    if (cls.includes('XII')) {
-      if (cls.includes('1')) return "Maulana Evendi";
-      if (cls.includes('2')) return "Esa Apriyadi, S.Pd";
-      if (cls.includes('3')) return "Joko Setyo Nugroho, S.T";
-    }
-    return "Deni Prasetyo, S.Pd.";
-  }
-  if (cls.includes('TSM')) {
-    if (cls.includes('XII')) return "Ahmad Nasrul, S.Pd";
-    return "Rina Kurnia, S.Pd.";
-  }
-  if (cls.includes('ELIND')) return "Hendra Wijaya, S.T.";
-  if (cls.includes('LISTRIK')) return "Taufik Hidayat, S.T.";
-  if (cls.includes('KIMIA')) return "Sari Melati, S.Si.";
-  if (cls.includes('AKUNTANSI') || cls.includes('AK')) return "Dewi Susanti, S.E.";
-  if (cls.includes('HOTEL')) return "Mita Sari, S.Par.";
-  return "Sri Wahyuni, S.Pd";
-}
 
 interface HomePageProps {
   onSelectJurusan: (jurusan: Jurusan, classFilter?: string) => void;
   onOpenKRSApproval?: () => void;
   onOpenWalasDashboard?: () => void;
   onOpenEvidenceDashboard?: () => void;
+  onOpenGuide?: () => void;
+  onOpenSkillCard?: () => void;
+  onOpenPassport?: () => void;
+  onOpenMissionModal?: () => void;
+  myStats?: StudentStats | null;
+  allLevels?: LevelSkill[];
+  onUpdateStats?: () => Promise<void>;
 }
 
-export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashboard, onOpenEvidenceDashboard }: HomePageProps) {
+export function HomePage({
+  onSelectJurusan,
+  onOpenKRSApproval,
+  onOpenWalasDashboard,
+  onOpenEvidenceDashboard,
+  onOpenGuide,
+  onOpenSkillCard,
+  onOpenPassport,
+  onOpenMissionModal,
+  myStats: propsMyStats,
+  allLevels,
+  onUpdateStats
+}: HomePageProps) {
   const { user } = useAuth();
   const [jurusanList, setJurusanList] = useState<Jurusan[]>([]);
   const [topStudentsMap, setTopStudentsMap] = useState<Record<string, { id: string; nama: string; skor: number; kelas?: string }[]>>({});
   const [raceData, setRaceData] = useState<Array<{ jurusan: Jurusan; averageSkor: number; studentCount: number }>>([]);
   const [loading, setLoading] = useState(true);
   const [triggerRace, setTriggerRace] = useState(0);
-  const [myStats, setMyStats] = useState<StudentStats | null>(null);
-  const [allLevels, setAllLevels] = useState<LevelSkill[]>([]);
 
-  const [showMissionModal, setShowMissionModal] = useState(false);
-  const [showSkillCard, setShowSkillCard] = useState(false);
-  const [showHistoryModal, setShowHistoryModal] = useState(false);
-  const [myHistory, setMyHistory] = useState<CompetencyHistory[]>([]);
-  const [hodName, setHodName] = useState<string | undefined>(undefined);
-  const [walasName, setWalasName] = useState<string>('Sri Wahyuni, S.Pd');
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [pendingKRSCount, setPendingKRSCount] = useState(0);
   const [toApproveCount, setToApproveCount] = useState(0);
   const [showEvidenceModal, setShowEvidenceModal] = useState(false);
-  const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
   const { updateUser } = useAuth();
 
   const useMock = isMockMode;
@@ -103,40 +81,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
       loadPendingKRS();
 
       // Fetch Levels
-      if (useMock) {
-        setAllLevels(mockData.mockLevels);
-      } else {
-        const { data: levelsData, error: levelsError } = await supabase
-          .from('level_skill')
-          .select('*')
-          .order('urutan', { ascending: true });
-
-        if (levelsError) throw levelsError;
-
-        // Apply jurusan overrides if any (like in MissionModal)
-        if (filteredData.length > 0) {
-          const { data: overrides } = await supabase
-            .from('level_skill_jurusan')
-            .select('*')
-            .eq('jurusan_id', filteredData[0].id);
-
-          if (overrides) {
-            const merged = (levelsData || []).map((l: any) => {
-              const ov = overrides.find((o: any) => o.level_id === l.id);
-              return {
-                ...l,
-                hasil_belajar: ov?.hasil_belajar || l.hasil_belajar,
-                soft_skill: ov?.soft_skill || l.soft_skill
-              };
-            });
-            setAllLevels(merged);
-          } else {
-            setAllLevels(levelsData || []);
-          }
-        } else {
-          setAllLevels(levelsData || []);
-        }
-      }
+      // Note: setAllLevels is now handled at App level, so we just use the prop
       // fetch top student for each jurusan (best skor)
       try {
         const map: Record<string, { id: string; nama: string; skor: number; kelas?: string }[]> = {};
@@ -224,192 +169,9 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
     }
   }
 
-  useEffect(() => {
-    if (user?.role === 'student') {
-      loadMyStats();
-    }
-  }, [user]);
-
-  async function loadMyStats() {
-    if (!user) return;
-    try {
-      if (useMock) {
-        // Mock implementation
-        const student = mockData.mockSiswa.find(s => s.nama === user.name);
-        if (student) {
-          const allStudents = mockData.getStudentListForJurusan(student.jurusan_id);
-          const classStudents = allStudents.filter(s => s.kelas === student.kelas);
-          classStudents.sort((a, b) => b.skor - a.skor);
-          const rank = classStudents.findIndex(s => s.id === student.id) + 1;
-
-          const skill = mockData.mockSkillSiswa.find(ss => ss.siswa_id === student.id);
-          const score = skill?.skor || 0;
-          const poin = skill?.poin || 0;
-
-          const levelObj = mockData.mockLevels.find(l => score >= l.min_skor && score <= l.max_skor);
-
-          const discipline = mockData.mockDiscipline.find(d => d.siswa_id === student.id);
-
-          setMyStats({
-            rank: rank > 0 ? rank : 0,
-            totalStudents: classStudents.length,
-            score: score,
-            poin: poin,
-            level: levelObj?.badge_name || 'Basic',
-            levelColor: levelObj?.badge_color || '#94a3b8',
-            className: student.kelas,
-            attendance_pcent: discipline?.attendance_pcent ?? 100,
-            masuk: discipline?.masuk ?? 0,
-            izin: discipline?.izin ?? 0,
-            sakit: discipline?.sakit ?? 0,
-            alfa: discipline?.alfa ?? 0,
-            siswa_id: student.id
-          });
-
-          // Mock history
-          const history = (mockData as any).mockCompetencyHistory?.filter((r: any) => r.siswa_id === student.id) || [];
-          setMyHistory(history);
-
-          // Auto-repair history if missing (e.g. imported student)
-          krsStore.ensureBaselineHistory(student.id, score);
-        }
-      } else {
-        // Supabase implementation
-        let { data: student, error } = await supabase
-          .from('siswa')
-          .select('*, skill_siswa(skor, poin)')
-          .eq('id', user.id)
-          .single();
-
-        if (error || !student) {
-          const { data: studentByName } = await supabase
-            .from('siswa')
-            .select('*, skill_siswa(skor, poin)')
-            .eq('nama', user.name)
-            .single();
-          student = studentByName;
-        }
-
-        if (student) {
-          const score = (student as any).skill_siswa?.[0]?.skor || 0;
-          const poin = (student as any).skill_siswa?.[0]?.poin || 0;
-
-          const { count } = await supabase
-            .from('siswa')
-            .select('id, skill_siswa!inner(skor)', { count: 'exact', head: true })
-            .eq('kelas', student.kelas)
-            .gt('skill_siswa.skor', score);
-
-          const rank = (count || 0) + 1;
-
-          const { count: totalClass } = await supabase
-            .from('siswa')
-            .select('id', { count: 'exact', head: true })
-            .eq('kelas', student.kelas);
-
-          let badge = 'Basic 1';
-          let color = '#94a3b8';
-          if (score >= 90) { badge = 'Master'; color = '#10b981'; }
-          else if (score >= 76) { badge = 'Advance'; color = '#f59e0b'; }
-          else if (score >= 51) { badge = 'Specialist'; color = '#3b82f6'; }
-          else if (score >= 26) { badge = 'Basic 2'; color = '#64748b'; }
-
-          // Fetch attendance
-          const { data: discData } = await supabase
-            .from('student_discipline')
-            .select('attendance_pcent, masuk, izin, sakit, alfa')
-            .eq('siswa_id', student.id)
-            .maybeSingle();
-
-          setMyStats({
-            rank,
-            totalStudents: totalClass || 0,
-            score,
-            poin,
-            level: badge,
-            levelColor: color,
-            className: student.kelas,
-            attendance_pcent: discData?.attendance_pcent ?? 100,
-            masuk: discData?.masuk ?? 0,
-            izin: discData?.izin ?? 0,
-            sakit: discData?.sakit ?? 0,
-            alfa: discData?.alfa ?? 0,
-            siswa_id: student.id
-          });
-
-          // Fetch History
-          const { data: historyData } = await supabase
-            .from('competency_history')
-            .select('*')
-            .eq('siswa_id', student.id)
-            .order('tanggal', { ascending: false });
-
-          if (historyData) {
-            setMyHistory(historyData);
-          }
-
-          // Auto-repair history if missing (e.g. imported student)
-          krsStore.ensureBaselineHistory(student.id, score);
-
-          // Fetch HOD for certificate
-          const { data: hodData } = await supabase
-            .from('users')
-            .select('name')
-            .eq('role', 'hod')
-            .eq('jurusan_id', student.jurusan_id)
-            .maybeSingle();
-
-          if (hodData) {
-            setHodName(hodData.name);
-          }
-
-          // Fetch Walas (Homeroom Teacher)
-          const { data: walasData } = await supabase
-            .from('users')
-            .select('name')
-            .in('role', ['wali_kelas', 'teacher_produktif', 'teacher'])
-            .eq('kelas', student.kelas)
-            .maybeSingle();
-
-          if (walasData) {
-            setWalasName(walasData.name);
-          } else {
-            // Fallback
-            setWalasName(getWalasForClass(student.kelas));
-          }
-        } else {
-          // No student record found in Supabase (unimported student)
-          // Set default empty stats so UI doesn't hang in loading
-          setMyStats({
-            rank: 0,
-            totalStudents: 0,
-            score: 0,
-            poin: 0,
-            level: 'Basic',
-            levelColor: '#94a3b8',
-            className: user.role === 'student' ? '...' : '',
-            attendance_pcent: 0,
-            masuk: 0,
-            izin: 0,
-            sakit: 0,
-            alfa: 0
-          });
-        }
-      }
-    } catch (e) {
-      console.error("Failed to load my stats", e);
-      // Fallback on error
-      setMyStats({
-        rank: 0,
-        totalStudents: 0,
-        score: 0,
-        poin: 0,
-        level: 'Basic',
-        levelColor: '#94a3b8',
-        className: ''
-      });
-    }
-  }
+  // No longer needed as stats are handled at App level
+  // No longer needed as stats are handled at App level
+  const myStats = propsMyStats;
 
   // Same logic as TeacherKRSApproval to count pending items
   const normalizeClass = (name?: string) => {
@@ -488,7 +250,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
 
       const refreshAll = () => {
         checkKRSStatus();
-        loadMyStats();
+        onUpdateStats?.();
       };
 
       refreshAll();
@@ -651,10 +413,10 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                         </div>
                       </div>
                       <p className="text-white/70 mb-4 text-xs leading-relaxed font-medium">
-                        Dikit lagi naik <span className="text-white font-bold">Level {myStats.level + 1}</span>. Gas kejar <span className="text-white font-bold">{100 - myStats.score} XP</span> lagi!
+                        Dikit lagi naik <span className="text-white font-bold">Level {(myStats?.score || 0) >= 90 ? 'Master' : 'Next'}</span>. Gas kejar <span className="text-white font-bold">{100 - (myStats?.score || 0)} XP</span> lagi!
                       </p>
                       <button
-                        onClick={() => setShowMissionModal(true)}
+                        onClick={() => onOpenMissionModal?.()}
                         disabled={krsSubmission?.status && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled'].includes(krsSubmission.status)}
                         className={`w-full px-4 py-2.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2
                           ${krsSubmission?.status && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled'].includes(krsSubmission.status)
@@ -688,7 +450,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                       Butuh bantuan? Pelajari cara kerja pendaftaran sertifikasi, pengumpulan XP, dan penggunaan fitur lainnya di sini.
                     </p>
                     <button
-                      onClick={() => setIsGuideModalOpen(true)}
+                      onClick={() => onOpenGuide?.()}
                       className="w-full px-4 py-2.5 rounded-xl font-bold text-[10px] bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/20 transition-all flex items-center justify-center gap-2 group/btn"
                     >
                       Buka Panduan
@@ -762,7 +524,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                     desc: 'Ujian sertifikasi Anda telah selesai dan diverifikasi. Terus tingkatkan skor Anda untuk mencapai level berikutnya!',
                     action: (
                       <button
-                        onClick={() => setShowMissionModal(true)}
+                        onClick={() => onOpenMissionModal?.()}
                         className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 rounded-lg border border-emerald-500/20 text-emerald-300 [.theme-clear_&]:text-emerald-700 font-bold text-[10px] transition-all"
                       >
                         <Plus className="w-3 h-3" />
@@ -864,7 +626,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                         )}
                         {krsSubmission.status === 'rejected' && (
                           <button
-                            onClick={() => setShowMissionModal(true)}
+                            onClick={() => onOpenMissionModal?.()}
                             className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-500/20 hover:bg-red-500/30 rounded-lg border border-red-500/20 text-red-300 [.theme-clear_&]:text-red-700 font-bold text-[10px] transition-all"
                           >
                             <AlertTriangle className="w-3 h-3" />
@@ -961,7 +723,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
 
                           <div className="flex flex-wrap gap-2 mt-2">
                             <button
-                              onClick={() => setShowSkillCard(true)}
+                              onClick={() => onOpenSkillCard?.()}
                               className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 hover:from-blue-600/30 hover:to-indigo-600/30 text-blue-300 rounded-lg text-xs font-bold border border-blue-500/20 transition-all group"
                             >
                               <Contact className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -969,7 +731,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                             </button>
 
                             <button
-                              onClick={() => setShowHistoryModal(true)}
+                              onClick={() => onOpenPassport?.()}
                               className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 text-emerald-300 rounded-lg text-xs font-bold border border-emerald-500/20 transition-all group"
                             >
                               <BookOpen className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -1060,7 +822,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
               {/* Added Level Journey here for alignment */}
               {user?.role === 'student' && myStats && (
                 <div className="animate-fadeInUp stagger-delay-3">
-                  <LevelJourney currentScore={myStats.score} allLevels={allLevels} />
+                  <LevelJourney currentScore={myStats.score} allLevels={allLevels || []} />
                 </div>
               )}
             </div>
@@ -1077,7 +839,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
               showCompetition={user?.role !== 'student'}
               onContinue={() => {
                 if (user?.role === 'student' && jurusanList.length > 0) {
-                  setShowMissionModal(true);
+                  onOpenMissionModal?.();
                 }
               }}
               krsStatus={krsSubmission?.status}
@@ -1086,17 +848,6 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
         )}
 
 
-        {/* Mission Modal */}
-        {user?.role === 'student' && jurusanList.length > 0 && myStats && (
-          <MissionModal
-            isOpen={showMissionModal}
-            onClose={() => setShowMissionModal(false)}
-            jurusan={jurusanList[0]}
-            currentScore={myStats.score}
-            currentPoin={myStats.poin}
-            siswaId={myStats?.siswa_id || (user.name === 'Siswa Mesin' ? 's-j1-user' : user.id)}
-          />
-        )}
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
@@ -1136,13 +887,6 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
             <p className="text-gray-500 text-lg">Tidak ada data jurusan</p>
           </div>
         )}
-        {/* Avatar Selection Modal */}
-        <GuideModal
-          isOpen={isGuideModalOpen}
-          onClose={() => setIsGuideModalOpen(false)}
-          userRole={user?.role}
-        />
-
         <AvatarSelectionModal
           isOpen={isAvatarModalOpen}
           onClose={() => setIsAvatarModalOpen(false)}
@@ -1154,44 +898,6 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
         />
 
 
-        {/* Skill Card Modal */}
-        {showSkillCard && user && myStats && (
-          <SkillCard
-            student={{
-              id: user.id || (user.name === 'Siswa Mesin' ? 'siswa_mesin' : ''),
-              nama: user.name,
-              kelas: myStats.className,
-              skor: myStats.score,
-              poin: myStats.poin,
-              badge_name: myStats.level as any,
-              badge_color: myStats.levelColor,
-              level_name: myStats.level,
-              avatar_url: (user as any).avatar_url,
-              photo_url: (user as any).photo_url,
-            }}
-            jurusanName={jurusanList[0]?.nama_jurusan}
-            onClose={() => setShowSkillCard(false)}
-          />
-        )}
-        {/* Student History Modal */}
-        {showHistoryModal && user && myStats && (
-          <StudentHistoryModal
-            isOpen={showHistoryModal}
-            onClose={() => setShowHistoryModal(false)}
-            studentName={user.name}
-            studentNisn={user.nisn}
-            studentKelas={myStats.className}
-            jurusanName={jurusanList.find(j => j.id === user.jurusan_id)?.nama_jurusan || 'Teknik'}
-            history={myHistory}
-            levels={allLevels.length > 0 ? allLevels : mockData.mockLevels}
-            hodName={hodName}
-            walasName={walasName}
-            avatarUrl={(user as any)?.avatar_url}
-            photoUrl={(user as any)?.photo_url}
-            evidencePhotos={krsSubmission?.evidence_photos}
-            evidenceVideos={krsSubmission?.evidence_videos}
-          />
-        )}
       </div>
 
       {showEvidenceModal && krsSubmission && (
@@ -1199,7 +905,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
           submissionId={krsSubmission.id}
           siswaNama={user?.name || ''}
           onClose={() => setShowEvidenceModal(false)}
-          onSuccess={() => loadMyStats()}
+          onSuccess={() => onUpdateStats?.()}
           initialPhotos={krsSubmission.evidence_photos}
           initialVideos={krsSubmission.evidence_videos}
         />
