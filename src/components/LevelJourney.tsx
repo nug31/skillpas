@@ -7,23 +7,35 @@ interface LevelJourneyProps {
 }
 
 export function LevelJourney({ currentScore, allLevels }: LevelJourneyProps) {
-    // Normalize score to 0-100
     const normalizedScore = Math.min(100, Math.max(0, currentScore));
 
-    // Define path points for the mountain ridge (SVG viewbox 0,0 to 400,200)
-    // Shifted slightly to ensure no cut-offs
-    const pathData = "M 40 160 Q 120 150 200 100 T 360 40";
+    // Fixed positions for levels to ensure perfect alignment
+    // (x, y) coordinates in 400x200 viewbox
+    const stations = [
+        { x: 50, y: 160 },   // Level 1
+        { x: 120, y: 140 },  // Level 2
+        { x: 190, y: 110 },  // Level 3
+        { x: 260, y: 80 },   // Level 4
+        { x: 350, y: 40 }    // Level 5 (Master)
+    ];
 
-    // Helper to calculate position on path (roughly)
-    const getPositionOnPath = (percent: number) => {
-        const t = percent / 100;
-        // Cubic bezier interpolation simplified for the curve
-        const x = 40 + 320 * t;
-        const y = 160 - 120 * (t * t); // smoother parabolic curve
-        return { x, y };
+    // Helper to get position based on 0-100 score
+    const getPos = (score: number) => {
+        const segmentSize = 100 / (stations.length - 1);
+        const segmentIdx = Math.min(Math.floor(score / segmentSize), stations.length - 2);
+        const t = (score % segmentSize) / segmentSize;
+
+        const p1 = stations[segmentIdx];
+        const p2 = stations[segmentIdx + 1];
+
+        return {
+            x: p1.x + (p2.x - p1.x) * t,
+            y: p1.y + (p2.y - p1.y) * t
+        };
     };
 
-    const climberPos = getPositionOnPath(normalizedScore);
+    const climberPos = getPos(normalizedScore);
+    const pathD = `M ${stations.map(s => `${s.x} ${s.y}`).join(' L ')}`;
 
     return (
         <div className="relative w-full aspect-[2/1] bg-slate-900/40 rounded-3xl p-6 border border-white/5 overflow-hidden group">
@@ -48,90 +60,84 @@ export function LevelJourney({ currentScore, allLevels }: LevelJourneyProps) {
 
                 <div className="relative flex-1">
                     <svg viewBox="0 0 400 200" className="w-full h-full overflow-visible">
-                        {/* Draw Path */}
-                        <motion.path
-                            d={pathData}
+                        {/* Define Gradients */}
+                        <defs>
+                            <linearGradient id="journeyGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#3b82f6" />
+                                <stop offset="50%" stopColor="#f59e0b" />
+                                <stop offset="100%" stopColor="#10b981" />
+                            </linearGradient>
+                        </defs>
+
+                        {/* Base Path */}
+                        <path
+                            d={pathD}
                             fill="none"
                             stroke="rgba(255,255,255,0.05)"
                             strokeWidth="10"
                             strokeLinecap="round"
+                            strokeLinejoin="round"
                         />
 
-                        {/* Active Path (Current Progress) */}
+                        {/* Progress Path */}
                         <motion.path
-                            d={pathData}
+                            d={pathD}
                             fill="none"
                             stroke="url(#journeyGradient)"
                             strokeWidth="10"
                             strokeLinecap="round"
+                            strokeLinejoin="round"
                             initial={{ pathLength: 0 }}
                             animate={{ pathLength: normalizedScore / 100 }}
                             transition={{ duration: 1.5, ease: "easeOut" }}
                         />
 
-                        <defs>
-                            <linearGradient id="journeyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stopColor="#3b82f6" />
-                                <stop offset="50%" stopColor="#f59e0b" />
-                                <stop offset="100%" stopColor="#10b981" />
-                            </linearGradient>
-                            <filter id="glow">
-                                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                                <feMerge>
-                                    <feMergeNode in="coloredBlur" />
-                                    <feMergeNode in="SourceGraphic" />
-                                </feMerge>
-                            </filter>
-                        </defs>
-
-                        {/* Level Stations */}
+                        {/* Station Milestones */}
                         {allLevels.map((lvl, idx) => {
-                            const percent = allLevels.length > 1 ? (idx / (allLevels.length - 1)) * 100 : 0;
-                            const pos = getPositionOnPath(percent);
+                            const pos = stations[idx] || stations[stations.length - 1];
                             const isReached = currentScore >= lvl.min_skor;
-
-                            // For the very first level, ensure label is distinct if it's the current one
-                            const label = lvl.badge_name || lvl.nama_level?.split(' ')[0] || 'Level';
+                            const isMaster = idx === allLevels.length - 1;
 
                             return (
                                 <g key={lvl.id}>
-                                    <circle
-                                        cx={pos.x}
-                                        cy={pos.y}
-                                        r="5"
-                                        className={`${isReached ? 'fill-white' : 'fill-white/10'}`}
-                                    />
+                                    {!isMaster && (
+                                        <circle
+                                            cx={pos.x}
+                                            cy={pos.y}
+                                            r="4"
+                                            className={`${isReached ? 'fill-white' : 'fill-white/10'}`}
+                                        />
+                                    )}
+                                    {isMaster && (
+                                        <motion.g
+                                            initial={{ scale: 0.8 }}
+                                            animate={{ scale: isReached ? [1, 1.2, 1] : 0.8 }}
+                                            transition={{ repeat: Infinity, duration: 2 }}
+                                        >
+                                            <Star
+                                                x={pos.x - 12}
+                                                y={pos.y - 12}
+                                                width={24}
+                                                height={24}
+                                                className={`${isReached ? 'fill-yellow-400 text-yellow-500' : 'fill-white/10 text-white/10'} drop-shadow-[0_0_8px_rgba(234,179,8,0.5)]`}
+                                            />
+                                        </motion.g>
+                                    )}
                                     <text
                                         x={pos.x}
-                                        y={pos.y - 12} // Labels ABOVE the dots
+                                        y={pos.y - 18}
                                         textAnchor="middle"
                                         className={`text-[9px] font-black uppercase tracking-tighter ${isReached ? 'fill-white' : 'fill-white/30'}`}
-                                        style={{ filter: isReached ? 'drop-shadow(0 0 4px rgba(255,255,255,0.5))' : 'none' }}
                                     >
-                                        {label}
+                                        {lvl.badge_name || lvl.nama_level?.split(' ')[0]}
                                     </text>
                                 </g>
                             );
                         })}
 
-                        {/* Peak Star */}
-                        <motion.g
-                            initial={{ scale: 0.8 }}
-                            animate={{ scale: [0.8, 1.1, 0.8] }}
-                            transition={{ repeat: Infinity, duration: 2.5 }}
-                        >
-                            <Star
-                                x={350}
-                                y={30}
-                                width={24}
-                                height={24}
-                                className="fill-yellow-400 text-yellow-500 drop-shadow-[0_0_12px_rgba(234,179,8,0.9)]"
-                            />
-                        </motion.g>
-
                         {/* The Climber */}
                         <motion.g
-                            initial={{ x: 40, y: 160 }}
+                            initial={{ x: stations[0].x, y: stations[0].y }}
                             animate={{ x: climberPos.x, y: climberPos.y }}
                             transition={{ duration: 1.5, ease: "easeOut" }}
                         >
