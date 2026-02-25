@@ -9,7 +9,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { MissionModal } from './MissionModal';
 import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
-import { Edit3, CheckCircle, Contact, BookOpen, LayoutDashboard, Clock, AlertTriangle, XCircle, FileCheck, Plus, Upload, Medal, Zap, PlayCircle } from 'lucide-react';
+import { Edit3, CheckCircle, Contact, BookOpen, LayoutDashboard, Clock, AlertTriangle, XCircle, FileCheck, Plus, Upload } from 'lucide-react';
 import { EvidenceUploadModal } from './EvidenceUploadModal';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import { SkillCard } from './SkillCard';
@@ -603,72 +603,12 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                   </span>
                 </h2>
                 <div className="w-24 h-0.5 bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 rounded-full mt-2 mb-4 animate-pulse [.theme-clear_&]:from-emerald-500 [.theme-clear_&]:via-teal-500 [.theme-clear_&]:to-cyan-500"></div>
-                {user?.role !== 'student' && (
-                  <p className="text-lg sm:text-xl font-medium tracking-wide">
-                    <span className="bg-gradient-to-r from-yellow-300 to-amber-300 bg-clip-text text-transparent [.theme-clear_&]:from-emerald-600 [.theme-clear_&]:to-emerald-800">
-                      Menuju Vokasi Berstandar Industri & Terverifikasi
-                    </span>
-                  </p>
-                )}
+                <p className="text-lg sm:text-xl font-medium tracking-wide">
+                  <span className="bg-gradient-to-r from-yellow-300 to-amber-300 bg-clip-text text-transparent [.theme-clear_&]:from-emerald-600 [.theme-clear_&]:to-emerald-800">
+                    Menuju Vokasi Berstandar Industri & Terverifikasi
+                  </span>
+                </p>
               </div>
-
-              {/* Balances the dashboard - Move Focus Hero here */}
-              {user?.role === 'student' && myStats && (
-                <div className="animate-fadeInUp stagger-delay-2">
-                  <div className="card-glass p-6 rounded-2xl flex flex-col justify-center relative overflow-hidden bg-gradient-to-br from-indigo-600/20 to-blue-600/20 border border-white/10 shadow-xl group">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none"></div>
-                    <div className="relative z-10">
-                      <div className="flex items-center gap-4 mb-4">
-                        <button
-                          onClick={() => setIsAvatarModalOpen(true)}
-                          className="relative group transition-transform hover:scale-105 active:scale-95 shrink-0"
-                          title="Ubah Foto Profil"
-                        >
-                          <ProfileAvatar
-                            name={user.name}
-                            avatarUrl={(user as any)?.avatar_url}
-                            photoUrl={(user as any)?.photo_url}
-                            level={myStats.level}
-                            size="md"
-                            jurusanColor="#6366f1"
-                            className="shadow-lg border-2 border-white/20"
-                          />
-                        </button>
-                        <div>
-                          <div className="flex gap-2 mb-1.5">
-                            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/10 text-white text-[10px] font-bold backdrop-blur-sm border border-white/10">
-                              <Zap className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                              <span>{myStats.score} XP</span>
-                            </div>
-                            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/10 text-white text-[10px] font-bold backdrop-blur-sm border border-white/10">
-                              <Medal className="w-3 h-3 fill-emerald-400 text-emerald-400" />
-                              <span>{myStats.poin} POIN</span>
-                            </div>
-                          </div>
-                          <h2 className="text-2xl font-black text-white tracking-tight">
-                            Siap Naik Level, {user.name.split(' ')[0]}?
-                          </h2>
-                        </div>
-                      </div>
-                      <p className="text-white/70 mb-5 text-sm leading-relaxed">
-                        Kamu sudah mencapai <span className="font-bold text-white">{myStats.score} XP</span>. Butuh <span className="font-bold text-white">{100 - myStats.score} XP</span> lagi menuju <span className="font-bold text-white">Advanced Master</span>!
-                      </p>
-                      <button
-                        onClick={() => setShowMissionModal(true)}
-                        disabled={krsSubmission?.status && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled'].includes(krsSubmission.status)}
-                        className={`w-full px-6 py-3 rounded-xl font-bold text-sm shadow-lg transition-all flex items-center justify-center gap-2
-                          ${krsSubmission?.status && ['pending_produktif', 'pending_wali', 'pending_hod', 'approved', 'scheduled'].includes(krsSubmission.status)
-                            ? 'bg-white/10 text-white/40 cursor-not-allowed border border-white/5'
-                            : 'bg-white text-indigo-600 hover:scale-[1.02] active:scale-95'
-                          }`}
-                      >
-                        <PlayCircle className="w-5 h-5 fill-current" />
-                        Upgrade skill
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
 
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mt-6">
                 {user?.role !== 'student' && (
