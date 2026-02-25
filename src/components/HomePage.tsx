@@ -9,8 +9,9 @@ import { useAuth } from '../contexts/AuthContext';
 import { MissionModal } from './MissionModal';
 import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
-import { Edit3, CheckCircle, Contact, BookOpen, LayoutDashboard, Clock, AlertTriangle, XCircle, FileCheck, Plus, Upload, GraduationCap, Zap, Medal, PlayCircle } from 'lucide-react';
+import { Edit3, CheckCircle, Contact, BookOpen, LayoutDashboard, Clock, AlertTriangle, XCircle, FileCheck, Plus, Upload, GraduationCap, Zap, Medal, PlayCircle, ChevronRight } from 'lucide-react';
 import { EvidenceUploadModal } from './EvidenceUploadModal';
+import { GuideModal } from './GuideModal';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
 import { SkillCard } from './SkillCard';
 import { StudentHistoryModal } from './StudentHistoryModal';
@@ -72,6 +73,7 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
   const [pendingKRSCount, setPendingKRSCount] = useState(0);
   const [toApproveCount, setToApproveCount] = useState(0);
   const [showEvidenceModal, setShowEvidenceModal] = useState(false);
+  const [isGuideModalOpen, setIsGuideModalOpen] = useState(false);
   const { updateUser } = useAuth();
 
   const useMock = isMockMode;
@@ -668,6 +670,34 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
                 </div>
               )}
 
+              {/* User Guide Card - Fills empty space */}
+              <div className="animate-fadeInUp pt-4 max-w-md">
+                <div className="card-glass p-5 rounded-2xl flex flex-col relative overflow-hidden bg-slate-800/40 border border-white/5 shadow-lg group">
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-500/10 rounded-full blur-2xl -mr-6 -mt-6 pointer-events-none"></div>
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="p-2.5 bg-indigo-500/20 rounded-xl text-indigo-400 group-hover:scale-110 transition-transform">
+                        <BookOpen className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-bold text-white tracking-tight">Panduan Pengguna</h3>
+                        <p className="text-[10px] text-white/40">Pelajari cara penggunaan sistem</p>
+                      </div>
+                    </div>
+                    <p className="text-white/60 mb-4 text-[11px] leading-relaxed">
+                      Butuh bantuan? Pelajari cara kerja pendaftaran sertifikasi, pengumpulan XP, dan penggunaan fitur lainnya di sini.
+                    </p>
+                    <button
+                      onClick={() => setIsGuideModalOpen(true)}
+                      className="w-full px-4 py-2.5 rounded-xl font-bold text-[10px] bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/20 transition-all flex items-center justify-center gap-2 group/btn"
+                    >
+                      Buka Panduan
+                      <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mt-6">
                 {user?.role !== 'student' && (
                   <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
@@ -1107,6 +1137,12 @@ export function HomePage({ onSelectJurusan, onOpenKRSApproval, onOpenWalasDashbo
           </div>
         )}
         {/* Avatar Selection Modal */}
+        <GuideModal
+          isOpen={isGuideModalOpen}
+          onClose={() => setIsGuideModalOpen(false)}
+          userRole={user?.role}
+        />
+
         <AvatarSelectionModal
           isOpen={isAvatarModalOpen}
           onClose={() => setIsAvatarModalOpen(false)}
