@@ -4,7 +4,6 @@ import type { Jurusan, RaceParticipant, StudentStats } from '../types';
 import { F1RaceTrack } from './F1RaceTrack';
 import { Podium } from './Podium';
 import { StudentXPBar } from './StudentXPBar';
-import { CompetencyRadar } from './CompetencyRadar';
 import { ProfileAvatar } from './ProfileAvatar';
 import { AvatarSelectionModal } from './AvatarSelectionModal';
 import { useAuth } from '../contexts/AuthContext';
