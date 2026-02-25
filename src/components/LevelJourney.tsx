@@ -92,23 +92,25 @@ export function LevelJourney({ currentScore, allLevels }: LevelJourneyProps) {
 
                             // For the very first level, ensure label is distinct if it's the current one
                             const label = lvl.badge_name || lvl.nama_level?.split(' ')[0] || 'Level';
-                            <g key={lvl.id}>
-                                <circle
-                                    cx={pos.x}
-                                    cy={pos.y}
-                                    r="5"
-                                    className={`${isReached ? 'fill-white' : 'fill-white/10'}`}
-                                />
-                                <text
-                                    x={pos.x}
-                                    y={pos.y - 12} // Labels ABOVE the dots
-                                    textAnchor="middle"
-                                    className={`text-[9px] font-black uppercase tracking-tighter ${isReached ? 'fill-white' : 'fill-white/30'}`}
-                                    style={{ filter: isReached ? 'drop-shadow(0 0 4px rgba(255,255,255,0.5))' : 'none' }}
-                                >
-                                    {lvl.badge_name || lvl.nama_level?.split(' ')[0]}
-                                </text>
-                            </g>
+
+                            return (
+                                <g key={lvl.id}>
+                                    <circle
+                                        cx={pos.x}
+                                        cy={pos.y}
+                                        r="5"
+                                        className={`${isReached ? 'fill-white' : 'fill-white/10'}`}
+                                    />
+                                    <text
+                                        x={pos.x}
+                                        y={pos.y - 12} // Labels ABOVE the dots
+                                        textAnchor="middle"
+                                        className={`text-[9px] font-black uppercase tracking-tighter ${isReached ? 'fill-white' : 'fill-white/30'}`}
+                                        style={{ filter: isReached ? 'drop-shadow(0 0 4px rgba(255,255,255,0.5))' : 'none' }}
+                                    >
+                                        {label}
+                                    </text>
+                                </g>
                             );
                         })}
 
