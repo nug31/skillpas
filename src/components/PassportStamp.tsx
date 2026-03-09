@@ -42,7 +42,7 @@ export function PassportStamp({ userName, photoUrl, avatarUrl, onComplete }: Pas
     }, [onComplete]);
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#050505] [.theme-clear_&]:bg-slate-100 overflow-hidden safe-pt">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#050505] [.theme-clear_&]:bg-slate-100 overflow-hidden pt-[env(safe-area-inset-top)]">
             {/* Abstract Background Blobs (Dark Mode Only) */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none [.theme-clear_&]:hidden">
                 <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-amber-600/10 blur-[120px] animate-pulse" style={{ animationDuration: '4s' }} />

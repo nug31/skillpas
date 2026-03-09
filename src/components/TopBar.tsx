@@ -30,7 +30,7 @@ export function TopBar({
 }: TopBarProps) {
     const userRole = user?.role;
     return (
-        <header className="sticky top-0 z-50 w-full py-3 px-4 sm:py-4 sm:px-6 border-b border-white/6 bg-slate-900/50 backdrop-blur-md safe-pt">
+        <header className="sticky top-0 z-50 w-full px-4 sm:px-6 pb-3 sm:pb-4 pt-[calc(0.75rem+env(safe-area-inset-top))] sm:pt-[calc(1rem+env(safe-area-inset-top))] border-b border-white/6 bg-slate-900/50 backdrop-blur-md">
             <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
                 <div
                     className="flex items-center gap-3 cursor-pointer group"

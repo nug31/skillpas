@@ -52,7 +52,7 @@ export function LoginPage() {
 
 
     return (
-        <div className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-500 relative overflow-hidden safe-pt ${themeClear
+        <div className={`min-h-screen flex items-center justify-center px-4 pb-4 pt-[calc(1rem+env(safe-area-inset-top))] transition-colors duration-500 relative overflow-hidden ${themeClear
             ? 'bg-slate-50'
             : 'bg-[#020617]'
             }`}>
@@ -86,7 +86,7 @@ export function LoginPage() {
             {/* Theme Toggle Button */}
             <button
                 onClick={() => setThemeClear(!themeClear)}
-                className={`absolute top-4 right-4 p-3 rounded-full transition-all shadow-lg z-20 safe-top ${themeClear
+                className={`absolute top-[calc(1rem+env(safe-area-inset-top))] right-4 p-3 rounded-full transition-all shadow-lg z-20 ${themeClear
                     ? 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
                     : 'bg-white/5 border border-white/10 text-white hover:bg-white/20 backdrop-blur-md'
                     }`}
