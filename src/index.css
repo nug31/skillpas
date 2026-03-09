@@ -402,4 +402,14 @@ body {
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
+
+}
+
+/* ===== iOS SAFE AREA UTILITIES ===== */
+.safe-pt {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-top {
+  top: env(safe-area-inset-top);
 }

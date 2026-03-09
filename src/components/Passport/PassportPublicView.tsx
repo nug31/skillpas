@@ -167,7 +167,7 @@ export const PassportPublicView: React.FC<PassportPublicViewProps> = ({ siswaId 
     }
 
     return (
-        <div className="min-h-screen bg-[#0f172a] py-12 px-4">
+        <div className="min-h-screen bg-[#0f172a] py-12 px-4 safe-pt">
             <div className="max-w-4xl mx-auto mb-8 text-center">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest mb-4">
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
