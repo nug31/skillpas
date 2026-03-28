@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
 import { SiswaWithSkill, User, LevelSkill } from '../types';
@@ -12,7 +12,10 @@ import {
     Users,
     Download,
     FileSpreadsheet,
-    Printer
+    Printer,
+    Upload,
+    Loader2,
+    CalendarDays
 } from 'lucide-react';
 import { ProfileAvatar } from './ProfileAvatar';
 import { StudentHistoryModal } from './StudentHistoryModal';
@@ -20,6 +23,7 @@ import { StudentDetailModal } from './StudentDetailModal';
 import { AnalyticsPanel } from './AnalyticsPanel';
 import { ReportView } from './ReportView';
 import { exportToExcel, exportToCSV, generateReportFilename } from '../lib/exportUtils';
+import { generateAttendanceTemplate, parseAttendanceExcel, AttendanceImportRow } from '../lib/importUtils';
 
 interface WalasDashboardProps {
     user: User;
@@ -36,6 +40,9 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
     const [jurusanList, setJurusanList] = useState<any[]>([]);
     const [levels, setLevels] = useState<LevelSkill[]>([]);
     const [showReportView, setShowReportView] = useState(false);
+    const [showImportMenu, setShowImportMenu] = useState(false);
+    const [isImporting, setIsImporting] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const normalizeClassName = (name: string) => {
         if (!name) return '';
@@ -278,6 +285,120 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
         setShowReportView(true);
     };
 
+    const handleDownloadTemplate = () => {
+        setShowImportMenu(false);
+        generateAttendanceTemplate(filteredStudents, user.kelas || 'Kelas');
+    };
+
+    const handleUploadTemplate = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        setShowImportMenu(false);
+        setIsImporting(true);
+
+        try {
+            const parsedData: AttendanceImportRow[] = await parseAttendanceExcel(file);
+            
+            if (parsedData.length === 0) {
+                alert('File Excel kosong atau format tidak valid.');
+                return;
+            }
+
+            // Loop through parsed data and update student discipline
+            let updateCount = 0;
+            
+            for (const row of parsedData) {
+                // Find student by NISN (preferred) or Nama
+                const student = filteredStudents.find(s => 
+                    (row.NISN && s.nisn === row.NISN) || 
+                    (row.Nama && s.nama.toLowerCase() === row.Nama.toLowerCase())
+                );
+
+                if (student) {
+                    const totalAttendance = row.Masuk + row.Izin + row.Sakit + row.Alfa;
+                    const attendancePcent = totalAttendance > 0 ? Math.round((row.Masuk / totalAttendance) * 100) : 100;
+                    
+                    if (isMockMode) {
+                        const existingDiscIndex = mockData.mockDiscipline.findIndex((d: any) => d.siswa_id === student.id);
+                        if (existingDiscIndex >= 0) {
+                            mockData.mockDiscipline[existingDiscIndex] = {
+                                ...mockData.mockDiscipline[existingDiscIndex],
+                                masuk: row.Masuk,
+                                izin: row.Izin,
+                                sakit: row.Sakit,
+                                alfa: row.Alfa,
+                                attendance_pcent: attendancePcent,
+                                updated_at: new Date().toISOString()
+                            };
+                        } else {
+                            mockData.mockDiscipline.push({
+                                id: `disc-${student.id}`,
+                                siswa_id: student.id,
+                                masuk: row.Masuk,
+                                izin: row.Izin,
+                                sakit: row.Sakit,
+                                alfa: row.Alfa,
+                                attendance_pcent: attendancePcent,
+                                attitude_scores: [
+                                    { aspect: 'Disiplin', score: 80 },
+                                    { aspect: 'Tanggung Jawab', score: 80 },
+                                    { aspect: 'Jujur', score: 80 },
+                                    { aspect: 'Kerjasama', score: 80 },
+                                    { aspect: 'Peduli', score: 80 }
+                                ],
+                                updated_at: new Date().toISOString()
+                            } as any);
+                        }
+                    } else {
+                        // For Supabase, we upsert discipline data. We first need to get existing attitude scores to not overwrite them.
+                        const { data: existingData } = await supabase
+                            .from('student_discipline')
+                            .select('attitude_scores')
+                            .eq('siswa_id', student.id)
+                            .single();
+                            
+                        const defaultAttitudes = [
+                            { aspect: 'Disiplin', score: 80 },
+                            { aspect: 'Tanggung Jawab', score: 80 },
+                            { aspect: 'Jujur', score: 80 },
+                            { aspect: 'Kerjasama', score: 80 },
+                            { aspect: 'Peduli', score: 80 }
+                        ];
+
+                        const attitudeScores = existingData?.attitude_scores || defaultAttitudes;
+
+                        await supabase
+                            .from('student_discipline')
+                            .upsert({
+                                siswa_id: student.id,
+                                masuk: row.Masuk,
+                                izin: row.Izin,
+                                sakit: row.Sakit,
+                                alfa: row.Alfa,
+                                attendance_pcent: attendancePcent,
+                                attitude_scores: attitudeScores,
+                                updated_at: new Date().toISOString()
+                            }, { onConflict: 'siswa_id' });
+                    }
+                    updateCount++;
+                }
+            }
+
+            alert(`Berhasil mengimpor data kehadiran untuk ${updateCount} siswa.`);
+            await loadClassData(); // Reload data to reflect changes
+            
+        } catch (error: any) {
+            console.error('Error importing attendance:', error);
+            alert(error.message || 'Gagal mengimpor file Excel.');
+        } finally {
+            setIsImporting(false);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = ''; // Reset input
+            }
+        }
+    };
+
     return (
         <div className="min-h-screen bg-[color:var(--bg-from)] p-4 sm:p-8">
             <div className="max-w-7xl mx-auto space-y-8">
@@ -307,6 +428,49 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                                 className="w-full sm:w-64 pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-indigo-500/50 transition-all text-sm [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200 [.theme-clear_&]:text-slate-900"
                             />
                         </div>
+                        <div className="relative">
+                            <button
+                                onClick={() => setShowImportMenu(!showImportMenu)}
+                                className="flex items-center gap-2 px-4 py-2.5 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 text-fuchsia-400 rounded-xl text-sm font-bold transition-all border border-fuchsia-500/20 hover:border-fuchsia-500/40 [.theme-clear_&]:bg-fuchsia-50 [.theme-clear_&]:text-fuchsia-700 [.theme-clear_&]:border-fuchsia-200"
+                            >
+                                <CalendarDays className="w-4 h-4" />
+                                <span className="hidden sm:inline">Import Kehadiran</span>
+                            </button>
+                            
+                            {showImportMenu && (
+                                <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden [.theme-dark_&]:bg-slate-800 [.theme-dark_&]:border-white/10">
+                                    <div className="p-2 space-y-1">
+                                        <button
+                                            onClick={handleDownloadTemplate}
+                                            className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-2 [.theme-dark_&]:text-slate-300 [.theme-dark_&]:hover:bg-white/5"
+                                        >
+                                            <Download className="w-4 h-4 text-emerald-500" />
+                                            1. Download Template Excel
+                                        </button>
+                                        <div className="h-px bg-slate-200 my-1 [.theme-dark_&]:bg-white/5" />
+                                        <button
+                                            onClick={() => fileInputRef.current?.click()}
+                                            disabled={isImporting}
+                                            className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed [.theme-dark_&]:text-slate-300 [.theme-dark_&]:hover:bg-white/5"
+                                        >
+                                            {isImporting ? <Loader2 className="w-4 h-4 text-fuchsia-500 animate-spin" /> : <Upload className="w-4 h-4 text-fuchsia-500" />}
+                                            2. Upload Data Excel
+                                        </button>
+                                        <input 
+                                            type="file" 
+                                            ref={fileInputRef} 
+                                            className="hidden" 
+                                            accept=".xlsx, .xls"
+                                            onChange={handleUploadTemplate}
+                                        />
+                                    </div>
+                                    <div className="px-3 py-2 bg-slate-50 border-t border-slate-100 text-[10px] text-slate-500 leading-tight [.theme-dark_&]:bg-slate-900/50 [.theme-dark_&]:border-white/5 [.theme-dark_&]:text-slate-400">
+                                        Data yang diunggah akan <strong>menimpa (overwrite)</strong> data kehadiran sebelumnya. Pastikan data sudah benar.
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
                         <button
                             onClick={handleExportExcel}
                             className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-xl text-sm font-bold transition-all border border-emerald-500/20 hover:border-emerald-500/40 [.theme-clear_&]:bg-emerald-50 [.theme-clear_&]:text-emerald-700 [.theme-clear_&]:border-emerald-200"
