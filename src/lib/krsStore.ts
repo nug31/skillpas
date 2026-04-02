@@ -65,12 +65,13 @@ export const krsStore = {
             .from('krs')
             .select('*')
             .eq('siswa_id', siswaId)
+            .order('updated_at', { ascending: false })
             .setHeader('pragma', 'no-cache')
-            .setHeader('cache-control', 'no-cache')
-            .maybeSingle();
+            .setHeader('cache-control', 'no-cache');
 
-        if (error) return undefined;
-        return data as KRSSubmission;
+        if (error || !data || data.length === 0) return undefined;
+        // Return latest if multiple exist
+        return data[0] as KRSSubmission;
     },
 
     async submitKRS(submission: Omit<KRSSubmission, 'status' | 'submitted_at' | 'updated_at'>): Promise<KRSSubmission | null> {
@@ -108,28 +109,36 @@ export const krsStore = {
             return mockSub;
         }
 
-        // Check if exists
-        const { data: existing } = await supabase
+        // Check if entries exist - fetch ALL to handle duplicates
+        const { data: existingRecords } = await supabase
             .from('krs')
             .select('id')
             .eq('siswa_id', submission.siswa_id)
+            .order('updated_at', { ascending: false })
             .setHeader('pragma', 'no-cache')
-            .setHeader('cache-control', 'no-cache')
-            .maybeSingle();
+            .setHeader('cache-control', 'no-cache');
 
         let result;
-        if (existing) {
+        if (existingRecords && existingRecords.length > 0) {
+            // Update the most recent one
+            const latestId = existingRecords[0].id;
             const { data, error } = await supabase
                 .from('krs')
                 .update({
                     ...newSubmission,
                     status: 'pending_produktif'
                 })
-                .eq('id', existing.id)
+                .eq('id', latestId)
                 .select()
                 .single();
             if (error) { console.error(error); return null; }
             result = data;
+
+            // Cleanup: Delete other duplicates if any
+            if (existingRecords.length > 1) {
+                const otherIds = existingRecords.slice(1).map((r: any) => r.id);
+                await supabase.from('krs').delete().in('id', otherIds);
+            }
         } else {
             const { data, error } = await supabase
                 .from('krs')

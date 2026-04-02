@@ -131,7 +131,21 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
 
             return true;
         });
-        setSubmissions(filtered);
+        // 4. Remove duplicates in UI (only show latest submission per student if multiples exist)
+        const unique = new Map<string, KRSSubmission>();
+        filtered.forEach((s: KRSSubmission) => {
+            if (!unique.has(s.siswa_id)) {
+                unique.set(s.siswa_id, s);
+            } else {
+                // If already exists, keep the one with newer updated_at
+                const existing = unique.get(s.siswa_id)!;
+                if (new Date(s.updated_at) > new Date(existing.updated_at)) {
+                    unique.set(s.siswa_id, s);
+                }
+            }
+        });
+
+        setSubmissions(Array.from(unique.values()));
         setLoading(false);
     };
 

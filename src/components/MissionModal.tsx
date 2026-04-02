@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { X, Target, Plus, Check, Info, ChevronDown, ChevronRight } from 'lucide-react';
+import { X, Target, Plus, Check, Info, ChevronDown, ChevronRight, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Jurusan, LevelSkill } from '../types';
 import { supabase, isMockMode } from '../lib/supabase';
@@ -27,6 +27,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
     const [selectedKRS, setSelectedKRS] = useState<string[]>([]);
     const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
     const [submission, setSubmission] = useState<KRSSubmission | null>(null);
+    const [submitting, setSubmitting] = useState(false);
     const [passedItems, setPassedItems] = useState<Set<string>>(new Set());
     const storageKey = `skillpas_krs_${siswaId}`;
 
@@ -168,17 +169,25 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
             return;
         }
 
-        await krsStore.submitKRS({
-            id: submission?.id || Math.random().toString(36).substr(2, 9),
-            siswa_id: siswaId,
-            siswa_nama: user?.name || 'Siswa',
-            kelas: user?.kelas || 'XII TKR 1',
-            jurusan_id: jurusan.id,
-            items: validItems
-        });
+        setSubmitting(true);
+        try {
+            await krsStore.submitKRS({
+                id: submission?.id || Math.random().toString(36).substr(2, 9),
+                siswa_id: siswaId,
+                siswa_nama: user?.name || 'Siswa',
+                kelas: user?.kelas || 'XII TKR 1',
+                jurusan_id: jurusan.id,
+                items: validItems
+            });
 
-        alert("Pendaftaran Sertifikasi berhasil diajukan! Tunggu verifikasi guru.");
-        onClose();
+            alert("Pendaftaran Sertifikasi berhasil diajukan! Tunggu verifikasi guru.");
+            onClose();
+        } catch (error) {
+            console.error("Submission failed", error);
+            alert("Gagal melakukan pendaftaran. Silakan coba lagi.");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     const getStatusLabel = (status: string) => {
@@ -416,13 +425,17 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                         </button>
                         <button
                             onClick={handleSubmit}
-                            disabled={!!(submission && !['rejected', 'scheduled', 'completed'].includes(submission.status))}
-                            className={`flex-[2] py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${submission && !['rejected', 'scheduled', 'completed'].includes(submission.status)
+                            disabled={submitting || !!(submission && !['rejected', 'scheduled', 'completed'].includes(submission.status))}
+                            className={`flex-[2] py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${submitting || (submission && !['rejected', 'scheduled', 'completed'].includes(submission.status))
                                 ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
                                 : 'bg-[color:var(--accent-1)] text-white hover:opacity-90 active:scale-95 [.theme-clear_&]:bg-emerald-600 [.theme-clear_&]:text-white [.theme-clear_&]:hover:bg-emerald-700'
                                 }`}
                         >
-                            <span>{submission ? 'Update Pendaftaran' : 'Daftar Sertifikasi'}</span>
+                            {submitting ? (
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                            ) : (
+                                <span>{submission ? 'Update Pendaftaran' : 'Daftar Sertifikasi'}</span>
+                            )}
                         </button>
                     </div>
                 </motion.div>
