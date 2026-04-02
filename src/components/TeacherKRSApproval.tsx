@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { krsStore, KRS_UPDATED_EVENT } from '../lib/krsStore';
+import { notificationStore } from '../lib/notificationStore';
 import { KRSSubmission, User } from '../types';
 import { Check, X, Calendar, MessageSquare, ChevronLeft, Award, Clock } from 'lucide-react';
 import { GradingModal } from './GradingModal';
@@ -47,6 +48,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
     };
 
     useEffect(() => {
+        krsStore.cleanupDuplicates();
         loadSubmissions();
         window.addEventListener(KRS_UPDATED_EVENT, loadSubmissions);
         return () => window.removeEventListener(KRS_UPDATED_EVENT, loadSubmissions);
@@ -261,10 +263,19 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                             <p className="text-slate-400 text-sm [.theme-clear_&]:text-slate-500">Review dan verifikasi pendaftaran sertifikasi competency siswa</p>
                         </div>
                     </div>
-                    <div className="px-4 py-2 bg-[color:var(--accent-1)]/10 border border-[color:var(--accent-1)]/20 rounded-full [.theme-clear_&]:bg-emerald-50 [.theme-clear_&]:border-emerald-200">
+                    <div className="px-4 py-2 bg-[color:var(--accent-1)]/10 border border-[color:var(--accent-1)]/20 rounded-full [.theme-clear_&]:bg-emerald-50 [.theme-clear_&]:border-emerald-200 flex items-center gap-3">
                         <span className="text-xs font-bold text-[color:var(--accent-1)] uppercase tracking-widest [.theme-clear_&]:text-emerald-700">
                             Role: {userRole.replace('_', ' ')}
                         </span>
+                        <button
+                            onClick={async () => {
+                                await notificationStore.actions.markAllAsRead(user.id);
+                                alert("Semua notifikasi telah ditandai sudah dibaca.");
+                            }}
+                            className="text-[10px] bg-white/5 hover:bg-white/10 px-2 py-1 rounded text-slate-400 font-bold uppercase transition-colors"
+                        >
+                            Clear Notif
+                        </button>
                     </div>
                 </header>
 

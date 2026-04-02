@@ -186,6 +186,7 @@ export function HomePage({
 
   async function loadPendingKRS() {
     if (!user || user.role === 'student') return;
+    await krsStore.cleanupDuplicates();
     const all = await krsStore.getSubmissions();
     const userRole = user.role;
     const userDeptId = user.jurusan_id;

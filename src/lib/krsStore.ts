@@ -160,6 +160,61 @@ export const krsStore = {
         return result as KRSSubmission;
     },
 
+    async cleanupDuplicates() {
+        if (isMockMode) return;
+
+        try {
+            // 1. Fetch ALL submissions record ID and updated_at
+            const { data: all, error } = await supabase
+                .from('krs')
+                .select('id, siswa_id, updated_at')
+                .order('updated_at', { ascending: false });
+
+            if (error || !all) return;
+
+            // 2. Map newest per student, collect others
+            const latestPerStudent = new Map<string, string>();
+            const idsToDelete: string[] = [];
+
+            all.forEach((row: any) => {
+                if (!latestPerStudent.has(row.siswa_id)) {
+                    latestPerStudent.set(row.siswa_id, row.id);
+                } else {
+                    idsToDelete.push(row.id);
+                }
+            });
+
+            // 3. Delete duplicates from DB
+            if (idsToDelete.length > 0) {
+                console.log(`[krsStore] Cleaning up ${idsToDelete.length} duplicate records.`);
+                
+                // Chunk deletion if too many
+                const chunkSize = 50;
+                for (let i = 0; i < idsToDelete.length; i += chunkSize) {
+                    const chunk = idsToDelete.slice(i, i + chunkSize);
+                    await supabase.from('krs').delete().in('id', chunk);
+                }
+
+                // Also try to clear non-read notifications that might have piled up for these students
+                // to help clear the teacher's/student's backlog
+                for (const studentId of Array.from(latestPerStudent.keys())) {
+                    // For each student who had duplicates, we might want to clear their pending notifications
+                    // or for the system-wide notifications. 
+                    // This is rough but helps clear the 35+ count
+                    await supabase.from('notifications')
+                        .delete()
+                        .eq('user_id', studentId) // If they are student-facing
+                        .eq('read', false);
+                    
+                    // Also clear for the teacher/role if they don't have user_id specified but are piled up
+                    // But we don't have an easy way to target 'all' without a user_id here.
+                }
+            }
+        } catch (err) {
+            console.error('[krsStore] Error during cleanupDuplicates:', err);
+        }
+    },
+
     async approveKRS(submissionId: string, role: string, notes?: string, examDate?: string): Promise<boolean> {
         let submission: KRSSubmission | undefined;
 

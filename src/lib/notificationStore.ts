@@ -17,6 +17,7 @@ interface NotificationStore {
     addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => Promise<void>;
     markAsRead: (id: string) => Promise<void>;
     fetchNotifications: (userId: string) => Promise<void>;
+    markAllAsRead: (userId: string) => Promise<void>;
     clearAll: () => void;
     requestPermission: () => Promise<boolean>;
 }
@@ -91,6 +92,19 @@ let state: NotificationStore = {
             notify();
         }
     },
+    markAllAsRead: async (userId) => {
+        state.notifications = state.notifications.map(n => ({ ...n, read: true }));
+        state.unreadCount = 0;
+        notify();
+
+        if (!isMockMode) {
+            await supabase
+                .from('notifications')
+                .update({ read: true })
+                .eq('user_id', userId)
+                .eq('read', false);
+        }
+    },
     clearAll: () => {
         state.notifications = [];
         state.unreadCount = 0;
@@ -121,6 +135,7 @@ export const notificationStore = {
     actions: {
         addNotification: state.addNotification,
         markAsRead: state.markAsRead,
+        markAllAsRead: state.markAllAsRead,
         fetchNotifications: state.fetchNotifications,
         clearAll: state.clearAll,
         requestPermission: state.requestPermission

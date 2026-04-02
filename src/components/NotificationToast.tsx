@@ -28,6 +28,7 @@ export function NotificationToast() {
     useEffect(() => {
         if (activeNotification) {
             const timer = setTimeout(() => {
+                notificationStore.actions.markAsRead(activeNotification.id);
                 setActiveNotification(null);
             }, 5000);
             return () => clearTimeout(timer);
@@ -60,7 +61,10 @@ export function NotificationToast() {
                         <p className="text-xs text-slate-400 leading-relaxed">{activeNotification.message}</p>
                     </div>
                     <button
-                        onClick={() => setActiveNotification(null)}
+                        onClick={() => {
+                            notificationStore.actions.markAsRead(activeNotification.id);
+                            setActiveNotification(null);
+                        }}
                         className="p-1 hover:bg-white/5 rounded-lg transition-colors"
                     >
                         <X className="w-4 h-4 text-slate-500" />
