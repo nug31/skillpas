@@ -119,6 +119,7 @@ export interface User {
   jurusan_id?: string;
   kelas?: string;
   nisn?: string;
+  sekolah_id?: string;
 }
 
 export type KRSStatus = 'pending_produktif' | 'pending_wali' | 'pending_hod' | 'approved' | 'scheduled' | 'rejected' | 'completed';
@@ -141,4 +142,5 @@ export interface KRSSubmission {
   final_score?: number;
   evidence_photos?: string[];
   evidence_videos?: string[];
+  sekolah_id?: string;
 }
