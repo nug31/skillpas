@@ -40,7 +40,7 @@ export const PassportPage: React.FC<PageProps> = ({ children, className = '', pa
     );
 };
 
-export const PassportCover: React.FC<{ schoolName?: string }> = ({ schoolName = "SMK Mitra Industri" }) => {
+export const PassportCover: React.FC<{ schoolName?: string }> = ({ schoolName = import.meta.env.VITE_SCHOOL_NAME || "SMK Mitra Industri" }) => {
     return (
         <div className={`w-full h-full ${PASSPORT_COLORS.cover} flex flex-col items-center justify-between py-12 px-6 shadow-2xl border-r-4 border-black/20 text-center`}>
             <div className={`text-[#C5A059] font-serif tracking-[0.2em] font-bold text-lg uppercase opacity-80`}>
