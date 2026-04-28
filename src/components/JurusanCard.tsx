@@ -22,6 +22,10 @@ function formatJurusanName(nama?: string): string {
   if (n.includes('kimia')) return 'Teknik Kimia Industri';
   if (n.includes('akuntansi') || n.includes('akuntan')) return 'Akuntansi';
   if (n.includes('perhotelan') || n.includes('hotel')) return 'Perhotelan';
+  if (n.includes('ototronik')) return 'Teknik Ototronik';
+  if (n.includes('mekatronika')) return 'Teknik Mekatronika';
+  if (n.includes('pemesinan')) return 'Teknik Pemesinan';
+  if (n.includes('animasi')) return 'Animasi';
 
   return nama;
 }
@@ -38,6 +42,10 @@ function getJurusanGradient(nama?: string): string {
   if (n.includes('kimia')) return 'bg-gradient-to-br from-pink-600 to-rose-500 shadow-pink-500/20';
   if (n.includes('akuntansi')) return 'bg-gradient-to-br from-green-600 to-emerald-600 shadow-green-500/20';
   if (n.includes('perhotelan')) return 'bg-gradient-to-br from-sky-500 to-blue-600 shadow-sky-500/20';
+  if (n.includes('ototronik')) return 'bg-gradient-to-br from-indigo-600 to-blue-500 shadow-indigo-500/20';
+  if (n.includes('mekatronika')) return 'bg-gradient-to-br from-cyan-600 to-teal-500 shadow-cyan-500/20';
+  if (n.includes('pemesinan')) return 'bg-gradient-to-br from-slate-600 to-gray-500 shadow-slate-500/20';
+  if (n.includes('animasi')) return 'bg-gradient-to-br from-rose-500 to-pink-600 shadow-rose-500/20';
 
   return 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500';
 }
