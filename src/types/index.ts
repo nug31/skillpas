@@ -7,6 +7,9 @@ export type SkillSiswa = Database['public']['Tables']['skill_siswa']['Row'];
 
 export interface SiswaWithSkill extends Siswa {
   skill_siswa: SkillSiswa[];
+  sekolah?: {
+    nama_sekolah: string;
+  };
   riwayat_kompetensi?: CompetencyHistory[];
   current_level?: LevelSkill;
   current_skor?: number;
@@ -120,6 +123,7 @@ export interface User {
   kelas?: string;
   nisn?: string;
   sekolah_id?: string;
+  sekolah_nama?: string;
 }
 
 export type KRSStatus = 'pending_produktif' | 'pending_wali' | 'pending_hod' | 'approved' | 'scheduled' | 'rejected' | 'completed';

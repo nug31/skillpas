@@ -7,9 +7,11 @@ interface ReportViewProps {
     kelas: string;
     walasName: string;
     onClose: () => void;
+    schoolName?: string;
+    schoolAddress?: string;
 }
 
-export function ReportView({ students, kelas, walasName, onClose }: ReportViewProps) {
+export function ReportView({ students, kelas, walasName, onClose, schoolName, schoolAddress }: ReportViewProps) {
     const formattedData = formatStudentData(students);
     const stats = calculateClassStatistics(students);
     const today = new Date().toLocaleDateString('id-ID', {
@@ -80,10 +82,10 @@ export function ReportView({ students, kelas, walasName, onClose }: ReportViewPr
                 {/* Header */}
                 <div className="text-center mb-8 border-b-2 border-slate-900 pb-4">
                     <h1 className="text-2xl font-black uppercase tracking-tight text-slate-900 mb-1">
-                        SMK MITRA INDUSTRI MM2100
+                        {schoolName || "SMK MITRA INDUSTRI MM2100"}
                     </h1>
                     <p className="text-sm text-slate-600">
-                        Jl. Kalimantan Blok DD 1-1, Kawasan Industri MM2100, Cikarang Barat, Bekasi 17530
+                        {schoolAddress || "Jl. Kalimantan Blok DD 1-1, Kawasan Industri MM2100, Cikarang Barat, Bekasi 17530"}
                     </p>
                     <p className="text-xs text-slate-500">Telp: (021) 89983961 | Email: info@smkmitraindustrimm2100.sch.id</p>
                 </div>
@@ -182,7 +184,7 @@ export function ReportView({ students, kelas, walasName, onClose }: ReportViewPr
 
                 {/* Footer */}
                 <div className="mt-8 pt-4 border-t border-slate-200 text-center text-xs text-slate-400">
-                    <p>Dokumen ini dicetak dari Sistem Skill Pass - SMK MITRA INDUSTRI MM2100</p>
+                    <p>Dokumen ini dicetak dari Sistem Skill Pass - {schoolName || "SMK MITRA INDUSTRI MM2100"}</p>
                     <p>Tanggal: {today}</p>
                 </div>
             </div>

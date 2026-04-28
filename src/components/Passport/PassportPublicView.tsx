@@ -64,7 +64,7 @@ export const PassportPublicView: React.FC<PassportPublicViewProps> = ({ siswaId 
                 // Supabase Implementation
                 const { data: student, error: sErr } = await supabase
                     .from('siswa')
-                    .select('*, skill_siswa(skor, poin), jurusan(nama_jurusan)')
+                    .select('*, skill_siswa(skor, poin), jurusan(nama_jurusan), sekolah(nama_sekolah)')
                     .eq('id', siswaId)
                     .single();
 
@@ -174,7 +174,7 @@ export const PassportPublicView: React.FC<PassportPublicViewProps> = ({ siswaId 
                     Verified Technical Passport
                 </div>
                 <h1 className="text-white text-3xl font-black tracking-tight mb-2">VALIDASI KOMPETENSI</h1>
-                <p className="text-slate-400 text-sm">Dokumen ini merupakan catatan resmi kompetensi industri siswa SMK Mitra Industri MM2100.</p>
+                <p className="text-slate-400 text-sm">Dokumen ini merupakan catatan resmi kompetensi industri siswa {studentData?.sekolah?.nama_sekolah || "SMK Mitra Industri MM2100"}.</p>
             </div>
 
             <div className="flex justify-center">
@@ -189,7 +189,7 @@ export const PassportPublicView: React.FC<PassportPublicViewProps> = ({ siswaId 
             </div>
 
             <div className="mt-12 text-center">
-                <p className="text-slate-500 text-[10px] font-medium tracking-[0.2em] uppercase">© 2026 Skill Passport System • SMK Mitra Industri MM2100</p>
+                <p className="text-slate-500 text-[10px] font-medium tracking-[0.2em] uppercase">© 2026 Skill Passport System • {studentData?.sekolah?.nama_sekolah || "SMK Mitra Industri MM2100"}</p>
             </div>
         </div>
     );

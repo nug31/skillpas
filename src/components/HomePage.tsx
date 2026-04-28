@@ -392,7 +392,7 @@ export function HomePage({
                 </h1>
                 <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-widest -mt-1">
                   <span className="bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent [.theme-clear_&]:from-emerald-700 [.theme-clear_&]:via-teal-600 [.theme-clear_&]:to-emerald-700">
-                    SMK Mitra Industri
+                    {user?.sekolah_nama || 'SMK Mitra Industri'}
                   </span>
                 </h2>
                 <div className="w-24 h-0.5 bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 rounded-full mt-2 mb-4 animate-pulse [.theme-clear_&]:from-emerald-500 [.theme-clear_&]:via-teal-500 [.theme-clear_&]:to-cyan-500"></div>

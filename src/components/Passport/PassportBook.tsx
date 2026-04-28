@@ -63,7 +63,7 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
 
     // Construct pages array
     const pages: React.ReactNode[] = [
-        <PassportCover key="cover" schoolName="SMK Mitra Industri" />, // 0
+        <PassportCover key="cover" schoolName={siswa.sekolah?.nama_sekolah || "SMK Mitra Industri"} />, // 0
         <PassportPage key="inside-cover" pageNumber={0}><div className="flex items-center justify-center h-full text-xs text-slate-300 italic p-8 text-center" > Dokumen resmi sekolah. Harap dijaga dengan baik.</div></PassportPage >, // 1 (Left)
         <PassportIdentityPage key="identity" siswa={siswa} jurusanName={jurusanName} walasName={walasName} />, // 2 (Right)
         <PassportEvidencePage
@@ -108,7 +108,7 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
         pages.push(<PassportPage key="empty-end" pageNumber={pages.length} />);
     }
 
-    pages.push(<div key="back-cover" className={`w-full h-full bg-[#1a472a] shadow-inner flex items-center justify-center text-[#C5A059]/50 font-serif`}>SMK Mitra Industri</div>);
+    pages.push(<div key="back-cover" className={`w-full h-full bg-[#1a472a] shadow-inner flex items-center justify-center text-[#C5A059]/50 font-serif`}>{siswa.sekolah?.nama_sekolah || "SMK Mitra Industri"}</div>);
 
     // 0: Cover (Right side is Cover, Left is nothing/hidden)
     // 1: Left=Page1, Right=Page2

@@ -40,7 +40,7 @@ export function TopBar({
                     <div>
                         <div className="min-w-0">
                             <div className="text-sm sm:text-lg font-black tracking-tighter text-white">SKILL PASSPORT</div>
-                            <div className="text-[10px] text-white/40 truncate hidden sm:block uppercase tracking-widest font-bold">SMK Mitra Industri MM2100</div>
+                            <div className="text-[10px] text-white/40 truncate hidden sm:block uppercase tracking-widest font-bold">{user?.sekolah_nama || 'SMK Mitra Industri'}</div>
                         </div>
                     </div>
                 </div>

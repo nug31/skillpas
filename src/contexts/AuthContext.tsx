@@ -42,7 +42,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     .select('*')
                     .or(`nama.eq."${username}",nisn.eq."${username}"`)
                     .eq('nisn', password)
+                    .select('*, sekolah(nama_sekolah)')
                     .maybeSingle();
+                
+                const studentData = student as any;
 
                 if (student && !error) {
                     const authenticatedUser: User = {
@@ -54,9 +57,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                         jurusan_id: student.jurusan_id,
                         kelas: student.kelas,
                         nisn: student.nisn,
-                        avatar_url: student.avatar_url,
-                        photo_url: student.photo_url,
-                        sekolah_id: student.sekolah_id
+                        avatar_url: studentData.avatar_url,
+                        photo_url: studentData.photo_url,
+                        sekolah_id: studentData.sekolah_id,
+                        sekolah_nama: studentData.sekolah?.nama_sekolah
                     };
                     setUser(authenticatedUser);
                     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authenticatedUser));
@@ -72,7 +76,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 .select('*')
                 .eq('username', username)
                 .eq('password', password)
+                .select('*, sekolah(nama_sekolah)')
                 .maybeSingle();
+
+            const staffData = staff as any;
 
             if (staff && !staffError) {
                 const authenticatedUser: User = {
@@ -83,9 +90,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     role: staff.role as any,
                     jurusan_id: staff.jurusan_id,
                     kelas: staff.kelas,
-                    avatar_url: staff.avatar_url,
-                    photo_url: staff.photo_url,
-                    sekolah_id: staff.sekolah_id
+                    avatar_url: staffData.avatar_url,
+                    photo_url: staffData.photo_url,
+                    sekolah_id: staffData.sekolah_id,
+                    sekolah_nama: staffData.sekolah?.nama_sekolah
                 };
                 setUser(authenticatedUser);
                 localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authenticatedUser));
