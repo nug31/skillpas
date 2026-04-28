@@ -5,6 +5,19 @@ import { notificationStore } from './notificationStore';
 
 export const KRS_UPDATED_EVENT = 'krs-updated';
 
+const getSekolahId = () => {
+    try {
+        const stored = localStorage.getItem('skill_passport_auth');
+        if (stored) {
+            const user = JSON.parse(stored);
+            return user.sekolah_id;
+        }
+    } catch (e) {
+        console.error('Failed to get sekolah_id from storage', e);
+    }
+    return null;
+};
+
 export const krsStore = {
     async getSubmissions(siswaIds?: string[]): Promise<KRSSubmission[]> {
         if (isMockMode) {
@@ -22,6 +35,11 @@ export const krsStore = {
             .order('created_at', { ascending: false })
             .setHeader('pragma', 'no-cache')
             .setHeader('cache-control', 'no-cache');
+
+        const sekolahId = getSekolahId();
+        if (sekolahId) {
+            query = query.eq('sekolah_id', sekolahId);
+        }
 
         if (siswaIds && siswaIds.length > 0) {
             query = query.in('siswa_id', siswaIds);
@@ -42,13 +60,17 @@ export const krsStore = {
             const skill = mockData.mockSkillSiswa.find(s => s.siswa_id === siswaId);
             return skill?.skor || 0;
         } else {
-            const { data, error } = await supabase
+            const query = supabase
                 .from('skill_siswa')
                 .select('skor')
                 .eq('siswa_id', siswaId)
                 .setHeader('pragma', 'no-cache')
-                .setHeader('cache-control', 'no-cache')
-                .maybeSingle();
+                .setHeader('cache-control', 'no-cache');
+
+            const sekolahId = getSekolahId();
+            if (sekolahId) query.eq('sekolah_id', sekolahId);
+
+            const { data, error } = await query.maybeSingle();
 
             if (error || !data) return 0;
             return data.skor;
@@ -61,13 +83,18 @@ export const krsStore = {
             return submissions.find(s => s.siswa_id === siswaId);
         }
 
-        const { data, error } = await supabase
+        const query = supabase
             .from('krs')
             .select('*')
             .eq('siswa_id', siswaId)
             .order('updated_at', { ascending: false })
             .setHeader('pragma', 'no-cache')
             .setHeader('cache-control', 'no-cache');
+
+        const sekolahId = getSekolahId();
+        if (sekolahId) query.eq('sekolah_id', sekolahId);
+
+        const { data, error } = await query;
 
         if (error || !data || data.length === 0) return undefined;
         // Return latest if multiple exist
@@ -84,7 +111,8 @@ export const krsStore = {
             status: 'pending_produktif',
             submitted_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
-            notes: ''
+            notes: '',
+            sekolah_id: getSekolahId()
         };
 
         if (isMockMode) {
@@ -165,10 +193,15 @@ export const krsStore = {
 
         try {
             // 1. Fetch ALL submissions record ID and updated_at
-            const { data: all, error } = await supabase
+            const query = supabase
                 .from('krs')
                 .select('id, siswa_id, updated_at')
                 .order('updated_at', { ascending: false });
+
+            const sekolahId = getSekolahId();
+            if (sekolahId) query.eq('sekolah_id', sekolahId);
+
+            const { data: all, error } = await query;
 
             if (error || !all) return;
 
@@ -201,10 +234,15 @@ export const krsStore = {
                     // For each student who had duplicates, we might want to clear their pending notifications
                     // or for the system-wide notifications. 
                     // This is rough but helps clear the 35+ count
-                    await supabase.from('notifications')
+                    const notifQuery = supabase.from('notifications')
                         .delete()
                         .eq('user_id', studentId) // If they are student-facing
                         .eq('read', false);
+                    
+                    const sekolahId = getSekolahId();
+                    if (sekolahId) notifQuery.eq('sekolah_id', sekolahId);
+                    
+                    await notifQuery;
                     
                     // Also clear for the teacher/role if they don't have user_id specified but are piled up
                     // But we don't have an easy way to target 'all' without a user_id here.
@@ -453,7 +491,7 @@ export const krsStore = {
             const dbSiswaId = submission.siswa_id;
 
             // Update skill_siswa
-            const { error: skillError } = await supabase
+            const skillQuery = supabase
                 .from('skill_siswa')
                 .update({
                     skor: score,
@@ -461,6 +499,11 @@ export const krsStore = {
                     updated_at: now
                 })
                 .eq('siswa_id', dbSiswaId);
+
+            const sekolahId = getSekolahId();
+            if (sekolahId) skillQuery.eq('sekolah_id', sekolahId);
+
+            const { error: skillError } = await skillQuery;
 
             // Update Poin
             if (!skillError) {
@@ -487,7 +530,8 @@ export const krsStore = {
                 penilai: examinerName || 'Guru Produktif',
                 hasil: result,
                 tanggal: isoDate,
-                catatan: notes || ''
+                catatan: notes || '',
+                sekolah_id: getSekolahId()
             };
 
             await supabase.from('competency_history').insert(historyEntry);

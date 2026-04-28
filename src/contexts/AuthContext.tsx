@@ -55,7 +55,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                         kelas: student.kelas,
                         nisn: student.nisn,
                         avatar_url: student.avatar_url,
-                        photo_url: student.photo_url
+                        photo_url: student.photo_url,
+                        sekolah_id: student.sekolah_id
                     };
                     setUser(authenticatedUser);
                     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authenticatedUser));
@@ -83,7 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     jurusan_id: staff.jurusan_id,
                     kelas: staff.kelas,
                     avatar_url: staff.avatar_url,
-                    photo_url: staff.photo_url
+                    photo_url: staff.photo_url,
+                    sekolah_id: staff.sekolah_id
                 };
                 setUser(authenticatedUser);
                 localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authenticatedUser));

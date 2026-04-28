@@ -66,7 +66,11 @@ export function HomePage({
       if (useMock) {
         data = mockData.mockJurusan;
       } else {
-        const result = await supabase.from('jurusan').select('*').order('nama_jurusan');
+        const query = supabase.from('jurusan').select('*').order('nama_jurusan');
+        if (user?.sekolah_id) {
+          query.eq('sekolah_id', user.sekolah_id);
+        }
+        const result = await query;
         if (result.error) throw result.error;
         data = result.data || [];
       }
@@ -120,11 +124,17 @@ export function HomePage({
           if (user?.role === 'student' && user.jurusan_id) {
             const jId = user.jurusan_id;
             await Promise.all(['X', 'XI', 'XII'].map(async (level) => {
-              const { data: topData, error } = await supabase
+              const query = supabase
                 .from('skill_siswa')
-                .select('skor, siswa!inner(id, nama, kelas)')
+                .select('skor, siswa!inner(id, nama, kelas, sekolah_id)')
                 .eq('siswa.jurusan_id', jId)
-                .ilike('siswa.kelas', `${level} %`) // Case insensitive match for class prefix
+                .ilike('siswa.kelas', `${level} %`); // Case insensitive match for class prefix
+
+              if (user?.sekolah_id) {
+                query.eq('siswa.sekolah_id', user.sekolah_id);
+              }
+
+              const { data: topData, error } = await query
                 .order('skor', { ascending: false })
                 .limit(3);
 
@@ -139,10 +149,16 @@ export function HomePage({
             }));
           } else {
             await Promise.all((filteredData || []).map(async (j) => {
-              const { data: topData, error } = await supabase
+              const query = supabase
                 .from('skill_siswa')
-                .select('skor, siswa!inner(id, nama, kelas)')
-                .eq('siswa.jurusan_id', j.id)
+                .select('skor, siswa!inner(id, nama, kelas, sekolah_id)')
+                .eq('siswa.jurusan_id', j.id);
+
+              if (user?.sekolah_id) {
+                query.eq('siswa.sekolah_id', user.sekolah_id);
+              }
+
+              const { data: topData, error } = await query
                 .order('skor', { ascending: false })
                 .limit(3);
 
@@ -286,10 +302,16 @@ export function HomePage({
         setRaceData(raceList);
       } else {
         const raceList = await Promise.all((jurusanList || []).map(async (j) => {
-          const { count: enrolledCount } = await supabase
+          const query = supabase
             .from('siswa')
             .select('*', { count: 'exact', head: true })
             .eq('jurusan_id', j.id);
+
+          if (user?.sekolah_id) {
+            query.eq('sekolah_id', user.sekolah_id);
+          }
+
+          const { count: enrolledCount } = await query;
 
           // Fetch score data iteratively
           let allScores: number[] = [];
@@ -298,10 +320,16 @@ export function HomePage({
           let hasMore = true;
 
           while (hasMore) {
-            const { data: skillData, error } = await supabase
+            const scoreQuery = supabase
               .from('skill_siswa')
-              .select('skor, siswa!inner(jurusan_id)')
-              .eq('siswa.jurusan_id', j.id)
+              .select('skor, siswa!inner(jurusan_id, sekolah_id)')
+              .eq('siswa.jurusan_id', j.id);
+
+            if (user?.sekolah_id) {
+              scoreQuery.eq('siswa.sekolah_id', user.sekolah_id);
+            }
+
+            const { data: skillData, error } = await scoreQuery
               .range(offset, offset + pageSize - 1);
 
             if (error) break;

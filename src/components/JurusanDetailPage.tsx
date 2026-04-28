@@ -57,11 +57,15 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
           .order('urutan')
           .setHeader('pragma', 'no-cache')
           .setHeader('cache-control', 'no-cache'),
-        supabase.from('level_skill_jurusan')
-          .select('*')
-          .eq('jurusan_id', jurusan.id)
-          .setHeader('pragma', 'no-cache')
-          .setHeader('cache-control', 'no-cache')
+        (() => {
+          const query = supabase.from('level_skill_jurusan')
+            .select('*')
+            .eq('jurusan_id', jurusan.id)
+            .setHeader('pragma', 'no-cache')
+            .setHeader('cache-control', 'no-cache');
+          if (user?.sekolah_id) query.eq('sekolah_id', user.sekolah_id);
+          return query;
+        })()
       ]);
 
       if (levelsResult.error) throw levelsResult.error;
@@ -74,13 +78,19 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
       let hasMore = true;
 
       while (hasMore) {
-        const { data, error } = await supabase
+        const query = supabase
           .from('siswa')
-          .select('id, nama, kelas, nisn, skill_siswa(skor, poin, level_id), competency_history(*)')
+          .select('id, nama, kelas, nisn, sekolah_id, skill_siswa(skor, poin, level_id, sekolah_id), competency_history(*)')
           .eq('jurusan_id', jurusan.id)
           .range(offset, offset + pageSize - 1)
           .setHeader('pragma', 'no-cache')
           .setHeader('cache-control', 'no-cache');
+
+        if (user?.sekolah_id) {
+          query.eq('sekolah_id', user.sekolah_id);
+        }
+
+        const { data, error } = await query;
 
         if (error) throw error;
         if (data && data.length > 0) {
@@ -199,7 +209,8 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
         siswa_id: siswaId,
         level_id: levelId,
         skor: newSkor,
-        poin: newPoin
+        poin: newPoin,
+        sekolah_id: user?.sekolah_id
       });
       if (error) throw error;
 
@@ -253,7 +264,8 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
         .upsert({
           jurusan_id: jurusan.id,
           level_id: levelId,
-          hasil_belajar: hasilBelajarJson
+          hasil_belajar: hasilBelajarJson,
+          sekolah_id: user?.sekolah_id
         }, { onConflict: 'jurusan_id,level_id' });
 
       if (error) {
@@ -579,6 +591,51 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                           <div />
                           {isTeacher && (
                             <div className="flex items-center gap-2">
+                              {activeTab !== 'all' && !['X', 'XI', 'XII'].includes(activeTab) && (
+                                <button
+                                  onClick={async () => {
+                                    if (window.confirm(`PERINGATAN: Anda yakin ingin MENGHAPUS SELURUH SISWA di kelas ${activeTab}?\n\nData yang dihapus tidak dapat dikembalikan!`)) {
+                                      if (!window.confirm("Konfirmasi akhir: Benar-benar ingin menghapus satu kelas ini?")) return;
+                                      
+                                      try {
+                                        setLoading(true);
+                                        if (isMockMode) {
+                                          const studentsToDelete = mockData.mockSiswa
+                                            .filter(s => s.jurusan_id === jurusan.id && s.kelas === activeTab)
+                                            .map(s => s.id);
+                                          
+                                          mockData.mockSiswa = mockData.mockSiswa.filter(s => !(s.jurusan_id === jurusan.id && s.kelas === activeTab));
+                                          mockData.mockSkillSiswa = mockData.mockSkillSiswa.filter(ss => !studentsToDelete.includes(ss.siswa_id));
+                                        } else {
+                                          const query = supabase.from('siswa')
+                                            .delete()
+                                            .eq('jurusan_id', jurusan.id)
+                                            .eq('kelas', activeTab);
+                                          
+                                          if (user?.sekolah_id) {
+                                            query.eq('sekolah_id', user.sekolah_id);
+                                          }
+                                          
+                                          const { error } = await query;
+                                          if (error) throw error;
+                                        }
+                                        await loadData();
+                                        alert(`Data siswa kelas ${activeTab} berhasil dihapus.`);
+                                        handleTabChange('all');
+                                      } catch (err: any) {
+                                        console.error('Failed to delete class', err);
+                                        alert(`Gagal menghapus data: ${err.message}`);
+                                      } finally {
+                                        setLoading(false);
+                                      }
+                                    }
+                                  }}
+                                  className="px-3 py-1 bg-orange-600/20 text-orange-400 border border-orange-500/30 rounded text-sm inline-flex items-center gap-2 hover:bg-orange-600 hover:text-white transition-all"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                  <span>Hapus Kelas {activeTab}</span>
+                                </button>
+                              )}
                               <button
                                 onClick={async () => {
                                   if (window.confirm(`PERINGATAN: Anda yakin ingin MENGHAPUS SEMUA data siswa di jurusan ${jurusan.nama_jurusan}?\n\nData yang dihapus tidak dapat dikembalikan!`)) {
@@ -596,11 +653,6 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                                             mockData.mockSiswa.splice(i, 1);
                                           }
                                         }
-                                        for (let i = mockData.mockSiswa.length - 1; i >= 0; i--) {
-                                          if (mockData.mockSiswa[i].jurusan_id === jurusan.id) {
-                                            mockData.mockSiswa.splice(i, 1);
-                                          }
-                                        }
                                         // Delete skills
                                         for (let i = mockData.mockSkillSiswa.length - 1; i >= 0; i--) {
                                           if (studentsToDelete.includes(mockData.mockSkillSiswa[i].siswa_id)) {
@@ -608,7 +660,9 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                                           }
                                         }
                                       } else {
-                                        const { error } = await supabase.from('siswa').delete().eq('jurusan_id', jurusan.id);
+                                        const query = supabase.from('siswa').delete().eq('jurusan_id', jurusan.id);
+                                        if (user?.sekolah_id) query.eq('sekolah_id', user.sekolah_id);
+                                        const { error } = await query;
                                         if (error) throw error;
                                       }
                                       await loadData();

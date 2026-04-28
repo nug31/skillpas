@@ -3,6 +3,7 @@ import { X, FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import mockData from '../mocks/mockData';
 import { supabase, isMockMode } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 
 interface ParsedRow { nama: string; nisn?: string; kelas?: string; skor?: number }
 
@@ -13,6 +14,7 @@ interface ImportStudentsProps {
 }
 
 export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudentsProps) {
+  const { user } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<ParsedRow[]>([]);
   const [loading, setLoading] = useState(false);
@@ -130,7 +132,8 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
           nama: r.nama,
           nisn: r.nisn,
           kelas: r.kelas ?? 'X',
-          jurusan_id: jurusanId
+          jurusan_id: jurusanId,
+          sekolah_id: user?.sekolah_id
         }));
 
         // Use select() to get back IDs of inserted rows immediately
@@ -155,7 +158,8 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
                 siswa_id: siswa.id,
                 level_id: level.id,
                 skor,
-                poin
+                poin,
+                sekolah_id: user?.sekolah_id
               };
             });
 
@@ -181,7 +185,8 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
                   penilai: 'Sistem',
                   hasil: 'Lulus',
                   tanggal: today,
-                  catatan: 'Otomatis dibuat saat import data'
+                  catatan: 'Otomatis dibuat saat import data',
+                  sekolah_id: user?.sekolah_id
                 });
               });
             });

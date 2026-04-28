@@ -9,7 +9,21 @@ export interface Notification {
     message: string;
     timestamp: string;
     read: boolean;
+    sekolah_id?: string;
 }
+
+const getSekolahId = () => {
+    try {
+        const stored = localStorage.getItem('skill_passport_auth');
+        if (stored) {
+            const user = JSON.parse(stored);
+            return user.sekolah_id;
+        }
+    } catch (e) {
+        console.error('Failed to get sekolah_id from storage', e);
+    }
+    return null;
+};
 
 interface NotificationStore {
     notifications: Notification[];
@@ -39,10 +53,10 @@ let state: NotificationStore = {
         // Persist to Supabase if not in mock mode and user_id is provided
         if (!isMockMode && n.user_id) {
             await supabase.from('notifications').insert({
-                user_id: n.user_id,
                 title: n.title,
                 message: n.message,
-                type: n.type
+                type: n.type,
+                sekolah_id: getSekolahId()
             });
         }
 
@@ -72,11 +86,16 @@ let state: NotificationStore = {
     fetchNotifications: async (userId) => {
         if (isMockMode) return;
 
-        const { data, error } = await supabase
+        const query = supabase
             .from('notifications')
             .select('*')
             .eq('user_id', userId)
             .order('created_at', { ascending: false });
+
+        const sekolahId = getSekolahId();
+        if (sekolahId) query.eq('sekolah_id', sekolahId);
+
+        const { data, error } = await query;
 
         if (!error && data) {
             state.notifications = data.map((d: any) => ({
@@ -98,11 +117,16 @@ let state: NotificationStore = {
         notify();
 
         if (!isMockMode) {
-            await supabase
+            const query = supabase
                 .from('notifications')
                 .update({ read: true })
                 .eq('user_id', userId)
                 .eq('read', false);
+
+            const sekolahId = getSekolahId();
+            if (sekolahId) query.eq('sekolah_id', sekolahId);
+
+            await query;
         }
     },
     clearAll: () => {

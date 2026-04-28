@@ -74,12 +74,16 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
             setJurusanList(mockData.mockJurusan);
             setLevels(mockData.mockLevels);
         } else {
-            const { data: jData } = await supabase.from('jurusan').select('*');
+            const jQuery = supabase.from('jurusan').select('*');
+            if (user?.sekolah_id) jQuery.eq('sekolah_id', user.sekolah_id);
+            const { data: jData } = await jQuery;
             if (jData) setJurusanList(jData);
 
             // Fetch levels and overrides for this jurusan
             const { data: lData } = await supabase.from('level_skill').select('*').order('urutan');
-            const { data: lsjData } = await supabase.from('level_skill_jurusan').select('*').eq('jurusan_id', user.jurusan_id);
+            const lsjQueries = supabase.from('level_skill_jurusan').select('*').eq('jurusan_id', user.jurusan_id);
+            if (user?.sekolah_id) lsjQueries.eq('sekolah_id', user.sekolah_id);
+            const { data: lsjData } = await lsjQueries;
 
             if (lData) {
                 const enriched = (lData as any[]).map((l: any) => {
@@ -150,10 +154,16 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
             } else {
                 // Optimized Supabase logic: 
                 // 1. Fetch ALL students for the department first (basic info only)
-                const { data: rawSiswaData, error: siswaError } = await supabase
+                const query = supabase
                     .from('siswa')
                     .select('id, nama, kelas, nisn, avatar_url, photo_url, jurusan_id, skill_siswa(skor, poin)')
                     .eq('jurusan_id', user.jurusan_id);
+
+                if (user?.sekolah_id) {
+                    query.eq('sekolah_id', user.sekolah_id);
+                }
+
+                const { data: rawSiswaData, error: siswaError } = await query;
 
                 if (siswaError) throw siswaError;
 
@@ -171,15 +181,24 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                 const filteredIds = filteredSiswa.map((s: any) => s.id);
 
                 // 3. Fetch related data ONLY for the filtered students in parallel
+                const historyQuery = supabase
+                    .from('competency_history')
+                    .select('*')
+                    .in('siswa_id', filteredIds);
+                
+                const disciplineQuery = supabase
+                    .from('student_discipline')
+                    .select('*')
+                    .in('siswa_id', filteredIds);
+
+                if (user?.sekolah_id) {
+                    historyQuery.eq('sekolah_id', user.sekolah_id);
+                    disciplineQuery.eq('sekolah_id', user.sekolah_id);
+                }
+
                 const [historyRes, disciplineRes, submissions] = await Promise.all([
-                    supabase
-                        .from('competency_history')
-                        .select('*')
-                        .in('siswa_id', filteredIds),
-                    supabase
-                        .from('student_discipline')
-                        .select('*')
-                        .in('siswa_id', filteredIds),
+                    historyQuery,
+                    disciplineQuery,
                     krsStore.getSubmissions(filteredIds)
                 ]);
 

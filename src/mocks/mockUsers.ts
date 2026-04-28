@@ -11,6 +11,7 @@ export interface User {
     nisn?: string;
     avatar_url?: string;
     photo_url?: string;
+    sekolah_id?: string;
 }
 
 import { JURUSAN_IDS } from './mockData';
