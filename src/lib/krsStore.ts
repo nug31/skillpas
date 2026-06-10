@@ -23,10 +23,19 @@ export const krsStore = {
         if (isMockMode) {
             const saved = localStorage.getItem('skillpas_krs_submissions');
             let data: KRSSubmission[] = saved ? JSON.parse(saved) : [];
-            if (siswaIds && siswaIds.length > 0) {
-                data = data.filter(s => siswaIds.includes(s.siswa_id));
+            
+            // Filter out orphans (e.g. graduated/deleted students)
+            const validStudentIds = new Set(mockData.mockSiswa.map(s => s.id));
+            const validData = data.filter(s => validStudentIds.has(s.siswa_id));
+            
+            if (validData.length !== data.length) {
+                localStorage.setItem('skillpas_krs_submissions', JSON.stringify(validData));
             }
-            return data;
+            
+            if (siswaIds && siswaIds.length > 0) {
+                return validData.filter(s => siswaIds.includes(s.siswa_id));
+            }
+            return validData;
         }
 
         let query = supabase
@@ -50,6 +59,40 @@ export const krsStore = {
         if (error) {
             console.error('Failed to fetch KRS submissions', error);
             return [];
+        }
+
+        // Validate that the student still exists (filter out orphans like graduated students)
+        if (data && data.length > 0) {
+            const siswaIdsToFetch = [...new Set(data.map((d: any) => d.siswa_id))];
+            
+            const validSiswaIds = new Set();
+            const chunkSize = 200;
+            
+            for (let i = 0; i < siswaIdsToFetch.length; i += chunkSize) {
+                const chunk = siswaIdsToFetch.slice(i, i + chunkSize);
+                const { data: validSiswa } = await supabase
+                    .from('siswa')
+                    .select('id')
+                    .in('id', chunk);
+                    
+                if (validSiswa) {
+                    validSiswa.forEach((s: any) => validSiswaIds.add(s.id));
+                }
+            }
+            
+            const validData = data.filter((d: any) => validSiswaIds.has(d.siswa_id));
+            
+            // Optional: Cleanup orphans asynchronously
+            const orphans = data.filter((d: any) => !validSiswaIds.has(d.siswa_id));
+            if (orphans.length > 0) {
+                const orphanIds = orphans.map((o: any) => o.id);
+                // Fire and forget
+                supabase.from('krs').delete().in('id', orphanIds).then(() => {
+                    console.log(`[krsStore] Cleaned up ${orphanIds.length} orphaned KRS submissions`);
+                });
+            }
+            
+            return validData as KRSSubmission[];
         }
 
         return data as KRSSubmission[];
