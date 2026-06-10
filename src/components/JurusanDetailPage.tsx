@@ -358,7 +358,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
     }
   }
 
-  const [activeTab, setActiveTab] = useState<string>(classFilter || 'all');
+  const [activeTab, setActiveTab] = useState<string>(classFilter || 'X');
 
   // Memoize unique classes for this jurusan, sorted naturally
   const uniqueClasses = useMemo(() => {
