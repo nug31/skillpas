@@ -24,9 +24,14 @@ export const krsStore = {
             const saved = localStorage.getItem('skillpas_krs_submissions');
             let data: KRSSubmission[] = saved ? JSON.parse(saved) : [];
             
-            // Filter out orphans (e.g. graduated/deleted students)
-            const validStudentIds = new Set(mockData.mockSiswa.map(s => s.id));
-            const validData = data.filter(s => validStudentIds.has(s.siswa_id));
+            // Filter out orphans and sync class/name
+            const validStudents = new Map(mockData.mockSiswa.map(s => [s.id, s]));
+            const validData = data
+                .filter(s => validStudents.has(s.siswa_id))
+                .map(s => {
+                    const student = validStudents.get(s.siswa_id);
+                    return { ...s, kelas: student!.kelas, siswa_nama: student!.nama };
+                });
             
             if (validData.length !== data.length) {
                 localStorage.setItem('skillpas_krs_submissions', JSON.stringify(validData));
@@ -65,25 +70,30 @@ export const krsStore = {
         if (data && data.length > 0) {
             const siswaIdsToFetch = [...new Set(data.map((d: any) => d.siswa_id))];
             
-            const validSiswaIds = new Set();
+            const validSiswaMap = new Map();
             const chunkSize = 200;
             
             for (let i = 0; i < siswaIdsToFetch.length; i += chunkSize) {
                 const chunk = siswaIdsToFetch.slice(i, i + chunkSize);
                 const { data: validSiswa } = await supabase
                     .from('siswa')
-                    .select('id')
+                    .select('id, kelas, nama')
                     .in('id', chunk);
                     
                 if (validSiswa) {
-                    validSiswa.forEach((s: any) => validSiswaIds.add(s.id));
+                    validSiswa.forEach((s: any) => validSiswaMap.set(s.id, s));
                 }
             }
             
-            const validData = data.filter((d: any) => validSiswaIds.has(d.siswa_id));
+            const validData = data
+                .filter((d: any) => validSiswaMap.has(d.siswa_id))
+                .map((d: any) => {
+                    const s = validSiswaMap.get(d.siswa_id);
+                    return { ...d, kelas: s.kelas, siswa_nama: s.nama };
+                });
             
             // Optional: Cleanup orphans asynchronously
-            const orphans = data.filter((d: any) => !validSiswaIds.has(d.siswa_id));
+            const orphans = data.filter((d: any) => !validSiswaMap.has(d.siswa_id));
             if (orphans.length > 0) {
                 const orphanIds = orphans.map((o: any) => o.id);
                 // Fire and forget
