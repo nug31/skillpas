@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { ArrowLeft, Trash2, Download, ChevronLeft, ChevronRight, LayoutGrid } from 'lucide-react';
+import { ArrowLeft, Trash2, Download, ChevronLeft, ChevronRight, LayoutGrid, ArrowUpCircle } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { supabase, isMockMode } from '../lib/supabase';
 import mockData from '../mocks/mockData';
@@ -281,6 +281,80 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
       console.error('Error updating criteria:', err);
       // rollback is already handled by loadData() or above setLevels
       throw err;
+    }
+  }
+
+  async function handleNaikKelas() {
+    if (!window.confirm("PERINGATAN: Fitur ini akan mempromosikan siswa secara otomatis!\n\n- Kelas X -> XI\n- Kelas XI -> XII\n- Kelas XII -> AKAN DIHAPUS (Lulus)\n\nApakah Anda yakin ingin melanjutkan proses ini untuk seluruh siswa di jurusan ini? Data yang dihapus tidak dapat dikembalikan!")) return;
+
+    try {
+      setLoading(true);
+      const updates: { id: string, kelas: string }[] = [];
+      const deletes: string[] = [];
+
+      for (const s of students) {
+        let cls = s.kelas.trim();
+        if (cls.match(/^(XII|12)\b/i)) {
+          deletes.push(s.id);
+        } else if (cls.match(/^(XI|11)\b/i)) {
+          const newCls = cls.replace(/^(XI|11)\b/i, (match) => {
+            if (match.toUpperCase() === 'XI') return 'XII';
+            return '12';
+          });
+          updates.push({ id: s.id, kelas: newCls });
+        } else if (cls.match(/^(X|10)\b/i)) {
+          const newCls = cls.replace(/^(X|10)\b/i, (match) => {
+            if (match.toUpperCase() === 'X') return 'XI';
+            return '11';
+          });
+          updates.push({ id: s.id, kelas: newCls });
+        }
+      }
+
+      if (isMockMode) {
+        if (deletes.length > 0) {
+          mockData.mockSiswa = mockData.mockSiswa.filter(s => !deletes.includes(s.id));
+          mockData.mockSkillSiswa = mockData.mockSkillSiswa.filter(ss => !deletes.includes(ss.siswa_id));
+        }
+        for (const u of updates) {
+          const s = mockData.mockSiswa.find(ms => ms.id === u.id);
+          if (s) s.kelas = u.kelas;
+        }
+      } else {
+        if (deletes.length > 0) {
+          const chunkSize = 500;
+          for (let i = 0; i < deletes.length; i += chunkSize) {
+            const chunk = deletes.slice(i, i + chunkSize);
+            const { error: delError } = await supabase.from('siswa').delete().in('id', chunk);
+            if (delError) console.error("Error deleting students:", delError);
+          }
+        }
+        if (updates.length > 0) {
+          const groupByClass: Record<string, string[]> = {};
+          for (const u of updates) {
+            if (!groupByClass[u.kelas]) groupByClass[u.kelas] = [];
+            groupByClass[u.kelas].push(u.id);
+          }
+          const updatePromises = Object.entries(groupByClass).map(async ([newKelas, ids]) => {
+            const chunkSize = 500;
+            for (let i = 0; i < ids.length; i += chunkSize) {
+               const chunk = ids.slice(i, i + chunkSize);
+               const { error: upError } = await supabase.from('siswa').update({ kelas: newKelas }).in('id', chunk);
+               if (upError) console.error(`Error updating to class ${newKelas}:`, upError);
+            }
+          });
+          await Promise.all(updatePromises);
+        }
+      }
+
+      alert(`Berhasil memproses Naik Kelas!\n- ${updates.length} siswa dinaikkan kelasnya.\n- ${deletes.length} siswa kelas 12 dihapus (Lulus).`);
+      handleTabChange('all'); // Reset tab to all to prevent looking at an empty deleted class
+      await loadData();
+    } catch (err: any) {
+      console.error('Naik kelas failed', err);
+      alert('Gagal memproses naik kelas: ' + err.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -679,6 +753,13 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                               >
                                 <Trash2 className="w-4 h-4" />
                                 <span>Hapus Semua</span>
+                              </button>
+                              <button
+                                onClick={handleNaikKelas}
+                                className="px-3 py-1 bg-emerald-600 text-white rounded text-sm inline-flex items-center gap-2 hover:bg-emerald-700 transition-colors"
+                              >
+                                <ArrowUpCircle className="w-4 h-4" />
+                                <span>Naik Kelas</span>
                               </button>
                               <button onClick={() => setShowImport(true)} className="px-3 py-1 bg-indigo-600 text-white rounded text-sm inline-flex items-center gap-2 hover:bg-indigo-700 transition-colors">
                                 <Download className="w-4 h-4" />
