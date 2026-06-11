@@ -80,9 +80,9 @@ export const mockUsers: User[] = [
 
     // Consolidated Walas from KAMPUS 01, 02, & 03 (Total 100 Rows)
     // XI CLASSES (naik dari X)
-    { id: 'w-v-xi-ak1', username: 'walas_viany_xi_ak1', password: '123', name: 'Viany Lingga Revi, S.E', role: 'wali_kelas', kelas: 'XI AKUNTANSI 1', jurusan_id: JURUSAN_IDS.AKUNTANSI },
-    { id: 'w-d-xi-ak2', username: 'walas_devin_xi_ak2', password: '123', name: 'Devin Eldwin, S.Ak', role: 'wali_kelas', kelas: 'XI AKUNTANSI 2', jurusan_id: JURUSAN_IDS.AKUNTANSI },
-    { id: 'w-v-xi-ak3', username: 'walas_viany_xi_ak3', password: '123', name: 'Viany Lingga Revi, S.E', role: 'wali_kelas', kelas: 'XI AKUNTANSI 3', jurusan_id: JURUSAN_IDS.AKUNTANSI },
+    { id: 'w-v-xi-ak1', username: 'walas_viany_xi_ak1', password: '123', name: 'Viany Lingga Revi, S.E', role: 'wali_kelas', kelas: 'XI AK 1', jurusan_id: JURUSAN_IDS.AKUNTANSI },
+    { id: 'w-d-xi-ak2', username: 'walas_devin_xi_ak2', password: '123', name: 'Devin Eldwin, S.Ak', role: 'wali_kelas', kelas: 'XI AK 2', jurusan_id: JURUSAN_IDS.AKUNTANSI },
+    { id: 'w-v-xi-ak3', username: 'walas_viany_xi_ak3', password: '123', name: 'Viany Lingga Revi, S.E', role: 'wali_kelas', kelas: 'XI AK 3', jurusan_id: JURUSAN_IDS.AKUNTANSI },
     { id: 'w-m-xi-eli1', username: 'walas_maharani_xi_elin1', password: '123', name: 'Maharani Benedicta AP, S.Pd', role: 'wali_kelas', kelas: 'XI ELIND 1', jurusan_id: JURUSAN_IDS.ELIND },
     { id: 'w-s-xi-eli2', username: 'walas_serli_xi_elin2', password: '123', name: 'Serli Aprodita, S.S', role: 'wali_kelas', kelas: 'XI ELIND 2', jurusan_id: JURUSAN_IDS.ELIND },
     { id: 'w-i-xi-eli3', username: 'walas_iqbal_xi_elin3', password: '123', name: 'Muhamad Iqbal, S.Pd', role: 'wali_kelas', kelas: 'XI ELIND 3', jurusan_id: JURUSAN_IDS.ELIND },
@@ -103,9 +103,9 @@ export const mockUsers: User[] = [
     { id: 'w-a-xi-tki2', username: 'walas_aldy_xi_tki2', password: '123', name: 'Moh. Aldy Akbar Supriyadi, S', role: 'wali_kelas', kelas: 'XI TKI 2', jurusan_id: JURUSAN_IDS.KIMIA },
 
     // XII CLASSES (naik dari XI)
-    { id: 'w-ditta-xii-ak1', username: 'walas_ditta_xii_ak1', password: '123', name: 'Ditta Octaviani, S.Pd', role: 'wali_kelas', kelas: 'XII AKUNTANSI 1', jurusan_id: JURUSAN_IDS.AKUNTANSI },
-    { id: 'w-retno-xii-ak2', username: 'walas_retno_xii_ak2', password: '123', name: 'Retno Dwi Astuti', role: 'wali_kelas', kelas: 'XII AKUNTANSI 2', jurusan_id: JURUSAN_IDS.AKUNTANSI },
-    { id: 'w-fuji-xii-ak3', username: 'walas_fuji_xii_ak3', password: '123', name: 'Fuji Sampan Sujana', role: 'wali_kelas', kelas: 'XII AKUNTANSI 3', jurusan_id: JURUSAN_IDS.AKUNTANSI },
+    { id: 'w-ditta-xii-ak1', username: 'walas_ditta_xii_ak1', password: '123', name: 'Ditta Octaviani, S.Pd', role: 'wali_kelas', kelas: 'XII AK 1', jurusan_id: JURUSAN_IDS.AKUNTANSI },
+    { id: 'w-retno-xii-ak2', username: 'walas_retno_xii_ak2', password: '123', name: 'Retno Dwi Astuti', role: 'wali_kelas', kelas: 'XII AK 2', jurusan_id: JURUSAN_IDS.AKUNTANSI },
+    { id: 'w-fuji-xii-ak3', username: 'walas_fuji_xii_ak3', password: '123', name: 'Fuji Sampan Sujana', role: 'wali_kelas', kelas: 'XII AK 3', jurusan_id: JURUSAN_IDS.AKUNTANSI },
     { id: 'w-raihan-xii-eli1', username: 'walas_raihan_xii_elin1', password: '123', name: 'Raihan Nurhakim, S.Pd', role: 'wali_kelas', kelas: 'XII ELIND 1', jurusan_id: JURUSAN_IDS.ELIND },
     { id: 'w-eldha-xii-eli2', username: 'walas_eldha_xii_elin2', password: '123', name: 'Eldha Luvy Zha', role: 'wali_kelas', kelas: 'XII ELIND 2', jurusan_id: JURUSAN_IDS.ELIND },
     { id: 'w-azzam-xii-eli3', username: 'walas_azzam_xii_elin3', password: '123', name: 'Azzam Izzudin Ramadhan', role: 'wali_kelas', kelas: 'XII ELIND 3', jurusan_id: JURUSAN_IDS.ELIND },
@@ -151,7 +151,7 @@ export const mockUsers: User[] = [
     { id: 'w-a-xii-hotel', username: 'walas_aula_xii_hotel', password: '123', name: 'Aula Al Layali, S.Pd', role: 'wali_kelas', kelas: 'ALUMNI HOTEL 1', jurusan_id: JURUSAN_IDS.HOTEL },
 
     // KAMPUS 03 - XI CLASSES (naik dari X 03)
-    { id: 'w-berty-xi-ak-03', username: 'walas_berty_xi_ak_03', password: '123', name: 'Berty Efira, S.S', role: 'wali_kelas', kelas: 'XI AKUNTANSI (03)', jurusan_id: JURUSAN_IDS.AKUNTANSI },
+    { id: 'w-berty-xi-ak-03', username: 'walas_berty_xi_ak_03', password: '123', name: 'Berty Efira, S.S', role: 'wali_kelas', kelas: 'XI AK (03)', jurusan_id: JURUSAN_IDS.AKUNTANSI },
     { id: 'w-ihsan-xi-eli1-03', username: 'walas_ihsan_xi_eli1_03', password: '123', name: 'Muhammad Al Ihsan', role: 'wali_kelas', kelas: 'XI ELIND 1 (03)', jurusan_id: JURUSAN_IDS.ELIND },
     { id: 'w-adhista-xi-eli2-03', username: 'walas_adhista_xi_eli2_03', password: '123', name: 'Adhista Cindy Rahmayani, S.Pd', role: 'wali_kelas', kelas: 'XI ELIND 2 (03)', jurusan_id: JURUSAN_IDS.ELIND },
     { id: 'w-adhista-xi-eli3-03', username: 'walas_adhista_xi_eli3_03', password: '123', name: 'Adhista Cindy Rahmayani, S.Pd', role: 'wali_kelas', kelas: 'XI ELIND 3 (03)', jurusan_id: JURUSAN_IDS.ELIND },
@@ -162,7 +162,7 @@ export const mockUsers: User[] = [
     { id: 'w-tiara-xi-tsm1-03', username: 'walas_tiara_xi_tsm1_03', password: '123', name: 'Tiara Kusuma Dewi, S.Pd', role: 'wali_kelas', kelas: 'XI TSM 1 (03)', jurusan_id: JURUSAN_IDS.TSM },
     { id: 'w-syafrudin-xi-tsm2-03', username: 'walas_syafrudin_xi_tsm2_03', password: '123', name: 'Syafrudin, S.S', role: 'wali_kelas', kelas: 'XI TSM 2 (03)', jurusan_id: JURUSAN_IDS.TSM },
     // KAMPUS 03 - XII CLASSES (naik dari XI 03)
-    { id: 'w-diah-xii-ak4-03', username: 'walas_diah_xii_ak4_03', password: '123', name: 'Diah Maulias Dewi Putri', role: 'wali_kelas', kelas: 'XII AKUNTANSI 4 (03)', jurusan_id: JURUSAN_IDS.AKUNTANSI },
+    { id: 'w-diah-xii-ak4-03', username: 'walas_diah_xii_ak4_03', password: '123', name: 'Diah Maulias Dewi Putri', role: 'wali_kelas', kelas: 'XII AK 4 (03)', jurusan_id: JURUSAN_IDS.AKUNTANSI },
     { id: 'w-danu-xii-eli9-03', username: 'walas_danu_xii_eli9_03', password: '123', name: 'Danu Purwanto', role: 'wali_kelas', kelas: 'XII ELIND 9 (03)', jurusan_id: JURUSAN_IDS.ELIND },
     { id: 'w-ridwan-xii-eli10-03', username: 'walas_ridwan_xii_eli10_03', password: '123', name: 'Ridwan, S.Pd', role: 'wali_kelas', kelas: 'XII ELIND 10 (03)', jurusan_id: JURUSAN_IDS.ELIND },
     { id: 'w-lia-xii-eli11-03', username: 'walas_lia_xii_eli11_03', password: '123', name: 'Lia Yulianti, S.Pd', role: 'wali_kelas', kelas: 'XII ELIND 11 (03)', jurusan_id: JURUSAN_IDS.ELIND },

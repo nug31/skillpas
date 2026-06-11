@@ -16,9 +16,9 @@ VALUES
     -- ==========================================
 
     -- XI CLASSES (naik dari X)
-    ('walas_viany_xi_ak1', '123', 'Viany Lingga Revi, S.E', 'wali_kelas', 'XI AKUNTANSI 1', '550e8400-e29b-41d4-a716-446655440007'),
-    ('walas_devin_xi_ak2', '123', 'Devin Eldwin, S.Ak', 'wali_kelas', 'XI AKUNTANSI 2', '550e8400-e29b-41d4-a716-446655440007'),
-    ('walas_viany_xi_ak3', '123', 'Viany Lingga Revi, S.E', 'wali_kelas', 'XI AKUNTANSI 3', '550e8400-e29b-41d4-a716-446655440007'),
+    ('walas_viany_xi_ak1', '123', 'Viany Lingga Revi, S.E', 'wali_kelas', 'XI AK 1', '550e8400-e29b-41d4-a716-446655440007'),
+    ('walas_devin_xi_ak2', '123', 'Devin Eldwin, S.Ak', 'wali_kelas', 'XI AK 2', '550e8400-e29b-41d4-a716-446655440007'),
+    ('walas_viany_xi_ak3', '123', 'Viany Lingga Revi, S.E', 'wali_kelas', 'XI AK 3', '550e8400-e29b-41d4-a716-446655440007'),
 
     ('walas_maharani_xi_elin1', '123', 'Maharani Benedicta AP, S.Pd', 'wali_kelas', 'XI ELIND 1', '550e8400-e29b-41d4-a716-446655440004'),
     ('walas_serli_xi_elin2', '123', 'Serli Aprodita, S.S', 'wali_kelas', 'XI ELIND 2', '550e8400-e29b-41d4-a716-446655440004'),
@@ -46,9 +46,9 @@ VALUES
     ('walas_aldy_xi_tki2', '123', 'Moh. Aldy Akbar Supriyadi, S', 'wali_kelas', 'XI TKI 2', '550e8400-e29b-41d4-a716-446655440006'),
 
     -- XII CLASSES (naik dari XI)
-    ('walas_ditta_xii_ak1', '123', 'Ditta Octaviani, S.Pd', 'wali_kelas', 'XII AKUNTANSI 1', '550e8400-e29b-41d4-a716-446655440007'),
-    ('walas_retno_xii_ak2', '123', 'Retno Dwi Astuti', 'wali_kelas', 'XII AKUNTANSI 2', '550e8400-e29b-41d4-a716-446655440007'),
-    ('walas_fuji_xii_ak3', '123', 'Fuji Sampan Sujana', 'wali_kelas', 'XII AKUNTANSI 3', '550e8400-e29b-41d4-a716-446655440007'),
+    ('walas_ditta_xii_ak1', '123', 'Ditta Octaviani, S.Pd', 'wali_kelas', 'XII AK 1', '550e8400-e29b-41d4-a716-446655440007'),
+    ('walas_retno_xii_ak2', '123', 'Retno Dwi Astuti', 'wali_kelas', 'XII AK 2', '550e8400-e29b-41d4-a716-446655440007'),
+    ('walas_fuji_xii_ak3', '123', 'Fuji Sampan Sujana', 'wali_kelas', 'XII AK 3', '550e8400-e29b-41d4-a716-446655440007'),
 
     ('walas_raihan_xii_elin1', '123', 'Raihan Nurhakim, S.Pd', 'wali_kelas', 'XII ELIND 1', '550e8400-e29b-41d4-a716-446655440004'),
     ('walas_eldha_xii_elin2', '123', 'Eldha Luvy Zha', 'wali_kelas', 'XII ELIND 2', '550e8400-e29b-41d4-a716-446655440004'),
@@ -86,7 +86,7 @@ VALUES
     -- ==========================================
 
     -- XI CLASSES 03 (naik dari X 03)
-    ('walas_berty_xi_ak_03', '123', 'Berty Efira, S.S', 'wali_kelas', 'XI AKUNTANSI (03)', '550e8400-e29b-41d4-a716-446655440007'),
+    ('walas_berty_xi_ak_03', '123', 'Berty Efira, S.S', 'wali_kelas', 'XI AK (03)', '550e8400-e29b-41d4-a716-446655440007'),
 
     ('walas_ihsan_xi_eli1_03', '123', 'Muhammad Al Ihsan', 'wali_kelas', 'XI ELIND 1 (03)', '550e8400-e29b-41d4-a716-446655440004'),
     ('walas_adhista_xi_eli2_03', '123', 'Adhista Cindy Rahmayani, S.Pd', 'wali_kelas', 'XI ELIND 2 (03)', '550e8400-e29b-41d4-a716-446655440004'),
@@ -102,7 +102,7 @@ VALUES
     ('walas_syafrudin_xi_tsm2_03', '123', 'Syafrudin, S.S', 'wali_kelas', 'XI TSM 2 (03)', '550e8400-e29b-41d4-a716-446655440003'),
 
     -- XII CLASSES 03 (naik dari XI 03)
-    ('walas_diah_xii_ak4_03', '123', 'Diah Maulias Dewi Putri', 'wali_kelas', 'XII AKUNTANSI 4 (03)', '550e8400-e29b-41d4-a716-446655440007'),
+    ('walas_diah_xii_ak4_03', '123', 'Diah Maulias Dewi Putri', 'wali_kelas', 'XII AK 4 (03)', '550e8400-e29b-41d4-a716-446655440007'),
 
     ('walas_danu_xii_eli9_03', '123', 'Danu Purwanto', 'wali_kelas', 'XII ELIND 9 (03)', '550e8400-e29b-41d4-a716-446655440004'),
     ('walas_ridwan_xii_eli10_03', '123', 'Ridwan, S.Pd', 'wali_kelas', 'XII ELIND 10 (03)', '550e8400-e29b-41d4-a716-446655440004'),
