@@ -463,7 +463,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                                             onClick={handleDownloadTemplate}
                                             className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-2 [.theme-dark_&]:text-slate-300 [.theme-dark_&]:hover:bg-white/5"
                                         >
-                                            <Download className="w-4 h-4 text-emerald-500" />
+                                            <Download className="w-4 h-4 text-orange-500" />
                                             1. Download Template Excel
                                         </button>
                                         <div className="h-px bg-slate-200 my-1 [.theme-dark_&]:bg-white/5" />
@@ -492,7 +492,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
 
                         <button
                             onClick={handleExportExcel}
-                            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-xl text-sm font-bold transition-all border border-emerald-500/20 hover:border-emerald-500/40 [.theme-clear_&]:bg-emerald-50 [.theme-clear_&]:text-emerald-700 [.theme-clear_&]:border-emerald-200"
+                            className="flex items-center gap-2 px-4 py-2.5 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 rounded-xl text-sm font-bold transition-all border border-orange-500/20 hover:border-orange-500/40 [.theme-clear_&]:bg-orange-50 [.theme-clear_&]:text-orange-700 [.theme-clear_&]:border-orange-200"
                         >
                             <FileSpreadsheet className="w-4 h-4" />
                             <span className="hidden sm:inline">Excel</span>
@@ -527,7 +527,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                     </div>
 
                     <div className="card-glass p-6 rounded-2xl border border-white/6 flex items-center gap-4 shadow-xl [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200">
-                        <div className="p-3 bg-emerald-500 rounded-xl shadow-lg shadow-emerald-500/20">
+                        <div className="p-3 bg-orange-500 rounded-xl shadow-lg shadow-orange-500/20">
                             <TrendingUp className="w-6 h-6 text-white" />
                         </div>
                         <div>
@@ -603,7 +603,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                                             <td className="px-6 py-4">
                                                 {siswa.latest_krs ? (
                                                     <div className="flex flex-col gap-1">
-                                                        <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider self-start ${siswa.latest_krs.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400' :
+                                                        <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider self-start ${siswa.latest_krs.status === 'completed' ? 'bg-orange-500/20 text-orange-400' :
                                                             siswa.latest_krs.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
                                                                 siswa.latest_krs.status === 'scheduled' ? 'bg-blue-500/20 text-blue-400 animate-pulse' :
                                                                     'bg-amber-500/20 text-amber-400'
@@ -698,7 +698,7 @@ export function WalasDashboard({ user, onBack }: WalasDashboardProps) {
                                 {siswa.latest_krs && (
                                     <div className="flex items-center justify-between py-2 px-3 bg-white/5 rounded-lg [.theme-clear_&]:bg-slate-50">
                                         <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Status KRS</span>
-                                        <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${siswa.latest_krs.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400' :
+                                        <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${siswa.latest_krs.status === 'completed' ? 'bg-orange-500/20 text-orange-400' :
                                             siswa.latest_krs.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
                                                 siswa.latest_krs.status === 'scheduled' ? 'bg-blue-500/20 text-blue-400 animate-pulse' :
                                                     'bg-amber-500/20 text-amber-400'

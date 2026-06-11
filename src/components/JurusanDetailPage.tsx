@@ -457,8 +457,8 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                 <span className="text-[9px] sm:text-[10px] whitespace-nowrap bg-[color:var(--accent-1)]/20 text-[color:var(--accent-1)] px-2 py-0.5 rounded-full border border-[color:var(--accent-1)]/30 font-bold uppercase tracking-widest">
                   {students.length} Siswa
                 </span>
-                <div className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full border font-black tracking-widest uppercase flex items-center gap-1.5 ${isMockMode ? 'bg-red-500/20 text-red-500 border-red-500/30' : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'}`}>
-                  <div className={`w-1.5 h-1.5 rounded-full ${isMockMode ? 'bg-red-500 animate-pulse' : 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]'}`} />
+                <div className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full border font-black tracking-widest uppercase flex items-center gap-1.5 ${isMockMode ? 'bg-red-500/20 text-red-500 border-red-500/30' : 'bg-orange-500/20 text-orange-400 border-orange-500/30'}`}>
+                  <div className={`w-1.5 h-1.5 rounded-full ${isMockMode ? 'bg-red-500 animate-pulse' : 'bg-orange-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]'}`} />
                   {isMockMode ? 'DEMO' : 'REAL'}
                 </div>
               </div>
@@ -756,7 +756,7 @@ export function JurusanDetailPage({ jurusan, onBack, classFilter }: JurusanDetai
                               </button>
                               <button
                                 onClick={handleNaikKelas}
-                                className="px-3 py-1 bg-emerald-600 text-white rounded text-sm inline-flex items-center gap-2 hover:bg-emerald-700 transition-colors"
+                                className="px-3 py-1 bg-orange-600 text-white rounded text-sm inline-flex items-center gap-2 hover:bg-orange-700 transition-colors"
                               >
                                 <ArrowUpCircle className="w-4 h-4" />
                                 <span>Naik Kelas</span>

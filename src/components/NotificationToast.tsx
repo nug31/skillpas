@@ -39,7 +39,7 @@ export function NotificationToast() {
 
     const icons = {
         info: <Info className="w-5 h-5 text-blue-400" />,
-        success: <CheckCircle className="w-5 h-5 text-emerald-400" />,
+        success: <CheckCircle className="w-5 h-5 text-orange-400" />,
         warning: <AlertTriangle className="w-5 h-5 text-amber-400" />,
         error: <AlertCircle className="w-5 h-5 text-red-400" />,
     };

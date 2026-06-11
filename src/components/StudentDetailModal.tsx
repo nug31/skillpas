@@ -435,8 +435,8 @@ export function StudentDetailModal({
                     <div className="flex items-center gap-1 py-0.5 px-2 rounded-full border bg-white/5 [.theme-clear_&]:bg-slate-50 border-white/10 [.theme-clear_&]:border-slate-200">
                       {student.skor >= 25 ? (
                         <>
-                          <Check className="w-3 h-3 text-emerald-500" />
-                          <span className="text-[10px] font-black uppercase text-emerald-500 tracking-tight">PKL Eligible</span>
+                          <Check className="w-3 h-3 text-orange-500" />
+                          <span className="text-[10px] font-black uppercase text-orange-500 tracking-tight">PKL Eligible</span>
                         </>
                       ) : (
                         <>
@@ -454,7 +454,7 @@ export function StudentDetailModal({
             {/* Skill Card Button */}
             <button
               onClick={() => setShowSkillCard(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-cyan-400 hover:from-cyan-500/30 hover:to-purple-500/30 transition-all border border-cyan-500/20 text-sm font-medium"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-orange-500/20 to-purple-500/20 text-orange-400 hover:from-orange-500/30 hover:to-purple-500/30 transition-all border border-orange-500/20 text-sm font-medium"
               title="Lihat Skill Card"
             >
               <CreditCard className="w-4 h-4" />
@@ -462,7 +462,7 @@ export function StudentDetailModal({
             </button>
             {isEditing ? (
               <>
-                <button onClick={handleSave} disabled={saving} className="p-2 rounded bg-green-500/20 text-green-500 hover:bg-green-500/30 transition-colors">
+                <button onClick={handleSave} disabled={saving} className="p-2 rounded bg-orange-500/20 text-orange-500 hover:bg-orange-500/30 transition-colors">
                   <Save className="w-4 h-4" />
                 </button>
                 <button onClick={() => setIsEditing(false)} disabled={saving} className="p-2 rounded hover:bg-white/5 text-[color:var(--text-muted)]">
@@ -535,7 +535,7 @@ export function StudentDetailModal({
                       <div className="grid grid-cols-4 gap-2">
                         <div className="bg-white/5 rounded p-2 text-center">
                           <div className="text-[9px] text-slate-500 uppercase font-bold">Masuk</div>
-                          <div className="text-sm font-black text-emerald-500">{discipline?.masuk || 0}</div>
+                          <div className="text-sm font-black text-orange-500">{discipline?.masuk || 0}</div>
                         </div>
                         <div className="bg-white/5 rounded p-2 text-center">
                           <div className="text-[9px] text-slate-500 uppercase font-bold">Izin</div>
@@ -598,9 +598,9 @@ export function StudentDetailModal({
                             />
                           ) : (
                             <div className="flex items-center gap-2">
-                              <span className={`text-xs font-black ${att.score >= 80 ? 'text-emerald-500' : att.score >= 70 ? 'text-amber-500' : 'text-rose-500'}`}>{att.score}</span>
+                              <span className={`text-xs font-black ${att.score >= 80 ? 'text-orange-500' : att.score >= 70 ? 'text-amber-500' : 'text-rose-500'}`}>{att.score}</span>
                               <div className="w-8 h-1 bg-white/5 rounded-full overflow-hidden hidden sm:block">
-                                <div style={{ width: `${att.score}%` }} className={`h-full ${att.score >= 80 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                                <div style={{ width: `${att.score}%` }} className={`h-full ${att.score >= 80 ? 'bg-orange-500' : 'bg-amber-500'}`} />
                               </div>
                             </div>
                           )}
@@ -753,7 +753,7 @@ export function StudentDetailModal({
                             <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100">{entry.aktivitas_pembuktian}</td>
                             <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100">{entry.penilai}</td>
                             <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100">
-                              <span className="px-2 py-0.5 rounded bg-green-500/10 text-green-500 font-bold text-[10px]">{entry.hasil}</span>
+                              <span className="px-2 py-0.5 rounded bg-orange-500/10 text-orange-500 font-bold text-[10px]">{entry.hasil}</span>
                             </td>
                             <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100">{entry.tanggal}</td>
                             <td className="px-4 py-3 border-b border-white/5 [.theme-clear_&]:border-slate-100">{entry.catatan || '-'}</td>

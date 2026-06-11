@@ -51,7 +51,7 @@ export function TopBar({
                             {userRole === 'wali_kelas' && (
                                 <button
                                     onClick={onOpenWalasDashboard}
-                                    className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all"
+                                    className="p-2 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/20 hover:bg-orange-500/20 transition-all"
                                     title="Walas Insight"
                                 >
                                     <LayoutDashboard className="w-4 h-4" />

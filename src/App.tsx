@@ -157,7 +157,7 @@ function AppContent() {
 
           let badge = 'Basic 1';
           let color = '#94a3b8';
-          if (score >= 90) { badge = 'Master'; color = '#10b981'; }
+          if (score >= 90) { badge = 'Master'; color = '#f97316'; }
           else if (score >= 76) { badge = 'Advance'; color = '#f59e0b'; }
           else if (score >= 51) { badge = 'Specialist'; color = '#3b82f6'; }
           else if (score >= 26) { badge = 'Basic 2'; color = '#64748b'; }

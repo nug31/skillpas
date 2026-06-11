@@ -15,12 +15,12 @@ interface RaceRecapProps {
 const colorPalette = [
     'from-blue-500 to-blue-600',     // 1. Teknik Mesin (Blue)
     'from-purple-500 to-purple-600', // 2. Teknik Instalasi (Purple)
-    'from-green-500 to-emerald-500', // 3. Teknik Kendaraan (Green)
+    'from-orange-500 to-orange-500', // 3. Teknik Kendaraan (Green)
     'from-yellow-400 to-amber-500',  // 4. Akuntansi (Yellow)
     'from-red-500 to-rose-600',      // 5. Teknik Kimia (Red)
     'from-pink-500 to-fuchsia-600',  // 6. Perhotelan (Pink)
     'from-indigo-500 to-blue-600',   // 7. Teknik Sepeda Motor (Indigo/Blue)
-    'from-teal-400 to-teal-600',     // 8. TEI (Teal)
+    'from-orange-400 to-orange-600',     // 8. TEI (Teal)
 ];
 
 export function RaceRecap({ jurusanData }: RaceRecapProps) {

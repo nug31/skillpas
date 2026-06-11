@@ -44,9 +44,9 @@ export function EvidenceDashboard({ user, onBack }: EvidenceDashboardProps) {
         pending_produktif: { label: 'Menunggu Guru Produktif', color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20', icon: Clock },
         pending_wali: { label: 'Menunggu Wali Kelas', color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20', icon: Clock },
         pending_hod: { label: 'Menunggu Ketua Jurusan', color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20', icon: Clock },
-        approved: { label: 'Disetujui – Jadwal Ujian Ditetapkan', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20', icon: CheckCircle },
+        approved: { label: 'Disetujui – Jadwal Ujian Ditetapkan', color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20', icon: CheckCircle },
         scheduled: { label: 'Ujian Dijadwalkan', color: 'text-indigo-400', bg: 'bg-indigo-500/10 border-indigo-500/20', icon: Clock },
-        completed: { label: 'Ujian Selesai', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20', icon: CheckCircle },
+        completed: { label: 'Ujian Selesai', color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20', icon: CheckCircle },
         rejected: { label: 'Ditolak', color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/20', icon: XCircle },
     };
 
@@ -119,7 +119,7 @@ export function EvidenceDashboard({ user, onBack }: EvidenceDashboardProps) {
                             {[
                                 { label: 'Foto Terupload', value: totalPhotos, icon: Camera, color: 'text-indigo-400', bg: 'bg-indigo-500/10' },
                                 { label: 'Video Terupload', value: totalVideos, icon: Film, color: 'text-amber-400', bg: 'bg-amber-500/10' },
-                                { label: 'Status Upload', value: hasEvidence ? 'Tersedia' : 'Kosong', icon: hasEvidence ? CheckCircle : XCircle, color: hasEvidence ? 'text-emerald-400' : 'text-red-400', bg: hasEvidence ? 'bg-emerald-500/10' : 'bg-red-500/10' },
+                                { label: 'Status Upload', value: hasEvidence ? 'Tersedia' : 'Kosong', icon: hasEvidence ? CheckCircle : XCircle, color: hasEvidence ? 'text-orange-400' : 'text-red-400', bg: hasEvidence ? 'bg-orange-500/10' : 'bg-red-500/10' },
                             ].map((stat, i) => (
                                 <motion.div
                                     key={i}
@@ -163,7 +163,7 @@ export function EvidenceDashboard({ user, onBack }: EvidenceDashboardProps) {
                                 <div className="flex items-center gap-2 mb-4">
                                     <ImageIcon className="w-5 h-5 text-indigo-400" />
                                     <h3 className="font-semibold text-white">Foto Bukti <span className="text-white/40 font-normal">({totalPhotos} foto)</span></h3>
-                                    <span className="ml-auto text-xs text-emerald-400 flex items-center gap-1">
+                                    <span className="ml-auto text-xs text-orange-400 flex items-center gap-1">
                                         <CheckCircle className="w-3.5 h-3.5" /> Terverifikasi
                                     </span>
                                 </div>
@@ -203,7 +203,7 @@ export function EvidenceDashboard({ user, onBack }: EvidenceDashboardProps) {
                                 <div className="flex items-center gap-2 mb-4">
                                     <Video className="w-5 h-5 text-amber-400" />
                                     <h3 className="font-semibold text-white">Video Bukti <span className="text-white/40 font-normal">({totalVideos} video)</span></h3>
-                                    <span className="ml-auto text-xs text-emerald-400 flex items-center gap-1">
+                                    <span className="ml-auto text-xs text-orange-400 flex items-center gap-1">
                                         <CheckCircle className="w-3.5 h-3.5" /> Terverifikasi
                                     </span>
                                 </div>
@@ -219,7 +219,7 @@ export function EvidenceDashboard({ user, onBack }: EvidenceDashboardProps) {
                                             <div className="px-3 py-2 flex items-center gap-2">
                                                 <Film className="w-4 h-4 text-amber-400/70" />
                                                 <span className="text-xs text-white/50">Video Bukti #{idx + 1}</span>
-                                                <span className="ml-auto text-xs text-emerald-400">✓ Upload berhasil</span>
+                                                <span className="ml-auto text-xs text-orange-400">✓ Upload berhasil</span>
                                             </div>
                                         </div>
                                     ))}

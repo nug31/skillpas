@@ -25,12 +25,12 @@ type ViewMode = 'list' | 'podium';
 const colorPalette = [
     'from-blue-500 to-blue-600',
     'from-purple-500 to-purple-600',
-    'from-green-500 to-emerald-500',
+    'from-orange-500 to-orange-500',
     'from-yellow-400 to-amber-500',
     'from-red-500 to-rose-600',
     'from-pink-500 to-fuchsia-600',
     'from-indigo-500 to-blue-600',
-    'from-teal-400 to-teal-600',
+    'from-orange-400 to-orange-600',
 ];
 
 export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetition = true, onContinue, krsStatus }: DashboardRaceProps) {
@@ -185,16 +185,16 @@ export function DashboardRace({ jurusanData, trigger = 0, myStats, showCompetiti
 
                     <div className="card-glass p-4 rounded-xl relative overflow-hidden group hover:-translate-y-1 transition-transform border border-white/5">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <Icons.Target className="w-16 h-16 text-emerald-500" />
+                            <Icons.Target className="w-16 h-16 text-orange-500" />
                         </div>
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-500">
+                            <div className="p-2 bg-orange-500/10 rounded-lg text-orange-500">
                                 <Icons.Target className="w-5 h-5" />
                             </div>
                             <span className="text-sm subtle font-medium">Avg Score</span>
                         </div>
                         <div className="text-2xl font-bold">{avgSchoolScore.toFixed(1)}</div>
-                        <div className="text-xs text-emerald-500 mt-1">School Average</div>
+                        <div className="text-xs text-orange-500 mt-1">School Average</div>
                     </div>
 
                     <div className="card-glass p-4 rounded-xl relative overflow-hidden group hover:-translate-y-1 transition-transform border border-white/5">

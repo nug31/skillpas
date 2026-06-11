@@ -69,8 +69,8 @@ export function LoginPage() {
             {/* Abstract Background Blobs */}
             {themeClear ? (
                 <>
-                    <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-emerald-100/40 blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: '7s' }} />
-                    <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-teal-100/40 blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: '8s' }} />
+                    <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-orange-100/40 blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: '7s' }} />
+                    <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-orange-100/40 blur-[100px] animate-pulse pointer-events-none" style={{ animationDuration: '8s' }} />
                     <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-[1]" />
                 </>
             ) : (
@@ -99,19 +99,19 @@ export function LoginPage() {
                 {/* Logo & Title */}
                 <div className="text-center mb-8">
                     <div className="relative inline-block mb-4 group">
-                        <div className={`absolute inset-0 rounded-full blur-xl transition-all duration-500 ${!themeClear ? 'bg-yellow-500/30 group-hover:bg-yellow-400/50' : 'bg-emerald-500/10 group-hover:bg-emerald-500/20'}`} />
+                        <div className={`absolute inset-0 rounded-full blur-xl transition-all duration-500 ${!themeClear ? 'bg-yellow-500/30 group-hover:bg-yellow-400/50' : 'bg-orange-500/10 group-hover:bg-orange-500/20'}`} />
                         <img
                             src="/logo.png"
                             alt="SMK Logo"
                             className={`relative w-24 h-24 object-cover transition-all duration-500 logo-adaptive ${themeClear
-                                ? 'ring-4 ring-emerald-50'
+                                ? 'ring-4 ring-orange-50'
                                 : 'ring-2 ring-white/10'}`}
                         />
                     </div>
-                    <h1 className="text-4xl font-black tracking-tight bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent mb-2 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] [.theme-clear_&]:from-emerald-600 [.theme-clear_&]:via-teal-600 [.theme-clear_&]:to-cyan-600">
+                    <h1 className="text-4xl font-black tracking-tight bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent mb-2 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] [.theme-clear_&]:from-orange-600 [.theme-clear_&]:via-orange-600 [.theme-clear_&]:to-orange-600">
                         SKILL PASSPORT
                     </h1>
-                    <p className={`text-sm font-medium tracking-wide uppercase ${themeClear ? 'text-emerald-800' : 'text-amber-200/70'}`}>Menuju Vokasi Berstandar Industri & Terverifikasi</p>
+                    <p className={`text-sm font-medium tracking-wide uppercase ${themeClear ? 'text-orange-800' : 'text-amber-200/70'}`}>Menuju Vokasi Berstandar Industri & Terverifikasi</p>
                 </div>
 
                 {/* Login Card */}
@@ -127,7 +127,7 @@ export function LoginPage() {
                             onClick={() => setSelectedRole('student')}
                             className={`p-4 rounded-2xl border transition-all duration-300 relative overflow-hidden group ${selectedRole === 'student'
                                 ? themeClear
-                                    ? 'border-emerald-500 bg-emerald-100/50 text-emerald-700 shadow-sm'
+                                    ? 'border-orange-500 bg-orange-100/50 text-orange-700 shadow-sm'
                                     : 'border-yellow-500/50 bg-yellow-950/30 text-yellow-400 shadow-[0_0_20px_rgba(234,179,8,0.2)]'
                                 : themeClear
                                     ? 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100'
@@ -144,7 +144,7 @@ export function LoginPage() {
                             onClick={() => setSelectedRole('teacher')}
                             className={`p-4 rounded-2xl border transition-all duration-300 relative overflow-hidden group ${selectedRole === 'teacher'
                                 ? themeClear
-                                    ? 'border-teal-500 bg-teal-100/50 text-teal-700 shadow-sm'
+                                    ? 'border-orange-500 bg-orange-100/50 text-orange-700 shadow-sm'
                                     : 'border-amber-500/50 bg-amber-950/30 text-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.2)]'
                                 : themeClear
                                     ? 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100'
@@ -161,7 +161,7 @@ export function LoginPage() {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Username Input */}
                         <div className="group">
-                            <label htmlFor="username" className={`block text-xs font-bold uppercase tracking-wider mb-2 ${themeClear ? 'text-emerald-700' : 'text-slate-400 group-focus-within:text-yellow-400 transition-colors'}`}>
+                            <label htmlFor="username" className={`block text-xs font-bold uppercase tracking-wider mb-2 ${themeClear ? 'text-orange-700' : 'text-slate-400 group-focus-within:text-yellow-400 transition-colors'}`}>
                                 Username
                             </label>
                             <div className="relative">
@@ -171,7 +171,7 @@ export function LoginPage() {
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                     className={`w-full px-5 py-4 rounded-xl transition-all outline-none border focus:ring-0 ${themeClear
-                                        ? 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:border-emerald-500'
+                                        ? 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:border-orange-500'
                                         : 'bg-black/20 border-white/10 text-white placeholder-white/20 focus:border-yellow-500/50 focus:bg-yellow-950/10 focus:shadow-[0_0_15px_rgba(234,179,8,0.1)]'
                                         }`}
                                     placeholder={selectedRole === 'student' ? 'siswa_mesin' : 'guru'}
@@ -182,7 +182,7 @@ export function LoginPage() {
 
                         {/* Password Input */}
                         <div className="group">
-                            <label htmlFor="password" className={`block text-xs font-bold uppercase tracking-wider mb-2 ${themeClear ? 'text-emerald-700' : 'text-slate-400 group-focus-within:text-amber-400 transition-colors'}`}>
+                            <label htmlFor="password" className={`block text-xs font-bold uppercase tracking-wider mb-2 ${themeClear ? 'text-orange-700' : 'text-slate-400 group-focus-within:text-amber-400 transition-colors'}`}>
                                 Password
                             </label>
                             <div className="relative">
@@ -192,7 +192,7 @@ export function LoginPage() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     className={`w-full px-5 py-4 rounded-xl transition-all outline-none border focus:ring-0 ${themeClear
-                                        ? 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:border-emerald-500'
+                                        ? 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:border-orange-500'
                                         : 'bg-black/20 border-white/10 text-white placeholder-white/20 focus:border-amber-500/50 focus:bg-amber-950/10 focus:shadow-[0_0_15px_rgba(234,179,8,0.1)]'
                                         }`}
                                     placeholder="••••••••"
@@ -220,7 +220,7 @@ export function LoginPage() {
                             type="submit"
                             disabled={loading}
                             className={`w-full py-4 text-white font-bold tracking-widest uppercase rounded-xl transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${themeClear
-                                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 shadow-lg'
+                                ? 'bg-gradient-to-r from-orange-600 to-orange-600 shadow-lg'
                                 : 'bg-gradient-to-r from-yellow-600 via-amber-600 to-orange-600 shadow-[0_0_20px_rgba(234,179,8,0.4)] hover:shadow-[0_0_30px_rgba(234,179,8,0.6)] border border-white/10'
                                 }`}
                         >
@@ -257,7 +257,7 @@ export function LoginPage() {
                                 href="https://wa.me/6281316052316"
                                 target="_blank"
                                 rel="noreferrer"
-                                className="flex items-center justify-center p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-green-400 transition-all group"
+                                className="flex items-center justify-center p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 hover:text-orange-400 transition-all group"
                                 title="0813-1605-2316"
                             >
                                 <MessageCircle className="w-5 h-5 transform group-hover:scale-110 transition-transform" />

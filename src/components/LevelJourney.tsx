@@ -65,7 +65,7 @@ export function LevelJourney({ currentScore, allLevels }: LevelJourneyProps) {
                             <linearGradient id="journeyGradient" x1="0%" y1="100%" x2="100%" y2="0%">
                                 <stop offset="0%" stopColor="#3b82f6" />
                                 <stop offset="50%" stopColor="#f59e0b" />
-                                <stop offset="100%" stopColor="#10b981" />
+                                <stop offset="100%" stopColor="#f97316" />
                             </linearGradient>
                         </defs>
 

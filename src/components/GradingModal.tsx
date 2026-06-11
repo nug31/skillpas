@@ -64,7 +64,7 @@ export function GradingModal({ submission, onClose, onConfirm, initialScore }: G
                             <button
                                 onClick={() => setResult('Lulus')}
                                 className={`py-4 rounded-2xl border-2 font-bold transition-all flex flex-col items-center gap-1 ${result === 'Lulus'
-                                    ? 'bg-emerald-500/10 border-emerald-500 text-emerald-500'
+                                    ? 'bg-orange-500/10 border-orange-500 text-orange-500'
                                     : 'bg-slate-950 border-slate-800 text-slate-500 grayscale [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200'
                                     }`}
                             >

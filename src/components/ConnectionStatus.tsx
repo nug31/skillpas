@@ -34,10 +34,10 @@ export function ConnectionStatus() {
     return (
         <div className={`fixed bottom-24 right-6 z-[100] transition-all duration-500 transform ${showToast ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}`}>
             <div className={`flex items-center gap-3 px-4 py-3 rounded-2xl shadow-2xl border backdrop-blur-md ${type === 'online'
-                    ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                    ? 'bg-orange-500/10 border-orange-500/20 text-orange-400'
                     : 'bg-red-500/10 border-red-500/20 text-red-400'
                 }`}>
-                <div className={`p-1.5 rounded-lg ${type === 'online' ? 'bg-emerald-500' : 'bg-red-500'}`}>
+                <div className={`p-1.5 rounded-lg ${type === 'online' ? 'bg-orange-500' : 'bg-red-500'}`}>
                     {type === 'online' ? <Wifi className="w-4 h-4 text-white" /> : <WifiOff className="w-4 h-4 text-white" />}
                 </div>
                 <div className="flex flex-col">

@@ -35,15 +35,15 @@ function getJurusanGradient(nama?: string): string {
   const n = nama.toLowerCase().trim();
 
   if (n.includes('mesin')) return 'bg-gradient-to-br from-red-600 to-orange-500 shadow-red-500/20';
-  if (n.includes('kendaraan') || n.includes('tkr')) return 'bg-gradient-to-br from-blue-600 to-cyan-500 shadow-blue-500/20';
-  if (n.includes('sepeda') || n.includes('tsm')) return 'bg-gradient-to-br from-emerald-600 to-teal-500 shadow-emerald-500/20';
+  if (n.includes('kendaraan') || n.includes('tkr')) return 'bg-gradient-to-br from-blue-600 to-orange-500 shadow-blue-500/20';
+  if (n.includes('sepeda') || n.includes('tsm')) return 'bg-gradient-to-br from-orange-600 to-orange-500 shadow-orange-500/20';
   if (n.includes('elektronika') || n.includes('elind')) return 'bg-gradient-to-br from-violet-600 to-fuchsia-500 shadow-violet-500/20';
   if (n.includes('listrik') || n.includes('tenaga')) return 'bg-gradient-to-br from-amber-500 to-yellow-500 shadow-amber-500/20';
   if (n.includes('kimia')) return 'bg-gradient-to-br from-pink-600 to-rose-500 shadow-pink-500/20';
-  if (n.includes('akuntansi')) return 'bg-gradient-to-br from-green-600 to-emerald-600 shadow-green-500/20';
+  if (n.includes('akuntansi')) return 'bg-gradient-to-br from-orange-600 to-orange-600 shadow-orange-500/20';
   if (n.includes('perhotelan')) return 'bg-gradient-to-br from-sky-500 to-blue-600 shadow-sky-500/20';
   if (n.includes('ototronik')) return 'bg-gradient-to-br from-indigo-600 to-blue-500 shadow-indigo-500/20';
-  if (n.includes('mekatronika')) return 'bg-gradient-to-br from-cyan-600 to-teal-500 shadow-cyan-500/20';
+  if (n.includes('mekatronika')) return 'bg-gradient-to-br from-orange-600 to-orange-500 shadow-orange-500/20';
   if (n.includes('pemesinan')) return 'bg-gradient-to-br from-slate-600 to-gray-500 shadow-slate-500/20';
   if (n.includes('animasi')) return 'bg-gradient-to-br from-rose-500 to-pink-600 shadow-rose-500/20';
 
@@ -57,14 +57,14 @@ export function JurusanCard({ jurusan, onClick, topStudents, titleOverride }: Ju
   return (
     <button
       onClick={onClick}
-      className="group relative card-glass rounded-xl hover-lift p-4 sm:p-5 text-left border-[0.5px] border-white/6 hover:border-amber-500/20 w-full shadow-lg hover:shadow-amber-500/10 [.theme-clear_&]:border-slate-200/60 [.theme-clear_&]:hover:border-emerald-500/30 [.theme-clear_&]:shadow-sm"
+      className="group relative card-glass rounded-xl hover-lift p-4 sm:p-5 text-left border-[0.5px] border-white/6 hover:border-amber-500/20 w-full shadow-lg hover:shadow-amber-500/10 [.theme-clear_&]:border-slate-200/60 [.theme-clear_&]:hover:border-orange-500/30 [.theme-clear_&]:shadow-sm"
     >
       <div className="flex flex-col items-center text-center space-y-4">
         <div className={`w-16 h-16 sm:w-20 sm:h-20 ${gradientClass} rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-inner`}>
           <IconComponent className="w-9 h-9 text-white opacity-95 group-hover:scale-110 transition-transform duration-300" />
         </div>
         <div>
-          <h3 className="font-semibold text-lg text-white mb-2 truncate [.theme-clear_&]:text-emerald-900">
+          <h3 className="font-semibold text-lg text-white mb-2 truncate [.theme-clear_&]:text-orange-900">
             {titleOverride || formatJurusanName(jurusan.nama_jurusan)}
           </h3>
           <p className="text-sm text-white/80 line-clamp-2 [.theme-clear_&]:text-slate-600 font-medium">{jurusan.deskripsi}</p>
@@ -97,7 +97,7 @@ export function JurusanCard({ jurusan, onClick, topStudents, titleOverride }: Ju
         </div>
       </div>
       <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-        <LucideIcons.ChevronRight className="w-5 h-5 text-amber-500 [.theme-clear_&]:text-emerald-600" />
+        <LucideIcons.ChevronRight className="w-5 h-5 text-amber-500 [.theme-clear_&]:text-orange-600" />
       </div>
     </button>
   );

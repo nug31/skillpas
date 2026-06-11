@@ -116,7 +116,7 @@ export function StudentTable({
                   ))}
                 </select>
               )}
-              <button onClick={onExportExcel} className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"><Download className="w-4 h-4" />Excel</button>
+              <button onClick={onExportExcel} className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm font-medium"><Download className="w-4 h-4" />Excel</button>
               <button onClick={onExportPDF} className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"><Download className="w-4 h-4" />PDF</button>
             </div>
           </div>

@@ -191,7 +191,7 @@ export const PassportStampsPage: React.FC<StampsPageProps> = ({ history, startIn
                     {pageItems.map((item, idx) => {
                         const level = levels.find(l => l.id === item.level_id);
                         const isLulus = item.hasil.toLowerCase() === 'lulus';
-                        const color = isLulus ? 'text-emerald-700 border-emerald-700' : 'text-red-700 border-red-700';
+                        const color = isLulus ? 'text-orange-700 border-orange-700' : 'text-red-700 border-red-700';
                         const rotate = (idx % 3 === 0 ? '-rotate-3' : idx % 3 === 1 ? 'rotate-2' : '-rotate-1');
 
                         return (
@@ -220,7 +220,7 @@ export const PassportStampsPage: React.FC<StampsPageProps> = ({ history, startIn
                                 {/* Tooltip */}
                                 <div className="absolute hidden group-hover:block z-50 bottom-full left-0 w-full bg-slate-800 text-white text-[10px] p-2 rounded shadow-xl mb-1 pointer-events-none">
                                     {item.unit_kompetensi} ({item.hasil})
-                                    {isLulus && <div className="mt-1 text-emerald-300">Klik untuk download sertifikat</div>}
+                                    {isLulus && <div className="mt-1 text-orange-300">Klik untuk download sertifikat</div>}
                                 </div>
                             </button>
                         );
@@ -297,7 +297,7 @@ export const PassportEvidencePage: React.FC<EvidencePageProps> = ({ photos, vide
 
                 <div className="mt-4 pt-2 border-t border-slate-100 flex items-center justify-between">
                     <div className="text-[8px] text-slate-400 italic font-mono">Verified by Skill Passport Engine</div>
-                    <CheckCircle size={12} className="text-emerald-500" />
+                    <CheckCircle size={12} className="text-orange-500" />
                 </div>
             </div>
         </PassportPage>

@@ -317,7 +317,7 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
                             >
                                 <X size={20} />
                             </button>
-                            <h3 className="text-lg font-bold text-emerald-700 mb-4 border-b pb-2">
+                            <h3 className="text-lg font-bold text-orange-700 mb-4 border-b pb-2">
                                 Detail Kompetensi
                             </h3>
                             <div className="space-y-3 text-sm">
@@ -344,7 +344,7 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
                                     </div>
                                     <div className="flex-1">
                                         <span className="block text-xs text-slate-400 uppercase">Hasil</span>
-                                        <span className={`font-bold ${selectedCompetency.hasil.toLowerCase() === 'lulus' ? 'text-emerald-600' : 'text-red-600'}`}>
+                                        <span className={`font-bold ${selectedCompetency.hasil.toLowerCase() === 'lulus' ? 'text-orange-600' : 'text-red-600'}`}>
                                             {selectedCompetency.hasil}
                                         </span>
                                     </div>
@@ -363,7 +363,7 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
                             {selectedCompetency.hasil.toLowerCase() === 'lulus' && (
                                 <button
                                     onClick={handleDownloadCertificate}
-                                    className="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors"
+                                    className="mt-6 w-full bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors"
                                 >
                                     Download Sertifikat
                                 </button>

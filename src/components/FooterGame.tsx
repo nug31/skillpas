@@ -182,7 +182,7 @@ export function FooterGame() {
             {/* Speed Indicator */}
             {isPlaying && (
                 <div className="absolute top-4 right-4 z-20 flex items-center gap-1 text-white/50 text-xs font-mono">
-                    <Zap className="w-3 h-3 text-cyan-400" />
+                    <Zap className="w-3 h-3 text-orange-400" />
                     <span>{(speed * 100).toFixed(0)} km/h</span>
                 </div>
             )}

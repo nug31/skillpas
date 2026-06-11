@@ -87,18 +87,18 @@ export function SnakeLaddersGame({ participants }: SnakeLaddersGameProps) {
 
     return (
         <div className="card-glass p-4 sm:p-8 rounded-3xl shadow-2xl relative overflow-hidden backdrop-blur-xl border border-white/10 [.theme-clear_&]:bg-white/40 [.theme-clear_&]:border-slate-200 [.theme-clear_&]:shadow-sm">
-            <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 via-transparent to-emerald-500/5 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 via-transparent to-orange-500/5 pointer-events-none" />
 
             <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 px-2">
                 <div className="text-left">
-                    <h2 className="text-3xl font-black bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent uppercase tracking-tight">
+                    <h2 className="text-3xl font-black bg-gradient-to-r from-indigo-400 to-orange-400 bg-clip-text text-transparent uppercase tracking-tight">
                         Skill Quest
                     </h2>
                     <p className="text-slate-400 text-sm font-medium [.theme-clear_&]:text-slate-600">Ular Tangga Kompetensi</p>
                 </div>
                 <div className="flex gap-4 text-xs font-bold uppercase tracking-wider">
-                    <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/10 text-orange-400 border border-orange-500/20">
+                        <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
                         {participants.length} Siswa
                     </span>
                     <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">

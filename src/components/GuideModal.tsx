@@ -35,7 +35,7 @@ export function GuideModal({ isOpen, onClose, userRole = 'student' }: GuideModal
                 steps: [
                     { icon: Icons.Target, title: "Pilih Misi", desc: "Klik 'Upgrade Skill' dan pilih kompetensi yang ingin kamu kuasai.", color: "text-blue-400", bg: "bg-blue-400/10" },
                     { icon: Icons.Clock, title: "Tunggu Review", desc: "Guru Produktif & Wali Kelas akan mereview rencana belajarmu.", color: "text-amber-400", bg: "bg-amber-400/10" },
-                    { icon: Icons.Award, title: "Ujian", desc: "Ikuti ujian sesuai jadwal dan unggah bukti dokumentasinya.", color: "text-emerald-400", bg: "bg-emerald-400/10" },
+                    { icon: Icons.Award, title: "Ujian", desc: "Ikuti ujian sesuai jadwal dan unggah bukti dokumentasinya.", color: "text-orange-400", bg: "bg-orange-400/10" },
                     { icon: Icons.TrendingUp, title: "Naik Level", desc: "XP bertambah setelah lulus ujian, membawamu ke level lebih tinggi.", color: "text-purple-400", bg: "bg-purple-400/10" }
                 ],
                 features: [
@@ -52,7 +52,7 @@ export function GuideModal({ isOpen, onClose, userRole = 'student' }: GuideModal
                 title: "Panduan Wali Kelas",
                 intro: "Anda berperan memantau perkembangan kompetensi dan membentuk karakter disiplin siswa di kelas binaan Anda.",
                 steps: [
-                    { icon: Icons.LayoutDashboard, title: "Walas Insight", desc: "Pantau rata-rata skor, progres level, dan status KRS siswa se-kelas.", color: "text-emerald-400", bg: "bg-emerald-400/10" },
+                    { icon: Icons.LayoutDashboard, title: "Walas Insight", desc: "Pantau rata-rata skor, progres level, dan status KRS siswa se-kelas.", color: "text-orange-400", bg: "bg-orange-400/10" },
                     { icon: Icons.UserCheck, title: "Kelola Hadir", desc: "Update data absensi (Masuk, Izin, Sakit, Alfa) secara berkala.", color: "text-blue-400", bg: "bg-blue-400/10" },
                     { icon: Icons.ShieldCheck, title: "Skor Sikap", desc: "Berikan penilaian aspek non-teknis: Disiplin, Tanggung Jawab, & Kerja Sama.", color: "text-amber-400", bg: "bg-amber-400/10" },
                     { icon: Icons.FileDown, title: "Ekspor Laporan", desc: "Unduh rekapitulasi data kelas dalam format Excel/CSV untuk pelaporan.", color: "text-purple-400", bg: "bg-purple-400/10" }
@@ -72,7 +72,7 @@ export function GuideModal({ isOpen, onClose, userRole = 'student' }: GuideModal
                 intro: "Anda adalah penguji utama kompetensi teknis. Tugas Anda memverifikasi pendaftaran dan menginput nilai ujian.",
                 steps: [
                     { icon: Icons.ClipboardCheck, title: "Verifikasi", desc: "Review pendaftaran kompetensi siswa di Tab Pengajuan.", color: "text-blue-400", bg: "bg-blue-400/10" },
-                    { icon: Icons.Edit3, title: "Input Nilai", desc: "Masukkan skor dan hasil ujian di Tab Penilaian setelah ujian selesai.", color: "text-emerald-400", bg: "bg-emerald-400/10" },
+                    { icon: Icons.Edit3, title: "Input Nilai", desc: "Masukkan skor dan hasil ujian di Tab Penilaian setelah ujian selesai.", color: "text-orange-400", bg: "bg-orange-400/10" },
                     { icon: Icons.Settings, title: "Atur Kriteria", desc: "Sesuaikan standar unit kompetensi pada setiap level skill.", color: "text-amber-400", bg: "bg-amber-400/10" },
                     { icon: Icons.MessageSquare, title: "Notifikasi WA", desc: "Kirim pesan jadwal ujian langsung ke WhatsApp siswa.", color: "text-purple-400", bg: "bg-purple-400/10" }
                 ],
@@ -91,7 +91,7 @@ export function GuideModal({ isOpen, onClose, userRole = 'student' }: GuideModal
                 intro: "Bertanggung jawab atas validasi akhir, penjadwalan ujian, dan pengawasan standar kompetensi jurusan.",
                 steps: [
                     { icon: Icons.Calendar, title: "Penjadwalan", desc: "Tentukan tanggal ujian untuk pengajuan yang telah disetujui guru.", color: "text-blue-400", bg: "bg-blue-400/10" },
-                    { icon: Icons.ShieldCheck, title: "Validasi Akhir", desc: "Review dan finalisasi pengajuan sertifikasi di level jurusan.", color: "text-emerald-400", bg: "bg-emerald-400/10" },
+                    { icon: Icons.ShieldCheck, title: "Validasi Akhir", desc: "Review dan finalisasi pengajuan sertifikasi di level jurusan.", color: "text-orange-400", bg: "bg-orange-400/10" },
                     { icon: Icons.BarChart3, title: "Analitik", desc: "Pantau tren performa dan rata-rata skor per angkatan.", color: "text-amber-400", bg: "bg-amber-400/10" },
                     { icon: Icons.Package, title: "Standar Industri", desc: "Pastikan kriteria level sesuai dengan kebutuhan industri terbaru.", color: "text-purple-400", bg: "bg-purple-400/10" }
                 ],
@@ -110,7 +110,7 @@ export function GuideModal({ isOpen, onClose, userRole = 'student' }: GuideModal
             steps: [
                 { icon: Icons.UserCheck, title: "Kelola User", desc: "Pastikan semua akun siswa dan guru telah terdaftar dengan benar.", color: "text-blue-400", bg: "bg-blue-400/10" },
                 { icon: Icons.Database, title: "Backup Data", desc: "Lakukan pencatatan cadangan data secara berkala.", color: "text-amber-400", bg: "bg-amber-400/10" },
-                { icon: Icons.Lock, title: "Keamanan", desc: "Jaga kerahasiaan password dan akses akun masing-masing.", color: "text-emerald-400", bg: "bg-emerald-400/10" },
+                { icon: Icons.Lock, title: "Keamanan", desc: "Jaga kerahasiaan password dan akses akun masing-masing.", color: "text-orange-400", bg: "bg-orange-400/10" },
                 { icon: Icons.HelpCircle, title: "Bantuan", desc: "Hubungi tim teknis jika terjadi kendala pada sistem.", color: "text-purple-400", bg: "bg-purple-400/10" }
             ],
             features: [

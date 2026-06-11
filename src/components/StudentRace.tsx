@@ -55,7 +55,7 @@ export function StudentRace({ students, jurusanName }: StudentRaceProps) {
                     <button
                         onClick={() => setViewMode('snake')}
                         className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-[10px] sm:text-sm font-bold transition-all duration-300 ${viewMode === 'snake'
-                            ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/25 ring-1 ring-white/20'
+                            ? 'bg-orange-600 text-white shadow-lg shadow-orange-500/25 ring-1 ring-white/20'
                             : 'text-gray-500 hover:text-gray-900 hover:bg-black/5 dark:text-white/40 dark:hover:text-white dark:hover:bg-white/5'
                             }`}
                     >

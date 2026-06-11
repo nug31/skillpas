@@ -17,12 +17,12 @@ interface IsometricRaceTrackProps {
 const carColors = [
     { body: '#3B82F6', accent: '#1D4ED8' },   // Blue
     { body: '#8B5CF6', accent: '#6D28D9' },   // Purple
-    { body: '#10B981', accent: '#047857' },   // Green
+    { body: '#f97316', accent: '#c2410c' },   // Green
     { body: '#F59E0B', accent: '#D97706' },   // Yellow
     { body: '#EF4444', accent: '#DC2626' },   // Red
     { body: '#EC4899', accent: '#BE185D' },   // Pink
     { body: '#6366F1', accent: '#4338CA' },   // Indigo
-    { body: '#14B8A6', accent: '#0D9488' },   // Teal
+    { body: '#f97316', accent: '#ea580c' },   // Teal
 ];
 
 export function IsometricRaceTrack({
@@ -111,7 +111,7 @@ export function IsometricRaceTrack({
                         <span>Leader</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
+                        <div className="w-2 h-2 rounded-full bg-orange-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
                         <span>Moving Fast</span>
                     </div>
                 </div>
@@ -195,7 +195,7 @@ export function IsometricRaceTrack({
                                             initial={{ width: 0 }}
                                             animate={startRace ? { width: `${progress}%` } : { width: 0 }}
                                             transition={{ duration: 2.5, ease: "easeOut", delay: index * 0.15 }}
-                                            className="absolute inset-y-0 left-0 bg-gradient-to-r from-transparent via-emerald-500/20 to-emerald-500/40 rounded-lg"
+                                            className="absolute inset-y-0 left-0 bg-gradient-to-r from-transparent via-orange-500/20 to-orange-500/40 rounded-lg"
                                         />
 
                                         {/* 3D Car */}

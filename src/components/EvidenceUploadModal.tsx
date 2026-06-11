@@ -155,7 +155,7 @@ export function EvidenceUploadModal({ submissionId, siswaNama, onClose, onSucces
                         {/* Photo Upload Section */}
                         <div className="space-y-3">
                             <label className="text-sm font-bold text-slate-300 flex items-center gap-2">
-                                <ImageIcon className="w-4 h-4 text-emerald-400" />
+                                <ImageIcon className="w-4 h-4 text-orange-400" />
                                 Foto Kegiatan (Max 5MB)
                             </label>
                             <div

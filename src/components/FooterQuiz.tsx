@@ -93,11 +93,11 @@ export function FooterQuiz() {
 
     // Variabel Colors
     const bgColor = gameState === 'feedback'
-        ? (isCorrect ? 'bg-emerald-900/95' : 'bg-red-900/95')
+        ? (isCorrect ? 'bg-orange-900/95' : 'bg-red-900/95')
         : 'bg-[#0f172a]/95';
 
     const borderColor = gameState === 'feedback'
-        ? (isCorrect ? 'border-emerald-500/50' : 'border-red-500/50')
+        ? (isCorrect ? 'border-orange-500/50' : 'border-red-500/50')
         : 'border-white/10';
 
     return (
@@ -173,7 +173,7 @@ export function FooterQuiz() {
                                         // Feedback Logic
                                         if (gameState === 'feedback') {
                                             if (idx === QUESTIONS[currentQIndex].correctIndex) {
-                                                btnClass = "bg-emerald-500/20 text-emerald-400 border-emerald-500/50";
+                                                btnClass = "bg-orange-500/20 text-orange-400 border-orange-500/50";
                                             } else if (idx === selectedOption) {
                                                 btnClass = "bg-red-500/20 text-red-400 border-red-500/50";
                                             } else {
@@ -191,13 +191,13 @@ export function FooterQuiz() {
                                                 disabled={gameState !== 'playing'}
                                                 animate={gameState === 'feedback' && idx === selectedOption ? {
                                                     x: isCorrect ? [0, -5, 5, 0] : [0, -10, 10, -10, 10, 0], // Shake
-                                                    borderColor: isCorrect ? '#10b981' : '#ef4444'
+                                                    borderColor: isCorrect ? '#f97316' : '#ef4444'
                                                 } : {}}
                                                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
                                             >
                                                 {opt}
                                                 {gameState === 'feedback' && idx === QUESTIONS[currentQIndex].correctIndex && (
-                                                    <CheckCircle className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400" />
+                                                    <CheckCircle className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-orange-400" />
                                                 )}
                                                 {gameState === 'feedback' && idx === selectedOption && !isCorrect && (
                                                     <XCircle className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-red-400" />

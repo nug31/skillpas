@@ -17,12 +17,12 @@ interface F1RaceTrackProps {
 const f1Colors = [
     { primary: '#3B82F6', secondary: '#1D4ED8', accent: '#60A5FA' },   // Blue - Teknik Mesin
     { primary: '#8B5CF6', secondary: '#6D28D9', accent: '#A78BFA' },   // Purple - Teknik Instalasi
-    { primary: '#10B981', secondary: '#047857', accent: '#34D399' },   // Green - Teknik Kendaraan
+    { primary: '#f97316', secondary: '#c2410c', accent: '#fb923c' },   // Green - Teknik Kendaraan
     { primary: '#F59E0B', secondary: '#D97706', accent: '#FBBF24' },   // Yellow - Akuntansi
     { primary: '#EF4444', secondary: '#DC2626', accent: '#F87171' },   // Red - Teknik Kimia
     { primary: '#EC4899', secondary: '#BE185D', accent: '#F472B6' },   // Pink - Perhotelan
     { primary: '#6366F1', secondary: '#4338CA', accent: '#818CF8' },   // Indigo - TSM
-    { primary: '#14B8A6', secondary: '#0D9488', accent: '#2DD4BF' },   // Teal - TEI
+    { primary: '#f97316', secondary: '#ea580c', accent: '#fb923c' },   // Teal - TEI
 ];
 
 export function F1RaceTrack({

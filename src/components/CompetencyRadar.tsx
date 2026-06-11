@@ -44,7 +44,7 @@ export function CompetencyRadar({ score }: CompetencyRadarProps) {
             {/* Overlay Stat - "Industry Ready" */}
             <div className="absolute top-0 right-0 p-3 card-glass rounded-xl !bg-white/10 [.theme-clear_&]:!bg-white/30">
                 <div className="text-[10px] text-[color:var(--text-muted)] uppercase tracking-widest text-center font-bold">Industry Ready</div>
-                <div className="text-2xl font-black text-center text-green-400 [.theme-clear_&]:text-emerald-600">{Math.round(score * 0.95)}%</div>
+                <div className="text-2xl font-black text-center text-orange-400 [.theme-clear_&]:text-orange-600">{Math.round(score * 0.95)}%</div>
             </div>
         </div>
     );

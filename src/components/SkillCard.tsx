@@ -30,9 +30,9 @@ const CircuitLines = () => (
     <svg className="absolute inset-0 w-full h-full opacity-40 pointer-events-none" viewBox="0 0 360 600">
         <defs>
             <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#22d3ee" stopOpacity="0" />
-                <stop offset="50%" stopColor="#22d3ee" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#22d3ee" stopOpacity="0" />
+                <stop offset="0%" stopColor="#fb923c" stopOpacity="0" />
+                <stop offset="50%" stopColor="#fb923c" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#fb923c" stopOpacity="0" />
             </linearGradient>
             <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#818cf8" stopOpacity="0" />
@@ -183,7 +183,7 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                     <button onClick={handleDownload} disabled={isDownloading} className="flex-1 h-12 bg-white/10 text-white rounded-xl font-bold text-sm border border-white/10 hover:bg-white/20 transition-all flex items-center justify-center gap-2 [.theme-clear_&]:bg-slate-800 [.theme-clear_&]:text-white [.theme-clear_&]:border-slate-700 [.theme-clear_&]:hover:bg-slate-700">
                         <Download className="w-4 h-4" /> {isDownloading ? '...' : 'Download'}
                     </button>
-                    <button onClick={handleShare} disabled={isSharing} className="flex-1 h-12 bg-cyan-500/10 text-cyan-400 rounded-xl font-bold text-sm border border-cyan-500/20 hover:bg-cyan-500/20 transition-all flex items-center justify-center gap-2 [.theme-clear_&]:bg-cyan-600 [.theme-clear_&]:text-white [.theme-clear_&]:border-cyan-500 [.theme-clear_&]:hover:bg-cyan-700">
+                    <button onClick={handleShare} disabled={isSharing} className="flex-1 h-12 bg-orange-500/10 text-orange-400 rounded-xl font-bold text-sm border border-orange-500/20 hover:bg-orange-500/20 transition-all flex items-center justify-center gap-2 [.theme-clear_&]:bg-orange-600 [.theme-clear_&]:text-white [.theme-clear_&]:border-orange-500 [.theme-clear_&]:hover:bg-orange-700">
                         <Share2 className="w-4 h-4" /> Share
                     </button>
                     <button onClick={onClose} className="w-12 h-12 bg-white/5 text-white/50 rounded-xl border border-white/5 hover:text-white transition-all flex items-center justify-center [.theme-clear_&]:bg-slate-200 [.theme-clear_&]:text-slate-700 [.theme-clear_&]:border-slate-300 [.theme-clear_&]:hover:bg-slate-300 [.theme-clear_&]:hover:text-slate-900">
@@ -219,8 +219,8 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                             {/* Avatar with Thick Neon Ring */}
                             <div className="relative mb-2 scale-90">
                                 {/* Glow layers */}
-                                <div className="absolute inset-[-12px] rounded-full border border-cyan-400/10 blur-[4px]" />
-                                <div className="absolute inset-[-6px] rounded-full border-[6px] border-cyan-400 shadow-[0_0_50px_rgba(34,211,238,0.6)]" />
+                                <div className="absolute inset-[-12px] rounded-full border border-orange-400/10 blur-[4px]" />
+                                <div className="absolute inset-[-6px] rounded-full border-[6px] border-orange-400 shadow-[0_0_50px_rgba(34,211,238,0.6)]" />
 
                                 <div className="w-28 h-28 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center overflow-hidden relative">
                                     {student.photo_url || student.avatar_url ? (
@@ -253,7 +253,7 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                         {/* QR Code Section - Now in Center */}
                         <div className="flex-grow flex flex-col items-center justify-center -mt-6 mb-2">
                             {qrCode ? (
-                                <div className="p-2 bg-white rounded-2xl shadow-[0_0_30px_rgba(255,255,255,0.4)] border-4 border-cyan-500/20 overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                                <div className="p-2 bg-white rounded-2xl shadow-[0_0_30px_rgba(255,255,255,0.4)] border-4 border-orange-500/20 overflow-hidden transform hover:scale-105 transition-transform duration-300">
                                     <img src={qrCode} alt="QR" className="w-32 h-32 block grayscale-0" />
                                 </div>
                             ) : (
@@ -261,7 +261,7 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                                     <div className="w-8 h-8 border-4 border-white/20 border-t-white/80 rounded-full animate-spin" />
                                 </div>
                             )}
-                            <p className="mt-2 text-cyan-400 text-[9px] font-black uppercase tracking-[0.3em] opacity-80 animate-pulse">
+                            <p className="mt-2 text-orange-400 text-[9px] font-black uppercase tracking-[0.3em] opacity-80 animate-pulse">
                                 Scan to Verify
                             </p>
                         </div>
@@ -273,7 +273,7 @@ export const SkillCard = ({ student, jurusanName, onClose }: Omit<SkillCardProps
                                 <span className="text-slate-700 [.theme-clear_&]:text-slate-500 text-[8px] font-mono font-bold opacity-60">ID: {student.id?.slice(0, 10).toUpperCase()}</span>
                             </div>
                             <div className="text-right">
-                                <span className="text-emerald-500 [.theme-clear_&]:text-emerald-600 text-[10px] font-black tracking-[0.1em] uppercase block">VERIFIED PASS</span>
+                                <span className="text-orange-500 [.theme-clear_&]:text-orange-600 text-[10px] font-black tracking-[0.1em] uppercase block">VERIFIED PASS</span>
                                 <span className="text-slate-600 text-[7px] font-bold opacity-40">SMK MI MM2100</span>
                             </div>
                         </div>

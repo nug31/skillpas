@@ -17,12 +17,12 @@ interface HorseRaceTrackProps {
 const horseColors = [
     { jersey: '#3B82F6', horse: '#8B4513', accent: '#1D4ED8' },   // Blue
     { jersey: '#8B5CF6', horse: '#654321', accent: '#6D28D9' },   // Purple
-    { jersey: '#10B981', horse: '#A0522D', accent: '#047857' },   // Green
+    { jersey: '#f97316', horse: '#A0522D', accent: '#c2410c' },   // Green
     { jersey: '#F59E0B', horse: '#D2691E', accent: '#D97706' },   // Yellow
     { jersey: '#EF4444', horse: '#8B4513', accent: '#DC2626' },   // Red
     { jersey: '#EC4899', horse: '#CD853F', accent: '#BE185D' },   // Pink
     { jersey: '#6366F1', horse: '#A0522D', accent: '#4338CA' },   // Indigo
-    { jersey: '#14B8A6', horse: '#D2B48C', accent: '#0D9488' },   // Teal
+    { jersey: '#f97316', horse: '#D2B48C', accent: '#ea580c' },   // Teal
 ];
 
 export function HorseRaceTrack({
@@ -88,12 +88,12 @@ export function HorseRaceTrack({
     return (
         <div className="relative min-h-[700px] card-glass backdrop-blur-xl rounded-2xl border border-slate-300 dark:border-white/10 p-6 sm:p-8 overflow-hidden shadow-2xl">
             {/* Grass Background */}
-            <div className="absolute inset-0 bg-gradient-to-b from-green-800 via-green-700 to-green-900 [.theme-clear_&]:from-green-200 [.theme-clear_&]:via-green-100 [.theme-clear_&]:to-green-200 opacity-30 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-orange-800 via-orange-700 to-orange-900 [.theme-clear_&]:from-orange-200 [.theme-clear_&]:via-orange-100 [.theme-clear_&]:to-orange-200 opacity-30 pointer-events-none" />
 
             {/* Grass Pattern */}
             <div className="absolute inset-0 pointer-events-none opacity-20"
                 style={{
-                    backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(34,197,94,0.3) 2px, rgba(34,197,94,0.3) 4px)`,
+                    backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(249, 115, 22,0.3) 2px, rgba(249, 115, 22,0.3) 4px)`,
                 }}
             />
 

@@ -46,10 +46,10 @@ export function Footer() {
                             href="https://wa.me/6281316052316"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group flex items-center justify-center text-[color:var(--text-muted)] hover:text-emerald-500 transition-all duration-300"
+                            className="group flex items-center justify-center text-[color:var(--text-muted)] hover:text-orange-500 transition-all duration-300"
                             title="WhatsApp"
                         >
-                            <div className="p-3 rounded-full bg-white/5 border border-white/5 group-hover:border-emerald-500/30 group-hover:bg-emerald-500/5 transition-all">
+                            <div className="p-3 rounded-full bg-white/5 border border-white/5 group-hover:border-orange-500/30 group-hover:bg-orange-500/5 transition-all">
                                 <MessageCircle size={20} />
                             </div>
                         </a>

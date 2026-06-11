@@ -93,7 +93,7 @@ export function RaceTrack({
                         <span>Leader</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
+                        <div className="w-2 h-2 rounded-full bg-orange-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
                         <span>Moving Fast</span>
                     </div>
                 </div>
@@ -181,7 +181,7 @@ export function RaceTrack({
                                 <div className="hidden sm:block w-24 text-right">
                                     {p.badge_name && (
                                         <div className={`inline-block px-3 py-1 rounded-lg text-xs font-bold border shadow-lg ${(p.badge_name === 'Master' || p.badge_name === 'Champion') ? 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20 shadow-yellow-500/10' :
-                                            (p.badge_name === 'Advance' || p.badge_name === 'Top Tier') ? 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border-cyan-500/20' :
+                                            (p.badge_name === 'Advance' || p.badge_name === 'Top Tier') ? 'bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-500/20' :
                                                 p.badge_name === 'Applied' ? 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20' :
                                                     'bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-white/40 border-slate-300 dark:border-white/10'
                                             }`}>

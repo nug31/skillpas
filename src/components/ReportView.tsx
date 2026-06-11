@@ -110,7 +110,7 @@ export function ReportView({ students, kelas, walasName, onClose, schoolName, sc
                         </div>
                         <div>
                             <div className="text-slate-500 text-xs font-bold">Rata-rata Skor</div>
-                            <div className="text-2xl font-black text-emerald-600">{stats.avgScore} XP</div>
+                            <div className="text-2xl font-black text-orange-600">{stats.avgScore} XP</div>
                         </div>
                         <div>
                             <div className="text-slate-500 text-xs font-bold">Rata-rata Kehadiran</div>

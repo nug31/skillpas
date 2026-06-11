@@ -53,7 +53,7 @@ export function AnalyticsPanel({ students }: AnalyticsPanelProps) {
                 data: Object.values(distribution),
                 backgroundColor: [
                     'rgba(99, 102, 241, 0.7)',
-                    'rgba(16, 185, 129, 0.7)',
+                    'rgba(249, 115, 22, 0.7)',
                     'rgba(245, 158, 11, 0.7)',
                     'rgba(239, 68, 68, 0.7)',
                     'rgba(168, 85, 247, 0.7)'
@@ -82,7 +82,7 @@ export function AnalyticsPanel({ students }: AnalyticsPanelProps) {
             datasets: [{
                 data: [totalMasuk, totalIzin, totalSakit, totalAlfa],
                 backgroundColor: [
-                    'rgba(16, 185, 129, 0.7)',
+                    'rgba(249, 115, 22, 0.7)',
                     'rgba(59, 130, 246, 0.7)',
                     'rgba(245, 158, 11, 0.7)',
                     'rgba(239, 68, 68, 0.7)'
@@ -156,7 +156,7 @@ export function AnalyticsPanel({ students }: AnalyticsPanelProps) {
             datasets: [{
                 data: Object.values(statusCount),
                 backgroundColor: [
-                    'rgba(16, 185, 129, 0.7)',
+                    'rgba(249, 115, 22, 0.7)',
                     'rgba(239, 68, 68, 0.7)',
                     'rgba(59, 130, 246, 0.7)',
                     'rgba(245, 158, 11, 0.7)',

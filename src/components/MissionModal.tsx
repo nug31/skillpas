@@ -229,7 +229,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                             </div>
                             <div>
                                 <div className="text-blue-100 text-sm font-bold tracking-wider uppercase flex items-center gap-2">
-                                    Sertifikasi Competency • <span className="text-yellow-300 font-bold">{currentScore} XP</span> • <span className="text-emerald-300 font-bold">{currentPoin} Poin</span>
+                                    Sertifikasi Competency • <span className="text-yellow-300 font-bold">{currentScore} XP</span> • <span className="text-orange-300 font-bold">{currentPoin} Poin</span>
                                 </div>
                                 <h2 className="text-2xl font-black text-white">Progress Sertifikasi Kamu</h2>
                             </div>
@@ -246,13 +246,13 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                             <>
                                 {submission && (
                                     <div className={`p-4 rounded-xl border flex flex-col gap-2 ${submission.status === 'rejected' ? 'bg-red-500/10 border-red-500/20' :
-                                        submission.status === 'scheduled' ? 'bg-emerald-500/10 border-emerald-500/20' :
+                                        submission.status === 'scheduled' ? 'bg-orange-500/10 border-orange-500/20' :
                                             'bg-blue-500/10 border-blue-500/20'
                                         }`}>
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <div className={`w-2 h-2 rounded-full animate-pulse ${submission.status === 'rejected' ? 'bg-red-500' :
-                                                    submission.status === 'scheduled' ? 'bg-emerald-500' :
+                                                    submission.status === 'scheduled' ? 'bg-orange-500' :
                                                         'bg-blue-500'
                                                     }`} />
                                                 <span className="text-xs font-bold uppercase tracking-wider text-white/70 [.theme-clear_&]:text-slate-500">Status Sertifikasi</span>
@@ -262,7 +262,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                             </span>
                                         </div>
                                         {submission.exam_date && submission.status === 'scheduled' && (
-                                            <div className="text-sm font-bold text-emerald-400">
+                                            <div className="text-sm font-bold text-orange-400">
                                                 📅 Jadwal Ujian: {new Date(submission.exam_date).toLocaleDateString('id-ID', { dateStyle: 'long' })}
                                             </div>
                                         )}
@@ -274,9 +274,9 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                     </div>
                                 )}
 
-                                <div className="p-4 rounded-xl bg-[color:var(--accent-1)]/10 border border-[color:var(--accent-1)]/20 flex gap-3 [.theme-clear_&]:bg-emerald-50 [.theme-clear_&]:border-emerald-200">
+                                <div className="p-4 rounded-xl bg-[color:var(--accent-1)]/10 border border-[color:var(--accent-1)]/20 flex gap-3 [.theme-clear_&]:bg-orange-50 [.theme-clear_&]:border-orange-200">
                                     <Info className="w-5 h-5 text-[color:var(--accent-1)] shrink-0 mt-0.5" />
-                                    <p className="text-sm text-[color:var(--accent-1)] leading-relaxed [.theme-clear_&]:text-emerald-800 font-medium">
+                                    <p className="text-sm text-[color:var(--accent-1)] leading-relaxed [.theme-clear_&]:text-orange-800 font-medium">
                                         Pilih kriteria kompetensi di <strong>Level Kamu</strong> untuk melanjutkan rencana belajar. ({selectedKRS.length}/10)
                                     </p>
                                 </div>
@@ -296,7 +296,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                                 </div>
                                                 <h3 className="text-white font-bold text-lg truncate [.theme-clear_&]:text-slate-900">{level.nama_level}</h3>
                                                 {isCurrentLevel && (
-                                                    <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded border border-emerald-500/30 whitespace-nowrap [.theme-clear_&]:bg-emerald-100 [.theme-clear_&]:text-emerald-700 [.theme-clear_&]:border-emerald-200">
+                                                    <span className="px-2 py-0.5 bg-orange-500/20 text-orange-400 text-[10px] font-bold rounded border border-orange-500/30 whitespace-nowrap [.theme-clear_&]:bg-orange-100 [.theme-clear_&]:text-orange-700 [.theme-clear_&]:border-orange-200">
                                                         LEVEL KAMU 📍
                                                     </span>
                                                 )}
@@ -346,21 +346,21 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                                                         } ${isSelected
                                                                             ? 'bg-indigo-500/20 border-indigo-500 shadow-[inset_0_0_10px_rgba(99,102,241,0.2)] [.theme-clear_&]:bg-indigo-50/80'
                                                                             : !isLocked && !passedItems.has(group.main) ? 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20 [.theme-clear_&]:bg-white [.theme-clear_&]:border-slate-200' : ''
-                                                                        } ${passedItems.has(group.main) ? 'opacity-80 border-emerald-500/30' : ''}`}
+                                                                        } ${passedItems.has(group.main) ? 'opacity-80 border-orange-500/30' : ''}`}
                                                                 >
                                                                     <div className="flex gap-3">
                                                                         <div className="mt-0.5 shrink-0 transition-colors">
                                                                             {hasSubs ? (
                                                                                 isExpanded ? <ChevronDown className="w-4 h-4 text-indigo-400" /> : <ChevronRight className="w-4 h-4 text-indigo-400/50" />
                                                                             ) : (
-                                                                                <div className={`p-1 rounded-full border ${passedItems.has(group.main) ? 'bg-emerald-500 border-emerald-500 text-white' : isSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-indigo-500/20 text-indigo-400/50 group-hover:border-indigo-500/50 group-hover:text-indigo-400'}`}>
+                                                                                <div className={`p-1 rounded-full border ${passedItems.has(group.main) ? 'bg-orange-500 border-orange-500 text-white' : isSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-indigo-500/20 text-indigo-400/50 group-hover:border-indigo-500/50 group-hover:text-indigo-400'}`}>
                                                                                     {passedItems.has(group.main) ? <Check className="w-3 h-3" /> : isSelected ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
                                                                                 </div>
                                                                             )}
                                                                         </div>
-                                                                        <span className={`text-xs sm:text-sm transition-colors ${passedItems.has(group.main) ? 'text-emerald-400 font-bold' : isSelected ? 'text-white font-black [.theme-clear_&]:text-indigo-950' : 'text-gray-400 group-hover:text-gray-200 [.theme-clear_&]:text-slate-600 [.theme-clear_&]:group-hover:text-slate-900'}`}>
+                                                                        <span className={`text-xs sm:text-sm transition-colors ${passedItems.has(group.main) ? 'text-orange-400 font-bold' : isSelected ? 'text-white font-black [.theme-clear_&]:text-indigo-950' : 'text-gray-400 group-hover:text-gray-200 [.theme-clear_&]:text-slate-600 [.theme-clear_&]:group-hover:text-slate-900'}`}>
                                                                             {renderBold(group.main)}
-                                                                            {passedItems.has(group.main) && <span className="ml-2 text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded uppercase align-middle">Lulus</span>}
+                                                                            {passedItems.has(group.main) && <span className="ml-2 text-[10px] bg-orange-500/20 text-orange-400 px-1.5 py-0.5 rounded uppercase align-middle">Lulus</span>}
                                                                         </span>
                                                                     </div>
                                                                     {hasSubs && <span className="text-[10px] font-black text-indigo-400/40 uppercase mt-1">{group.subs.length} Detail</span>}
@@ -385,16 +385,16 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                                                                                         }}
                                                                                         className={`flex items-start gap-3 p-3 rounded-xl border transition-all ${isLocked || passedItems.has(sub) ? 'cursor-not-allowed bg-white/5 border-white/5 [.theme-clear_&]:bg-slate-100 [.theme-clear_&]:border-slate-200' : 'cursor-pointer group'
                                                                                             } ${isSubSelected
-                                                                                                ? 'bg-emerald-500/10 border-emerald-500/50 [.theme-clear_&]:bg-emerald-50 [.theme-clear_&]:border-emerald-300'
+                                                                                                ? 'bg-orange-500/10 border-orange-500/50 [.theme-clear_&]:bg-orange-50 [.theme-clear_&]:border-orange-300'
                                                                                                 : !isLocked && !passedItems.has(sub) ? 'bg-white/5 border-white/5 hover:bg-white/10 [.theme-clear_&]:bg-white/80 [.theme-clear_&]:border-slate-200' : ''
-                                                                                            } ${passedItems.has(sub) ? 'border-emerald-500/20' : ''}`}
+                                                                                            } ${passedItems.has(sub) ? 'border-orange-500/20' : ''}`}
                                                                                     >
-                                                                                        <div className={`mt-0.5 p-1 rounded-full border shrink-0 transition-all ${passedItems.has(sub) ? 'bg-emerald-500 border-emerald-500 text-white' : isSubSelected ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-emerald-500/20 text-emerald-400/50'}`}>
+                                                                                        <div className={`mt-0.5 p-1 rounded-full border shrink-0 transition-all ${passedItems.has(sub) ? 'bg-orange-500 border-orange-500 text-white' : isSubSelected ? 'bg-orange-500 border-orange-500 text-white' : 'border-orange-500/20 text-orange-400/50'}`}>
                                                                                             {passedItems.has(sub) ? <Check className="w-2.5 h-2.5" /> : isSubSelected ? <Check className="w-2.5 h-2.5" /> : <Plus className="w-2.5 h-2.5" />}
                                                                                         </div>
-                                                                                        <span className={`text-xs transition-colors ${passedItems.has(sub) ? 'text-emerald-400 font-bold' : isSubSelected ? 'text-white font-medium [.theme-clear_&]:text-slate-900' : 'text-gray-400 group-hover:text-gray-200 [.theme-clear_&]:text-slate-500 [.theme-clear_&]:group-hover:text-slate-700'}`}>
+                                                                                        <span className={`text-xs transition-colors ${passedItems.has(sub) ? 'text-orange-400 font-bold' : isSubSelected ? 'text-white font-medium [.theme-clear_&]:text-slate-900' : 'text-gray-400 group-hover:text-gray-200 [.theme-clear_&]:text-slate-500 [.theme-clear_&]:group-hover:text-slate-700'}`}>
                                                                                             {renderBold(sub, true)}
-                                                                                            {passedItems.has(sub) && <span className="ml-2 text-[9px] bg-emerald-500/20 text-emerald-400 px-1 py-0.5 rounded uppercase align-middle">Lulus</span>}
+                                                                                            {passedItems.has(sub) && <span className="ml-2 text-[9px] bg-orange-500/20 text-orange-400 px-1 py-0.5 rounded uppercase align-middle">Lulus</span>}
                                                                                         </span>
                                                                                     </div>
                                                                                 );
@@ -428,7 +428,7 @@ export function MissionModal({ isOpen, onClose, jurusan, currentScore, currentPo
                             disabled={submitting || !!(submission && !['rejected', 'scheduled', 'completed'].includes(submission.status))}
                             className={`flex-[2] py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${submitting || (submission && !['rejected', 'scheduled', 'completed'].includes(submission.status))
                                 ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
-                                : 'bg-[color:var(--accent-1)] text-white hover:opacity-90 active:scale-95 [.theme-clear_&]:bg-emerald-600 [.theme-clear_&]:text-white [.theme-clear_&]:hover:bg-emerald-700'
+                                : 'bg-[color:var(--accent-1)] text-white hover:opacity-90 active:scale-95 [.theme-clear_&]:bg-orange-600 [.theme-clear_&]:text-white [.theme-clear_&]:hover:bg-orange-700'
                                 }`}
                         >
                             {submitting ? (

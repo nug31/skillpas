@@ -17,12 +17,12 @@ interface SpaceRocketRaceProps {
 const rocketColors = [
     { body: '#3B82F6', flame: '#F59E0B', accent: '#1D4ED8' },   // Blue
     { body: '#8B5CF6', flame: '#EC4899', accent: '#6D28D9' },   // Purple
-    { body: '#10B981', flame: '#34D399', accent: '#047857' },   // Green
+    { body: '#f97316', flame: '#fb923c', accent: '#c2410c' },   // Green
     { body: '#F59E0B', flame: '#EF4444', accent: '#D97706' },   // Yellow
     { body: '#EF4444', flame: '#F97316', accent: '#DC2626' },   // Red
     { body: '#EC4899', flame: '#F472B6', accent: '#BE185D' },   // Pink
     { body: '#6366F1', flame: '#A78BFA', accent: '#4338CA' },   // Indigo
-    { body: '#14B8A6', flame: '#2DD4BF', accent: '#0D9488' },   // Teal
+    { body: '#f97316', flame: '#fb923c', accent: '#ea580c' },   // Teal
 ];
 
 export function SpaceRocketRace({
@@ -141,7 +141,7 @@ export function SpaceRocketRace({
                         <span>Leader</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Rocket className="w-3 h-3 text-cyan-400" />
+                        <Rocket className="w-3 h-3 text-orange-400" />
                         <span>Launching</span>
                     </div>
                 </div>

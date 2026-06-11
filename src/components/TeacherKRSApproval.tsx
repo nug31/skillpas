@@ -263,8 +263,8 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                             <p className="text-slate-400 text-sm [.theme-clear_&]:text-slate-500">Review dan verifikasi pendaftaran sertifikasi competency siswa</p>
                         </div>
                     </div>
-                    <div className="px-4 py-2 bg-[color:var(--accent-1)]/10 border border-[color:var(--accent-1)]/20 rounded-full [.theme-clear_&]:bg-emerald-50 [.theme-clear_&]:border-emerald-200 flex items-center gap-3">
-                        <span className="text-xs font-bold text-[color:var(--accent-1)] uppercase tracking-widest [.theme-clear_&]:text-emerald-700">
+                    <div className="px-4 py-2 bg-[color:var(--accent-1)]/10 border border-[color:var(--accent-1)]/20 rounded-full [.theme-clear_&]:bg-orange-50 [.theme-clear_&]:border-orange-200 flex items-center gap-3">
+                        <span className="text-xs font-bold text-[color:var(--accent-1)] uppercase tracking-widest [.theme-clear_&]:text-orange-700">
                             Role: {userRole.replace('_', ' ')}
                         </span>
                         <button
@@ -283,15 +283,15 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                 {lastActionResult && (
                     <div className={`border rounded-2xl p-6 animate-fadeInUp flex flex-col sm:flex-row items-center justify-between gap-4 ${lastActionResult.type === 'scheduled'
                         ? 'bg-indigo-500/10 border-indigo-500/20'
-                        : 'bg-emerald-500/10 border-emerald-500/20'
+                        : 'bg-orange-500/10 border-orange-500/20'
                         }`}>
                         <div className="flex items-center gap-4 text-center sm:text-left">
-                            <div className={`p-3 rounded-full ${lastActionResult.type === 'scheduled' ? 'bg-indigo-500/20' : 'bg-emerald-500/20'
+                            <div className={`p-3 rounded-full ${lastActionResult.type === 'scheduled' ? 'bg-indigo-500/20' : 'bg-orange-500/20'
                                 }`}>
                                 {lastActionResult.type === 'scheduled' ? (
                                     <Clock className="w-6 h-6 text-indigo-400" />
                                 ) : (
-                                    <Check className="w-6 h-6 text-emerald-500" />
+                                    <Check className="w-6 h-6 text-orange-500" />
                                 )}
                             </div>
                             <div>
@@ -305,7 +305,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                         </>
                                     ) : (
                                         <>
-                                            {lastActionResult.name} dinyatakan <span className="text-emerald-500 font-bold">{lastActionResult.result?.toUpperCase()}</span>.
+                                            {lastActionResult.name} dinyatakan <span className="text-orange-500 font-bold">{lastActionResult.result?.toUpperCase()}</span>.
                                         </>
                                     )}
                                 </p>
@@ -331,7 +331,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                         const url = `https://wa.me/${lastActionResult.wa_number?.replace(/\D/g, '') || ''}?text=${encodeURIComponent(msg)}`;
                                         window.open(url, '_blank');
                                     }}
-                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-green-600/20"
+                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-orange-600 hover:bg-orange-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-orange-600/20"
                                 >
                                     Kirim WA Hasil
                                 </button>
@@ -412,12 +412,12 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                 <div className={`flex flex-col h-full space-y-4 ${activeTab === 'pending' && userRole !== 'wali_kelas' ? 'pl-8' : ''}`}>
                                     <div className="flex justify-between items-start gap-4">
                                         <div className="flex-1 min-w-0">
-                                            <div className="text-xs font-black text-[color:var(--accent-1)] uppercase mb-1 [.theme-clear_&]:text-emerald-600 truncate">{sub.kelas}</div>
+                                            <div className="text-xs font-black text-[color:var(--accent-1)] uppercase mb-1 [.theme-clear_&]:text-orange-600 truncate">{sub.kelas}</div>
                                             <h3 className="text-xl font-bold text-[color:var(--text-primary)] truncate" title={sub.siswa_nama}>{sub.siswa_nama}</h3>
                                         </div>
                                         {sub.status === 'scheduled' && (
                                             <div className="flex flex-col items-end gap-2 shrink-0">
-                                                <div className="px-2 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded text-[10px] text-emerald-500 font-black uppercase">
+                                                <div className="px-2 py-1 bg-orange-500/10 border border-orange-500/20 rounded text-[10px] text-orange-500 font-black uppercase">
                                                     Jadwal: {sub.exam_date}
                                                 </div>
                                                 <button
@@ -514,7 +514,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
 
                         <button
                             onClick={handleBulkApprove}
-                            className="bg-emerald-500 hover:bg-emerald-400 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2"
+                            className="bg-orange-500 hover:bg-orange-400 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-orange-500/20 transition-all flex items-center gap-2"
                         >
                             <Check className="w-5 h-5" />
                             Setujui Batch
@@ -567,20 +567,20 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                                         if (!trimmed) return null;
                                         const subItem = isSubItem(trimmed);
                                         return (
-                                            <div key={i} className={`p-3 card-glass border border-white/10 rounded-xl text-sm ${subItem ? 'ml-6' : ''} ${passedItems.has(trimmed) ? 'border-emerald-500/30 opacity-80' : ''}`}>
+                                            <div key={i} className={`p-3 card-glass border border-white/10 rounded-xl text-sm ${subItem ? 'ml-6' : ''} ${passedItems.has(trimmed) ? 'border-orange-500/30 opacity-80' : ''}`}>
                                                 {subItem ? (
                                                     <div className="flex gap-2 items-center">
                                                         <span className="text-[color:var(--accent-1)]">└</span>
                                                         <span className="text-[color:var(--text-muted)] font-medium flex-1">{cleanSubItemText(trimmed)}</span>
                                                         {passedItems.has(trimmed) && (
-                                                            <span className="text-[10px] font-black text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded uppercase">Lulus</span>
+                                                            <span className="text-[10px] font-black text-orange-500 bg-orange-500/10 px-1.5 py-0.5 rounded uppercase">Lulus</span>
                                                         )}
                                                     </div>
                                                 ) : (
                                                     <div className="flex items-center gap-2">
                                                         <span className="text-[color:var(--text-primary)] font-bold flex-1">{trimmed.replace(/\*\*/g, '')}</span>
                                                         {passedItems.has(trimmed) && (
-                                                            <span className="text-[10px] font-black text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded uppercase">Lulus</span>
+                                                            <span className="text-[10px] font-black text-orange-500 bg-orange-500/10 px-1.5 py-0.5 rounded uppercase">Lulus</span>
                                                         )}
                                                     </div>
                                                 )}
@@ -593,7 +593,7 @@ export function TeacherKRSApproval({ onBack, user }: TeacherKRSApprovalProps) {
                             {userRole === 'hod' && (
                                 <div className="space-y-3">
                                     <label className="text-xs font-black text-[color:var(--text-muted)] uppercase tracking-widest flex items-center gap-2">
-                                        <Calendar className="w-4 h-4 text-emerald-400" /> Tentukan Jadwal Ujian (Wajib)
+                                        <Calendar className="w-4 h-4 text-orange-400" /> Tentukan Jadwal Ujian (Wajib)
                                     </label>
                                     <input
                                         type="date"

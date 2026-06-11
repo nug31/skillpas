@@ -379,25 +379,25 @@ export function HomePage({
           {/* Header section remains same */}
           <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-6 items-start">
             <div className="space-y-4 animate-fadeInUp">
-              <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-gradient-to-r from-yellow-500 to-amber-600 shadow-md-2 [.theme-clear_&]:from-emerald-500 [.theme-clear_&]:to-cyan-500">
+              <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-gradient-to-r from-yellow-500 to-amber-600 shadow-md-2 [.theme-clear_&]:from-orange-500 [.theme-clear_&]:to-orange-500">
                 <GraduationCap className="w-5 h-5 text-white" />
                 <span className="text-white text-xs font-semibold">DASHBOARD</span>
               </div>
 
               <div className="space-y-1">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
-                  <span className="bg-gradient-to-r from-white via-yellow-100 to-amber-200 bg-clip-text text-transparent drop-shadow-2xl [text-shadow:_0_4px_20px_rgba(234,179,8,0.3)] [.theme-clear_&]:from-emerald-900 [.theme-clear_&]:via-teal-800 [.theme-clear_&]:to-emerald-900 [.theme-clear_&]:[text-shadow:_0_2px_10px_rgba(5,150,105,0.2)]">
+                  <span className="bg-gradient-to-r from-white via-yellow-100 to-amber-200 bg-clip-text text-transparent drop-shadow-2xl [text-shadow:_0_4px_20px_rgba(234,179,8,0.3)] [.theme-clear_&]:from-orange-900 [.theme-clear_&]:via-orange-800 [.theme-clear_&]:to-orange-900 [.theme-clear_&]:[text-shadow:_0_2px_10px_rgba(234, 88, 12,0.2)]">
                     SKILL PASSPORT
                   </span>
                 </h1>
                 <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-widest -mt-1">
-                  <span className="bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent [.theme-clear_&]:from-emerald-700 [.theme-clear_&]:via-teal-600 [.theme-clear_&]:to-emerald-700">
+                  <span className="bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent [.theme-clear_&]:from-orange-700 [.theme-clear_&]:via-orange-600 [.theme-clear_&]:to-orange-700">
                     {user?.sekolah_nama || import.meta.env.VITE_SCHOOL_NAME || 'SMK Mitra Industri'}
                   </span>
                 </h2>
-                <div className="w-24 h-0.5 bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 rounded-full mt-2 mb-4 animate-pulse [.theme-clear_&]:from-emerald-500 [.theme-clear_&]:via-teal-500 [.theme-clear_&]:to-cyan-500"></div>
+                <div className="w-24 h-0.5 bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 rounded-full mt-2 mb-4 animate-pulse [.theme-clear_&]:from-orange-500 [.theme-clear_&]:via-orange-500 [.theme-clear_&]:to-orange-500"></div>
                 <p className="text-lg sm:text-xl font-medium tracking-wide">
-                  <span className="bg-gradient-to-r from-yellow-300 to-amber-300 bg-clip-text text-transparent [.theme-clear_&]:from-emerald-600 [.theme-clear_&]:to-emerald-800">
+                  <span className="bg-gradient-to-r from-yellow-300 to-amber-300 bg-clip-text text-transparent [.theme-clear_&]:from-orange-600 [.theme-clear_&]:to-orange-800">
                     Menuju Vokasi Berstandar Industri & Terverifikasi
                   </span>
                 </p>
@@ -432,7 +432,7 @@ export function HomePage({
                               <span>{myStats.score} XP</span>
                             </div>
                             <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/10 text-white backdrop-blur-sm border border-white/10">
-                              <Medal className="w-2.5 h-2.5 fill-emerald-400 text-emerald-400" />
+                              <Medal className="w-2.5 h-2.5 fill-orange-400 text-orange-400" />
                               <span>{myStats.poin} PN</span>
                             </div>
                           </div>
@@ -511,8 +511,8 @@ export function HomePage({
                         <CheckCircle className="w-5 h-5 text-indigo-400" />
                         Verifikasi Sertifikasi
                         {pendingKRSCount > 0 && (
-                          <div className={`absolute -top-1.5 -right-1.5 w-5 h-5 ${toApproveCount > 0 ? 'bg-red-500' : 'bg-emerald-500'
-                            } text-white text-[9px] font-black rounded-full flex items-center justify-center border border-[#0f172a] animate-bounce shadow-lg shadow-emerald-500/20`}>
+                          <div className={`absolute -top-1.5 -right-1.5 w-5 h-5 ${toApproveCount > 0 ? 'bg-red-500' : 'bg-orange-500'
+                            } text-white text-[9px] font-black rounded-full flex items-center justify-center border border-[#0f172a] animate-bounce shadow-lg shadow-orange-500/20`}>
                             {pendingKRSCount}
                           </div>
                         )}
@@ -523,9 +523,9 @@ export function HomePage({
                     {user?.role === 'wali_kelas' && onOpenWalasDashboard && (
                       <button
                         onClick={onOpenWalasDashboard}
-                        className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-500 text-white rounded-lg font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all w-full sm:w-auto text-sm sm:text-base flex items-center justify-center gap-2 group"
+                        className="px-6 py-3 bg-gradient-to-r from-orange-600 to-orange-500 text-white rounded-lg font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all w-full sm:w-auto text-sm sm:text-base flex items-center justify-center gap-2 group"
                       >
-                        <LayoutDashboard className="w-5 h-5 text-emerald-200" />
+                        <LayoutDashboard className="w-5 h-5 text-orange-200" />
                         Walas Insight
                         <div className="absolute inset-0 rounded-lg bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       </button>
@@ -540,11 +540,11 @@ export function HomePage({
               {user?.role === 'student' && krsSubmission && (() => {
                 const statusConfig: Record<string, { bg: string, border: string, iconBg: string, titleColor: string, tagColor: string, tagBg: string, descColor: string, Icon: typeof CheckCircle, title: string, tag: string, desc: string, detailBg?: string, detailBorder?: string, detailColor?: string, action?: any }> = {
                   completed: {
-                    bg: 'bg-emerald-500/10 [.theme-clear_&]:bg-emerald-50',
-                    border: 'border-emerald-500/20 [.theme-clear_&]:border-emerald-200',
-                    iconBg: 'bg-emerald-500',
-                    titleColor: 'text-emerald-400 [.theme-clear_&]:text-emerald-700',
-                    tagColor: 'text-emerald-500/60',
+                    bg: 'bg-orange-500/10 [.theme-clear_&]:bg-orange-50',
+                    border: 'border-orange-500/20 [.theme-clear_&]:border-orange-200',
+                    iconBg: 'bg-orange-500',
+                    titleColor: 'text-orange-400 [.theme-clear_&]:text-orange-700',
+                    tagColor: 'text-orange-500/60',
                     tagBg: '',
                     descColor: 'text-white/70 [.theme-clear_&]:text-slate-600',
                     Icon: CheckCircle,
@@ -554,7 +554,7 @@ export function HomePage({
                     action: (
                       <button
                         onClick={() => onOpenMissionModal?.()}
-                        className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 rounded-lg border border-emerald-500/20 text-emerald-300 [.theme-clear_&]:text-emerald-700 font-bold text-[10px] transition-all"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-500/20 hover:bg-orange-500/30 rounded-lg border border-orange-500/20 text-orange-300 [.theme-clear_&]:text-orange-700 font-bold text-[10px] transition-all"
                       >
                         <Plus className="w-3 h-3" />
                         Upgrade Skill Lagi
@@ -588,20 +588,20 @@ export function HomePage({
                     desc: 'Guru Produktif sudah menyetujui. Sekarang menunggu persetujuan & penjadwalan dari Ketua Program.',
                   },
                   scheduled: {
-                    bg: 'bg-emerald-500/10 [.theme-clear_&]:bg-emerald-50',
-                    border: 'border-emerald-500/20 [.theme-clear_&]:border-emerald-200',
-                    iconBg: 'bg-emerald-500',
-                    titleColor: 'text-emerald-400 [.theme-clear_&]:text-emerald-700',
-                    tagColor: 'text-emerald-500/60',
+                    bg: 'bg-orange-500/10 [.theme-clear_&]:bg-orange-50',
+                    border: 'border-orange-500/20 [.theme-clear_&]:border-orange-200',
+                    iconBg: 'bg-orange-500',
+                    titleColor: 'text-orange-400 [.theme-clear_&]:text-orange-700',
+                    tagColor: 'text-orange-500/60',
                     tagBg: '',
                     descColor: 'text-white/70 [.theme-clear_&]:text-slate-600',
                     Icon: CheckCircle,
                     title: 'Ujian Sertifikasi Terjadwal!',
                     tag: 'Confirmed',
                     desc: 'Sertifikasi disetujui penuh & jadwal ujian tersedia.',
-                    detailBg: 'bg-emerald-500/20 [.theme-clear_&]:bg-emerald-100/50',
-                    detailBorder: 'border-emerald-500/20',
-                    detailColor: 'text-emerald-300 [.theme-clear_&]:text-emerald-700',
+                    detailBg: 'bg-orange-500/20 [.theme-clear_&]:bg-orange-100/50',
+                    detailBorder: 'border-orange-500/20',
+                    detailColor: 'text-orange-300 [.theme-clear_&]:text-orange-700',
                   },
                   rejected: {
                     bg: 'bg-red-500/10 [.theme-clear_&]:bg-red-50',
@@ -716,12 +716,12 @@ export function HomePage({
                                 <div className="flex flex-col">
                                   <span className="text-[10px] text-white/40 font-bold uppercase tracking-tight [.theme-clear_&]:text-slate-500">PRESENSI</span>
                                   <div className="flex items-center gap-2">
-                                    <span className={`text-sm font-black ${myStats.attendance_pcent >= 90 ? 'text-emerald-400 [.theme-clear_&]:text-emerald-600' : myStats.attendance_pcent >= 75 ? 'text-amber-400 [.theme-clear_&]:text-amber-600' : 'text-red-400 [.theme-clear_&]:text-red-600'}`}>
+                                    <span className={`text-sm font-black ${myStats.attendance_pcent >= 90 ? 'text-orange-400 [.theme-clear_&]:text-orange-600' : myStats.attendance_pcent >= 75 ? 'text-amber-400 [.theme-clear_&]:text-amber-600' : 'text-red-400 [.theme-clear_&]:text-red-600'}`}>
                                       {myStats.attendance_pcent}%
                                     </span>
                                     <div className="w-12 h-1 bg-white/10 rounded-full overflow-hidden [.theme-clear_&]:bg-slate-200">
                                       <div
-                                        className={`h-full transition-all duration-1000 ${myStats.attendance_pcent >= 90 ? 'bg-emerald-500' : myStats.attendance_pcent >= 75 ? 'bg-amber-500' : 'bg-red-500'}`}
+                                        className={`h-full transition-all duration-1000 ${myStats.attendance_pcent >= 90 ? 'bg-orange-500' : myStats.attendance_pcent >= 75 ? 'bg-amber-500' : 'bg-red-500'}`}
                                         style={{ width: `${myStats.attendance_pcent}%` }}
                                       />
                                     </div>
@@ -730,7 +730,7 @@ export function HomePage({
 
                                 <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
                                   <div className="flex items-center gap-1">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
                                     <span className="text-[10px] font-bold text-white/60 [.theme-clear_&]:text-slate-700">{myStats.masuk} <span className="font-normal opacity-50 [.theme-clear_&]:text-slate-400">M</span></span>
                                   </div>
                                   <div className="flex items-center gap-1">
@@ -761,7 +761,7 @@ export function HomePage({
 
                             <button
                               onClick={() => onOpenPassport?.()}
-                              className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 text-emerald-300 rounded-lg text-xs font-bold border border-emerald-500/20 transition-all group"
+                              className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-orange-600/20 to-orange-600/20 hover:from-orange-600/30 hover:to-orange-600/30 text-orange-300 rounded-lg text-xs font-bold border border-orange-500/20 transition-all group"
                             >
                               <BookOpen className="w-4 h-4 group-hover:scale-110 transition-transform" />
                               Passport
