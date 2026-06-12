@@ -625,7 +625,7 @@ export const krsStore = {
         try {
             if (isMockMode) {
                 const levels = mockData.mockLevels.sort((a, b) => a.urutan - b.urutan);
-                const reachedLevels = levels.filter((l: any) => score >= l.min_skor);
+                const reachedLevels = levels.filter((l: any) => score >= l.min_skor && score > 0);
                 const now = new Date().toISOString();
 
                 reachedLevels.forEach((rl: any) => {
@@ -649,7 +649,7 @@ export const krsStore = {
                 const { data: allLevels } = await supabase.from('level_skill').select('*').order('urutan');
                 if (!allLevels) return;
 
-                const reachingLevels = allLevels.filter((l: any) => score >= l.min_skor);
+                const reachingLevels = allLevels.filter((l: any) => score >= l.min_skor && score > 0);
 
                 // Fetch existing history
                 const { data: existingHist } = await supabase

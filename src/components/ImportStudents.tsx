@@ -112,7 +112,7 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
           mockData.mockSkillSiswa.push({ id: `ss-${id}`, siswa_id: id, level_id: levelId, skor, poin, tanggal_pencapaian: now, created_at: now, updated_at: now });
 
           // Generate baseline history for all levels reached
-          const reachedLevels = levels.filter(l => skor >= l.min_skor);
+          const reachedLevels = levels.filter(l => skor >= l.min_skor && skor > 0);
           reachedLevels.forEach(rl => {
             mockData.mockCompetencyHistory.push({
               id: `h-base-${id}-${rl.id}`,
@@ -174,7 +174,7 @@ export function ImportStudents({ jurusanId, onClose, onImported }: ImportStudent
             insertedSiswa.forEach((siswa: { id: string; nama: string }) => {
               const previewRow = preview.find(p => p.nama === siswa.nama);
               const score = previewRow?.skor ?? 0;
-              const reachedLevels = allLevels.filter((l: any) => score >= l.min_skor);
+              const reachedLevels = allLevels.filter((l: any) => score >= l.min_skor && score > 0);
 
               reachedLevels.forEach((rl: any) => {
                 historyRows.push({

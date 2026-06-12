@@ -124,8 +124,15 @@ export const PassportPublicView: React.FC<PassportPublicViewProps> = ({ siswaId 
                 const allPhotos = krsData?.flatMap((k: any) => k.evidence_photos || []) || [];
                 const allVideos = krsData?.flatMap((k: any) => k.evidence_videos || []) || [];
 
+                // Compute current level from score
+                const skillData = (student as any).skill_siswa?.[0];
+                const currentScore = skillData?.skor || 0;
+                const currentLevel = rawLevels.find((l: any) => currentScore >= l.min_skor && currentScore <= l.max_skor);
+
                 setStudentData({
                     ...student,
+                    current_level: currentLevel,
+                    current_skor: currentScore,
                     riwayat_kompetensi: historyData || [],
                     evidence_photos: allPhotos,
                     evidence_videos: allVideos

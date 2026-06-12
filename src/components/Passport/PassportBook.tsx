@@ -82,10 +82,11 @@ export const PassportBook: React.FC<PassportBookProps> = ({ siswa, jurusanName, 
     sortedLevels.forEach(level => {
         const levelHistory = history.filter(h => h.level_id === level.id);
 
-        // Calculate pages needed for this level (at least 1 page if there are items, 
-        // OR optionally show 1 empty page per level to encourage progress?)
-        // Let's show at least 1 page per level even if empty, so students see what's next.
-        const levelPages = Math.max(1, Math.ceil(levelHistory.length / stampsPerPage));
+        // Only show stamp pages for levels that have actual history entries.
+        // Students with no history for a level should not see empty pages for it.
+        if (levelHistory.length === 0) return;
+
+        const levelPages = Math.ceil(levelHistory.length / stampsPerPage);
 
         for (let i = 0; i < levelPages; i++) {
             pages.push(
